@@ -1,6 +1,6 @@
 <template>
   <a
-    class="pixel-button"
+    class="tsl-button"
     :href="link"
     :target="target"
     :class="[{'is-touch-device': isTouch}]"
@@ -14,7 +14,7 @@
 import detectIt from 'detect-it'
 
 export default {
-  name: 'PixelButton',
+  name: 'TslButton',
   props: {
     link: {
       type: String,
@@ -44,7 +44,7 @@ export default {
 
 <style lang="scss" scoped>
 
-.pixel-button {
+.tsl-button {
   position: relative;
   display: inline-block;
   width: auto;
@@ -58,10 +58,10 @@ export default {
   border-radius: 3px;
   transition: background-color 150ms ease-in-out;
   color: white;
-  background-color: $pixel-orange;
+  background-color: $tsl-orange;
 
   &:not(.is-touch-device):hover {
-    background-color: lighten($pixel-orange, 5%);
+    background-color: lighten($tsl-orange, 5%);
   }
 }
 

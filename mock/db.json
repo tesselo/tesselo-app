@@ -1,48 +1,24 @@
 {
   "employees": [
     {
-      "real_name": "Ana Gomes",
+      "real_name": "André Oliveira",
       "profile": {
-        "real_name": "Ana Gomes",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2016-07-28\/64110217137_fbd53aa9de0ebc713a6d_192.jpg",
-        "title": "HR & Office Manager",
-        "real_name_normalized": "Ana Gomes"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Andr\u00e9 Oliveira",
-      "profile": {
-        "real_name": "Andr\u00e9 Oliveira",
+        "real_name": "André Oliveira",
         "image_192": "https:\/\/avatars.slack-edge.com\/2016-08-15\/69667746865_c6baad63c6c42331de5e_192.png",
         "title": "Founder & CEO",
-        "real_name_normalized": "Andre Oliveira"
+        "real_name_normalized": "André Oliveira"
       },
       "presence": "active",
       "deleted": false,
       "is_restricted": false
     },
     {
-      "real_name": "Andr\u00e9 Teixeira",
+      "real_name": "André Teixeira",
       "profile": {
-        "real_name": "Andr\u00e9 Teixeira",
+        "real_name": "André Teixeira",
         "image_192": "https:\/\/avatars.slack-edge.com\/2017-07-10\/209638880704_1a0f60c6af9eb0cb6387_192.jpg",
         "title": "Project Manager",
-        "real_name_normalized": "Andre Teixeira"
-      },
-      "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Augusto Lopes",
-      "profile": {
-        "real_name": "Augusto Lopes",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-05-08\/180225595461_85df1203d8f2606b7462_192.png",
-        "title": "UI\/UX Designer",
-        "real_name_normalized": "Augusto Lopes"
+        "real_name_normalized": "André Teixeira"
       },
       "presence": "away",
       "deleted": false,
@@ -61,60 +37,24 @@
       "is_restricted": false
     },
     {
-      "real_name": "Emanuel Santos",
+      "real_name": "Fábio Martins",
       "profile": {
-        "real_name": "Emanuel Santos",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-09-05\/236477765650_6ef066e3f709f74a94ce_192.jpg",
-        "title": "Content Manager at Finta",
-        "real_name_normalized": "Emanuel Santos"
-      },
-      "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "F\u00e1bio Martins",
-      "profile": {
-        "real_name": "F\u00e1bio Martins",
+        "real_name": "Fábio Martins",
         "image_192": "https:\/\/avatars.slack-edge.com\/2015-10-01\/11703360404_e9f179707ab62c74fd25_192.jpg",
         "title": "CTO",
-        "real_name_normalized": "Fabio Martins"
+        "real_name_normalized": "Fábio Martins"
       },
       "presence": "active",
       "deleted": false,
       "is_restricted": false
     },
     {
-      "real_name": "Gil Mendes",
+      "real_name": "Gonçalo Marques",
       "profile": {
-        "real_name": "Gil Mendes",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-08-04\/222503464181_217735b78d814f1d5b39_192.jpg",
-        "title": "Front-End Developer",
-        "real_name_normalized": "Gil Mendes"
-      },
-      "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Gon\u00e7alo Marques",
-      "profile": {
-        "real_name": "Gon\u00e7alo Marques",
+        "real_name": "Gonçalo Marques",
         "image_192": "https:\/\/avatars.slack-edge.com\/2016-04-26\/37725650499_41f2909eef68a6a6435b_192.jpg",
         "title": "Frontend Developer",
-        "real_name_normalized": "Goncalo Marques"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Ivo Silva",
-      "profile": {
-        "real_name": "Ivo Silva",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-10-25\/261430128449_22696658b89c6d42bd59_192.jpg",
-        "title": "iOS Developer",
-        "real_name_normalized": "Ivo Silva"
+        "real_name_normalized": "Gonçalo Marques"
       },
       "presence": "active",
       "deleted": false,
@@ -126,117 +66,9 @@
         "real_name": "Jo\u00e3o Figueiredo",
         "image_192": "https:\/\/avatars.slack-edge.com\/2017-12-07\/284566995607_84dc8cb2c28a3bdfc514_192.png",
         "title": "COO at Pixelmatters",
-        "real_name_normalized": "Joao Figueiredo"
+        "real_name_normalized": "João Figueiredo"
       },
       "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Lu\u00eds Monteiro",
-      "profile": {
-        "real_name": "Lu\u00eds Monteiro",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2015-10-01\/11703547254_c770dd1fa5aa0444932a_192.jpg",
-        "title": "UX\/UI Designer",
-        "real_name_normalized": "Luis Monteiro"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Mariana Figueiredo",
-      "profile": {
-        "real_name": "Mariana Figueiredo",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-03-21\/156843007745_2a7f7960622e128b47cc_192.jpg",
-        "title": "Project Manager",
-        "real_name_normalized": "Mariana Figueiredo"
-      },
-      "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Miguel Teixeira",
-      "profile": {
-        "real_name": "Miguel Teixeira",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-01-26\/132164244448_c26113d5960755fca5e7_192.jpg",
-        "title": "Frontend Developer",
-        "real_name_normalized": "Miguel Teixeira"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Paulo Cunha",
-      "profile": {
-        "real_name": "Paulo Cunha",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2016-03-08\/25284362534_ed0c1ef699e86212cdcd_192.jpg",
-        "title": "UX\/UI Designer",
-        "real_name_normalized": "Paulo Cunha"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Rafael Costa",
-      "profile": {
-        "real_name": "Rafael Costa",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-09-04\/235987393123_188728edd7c877e557eb_192.png",
-        "title": "UI\/UX Designer",
-        "real_name_normalized": "Rafael Costa"
-      },
-      "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Rui Martins",
-      "profile": {
-        "real_name": "Rui Martins",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2016-12-13\/117143611751_f2da31acc5e103edd7ef_192.jpg",
-        "title": "Frontend Developer",
-        "real_name_normalized": "Rui Martins"
-      },
-      "presence": "away",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Bruno Teles",
-      "profile": {
-        "real_name": "Bruno Teles",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-10-31\/265643636295_872f44b191cb93c0b372_192.jpg",
-        "title": "Design Manager",
-        "real_name_normalized": "Bruno Teles"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Tiago Coelho",
-      "profile": {
-        "real_name": "Tiago Coelho",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-02-06\/137483208916_ca82c133a8d5c172f290_192.png",
-        "title": "Frontend Developer",
-        "real_name_normalized": "Tiago Coelho"
-      },
-      "presence": "active",
-      "deleted": false,
-      "is_restricted": false
-    },
-    {
-      "real_name": "Vasco Vieira",
-      "profile": {
-        "real_name": "Vasco Vieira",
-        "image_192": "https:\/\/avatars.slack-edge.com\/2017-01-02\/123146540583_c9cbf7109eced2d0da66_192.jpg",
-        "title": "UI\/UX Designer",
-        "real_name_normalized": "Vasco Vieira"
-      },
-      "presence": "active",
       "deleted": false,
       "is_restricted": false
     }

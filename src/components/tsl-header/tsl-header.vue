@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="container">
-      <div class="pixel-header d-flex flex-row justify-content-between">
-        <img src="~@/assets/logo-pixelmatters.svg">
+      <div class="tsl-header d-flex flex-row justify-content-between">
+        <img src="~@/assets/logo-tesselo.png">
         <h1>Vue Boilerplate</h1>
       </div>
     </div>
@@ -11,12 +11,12 @@
 
 <script>
 export default {
-  name: 'PixelHeader'
+  name: 'TslHeader'
 }
 </script>
 
 <style scoped lang="scss">
-.pixel-header {
+.tsl-header {
   margin: 40px 0 20px;
 }
 </style>

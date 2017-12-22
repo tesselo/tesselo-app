@@ -1,18 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`home.vue should match the snapshot 1`] = `
+exports[`homepage.vue should match the snapshot 1`] = `
 <div
-  class="container hello"
+  class="container"
+  id="home"
 >
   <div>
     <a
-      class="pixel-button"
+      class="tsl-button"
       href="#"
       id="fetch-employees"
       target="_self"
     >
       <div>
-        Get the Pixelmatters Squad!!
+        Get the Tesselo Squad!!
       </div>
     </a>
   </div>

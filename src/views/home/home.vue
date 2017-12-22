@@ -3,17 +3,17 @@
     id="home"
     class="container">
     <div v-if="!fetchedEmployees">
-      <pixel-button
+      <tsl-button
         id="fetch-employees"
-        title="Get the Pixelmatters Squad!!"
+        title="Get the Tesselo Squad!!"
         @click="getEmployees"
       />
     </div>
     <div
       v-if="fetchedEmployees"
     >
-      <h1>Pixelmatters squad</h1>
-      <div class="d-flex flex-row justify-content-between flex-wrap">
+      <h1>Tesselo squad</h1>
+      <div class="d-flex flex-row justify-content-start flex-wrap">
         <div
           v-for="employee in employees"
           :key="employee.profile.image_192"
@@ -34,13 +34,13 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import PixelButton from '@/components/pixel-button/pixel-button';
+import TslButton from '@/components/tsl-button/tsl-button';
 import { EMPLOYEES_GET_EMPLOYEES } from '@/services/constants/action-types'
 
 export default {
   name: 'Home',
   components: {
-    PixelButton
+    TslButton
   },
   data () {
     return {
@@ -71,7 +71,7 @@ export default {
 h1 {
   font-size: 22px;
   line-height: 32px;
-  color: $pixel-grey;
+  color: $tsl-grey;
   font-weight: 500;
   overflow: hidden;
 }

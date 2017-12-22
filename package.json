@@ -1,8 +1,8 @@
 {
-  "name": "pixel-vue",
+  "name": "tesselo-vue",
   "version": "1.0.0",
-  "description": "Pixelmatters Vue Boilerplate",
-  "author": "Gonçalo Marques <goncalomarques101@gmail.com>",
+  "description": "Tesselo App",
+  "author": "Pixelmatters <dev@pixelmatters.com>",
   "private": true,
   "scripts": {
     "build": "node build/build.js",

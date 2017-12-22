@@ -1,17 +1,17 @@
 <template>
   <div>
-    <pixel-header/>
+    <tsl-header/>
     <router-view/>
   </div>
 </template>
 
 <script>
-import PixelHeader from '@/components/pixel-header/pixel-header';
+import TslHeader from '@/components/tsl-header/tsl-header';
 
 export default {
   name: 'App',
   components: {
-    PixelHeader
+    TslHeader
   }
 }
 </script>

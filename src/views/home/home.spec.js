@@ -1,16 +1,16 @@
 import Vue from 'vue'
-import home from '@/views/home/home'
+import Home from '@/views/home/home'
 
-describe('home.vue', () => {
+describe('homepage.vue', () => {
   it('should render correct contents', () => {
-    const Constructor = Vue.extend(home)
+    const Constructor = Vue.extend(Home)
     const vm = new Constructor().$mount()
     expect(vm.$el.querySelector('#fetch-employees').textContent)
-    .toEqual('Get the Pixelmatters Squad!!')
+    .toEqual('Get the Tesselo Squad!!')
   })
 
   it('should match the snapshot', () => {
-    const Constructor = Vue.extend(home)
+    const Constructor = Vue.extend(Home)
     const vm = new Constructor().$mount()
 
     expect(vm.$el).toMatchSnapshot();

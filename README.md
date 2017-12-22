@@ -1,7 +1,6 @@
-# pixel-vue
+# Tesselo Vue App
 
-## Pixelmatters Vue Boilerplate
-This boilerplate is built on top of vue-cli webpack template. Beyond the vue-cli features, it specifies:
+This app is built on top of Pixelmatters Vue Boilerplate, which is an extension of vue-cli webpack template. Beyond the vue-cli features, it specifies:
   * Component/view file tree structure
   * State management (with vuex) structure
   * API management/structure

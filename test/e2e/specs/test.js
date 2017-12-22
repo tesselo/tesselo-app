@@ -11,7 +11,7 @@ module.exports = {
     browser
       .url(devServer)
       .waitForElementVisible('#home', 5000)
-      .assert.containsText('#fetch-employees', 'Get the Pixelmatters Squad!!')
+      .assert.containsText('#fetch-employees', 'Get the Tesselo Squad!!')
       .end()
   }
 }
