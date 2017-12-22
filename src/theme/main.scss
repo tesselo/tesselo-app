@@ -1,0 +1,8 @@
+/* Do not import global styles to this file,
+ * as they won't be available to all components.
+ * Use common.scss instead
+ */
+@import './common';
+@import './reset';
+@import './typography.scss';
+@import './bootstrap';

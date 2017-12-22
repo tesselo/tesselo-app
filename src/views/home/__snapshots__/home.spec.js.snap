@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`home.vue should match the snapshot 1`] = `
+<div
+  class="container hello"
+>
+  <div>
+    <a
+      class="pixel-button"
+      href="#"
+      id="fetch-employees"
+      target="_self"
+    >
+      <div>
+        Get the Pixelmatters Squad!!
+      </div>
+    </a>
+  </div>
+   
+  <!---->
+</div>
+`;
