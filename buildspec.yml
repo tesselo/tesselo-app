@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Installing npm dependencies"
+      - npm install
+  build:
+    commands:
+      - echo "Building Tesselo Frontend Vue Application"
+      - npm run build:staging
+      - echo "Pushing new build to staging S3 bucket"
+      - aws s3 sync dist/ s3://staging.tesselo.com
