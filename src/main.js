@@ -6,6 +6,7 @@ import Vuex from 'vuex'
 import Router from 'vue-router'
 import vMediaQuery from 'v-media-query'
 import { sync } from 'vuex-router-sync'
+import VueHead from 'vue-head'
 
 import '@/theme/main.scss'
 import App from '@/views/app/app'
@@ -32,10 +33,17 @@ Vue.use(vMediaQuery, {
   }
 })
 
+Vue.use(VueHead)
+
 new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>',
+  head: {
+    title: {
+      inner: 'Tesselo'
+    }
+  }
 })
