@@ -12,25 +12,12 @@ import App from '@/views/app/app'
 import router from '@/services/router'
 import store from '@/services/store'
 
-/* ------------------------------------------------------
- * The official router for Vue.js
- * - http://router.vuejs.org/
- * --------------------------------------------------- */
 Vue.use(Router)
 Vue.router = router
 
-/* ------------------------------------------------------
- * Load Vuex and sync the router with the vuex store
- * - https://github.com/vuejs/vuex-router-sync
- * --------------------------------------------------- */
 Vue.use(Vuex)
 sync(store, router)
 
-/* ------------------------------------------------------
- * Plugin adds methods for work with media query in vue
- * - https://github.com/AStaroverov/v-media-query
- * - The following media breakpoints matches bootstrap defaults
- * --------------------------------------------------- */
 Vue.use(vMediaQuery, {
   variables: {
     xs: '480px',
@@ -44,7 +31,7 @@ Vue.use(vMediaQuery, {
     lgMax: '1199px'
   }
 })
-/* eslint-disable no-new */
+
 new Vue({
   el: '#app',
   router,
