@@ -10,9 +10,8 @@
 </template>
 <script>
 import 'leaflet/dist/leaflet.css'
-import v2l, { Map, TileLayer, Marker } from 'vue2-leaflet'
+import { Map, TileLayer, Marker } from 'vue2-leaflet'
 
-console.log(v2l);
 
 export default {
   name: 'TslMap',
