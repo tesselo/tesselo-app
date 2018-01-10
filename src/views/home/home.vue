@@ -63,6 +63,11 @@ export default {
         });
     }
   },
+  head: {
+    title: {
+      inner: 'Homepage'
+    }
+  }
 }
 </script>
 
