@@ -22,7 +22,6 @@ export default {
     TileLayer
   },
   mounted: function() {
-    console.log(this.$refs);
     var searchLayer = window.L.layerGroup().addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.addControl( new window.L.Control.Search({layer: searchLayer, position:'topright'}) );
 
