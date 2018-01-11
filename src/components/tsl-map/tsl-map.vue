@@ -9,7 +9,6 @@
   </div>  
 </template>
 <script>
-import L from 'leaflet'
 import 'leaflet-search'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-search/dist/leaflet-search.min.css'
@@ -23,7 +22,6 @@ export default {
     TileLayer
   },
   mounted: function() {
-    console.log(L, window.L)
     var searchLayer = window.L.layerGroup().addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.addControl( new window.L.Control.Search({layer: searchLayer, position:'topright'}) );
 
