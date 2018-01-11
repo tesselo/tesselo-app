@@ -37,7 +37,6 @@ export default {
     position: fixed;
     top: 0;
     z-index: 1;
-    background-color: rgba(red, 0.2);
   }
 
   .leaflet-container .leaflet-control-search {
