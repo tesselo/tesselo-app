@@ -4,11 +4,12 @@
       ref="map"
       :zoom="13"
       :center="[47.413220, -1.219482]">
-      <tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+      <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
     </map>
   </div>  
 </template>
 <script>
+import L from 'leaflet'
 import 'leaflet-search'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-search/dist/leaflet-search.min.css'
@@ -22,6 +23,7 @@ export default {
     TileLayer
   },
   mounted: function() {
+    console.log(L, window.L)
     var searchLayer = window.L.layerGroup().addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.addControl( new window.L.Control.Search({layer: searchLayer, position:'topright'}) );
 
