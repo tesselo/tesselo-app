@@ -29,7 +29,7 @@ export default {
     var searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
 
-this.$refs.map.mapObject.zoomControl.remove()
+    this.$refs.map.mapObject.zoomControl.remove()
     L.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject)
   }
 }
