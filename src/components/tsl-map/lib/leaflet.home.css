@@ -1,0 +1,4 @@
+/* stylelint-disable */
+.leaflet-control-home {
+  background-image: url(/static/lib/leaflet-home/icon-home.png);
+}
