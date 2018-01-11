@@ -9,9 +9,7 @@
   </div>  
 </template>
 <script>
-import L from 'leaflet'
-
-
+import Leaflet from 'leaflet'
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
@@ -24,13 +22,13 @@ export default {
     TileLayer
   },
   mounted: function() {
-    L.Control.geocoder().addTo(this.$refs.map.mapObject)
+    Leaflet.Control.geocoder().addTo(this.$refs.map.mapObject)
 
-    var searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
+    var searchLayer = Leaflet.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
 
     this.$refs.map.mapObject.zoomControl.remove()
-    L.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject)
+    Leaflet.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject)
   }
 }
 </script>
