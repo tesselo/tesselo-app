@@ -21,6 +21,7 @@
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0-beta.2",
     "detect-it": "^3.0.4",
+    "leaflet-search": "^2.3.7",
     "v-media-query": "^1.0.3",
     "vee-validate": "^2.0.0",
     "vue": "^2.5.2",
