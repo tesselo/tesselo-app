@@ -10,9 +10,10 @@
 </template>
 <script>
 import L from 'leaflet'
-import 'leaflet-search'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-search/dist/leaflet-search.min.css'
+
+
+import 'leaflet-control-geocoder'
+import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
 import { Map, TileLayer } from 'vue2-leaflet'
 
@@ -23,28 +24,24 @@ export default {
     TileLayer
   },
   mounted: function() {
-    var searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject);
-    this.$refs.map.mapObject.addControl( new window.L.Control.Search({layer: searchLayer, position:'topright'}) );
+    L.Control.geocoder().addTo(this.$refs.map.mapObject)
 
-    this.$refs.map.mapObject.zoomControl.remove()
-    L.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject);
+    var searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
+    this.$refs.map.mapObject.addControl(searchLayer)
+
+this.$refs.map.mapObject.zoomControl.remove()
+    L.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject)
   }
 }
 </script>
 <style lang="scss">
+  @import 'lib/leaflet.css';
+
   .tsl-map {
     width: 100vw;
     height: 100vh;
     position: fixed;
     top: 0;
     z-index: 1;
-  }
-
-  .leaflet-container .leaflet-control-search {
-    margin-left: 1px;
-  }
-
-  .tsl-map .search-button {
-    width: 30px;
   }
 </style>
