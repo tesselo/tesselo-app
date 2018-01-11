@@ -1,9 +1,13 @@
 // https://github.com/michael-ciniawsky/postcss-load-config
+var path = require('path');
 
 module.exports = {
   "plugins": {
-    // to edit target browsers: use "browserslist" field in package.json
     "postcss-import": {},
+    "postcss-url": {
+      url: 'inline'
+    },
+    // to edit target browsers: use "browserslist" field in package.json
     "autoprefixer": {}
   }
 }
