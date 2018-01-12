@@ -1,12 +1,20 @@
 <template>
   <a
-    class="tsl-button"
+    v-if="type === 'link'"
+    :class="['tsl-button', {'is-touch-device': isTouch}, theme]"
     :href="link"
     :target="target"
-    :class="[{'is-touch-device': isTouch}]"
     @click="$emit('click', $event.target)">
     <div>{{ title }}</div>
   </a>
+  <button
+    v-else-if="type === 'submit'"
+    :class="['tsl-button', {'is-touch-device': isTouch}, theme]"
+    :href="link"
+    :target="target"
+    @click="$emit('click', $event.target)">
+    <div>{{ title }}</div>
+  </button>
 </template>
 
 <script type="text/javascript">
@@ -28,7 +36,12 @@ export default {
     type: {
       type: String,
       required: false,
-      default: ''
+      default: 'link'
+    },
+    theme: {
+      type: String,
+      required: false,
+      default: 'booger'
     },
     target: {
       type: String,
@@ -48,8 +61,10 @@ export default {
   position: relative;
   display: inline-block;
   width: auto;
-  padding: 10px 20px;
-  font-weight: 500;
+  min-width: 130px;
+  padding: 9px 20px;
+  font-weight: 300;
+  font-size: 12px;
   text-align: center;
   text-decoration: none;
   letter-spacing: -0.5px;
@@ -57,11 +72,24 @@ export default {
   cursor: pointer;
   border-radius: 3px;
   transition: background-color 150ms ease-in-out;
-  color: white;
-  background-color: $tsl-orange;
+
+  &.booger {
+    color: white;
+    background-color: $booger;
 
   &:not(.is-touch-device):hover {
-    background-color: lighten($tsl-orange, 5%);
+      background-color: lighten($booger, 5%);
+    }
+  }
+
+  &.slight-transparent {
+    color: $twilight-blue;
+    background-color: rgba(white, 0.8);
+    font-weight: 400;
+
+    &:not(.is-touch-device):hover {
+      background-color: white;
+    }
   }
 }
 
