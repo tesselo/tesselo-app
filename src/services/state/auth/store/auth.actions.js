@@ -1,7 +1,7 @@
 // import action and mutation types from file
 // - https://vuex.vuejs.org/en/mutations.html#using-constants-for-mutation-types
-import { actionTypes, mutationTypes } from 'services/constants'
-import APIAdapter from 'data/api'
+import { actionTypes, mutationTypes } from '@/services/constants'
+import APIAdapter from '@/data/api'
 
 export default {
   /**
@@ -9,9 +9,11 @@ export default {
    *
    * @param {any} context
    */
-  [actionTypes.AUTH_LOGIN] (context) {
-    console.log('auth store auth_login action')
-    context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, true)
+  [actionTypes.AUTH_LOGIN] (context, user) {
+    return APIAdapter.services.auth.login(user)
+      .then(() => {
+        context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, true)
+      })
   },
 
   /**

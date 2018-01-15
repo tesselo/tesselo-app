@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import app from '@/services/state/app/store'
-import employees from '@/services/state/employees/store'
+import auth from '@/services/state/auth/store'
 
 // Track all state mutation errors
 // - https://vuex.vuejs.org/en/strict.html
@@ -13,7 +13,7 @@ Vue.use(Vuex)
 export const storeOptions = {
   modules: {
     app,
-    employees
+    auth
   },
   strict: debug
 }
