@@ -2,11 +2,13 @@
   <div class="login">
     <div class="content">
       <login-header />
-      <div class="row d-flex flex-md-row justify-content-center">
-        <div class="col-4">
-          <h1>Login</h1>
-          <h4>Login to Tesselo, enter your details below.</h4>
-          <login-form />
+      <div class="container">
+        <div class="row d-flex flex-md-row justify-content-center">
+          <div class="col-4">
+            <h1>Login</h1>
+            <h4>Login to Tesselo, enter your details below.</h4>
+            <login-form />
+          </div>
         </div>
       </div>
     </div>
