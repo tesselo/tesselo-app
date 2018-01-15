@@ -1,6 +1,6 @@
 import endpoints from '@/data/api/api.endpoints'
 import client from '@/data/api/api.client'
-import employees from '@/data/api/services/api.employees.js'
+import auth from '@/data/api/services/api.auth.js'
 
 /**
  * Adapter between server API and client application
@@ -23,7 +23,7 @@ class APIAdapter {
   // Services for each of the API requests
   /* eslint-disable */
   services = {
-    employees
+    auth
   }
 }
 

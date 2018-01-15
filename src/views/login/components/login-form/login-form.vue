@@ -1,15 +1,15 @@
 <template>
   <form class="tsl-form">
     <tsl-input
-      name="email"
-      type="email"
-      v-model="email"
-      v-validate="'required|email'"
+      name="username"
+      type="text"
+      v-model="username"
+      v-validate="'required'"
       label="E-mail Address"
       placeholder="Your e-mail"
     >
       <span slot="error">
-        {{ errors.first('email') }}
+        {{ errors.first('username') }}
       </span>
     </tsl-input>
 
@@ -31,7 +31,7 @@
         <tsl-button
           type="submit"
           title="Login"
-          :disabled="fields.email.invalid || fields.password.invalid"
+          :disabled="fields.username.invalid || fields.password.invalid"
           @click="submitForm"
         />
       </div>
@@ -39,6 +39,9 @@
   </form>
 </template>
 <script>
+import { mapActions } from 'vuex'
+import { actionTypes } from '@/services/constants'
+
 import TslInput from '@/components/tsl-input/tsl-input'
 import TslButton from '@/components/tsl-button/tsl-button'
 
@@ -50,13 +53,19 @@ export default {
   },
   data: function() {
     return {
-      email: '',
+      username: '',
       password: ''
     }
   },
   methods: {
+    ...mapActions('auth', {
+      login: actionTypes.AUTH_LOGIN
+    }),
     submitForm: function() {
-      console.log('submit form', this.email, this.password) // todo: call login action
+      this.login({
+        username: this.username,
+        password: this.password
+      })
     }
   }
 }
