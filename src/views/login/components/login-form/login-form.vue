@@ -5,21 +5,27 @@
       type="email"
       v-model="email"
       v-validate="'required|email'"
+      label="E-mail Address"
+      placeholder="Your e-mail"
     >
       <span slot="error">
         {{ errors.first('email') }}
       </span>
     </tsl-input>
+
     <tsl-input
       name="password"
       type="password"
       v-model="password"
       v-validate="'required|min:6'"
+      label="Password"
+      placeholder="Enter your password"
     >
       <span slot="error">
         {{ errors.first('password') }}
       </span>
     </tsl-input>
+
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end button-wrapper">
         <tsl-button
