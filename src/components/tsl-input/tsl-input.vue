@@ -1,17 +1,17 @@
 <template>
   <div class="tsl-form__control">
     <label
-      for="email"
+      :for="name"
       class="tsl-form__label">
-      E-mail Address
+      {{ label }}
     </label>
     <input
       :name="name"
-      v-validate="'required|email'"
       :type="type"
-      placeholder="Your e-mail"
-      :class="{'tsl-form__input': true, 'tsl-form__input--error': errors.has('teixeira') }"
+      :placeholder="placeholder"
+      :class="{'tsl-form__input': true}"
       @input="$emit('input', $event.target.value)"
+      @blur="$emit('blur', $event.target.value)"
       @focus="$emit('focus', $event.target)">
     <div class="tsl-form__control-error">
       <slot name="error"/>
@@ -23,6 +23,14 @@ export default {
   name: 'TslInput',
   props: {
     name: {
+      type: String,
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    placeholder: {
       type: String,
       default: ''
     },

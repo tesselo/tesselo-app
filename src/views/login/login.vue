@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="content">
-      <login-header />
+      <login-header v-if="showHeader"/>
       <div class="container">
         <div class="row d-flex flex-md-row justify-content-center">
           <div class="col-4">
@@ -24,6 +24,11 @@ export default {
     LoginHeader,
     LoginForm
   },
+  data: function() {
+    return {
+      showHeader: false
+    }
+  }
 }
 </script>
 
