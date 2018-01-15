@@ -1,18 +1,18 @@
 <template>
   <a
     v-if="type === 'link'"
-    :class="['tsl-button', {'is-touch-device': isTouch}, theme]"
+    :class="['tsl-button', {'is-touch-device': isTouch, 'disabled': disabled}, theme]"
     :href="link"
     :target="target"
-    @click="$emit('click', $event.target)">
+    @click="click($event)">
     <div>{{ title }}</div>
   </a>
   <button
     v-else-if="type === 'submit'"
-    :class="['tsl-button', {'is-touch-device': isTouch}, theme]"
+    :class="['tsl-button', {'is-touch-device': isTouch, 'disabled': disabled}, theme]"
     :href="link"
     :target="target"
-    @click="$emit('click', $event.target)">
+    @click="click($event)">
     <div>{{ title }}</div>
   </button>
 </template>
@@ -47,11 +47,25 @@ export default {
       type: String,
       required: false,
       default: '_self'
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   computed: {
     isTouch: () => detectIt.hasTouch
   },
+  methods: {
+    click: function(event) {
+      event.preventDefault()
+
+      if (!this.disabled) {
+        this.$emit('click', event.target)
+      }
+    }
+  }
 }
 </script>
 
@@ -77,7 +91,11 @@ export default {
     color: white;
     background-color: $booger;
 
-  &:not(.is-touch-device):hover {
+    &.disabled {
+      background-color: lighten($booger, 25%);
+    }
+
+    &:not(.is-touch-device):not(.disabled):hover {
       background-color: lighten($booger, 5%);
     }
   }
@@ -87,7 +105,7 @@ export default {
     background-color: rgba(white, 0.8);
     font-weight: 400;
 
-    &:not(.is-touch-device):hover {
+    &:not(.is-touch-device):not(.disabled):hover {
       background-color: white;
     }
   }
