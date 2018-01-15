@@ -5,8 +5,8 @@
       type="text"
       v-model="username"
       v-validate="'required'"
-      label="E-mail Address"
-      placeholder="Your e-mail"
+      label="Username"
+      placeholder="Your username"
     >
       <span slot="error">
         {{ errors.first('username') }}
@@ -25,19 +25,28 @@
         {{ errors.first('password') }}
       </span>
     </tsl-input>
-
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end button-wrapper">
         <tsl-button
-          v-if="!loading"
           type="submit"
           title="Login"
           :disabled="fields.username.invalid || fields.password.invalid"
+          :loading="loading"
           @click="submitForm"
         />
-        <p v-if="loading">LOADING</p>
       </div>
     </div>
+    <div class="row">
+      <div class="col-12 d-flex flex-row justify-content-end">
+        <p
+          class="tsl-form__control-error text-right"
+          :key="error"
+          v-for="error in formErrors.nonFieldErrors">
+          {{ error }}
+        </p>
+      </div>
+    </div>
+    
   </form>
 </template>
 <script>
@@ -55,9 +64,12 @@ export default {
   },
   data: function() {
     return {
-      username: '',
-      password: '',
-      loading: false
+      username: 'pixelmatters',
+      password: 'make sentinel pixels matter',
+      loading: false,
+      formErrors: {
+        nonFieldErrors: null
+      }
     }
   },
   methods: {
@@ -66,6 +78,11 @@ export default {
     }),
     submitForm: function() {
       this.loading = true
+
+      this.formErrors = { // todo create cleanFormErrors mixin for form components
+        nonFieldErrors: null
+      }
+
       this.login({
         username: this.username,
         password: this.password
@@ -74,7 +91,8 @@ export default {
         this.loading = false
       })
       .catch((errors) => {
-        console.log('reason', errors)
+        this.loading = false
+        this.formErrors = errors
       })
     }
   }
