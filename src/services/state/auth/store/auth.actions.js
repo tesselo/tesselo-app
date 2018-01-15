@@ -3,6 +3,10 @@
 import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/data/api'
 
+const formatError = (errors) => ({
+  nonFieldErrors: errors['non_field_errors']
+})
+
 export default {
   /**
    * Login
@@ -10,28 +14,13 @@ export default {
    * @param {any} context
    */
   [actionTypes.AUTH_LOGIN] (context, user) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // resolve({
-        //   username: user.username,
-        //   token: 'REPLACE TOKEN ON REQUEST IMPLEMENTATION',
-        //   expires: 'REPLACE EXPIRES ON REQUEST IMPLEMENTATION'
-        // })
-        reject({
-          "non_field_errors": [
-              "Unable to log in with provided credentials."
-          ]
+    return APIAdapter.services.auth.login(user)
+      .then((response) => {
+        context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, response.data)
       })
-      }, 2000)
-    })
-    .then((response) => {
-      context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, response)
-    })
-
-    // return APIAdapter.services.auth.login(user)
-    //   .then(() => {
-    //     context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, true)
-    //   })
+      .catch((response) => {
+        throw formatError(response.data)
+      })
   },
 
   /**
