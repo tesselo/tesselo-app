@@ -8,6 +8,7 @@ export const DETECT_DEVICE_TOUCH = 'detectTouchDevice'
 export const APP_SET_LOADING = 'setLoading'
 
 /* -------------------------------------
- * Employees
+ * Auth
  * ---------------------------------- */
-export const EMPLOYEES_GET_EMPLOYEES = 'getEmployees'
+export const AUTH_LOGIN = 'login'
+export const AUTH_LOGOUT = 'logout'
