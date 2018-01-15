@@ -7,6 +7,7 @@ import Router from 'vue-router'
 import vMediaQuery from 'v-media-query'
 import { sync } from 'vuex-router-sync'
 import VueHead from 'vue-head'
+import VeeValidate from 'vee-validate'
 
 import '@/theme/main.scss'
 import App from '@/views/app/app'
@@ -34,6 +35,8 @@ Vue.use(vMediaQuery, {
 })
 
 Vue.use(VueHead)
+
+Vue.use(VeeValidate)
 
 new Vue({
   el: '#app',
