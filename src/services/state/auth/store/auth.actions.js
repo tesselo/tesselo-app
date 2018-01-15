@@ -16,10 +16,9 @@ export default {
   [actionTypes.AUTH_LOGIN] (context, user) {
     return APIAdapter.services.auth.login(user)
       .then((response) => {
-        console.log(response)
         context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, {
           username: user.username,
-          ...response.data
+          ...response
         })
       })
       .catch((response) => {
