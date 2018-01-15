@@ -8,6 +8,7 @@
     <input
       :name="name"
       :type="type"
+      :value="value"
       :placeholder="placeholder"
       :class="{'tsl-form__input': true}"
       @input="$emit('input', $event.target.value)"
@@ -23,6 +24,10 @@ export default {
   name: 'TslInput',
   props: {
     name: {
+      type: String,
+      default: ''
+    },
+    value: {
       type: String,
       default: ''
     },

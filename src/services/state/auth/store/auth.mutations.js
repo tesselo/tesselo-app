@@ -10,11 +10,17 @@ export default {
    * @param {any} { username, token, expires } 
    */
   [mutationTypes.AUTH_SET_AUTHENTICATION] (state, { username, token, expires }) {
+    console.log('auth set authentication', username, token, expires)
     state.username = username
     state.token = token
     state.expires = expires
     state.authenticated = true
   },
+  /**
+   * Removes the authentication after logout
+   * 
+   * @param {any} state 
+   */
   [mutationTypes.AUTH_REMOVE_AUTHENTICATION] (state) {
     state.username = null
     state.token = null
