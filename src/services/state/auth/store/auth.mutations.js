@@ -3,8 +3,23 @@
 import { mutationTypes } from '@/services/constants'
 
 export default {
-  [mutationTypes.AUTH_SET_AUTHENTICATION] (state, options) {
-    console.log('auth store auth_set_authentication mutation', state, options)
+  /**
+   * Sets the authentication state after login
+   * 
+   * @param {any} state 
+   * @param {any} { username, token, expires } 
+   */
+  [mutationTypes.AUTH_SET_AUTHENTICATION] (state, { username, token, expires }) {
+    state.username = username
+    state.token = token
+    state.expires = expires
+    state.authenticated = true
+  },
+  [mutationTypes.AUTH_REMOVE_AUTHENTICATION] (state) {
+    state.username = null
+    state.token = null
+    state.expires = null
+    state.authenticated = false
   }
 }
 

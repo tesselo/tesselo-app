@@ -29,11 +29,13 @@
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end button-wrapper">
         <tsl-button
+          v-if="!loading"
           type="submit"
           title="Login"
           :disabled="fields.username.invalid || fields.password.invalid"
           @click="submitForm"
         />
+        <p v-if="loading">LOADING</p>
       </div>
     </div>
   </form>
@@ -54,7 +56,8 @@ export default {
   data: function() {
     return {
       username: '',
-      password: ''
+      password: '',
+      loading: false
     }
   },
   methods: {
@@ -62,9 +65,16 @@ export default {
       login: actionTypes.AUTH_LOGIN
     }),
     submitForm: function() {
+      this.loading = true
       this.login({
         username: this.username,
         password: this.password
+      })
+      .then(() => {
+        this.loading = false
+      })
+      .catch((errors) => {
+        console.log('reason', errors)
       })
     }
   }

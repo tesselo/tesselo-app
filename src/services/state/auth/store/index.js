@@ -7,13 +7,11 @@ export const authMutations = mutations
 export default {
   namespaced: true,
   state: {
-    fetchUserInfo: false,
+    username: null,
+    token: null,
+    expires: null,
     authenticated: false,
-    user: {
-      id: '',
-      email: null,
-      token: null,
-    }
+    fetchUserInfo: false,
   },
   mutations,
   actions,
