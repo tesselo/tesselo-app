@@ -3,8 +3,6 @@ import client from '@/data/api/api.client'
 
 export default {
   login (user, axiosInstance = client) {
-    console.log('api.auth.js login', user)
-
     return axiosInstance[endpoints.auth.login.method](endpoints.auth.login.url, user)
       .then((response) => {
         return Promise.resolve(response.data)
