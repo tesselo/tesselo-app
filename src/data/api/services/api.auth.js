@@ -10,5 +10,11 @@ export default {
         /* istanbul ignore next */
         return Promise.reject(error)
       })
+  },
+  logout (axiosInstance = client) {
+    return axiosInstance[endpoints.auth.logout.method](endpoints.auth.logout.url)
+      .then((response) => {
+        return Promise.resolve(response.data)
+      })
   }
 }

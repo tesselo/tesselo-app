@@ -4,6 +4,7 @@
 
 import axios from 'axios'
 import { baseUrl } from '@/services/util'
+import store from '@/services/store'
 
 // Create axios instance
 const axiosInstance = axios.create({
@@ -14,6 +15,17 @@ const axiosInstance = axios.create({
   }
 })
 
+axiosInstance.interceptors.request.use(function (config) {
+  try {
+    if (store.getters['auth/isAuthenticated']) {
+      config.headers.Authorization = 'Token ' + store.getters['auth/token']
+    }
+  } catch(e) {
+    console.log(e)
+  }
+
+  return config
+})
 /**
  * RESPONSE INTERCEPTORS
  */

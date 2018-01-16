@@ -33,6 +33,10 @@ export default {
    * @param {any} context
    */
   [actionTypes.AUTH_LOGOUT] (context) {
-    context.commit(mutationTypes.AUTH_REMOVE_AUTHENTICATION, true)
+    return APIAdapter.services.auth.logout()
+      .then(() => {
+        context.commit(mutationTypes.AUTH_REMOVE_AUTHENTICATION, true)
+        router.push({ name: 'Login' })
+      })
   },
 }
