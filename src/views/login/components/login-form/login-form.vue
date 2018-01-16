@@ -66,8 +66,8 @@ export default {
   },
   data: function() {
     return {
-      username: 'pixelmatters',
-      password: 'make sentinel pixels matter',
+      username: '',
+      password: '',
       loading: false,
       formErrors: {
         nonFieldErrors: null
