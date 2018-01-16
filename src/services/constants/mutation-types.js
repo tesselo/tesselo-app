@@ -8,6 +8,7 @@ export const SET_DEVICE_TOUCH = 'setDeviceTouch'
 export const SET_LOADING_VISIBILITY = 'setLoadingVisibility'
 
 /* -------------------------------------
- * Employees
+ * Auth
  * ---------------------------------- */
-export const EMPLOYEES_SET_EMPLOYEES = 'setEmployees'
+export const AUTH_SET_AUTHENTICATION = 'setAuthetication'
+export const AUTH_REMOVE_AUTHENTICATION = 'removeAuthentication'

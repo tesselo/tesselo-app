@@ -5,20 +5,25 @@
     :href="link"
     :target="target"
     @click="click($event)">
-    <div>{{ title }}</div>
+    <span v-if="!loading">{{ title }}</span>
+    <span
+      v-else
+      class="spinner" />
   </a>
   <button
-    v-else-if="type === 'submit'"
+    v-else-if="type === 'button'"
     :class="['tsl-button', {'is-touch-device': isTouch, 'disabled': disabled}, theme]"
     :href="link"
     :target="target"
     @click="click($event)">
-    <div>{{ title }}</div>
+    <span v-if="!loading">{{ title }}</span>
+    <span
+      v-else
+      class="spinner" />
   </button>
 </template>
 
 <script type="text/javascript">
-
 import detectIt from 'detect-it'
 
 export default {
@@ -27,7 +32,7 @@ export default {
     link: {
       type: String,
       required: false,
-      default: '#',
+      default: '#'
     },
     title: {
       type: String,
@@ -36,7 +41,7 @@ export default {
     type: {
       type: String,
       required: false,
-      default: 'link'
+      default: 'button'
     },
     theme: {
       type: String,
@@ -52,6 +57,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   computed: {
@@ -61,7 +71,7 @@ export default {
     click: function(event) {
       event.preventDefault()
 
-      if (!this.disabled) {
+      if (!this.disabled && !this.loading) {
         this.$emit('click', event.target)
       }
     }
@@ -70,12 +80,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .tsl-button {
   position: relative;
   display: inline-block;
   width: auto;
   min-width: 130px;
+  height: 33px;
   padding: 9px 20px;
   font-weight: 300;
   font-size: 12px;
@@ -98,6 +108,10 @@ export default {
     &:not(.is-touch-device):not(.disabled):hover {
       background-color: lighten($booger, 5%);
     }
+
+    .spinner::before {
+      border-top-color: white;
+    }
   }
 
   &.slight-transparent {
@@ -111,4 +125,30 @@ export default {
   }
 }
 
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: block;
+  height: 12px;
+}
+
+.spinner::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  margin-left: -9px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: white;
+  animation: spinner 1s linear infinite;
+}
 </style>

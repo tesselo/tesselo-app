@@ -1,9 +1,15 @@
 export default {
   /* -------------------------------------
-   * EMPLOYEES
+   * AUTH
    * ---------------------------------- */
-  getEmployees: {
-    url: '/employees',
-    method: 'get'
+  auth: {
+    login: {
+      url: '/token-auth/',
+      method: 'post'
+    },
+    logout: {
+      url: '/token-logout/',
+      method: 'post'
+    }
   }
 }
