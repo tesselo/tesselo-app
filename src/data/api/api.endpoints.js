@@ -6,6 +6,10 @@ export default {
     login: {
       url: '/token-auth/',
       method: 'post'
+    },
+    logout: {
+      url: '/token-logout/',
+      method: 'post'
     }
   }
 }
