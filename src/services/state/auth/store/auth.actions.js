@@ -1,5 +1,5 @@
-// import action and mutation types from file
-// - https://vuex.vuejs.org/en/mutations.html#using-constants-for-mutation-types
+import router from '@/services/router'
+
 import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/data/api'
 
@@ -20,6 +20,7 @@ export default {
           username: user.username,
           ...response
         })
+        router.push({ name: 'Home' })
       })
       .catch((response) => {
         throw formatError(response.data)
