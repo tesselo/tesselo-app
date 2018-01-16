@@ -2,7 +2,7 @@
   <div class="tsl-map">
     <Map
       ref="map"
-      :zoom="15"
+      :zoom="14"
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
       <tile-layer url="https://tesselo.com/api/algebra/{z}/{x}/{y}.png?layers=r=26936,g=26934,b=26932&scale=10,3e3&alpha" />
