@@ -11,7 +11,7 @@ export default {
    */
   [mutationTypes.AUTH_SET_AUTHENTICATION] (state, { username, token, expires }) {
     state.username = username
-    state.token = token
+    state.token = token + 'x'
     state.expires = expires
     state.authenticated = true
   },

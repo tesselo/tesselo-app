@@ -1,12 +1,8 @@
-/**
- * @file API adapter using Axios library
- */
-
 import axios from 'axios'
 import { baseUrl } from '@/services/util'
 import store from '@/services/store'
+import { actionTypes } from '@/services/constants'
 
-// Create axios instance
 const axiosInstance = axios.create({
   baseURL: baseUrl(),
   headers: {
@@ -22,12 +18,14 @@ axiosInstance.interceptors.request.use(function (config) {
 
   return config
 })
-/**
- * RESPONSE INTERCEPTORS
- */
+
 axiosInstance.interceptors.response.use(undefined,
   (error) => {
-    console.log('API ERROR', error)
+    if (error.response.status === 401) {
+      store.dispatch(`auth/${actionTypes.AUTH_LOGOUT}`, {
+        useApi: false
+      })
+    }
     return Promise.reject(error.response)
   }
 )
