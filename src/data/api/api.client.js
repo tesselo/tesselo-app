@@ -16,12 +16,8 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use(function (config) {
-  try {
-    if (store.getters['auth/isAuthenticated']) {
-      config.headers.Authorization = 'Token ' + store.getters['auth/token']
-    }
-  } catch(e) {
-    console.log(e)
+  if (store.getters['auth/isAuthenticated']) {
+    config.headers.Authorization = 'Token ' + store.getters['auth/token']
   }
 
   return config
@@ -30,7 +26,8 @@ axiosInstance.interceptors.request.use(function (config) {
  * RESPONSE INTERCEPTORS
  */
 axiosInstance.interceptors.response.use(undefined,
-  error => {
+  (error) => {
+    console.log('API ERROR', error)
     return Promise.reject(error.response)
   }
 )
