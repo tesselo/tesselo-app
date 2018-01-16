@@ -24,7 +24,7 @@
 </template>
 
 <script type="text/javascript">
-import detectIt from 'detect-it';
+import detectIt from 'detect-it'
 
 export default {
   name: 'TslButton',
@@ -69,14 +69,14 @@ export default {
   },
   methods: {
     click: function(event) {
-      event.preventDefault();
+      event.preventDefault()
 
       if (!this.disabled && !this.loading) {
-        this.$emit("click", event.target);
+        this.$emit("click", event.target)
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
