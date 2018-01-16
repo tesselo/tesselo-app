@@ -11,7 +11,7 @@
       class="spinner" />
   </a>
   <button
-    v-else-if="type === 'submit'"
+    v-else-if="type === 'button'"
     :class="['tsl-button', {'is-touch-device': isTouch, 'disabled': disabled}, theme]"
     :href="link"
     :target="target"
@@ -41,7 +41,7 @@ export default {
     type: {
       type: String,
       required: false,
-      default: 'link'
+      default: 'button'
     },
     theme: {
       type: String,

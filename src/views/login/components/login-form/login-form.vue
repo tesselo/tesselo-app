@@ -30,7 +30,7 @@
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end button-wrapper">
         <tsl-button
-          type="submit"
+          type="button"
           title="Login"
           :disabled="fields.username.invalid || fields.password.invalid"
           :loading="loading"
