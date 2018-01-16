@@ -72,7 +72,7 @@ export default {
       event.preventDefault()
 
       if (!this.disabled && !this.loading) {
-        this.$emit("click", event.target)
+        this.$emit('click', event.target)
       }
     }
   }
