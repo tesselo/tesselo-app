@@ -7,11 +7,14 @@ export default {
    * Sets the authentication state after login
    * 
    * @param {any} state 
-   * @param {any} { username, token, expires } 
+   * @param {Object} user
+   * @param {String} user.username
+   * @param {String} user.token
+   * @param {String} user.expires
    */
   [mutationTypes.AUTH_SET_AUTHENTICATION] (state, { username, token, expires }) {
     state.username = username
-    state.token = token + 'x'
+    state.token = token
     state.expires = expires
     state.authenticated = true
   },
