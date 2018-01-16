@@ -1,5 +1,3 @@
 export default {
-  isAuthenticated: state => {
-    return Boolean(state.authenticated)
-  }
+  isAuthenticated: state => state.authenticated
 }
