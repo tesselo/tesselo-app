@@ -48,6 +48,7 @@ export default {
     border-radius: 2px;
     background-color: white;
     cursor: pointer;
+    user-select: none;
 
 
     &:hover{
