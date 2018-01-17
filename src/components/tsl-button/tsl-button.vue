@@ -132,6 +132,22 @@ export default {
   to {
     transform: rotate(360deg);
   }
+
+  &.slight-transparent {
+    color: $twilight-blue;
+    background-color: rgba(white, 0.8);
+    font-weight: 400;
+
+    &:not(.is-touch-device):not(.disabled):hover {
+      background-color: white;
+    }
+  }
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner {

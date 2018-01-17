@@ -50,13 +50,7 @@ export default {
   methods: {
     ...mapActions('auth', {
       logout: actionTypes.AUTH_LOGOUT
-    }),
-    openAreas() {
-      console.log('openAreas')
-    },
-    openLayers() {
-      console.log('openLayers')
-    }
+    })
   }
 }
 </script>
