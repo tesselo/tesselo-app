@@ -9,7 +9,20 @@
         ref="panelSelector"
         :items="menuItems" />
     </div>
-    <div class="panel" />
+    <div class="panels-wrapper">
+      <panel
+        title="Areas"
+        @close="closePanel('areas')">
+        <div slot="content">
+          <h1>CONTENT</h1>
+          <h1>CONTENT</h1>
+          <h1>CONTENT</h1>
+          <h1>CONTENT</h1>
+          <h1>CONTENT</h1>
+          <h1>CONTENT</h1>
+        </div>
+      </panel>
+    </div>
     <tsl-map />
   </div>
 </template>
@@ -21,13 +34,15 @@ import { actionTypes } from '@/services/constants'
 import TslMap from '@/components/tsl-map/tsl-map'
 import TslButton from '@/components/tsl-button/tsl-button'
 import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
+import Panel from '@/components/panel/panel'
 
 export default {
   name: 'Home',
   components: {
     TslMap,
     TslButton,
-    MultiOptionToggle
+    MultiOptionToggle,
+    Panel
   },
   data() {
     return {
@@ -50,7 +65,10 @@ export default {
   methods: {
     ...mapActions('auth', {
       logout: actionTypes.AUTH_LOGOUT
-    })
+    }),
+    closePanel(panel) {
+      console.log(panel)
+    }
   }
 }
 </script>
@@ -66,6 +84,12 @@ export default {
     position: absolute;
     top: 65px;
     left: 25px;
+    z-index: z('content');
+  }
+  .panels-wrapper {
+    position: absolute;
+    top: 69px;
+    left: 200px;
     z-index: z('content');
   }
 </style>
