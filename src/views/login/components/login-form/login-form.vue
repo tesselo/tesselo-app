@@ -19,7 +19,7 @@
       type="password"
       v-model="password"
       value="'password'"
-      v-validate="'required|min:6'"
+      v-validate="'required'"
       label="Password"
       placeholder="Enter your password"
     >
