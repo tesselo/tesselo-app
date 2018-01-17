@@ -85,10 +85,10 @@ export default {
   display: inline-block;
   width: auto;
   min-width: 130px;
-  height: 33px;
+  height: 37px;
   padding: 9px 20px;
-  font-weight: 300;
-  font-size: 12px;
+  font-weight: 400;
+  font-size: 14px;
   text-align: center;
   text-decoration: none;
   letter-spacing: -0.5px;

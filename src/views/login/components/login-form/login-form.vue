@@ -9,7 +9,9 @@
       label="Username"
       placeholder="Your username"
     >
-      <span slot="error">
+      <span
+        slot="error"
+        v-if="fields.username.touched">
         {{ errors.first('username') }}
       </span>
     </tsl-input>
@@ -23,7 +25,9 @@
       label="Password"
       placeholder="Enter your password"
     >
-      <span slot="error">
+      <span
+        slot="error"
+        v-if="fields.password.touched">
         {{ errors.first('password') }}
       </span>
     </tsl-input>

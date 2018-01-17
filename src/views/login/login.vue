@@ -7,7 +7,7 @@
           <div class="col-4">
             <h1>Login</h1>
             <h4>Login to Tesselo, enter your details below.</h4>
-            <login-form />
+            <login-form class="login-form" />
           </div>
         </div>
       </div>
@@ -66,7 +66,11 @@ export default {
   }
 
   h4 {
-    margin-top: 30px;
+    margin-top: 10px;
     color: white;
+  }
+
+  .login-form {
+    margin-top: 40px;
   }
 </style>
