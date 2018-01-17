@@ -39,9 +39,9 @@ export default {
 <style scoped lang="scss">
   .panel-selector {
     display: block;
-    height: 40px;
+    height: 37px;
     width: 155px;
-    margin-top: 2px;
+    margin-top: 4px;
 
     border-radius: 2px;
     background-color: white;
@@ -54,7 +54,10 @@ export default {
   }
 
   .panel-selector-icon {
-    
+    position: relative;
+    top: 2px;
+    margin-left: 10px;
+    margin-right: 5px;
   }
 
   .panel-selector-title {

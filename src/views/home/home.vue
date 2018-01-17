@@ -14,7 +14,7 @@
         @click="openLayers"
         icon="layers" />
     </div>
-    <div class="panel"></div>
+    <div class="panel" />
     <tsl-map />
   </div>
 </template>
@@ -44,10 +44,10 @@ export default {
       logout: actionTypes.AUTH_LOGOUT
     }),
     openAreas() {
-      console.log('olá')
+      console.log('openAreas')
     },
     openLayers() {
-      console.log('olé')
+      console.log('openLayers')
     }
   }
 }
@@ -62,7 +62,7 @@ export default {
 
   .menu {
     position: absolute;
-    top: 60px;
+    top: 65px;
     left: 25px;
     z-index: z('content');
   }

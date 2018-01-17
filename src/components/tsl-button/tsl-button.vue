@@ -83,15 +83,18 @@ export default {
 .tsl-button {
   position: relative;
   display: inline-block;
+
   width: auto;
   min-width: 130px;
   height: 37px;
   padding: 9px 20px;
-  font-weight: 400;
+
   font-size: 14px;
+  letter-spacing: -0.5px;
+  font-weight: 400;
   text-align: center;
   text-decoration: none;
-  letter-spacing: -0.5px;
+  
   vertical-align: middle;
   cursor: pointer;
   border-radius: 3px;
