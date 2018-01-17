@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 import app from '@/services/state/app/store'
-import employees from '@/services/state/employees/store'
+import auth from '@/services/state/auth/store'
 
-// Track all state mutation errors
-// - https://vuex.vuejs.org/en/strict.html
 const debug = process.env.NODE_ENV === 'development'
 
 Vue.use(Vuex)
@@ -13,9 +12,12 @@ Vue.use(Vuex)
 export const storeOptions = {
   modules: {
     app,
-    employees
+    auth
   },
-  strict: debug
+  strict: debug,
+  plugins: [createPersistedState({
+    paths: ['auth']
+  })]
 }
 
 export default new Vuex.Store(storeOptions)

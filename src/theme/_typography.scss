@@ -1,9 +1,23 @@
-@import './colors';
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
+$openSans: 'Open Sans', sans-serif;
 
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  font-family: Helvetica, Arial, sans-serif;
-  color: #3e3e3e;
+  font-family: $openSans;
+  color: $navy;
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 50px;
+  font-weight: 300;
+}
+
+h4 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 300;
+  letter-spacing: -0.7px;
 }
