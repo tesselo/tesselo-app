@@ -57,7 +57,7 @@ export default {
   .content {
     position: relative;
     z-index: z('content');
-    padding-top: 151px;
+    padding-top: 15vh;
   }
   
   h1,
