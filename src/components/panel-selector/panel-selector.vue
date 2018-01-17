@@ -1,68 +1,62 @@
 <template>
-  <a
-    class="panel-selector d-flex flex-row justify-content-start align-items-center"
-    @click="$emit('click')">
-    <img 
-      class="panel-selector-icon"
-      :src="`/static/icons/${icon}.svg`">
-    <span class="panel-selector-title">{{ title }}</span>
-  </a>
+  <div class="panel-selector">
+    <panel-selector-button
+      v-for="(item, index) in buttons"
+      :key="item.title"
+      :title="item.title"
+      :icon="item.icon"
+      :active="item.active"
+      @click="setActive(index)" />
+  </div>
 </template>
 
 <script>
+import PanelSelectorButton from './components/panel-selector-button/panel-selector-button'
+
 export default {
   name: 'PanelSelector',
+  components: {
+    PanelSelectorButton
+  },
   props: {
-    title: {
-      type: String,
+    items: {
+      type: Array,
       required: true
+    }
+  },
+  data() {
+    return {
+      buttons: [],
+      activeIndex: null
+    }
+  },
+  watch: {
+    items: {
+      immediate: true,
+      handler(newItems) {
+        this.buttons = newItems.map(item => ({...item, active: false}))
+      }
+    }
+  },
+  methods: {
+    setActive(activeIndex) {
+      this.activeIndex = activeIndex
+      this.buttons = this.buttons.map((item, itemIndex) => ({
+        ...item,
+        active: activeIndex == itemIndex,
+      }))
     },
-    icon: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    active: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    selected: {
-      type: Boolean,
-      required: false,
-      default: false
+    unsetActive() {
+      this.activeIndex = null
+      this.buttons = this.buttons.map((item) => ({
+        ...item,
+        active: false
+      }))
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-  .panel-selector {
-    display: block;
-    height: 37px;
-    width: 155px;
-    margin-top: 4px;
+<style>
 
-    border-radius: 2px;
-    background-color: white;
-    cursor: pointer;
-
-
-    &:hover{
-      background-color: darken(white, 5%);
-    }
-  }
-
-  .panel-selector-icon {
-    position: relative;
-    top: 2px;
-    margin-left: 10px;
-    margin-right: 5px;
-  }
-
-  .panel-selector-title {
-    font-size: 12px;
-    line-height: 17px;
-    color: $twilight-blue;
-  }
 </style>

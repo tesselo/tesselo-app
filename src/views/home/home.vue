@@ -5,14 +5,7 @@
       title="Logout"
       @click="logout" />
     <div class="menu">
-      <panel-selector
-        title="Areas"
-        @click="openAreas"
-        icon="crosshair" />
-      <panel-selector 
-        title="Layers"
-        @click="openLayers"
-        icon="layers" />
+      <panel-selector ref="panelSelector" :items="menuItems" />
     </div>
     <div class="panel" />
     <tsl-map />
@@ -33,6 +26,24 @@ export default {
     TslMap,
     TslButton,
     PanelSelector
+  },
+  data() {
+    return {
+      menuItems: [
+        {
+          title: 'Areas',
+          icon: 'crosshair'
+        }, {
+          title: 'Layers',
+          icon: 'layers'
+        }
+      ]
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.$refs.panelSelector.unsetActive()
+    }, 4000)
   },
   head: {
     title: {
