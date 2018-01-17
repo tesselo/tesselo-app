@@ -32,10 +32,11 @@
       </span>
     </tsl-input>
     <div class="row">
-      <div class="col-12 d-flex flex-row justify-content-end button-wrapper">
+      <div class="col-12 d-flex flex-row justify-content-end">
         <tsl-button
           type="button"
           title="Login"
+          class="login-button"
           :disabled="fields.username.invalid || fields.password.invalid"
           :loading="loading"
           @click="submitForm"
@@ -106,8 +107,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .button-wrapper {
+  .login-button {
     margin-top: 30px;
+    margin-bottom: 10px;
   }
 </style>
 
