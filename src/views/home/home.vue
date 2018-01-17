@@ -5,7 +5,9 @@
       title="Logout"
       @click="logout" />
     <div class="menu">
-      <panel-selector ref="panelSelector" :items="menuItems" />
+      <multi-option-toggle
+        ref="panelSelector"
+        :items="menuItems" />
     </div>
     <div class="panel" />
     <tsl-map />
@@ -18,14 +20,14 @@ import { actionTypes } from '@/services/constants'
 
 import TslMap from '@/components/tsl-map/tsl-map'
 import TslButton from '@/components/tsl-button/tsl-button'
-import PanelSelector from '@/components/panel-selector/panel-selector'
+import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
 
 export default {
   name: 'Home',
   components: {
     TslMap,
     TslButton,
-    PanelSelector
+    MultiOptionToggle
   },
   data() {
     return {
@@ -39,11 +41,6 @@ export default {
         }
       ]
     }
-  },
-  mounted() {
-    setTimeout(() => {
-      this.$refs.panelSelector.unsetActive()
-    }, 4000)
   },
   head: {
     title: {

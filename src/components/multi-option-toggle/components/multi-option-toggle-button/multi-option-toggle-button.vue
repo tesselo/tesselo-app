@@ -1,17 +1,17 @@
 <template>
   <a
-    :class="['panel-selector-button d-flex flex-row justify-content-start align-items-center', {'panel-selector-button--active': active}]"
+    :class="['multi-option-toggle-button d-flex flex-row justify-content-start align-items-center', {'multi-option-toggle-button--active': active}]"
     @click="$emit('click')">
     <img 
-      class="panel-selector-icon"
+      class="multi-option-toggle-icon"
       :src="`/static/icons/${icon}.svg`">
-    <span class="panel-selector-title">{{ title }}</span>
+    <span class="multi-option-toggle-title">{{ title }}</span>
   </a>
 </template>
 
 <script>
 export default {
-  name: 'PanelSelectorButton',
+  name: 'MultiOptionToggleButton',
   props: {
     title: {
       type: String,
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .panel-selector-button {
+  .multi-option-toggle-button {
     position: relative;
 
     display: block;
@@ -55,7 +55,7 @@ export default {
       background-color: darken(white, 5%);
     }
   }
-  .panel-selector-button--active {
+  .multi-option-toggle-button--active {
     &::after {
       @include pseudoElementSetup;
       top: 50%;
@@ -69,14 +69,14 @@ export default {
     }
   }
 
-  .panel-selector-icon {
+  .multi-option-toggle-icon {
     position: relative;
     top: 2px;
     margin-left: 10px;
     margin-right: 5px;
   }
 
-  .panel-selector-title {
+  .multi-option-toggle-title {
     font-size: 12px;
     line-height: 17px;
     color: $twilight-blue;

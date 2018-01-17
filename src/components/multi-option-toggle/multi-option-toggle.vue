@@ -1,6 +1,6 @@
 <template>
-  <div class="panel-selector">
-    <panel-selector-button
+  <div>
+    <multi-option-toggle-button
       v-for="(item, index) in buttons"
       :key="item.title"
       :title="item.title"
@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import PanelSelectorButton from './components/panel-selector-button/panel-selector-button'
+import MultiOptionToggleButton from './components/multi-option-toggle-button/multi-option-toggle-button'
 
 export default {
-  name: 'PanelSelector',
+  name: 'MultiOptionToggle',
   components: {
-    PanelSelectorButton
+    MultiOptionToggleButton
   },
   props: {
     items: {
@@ -56,7 +56,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
