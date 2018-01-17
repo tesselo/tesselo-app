@@ -38,8 +38,10 @@ export default {
 <style scoped lang="scss">
   .panel {
     background-color: white;
-    width: 600px;
-    height: 500px;
+    max-width: 600px;
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
     padding: 25px;
   }
 
