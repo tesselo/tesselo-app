@@ -4,7 +4,7 @@
       <login-header v-if="showHeader"/>
       <div class="container">
         <div class="row d-flex flex-md-row justify-content-center">
-          <div class="col-4">
+          <div class="col-auto">
             <h1>Login</h1>
             <h4>Login to Tesselo, enter your details below.</h4>
             <login-form />
