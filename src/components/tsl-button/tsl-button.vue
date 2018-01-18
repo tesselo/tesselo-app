@@ -83,15 +83,18 @@ export default {
 .tsl-button {
   position: relative;
   display: inline-block;
+
   width: auto;
   min-width: 130px;
-  height: 33px;
+  height: 37px;
   padding: 9px 20px;
-  font-weight: 300;
-  font-size: 12px;
+
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  font-weight: 400;
   text-align: center;
   text-decoration: none;
-  letter-spacing: -0.5px;
+  
   vertical-align: middle;
   cursor: pointer;
   border-radius: 3px;
@@ -112,6 +115,22 @@ export default {
     .spinner::before {
       border-top-color: white;
     }
+  }
+
+  &.slight-transparent {
+    color: $twilight-blue;
+    background-color: rgba(white, 0.8);
+    font-weight: 400;
+
+    &:not(.is-touch-device):not(.disabled):hover {
+      background-color: white;
+    }
+  }
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
   }
 
   &.slight-transparent {

@@ -4,10 +4,10 @@
       <login-header v-if="showHeader"/>
       <div class="container">
         <div class="row d-flex flex-md-row justify-content-center">
-          <div class="col-auto">
+          <div class="col-4">
             <h1>Login</h1>
             <h4>Login to Tesselo, enter your details below.</h4>
-            <login-form />
+            <login-form class="login-form" />
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default {
   .content {
     position: relative;
     z-index: z('content');
-    padding-top: 15vh;
+    padding-top: 151px;
   }
   
   h1,
@@ -66,7 +66,11 @@ export default {
   }
 
   h4 {
-    margin-top: 30px;
+    margin-top: 10px;
     color: white;
+  }
+
+  .login-form {
+    margin-top: 40px;
   }
 </style>

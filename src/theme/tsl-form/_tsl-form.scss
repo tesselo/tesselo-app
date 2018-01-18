@@ -4,13 +4,12 @@
 
 .tsl-form__control {
   width: 100%;
-  height: 52px;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 .tsl-form__label {
   color: white;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 300;
   text-transform: uppercase;
   letter-spacing: -0.7px;
@@ -18,18 +17,18 @@
 
 .tsl-form__input {
   width: 100%;
-  padding: 7px 14px 6px;
+  padding: 10px 14px;
   margin-top: 8px;
 
   border-radius: 2px;
   background-color: rgba(255, 255, 255, 0.7);
   border: 1px rgba(255, 255, 255, 0.7);
 
-  font-size: 12px;
+  font-size: 14px;
   outline: 0;
 
   @include placeholder {
-    font-size: 12px;
+    font-size: 14px;
     color: $slate-grey;
   }
 }
@@ -37,7 +36,8 @@
 .tsl-form__control-error {
   width: 100%;
   font-size: 12px;
-  padding: 12px 6px;
+  margin-top: 10px;
+  padding: 0 6px;
 
   color: red;
 }
