@@ -3,8 +3,9 @@
     :class="['multi-option-toggle-button d-flex flex-row justify-content-start align-items-center', {'multi-option-toggle-button--active': active}]"
     @click="$emit('click')">
     <img 
-      class="multi-option-toggle-icon"
-      :src="`/static/icons/${icon}.svg`">
+      v-if="icon"
+      :src="`/static/icons/${icon}.svg`"
+      class="multi-option-toggle-icon">
     <span class="multi-option-toggle-title">{{ title }}</span>
   </a>
 </template>
