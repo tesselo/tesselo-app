@@ -3,10 +3,6 @@ import router from '@/services/router'
 import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/data/api'
 
-const formatError = (errors) => ({
-  nonFieldErrors: errors['non_field_errors']
-})
-
 export default {
   /**
    * Login
@@ -24,9 +20,6 @@ export default {
           ...response
         })
         router.push({ name: 'Home' })
-      })
-      .catch((response) => {
-        throw formatError(response.data)
       })
   },
 

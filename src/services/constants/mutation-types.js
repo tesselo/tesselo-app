@@ -12,3 +12,8 @@ export const SET_LOADING_VISIBILITY = 'setLoadingVisibility'
  * ---------------------------------- */
 export const AUTH_SET_AUTHENTICATION = 'setAuthetication'
 export const AUTH_REMOVE_AUTHENTICATION = 'removeAuthentication'
+
+/* -------------------------------------
+ * Aggregation Layer
+ * ---------------------------------- */
+export const AGGREGATION_LAYER_SET_LAYERS = 'setLayers'
