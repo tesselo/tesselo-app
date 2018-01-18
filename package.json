@@ -21,6 +21,7 @@
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0-beta.2",
     "detect-it": "^3.0.4",
+    "element-ui": "^2.0.11",
     "leaflet-control-geocoder": "^1.5.8",
     "v-media-query": "^1.0.3",
     "vee-validate": "^2.0.0",
