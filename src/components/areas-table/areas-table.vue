@@ -4,6 +4,7 @@
       class="areas-table"
       v-if="!loading"
       :data="rows"
+      max-height="500"
       @current-change="selectArea"
       style="width: 100%">
       <el-table-column
