@@ -7,21 +7,20 @@
     <div class="menu">
       <multi-option-toggle
         ref="panelSelector"
-        :items="menuItems" />
+        :items="menuItems"
+        @change="changeVisiblePanel" />
     </div>
     <div class="panels-wrapper">
       <panel
+        v-if="activePanel === 'areas'"
         title="Areas"
         @close="closePanel('areas')">
-        <div slot="content">
-          <h1>CONTENT</h1>
-          <h1>CONTENT</h1>
-          <h1>CONTENT</h1>
-          <h1>CONTENT</h1>
-          <h1>CONTENT</h1>
-          <h1>CONTENT</h1>
-        </div>
+        <areas-table slot="content" />
       </panel>
+      <panel
+        v-if="activePanel === 'layers'"
+        title="Layers"
+        @close="closePanel('areas')" />
     </div>
     <tsl-map />
   </div>
@@ -35,6 +34,8 @@ import TslMap from '@/components/tsl-map/tsl-map'
 import TslButton from '@/components/tsl-button/tsl-button'
 import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
 import Panel from '@/components/panel/panel'
+import AreasTable from '@/components/areas-table/areas-table'
+import loginFormVue from '../login/components/login-form/login-form.vue';
 
 export default {
   name: 'Home',
@@ -42,19 +43,23 @@ export default {
     TslMap,
     TslButton,
     MultiOptionToggle,
-    Panel
+    Panel,
+    AreasTable
   },
   data() {
     return {
       menuItems: [
         {
           title: 'Areas',
-          icon: 'crosshair'
+          icon: 'crosshair',
+          key: 'areas'
         }, {
           title: 'Layers',
-          icon: 'layers'
+          icon: 'layers',
+          key: 'layers'
         }
-      ]
+      ],
+      activePanel: ''
     }
   },
   head: {
@@ -66,8 +71,12 @@ export default {
     ...mapActions('auth', {
       logout: actionTypes.AUTH_LOGOUT
     }),
-    closePanel(panel) {
-      console.log(panel)
+    closePanel() {
+      this.activePanel = ''
+      this.$refs.panelSelector.unsetActive()
+    },
+    changeVisiblePanel(activePanel) {
+      this.activePanel = activePanel
     }
   }
 }
