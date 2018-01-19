@@ -9,7 +9,7 @@ export default {
     total: 0,
     next: null,
     previous: null,
-    pageSize: 25,
+    pageSize: 10,
     rows: [],
     selectedLayer: null
   },
