@@ -86,6 +86,7 @@ export default {
     selectArea(area) {
       this.selectAggregationLayer(area)
       this.setMapBounds(area.bounds)
+      this.$emit('select', area)
     },
     selectPage(page) {
       this.getAggregationLayers({ page })

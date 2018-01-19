@@ -10,6 +10,7 @@
   </div>  
 </template>
 <script>
+import { mapState } from 'vuex'
 import Leaflet from 'leaflet'
 import attachHomeControl from './lib/leaflet.home'
 import 'leaflet-control-geocoder'
@@ -22,6 +23,21 @@ export default {
   components: {
     Map,
     TileLayer
+  },
+  computed: {
+    ...mapState('map', {
+      bounds: state => state.bounds
+    })
+  },
+  watch: {
+    bounds: {
+      handler (newBounds) {
+        this.$refs.map.mapObject.fitBounds([
+          [newBounds.xmin, newBounds.ymin],
+          [newBounds.xmax, newBounds.ymax]
+        ]);
+      }
+    }
   },
   mounted: function() {
     Leaflet.Control.geocoder().addTo(this.$refs.map.mapObject)

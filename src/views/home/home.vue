@@ -15,7 +15,9 @@
         v-if="activePanel === 'areas'"
         title="Areas"
         @close="closePanel('areas')">
-        <areas-table slot="content" />
+        <areas-table
+          @select="areasTableSelect"
+          slot="content" />
       </panel>
       <panel
         v-if="activePanel === 'layers'"
@@ -77,6 +79,11 @@ export default {
     },
     changeVisiblePanel(activePanel) {
       this.activePanel = activePanel
+    },
+    areasTableSelect(area) {
+      this.closePanel()
+      this.menuItems[0].title = area.name
+      console.log(this.menuItems[0].title)
     }
   }
 }

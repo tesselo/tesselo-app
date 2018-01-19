@@ -18,10 +18,10 @@ export const formatAggregationAreaResults = (rows) => {
     shapefile: row.shapefile,
     simplificationTolerance: row.simplification_tolerance,
     bounds: {
-      xmin: row.extent[0],
-      ymin: row.extent[1],
-      xmax: row.extent[2],
-      ymax: row.extent[3],
+      ymin: row.extent[0],
+      xmin: row.extent[1],
+      ymax: row.extent[2],
+      xmax: row.extent[3],
     }
   }))
 }
