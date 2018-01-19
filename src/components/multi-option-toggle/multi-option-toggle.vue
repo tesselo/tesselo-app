@@ -41,6 +41,7 @@ export default {
   methods: {
     setActive(activeIndex) {
       this.activeIndex = activeIndex
+      this.$emit('change', this.items[activeIndex].key)
       this.buttons = this.buttons.map((item, itemIndex) => ({
         ...item,
         active: activeIndex == itemIndex,
