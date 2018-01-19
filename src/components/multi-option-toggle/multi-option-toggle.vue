@@ -6,6 +6,7 @@
       :title="item.title"
       :icon="item.icon"
       :active="item.active"
+      :selected="item.selected"
       @click="setActive(index)" />
   </div>
 </template>

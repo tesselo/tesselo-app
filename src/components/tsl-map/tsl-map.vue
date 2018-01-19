@@ -63,10 +63,11 @@ export default {
   @import 'lib/leaflet.home.css';
 
   .tsl-map {
-    width: 100vw;
-    height: 100vh;
     position: fixed;
     top: 0;
     z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    user-select: none;
   }
 </style>

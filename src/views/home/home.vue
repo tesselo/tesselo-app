@@ -54,11 +54,13 @@ export default {
         {
           title: 'Areas',
           icon: 'crosshair',
-          key: 'areas'
+          key: 'areas',
+          selected: false
         }, {
           title: 'Layers',
           icon: 'layers',
-          key: 'layers'
+          key: 'layers',
+          selected: false
         }
       ],
       activePanel: ''
@@ -81,9 +83,18 @@ export default {
       this.activePanel = activePanel
     },
     areasTableSelect(area) {
+      console.log('areasTableSelect')
       this.closePanel()
-      this.menuItems[0].title = area.name
-      console.log(this.menuItems[0].title)
+      this.menuItems = this.menuItems.map((item) => {
+        if (item.key === 'areas') {
+          item.selected = true
+          item.title = area.name
+        }
+
+        return item
+      })
+      // this.menuItems[0].title = area.name
+      // console.log(this.menuItems[0].title)
     }
   }
 }
