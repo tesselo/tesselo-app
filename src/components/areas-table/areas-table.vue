@@ -2,7 +2,6 @@
   <div class="areas-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
       class="areas-table"
-      height="600"
       v-if="!loading"
       :data="rows"
       @current-change="selectArea"
@@ -65,7 +64,7 @@ export default {
       previous: state => state.aggregationLayer.previous,
     })
   },
-  mounted() {
+  beforeMount() {
     this.getAggregationLayers({page: 1})
   },
   methods: {
