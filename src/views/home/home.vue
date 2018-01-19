@@ -83,7 +83,6 @@ export default {
       this.activePanel = activePanel
     },
     areasTableSelect(area) {
-      console.log('areasTableSelect')
       this.closePanel()
       this.menuItems = this.menuItems.map((item) => {
         if (item.key === 'areas') {
@@ -93,8 +92,6 @@ export default {
 
         return item
       })
-      // this.menuItems[0].title = area.name
-      // console.log(this.menuItems[0].title)
     }
   }
 }
