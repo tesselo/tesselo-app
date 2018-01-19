@@ -13,5 +13,14 @@ export default {
       .then((response) => {
         context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYERS, response)
       })
+  },
+  /**
+   * Sets the selected layer
+   * 
+   * @param {any} context 
+   * @param {any} layer 
+   */
+  [actionTypes.AGGREGATION_LAYER_SELECT] (context, layer) {
+    context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, layer)
   }
 }

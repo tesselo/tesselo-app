@@ -12,6 +12,9 @@ export default {
     state.previous = previous
     state.next = next
     state.rows = results
+  },
+  [mutationTypes.AGGREGATION_LAYER_SELECT_LAYER] (state, layer) {
+    state.selectedLayer = layer
   }
 }
 

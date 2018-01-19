@@ -16,6 +16,7 @@ export const formatAggregationAreaResults = (rows) => {
     nrOfAreas: row.nr_of_areas,
     parseLog: row.parse_log,
     shapefile: row.shapefile,
-    simplificationTolerance: row.simplification_tolerance
+    simplificationTolerance: row.simplification_tolerance,
+    bounds: row.extent
   }))
 }
