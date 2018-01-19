@@ -110,6 +110,7 @@ export default {
     left: 25px;
     z-index: z('content');
   }
+
   .panels-wrapper {
     position: absolute;
     top: 69px;
