@@ -116,5 +116,7 @@ export default {
     top: 69px;
     left: 200px;
     z-index: z('content');
+    max-height: 80vh;
+    overflow: scroll;
   }
 </style>
