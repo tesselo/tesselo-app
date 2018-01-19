@@ -73,6 +73,9 @@ export default {
       getAggregationLayersAction: actionTypes.AGGREGATION_LAYER_GET,
       selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
     }),
+    ...mapActions('map', {
+      setMapBounds: actionTypes.MAP_SET_BOUNDS
+    }),
     getAggregationLayers(options) {
       this.loading = true
       this.getAggregationLayersAction(options)
@@ -82,6 +85,7 @@ export default {
     },
     selectArea(area) {
       this.selectAggregationLayer(area)
+      this.setMapBounds(area.bounds)
     },
     selectPage(page) {
       this.getAggregationLayers({ page })

@@ -17,6 +17,11 @@ export const formatAggregationAreaResults = (rows) => {
     parseLog: row.parse_log,
     shapefile: row.shapefile,
     simplificationTolerance: row.simplification_tolerance,
-    bounds: row.extent
+    bounds: {
+      xmin: row.extent[0],
+      ymin: row.extent[1],
+      xmax: row.extent[2],
+      ymax: row.extent[3],
+    }
   }))
 }

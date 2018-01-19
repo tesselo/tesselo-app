@@ -18,3 +18,8 @@ export const AUTH_LOGOUT = 'logout'
  * ---------------------------------- */
 export const AGGREGATION_LAYER_GET = 'getAggregationLayers'
 export const AGGREGATION_LAYER_SELECT = 'selectAggregationLayer'
+
+/* -------------------------------------
+ * Map
+ * ---------------------------------- */
+export const MAP_SET_BOUNDS = 'setMapBounds'

@@ -18,3 +18,8 @@ export const AUTH_REMOVE_AUTHENTICATION = 'removeAuthentication'
  * ---------------------------------- */
 export const AGGREGATION_LAYER_SET_LAYERS = 'setLayers'
 export const AGGREGATION_LAYER_SELECT_LAYER = 'selectLayer'
+
+/* -------------------------------------
+ * MAP
+ * ---------------------------------- */
+export const MAP_SET_BOUNDS = 'setMapBounds'
