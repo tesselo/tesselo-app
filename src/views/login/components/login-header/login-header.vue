@@ -3,7 +3,7 @@
     <div class="row d-flex flex-row justify-content-end align-items-center">
       <p>Don't have an account?</p>
       <tsl-button
-        type="link"
+        type="button"
         title="Get started"
         theme="slight-transparent"
       />
