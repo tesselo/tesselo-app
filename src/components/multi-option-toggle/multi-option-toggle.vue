@@ -6,6 +6,7 @@
       :title="item.title"
       :icon="item.icon"
       :active="item.active"
+      :selected="item.selected"
       @click="setActive(index)" />
   </div>
 </template>
@@ -41,6 +42,7 @@ export default {
   methods: {
     setActive(activeIndex) {
       this.activeIndex = activeIndex
+      this.$emit('change', this.items[activeIndex].key)
       this.buttons = this.buttons.map((item, itemIndex) => ({
         ...item,
         active: activeIndex == itemIndex,

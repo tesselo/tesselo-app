@@ -1,12 +1,19 @@
 <template>
   <a
-    :class="['multi-option-toggle-button d-flex flex-row justify-content-start align-items-center', {'multi-option-toggle-button--active': active}]"
+    :class="[
+      'multi-option-toggle-button d-flex flex-row justify-content-start align-items-center',
+      {
+        'multi-option-toggle-button--active': active,
+        'multi-option-toggle-button--selected': selected
+      }
+    ]"
+    :title="title"
     @click="$emit('click')">
     <img 
       v-if="icon"
       :src="`/static/icons/${icon}.svg`"
       class="multi-option-toggle-icon">
-    <span class="multi-option-toggle-title">{{ title }}</span>
+    <span class="title">{{ title }}</span>
   </a>
 </template>
 
@@ -51,14 +58,35 @@ export default {
     cursor: pointer;
     user-select: none;
 
-
-    &:hover{
+    &:hover {
       background-color: darken(white, 5%);
     }
   }
+
+  .multi-option-toggle-icon {
+    position: relative;
+    top: 2px;
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+
+  .title {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 20px;
+
+    text-overflow: ellipsis;
+
+    font-size: 12px;
+    line-height: 17px;
+    color: $twilight-blue;
+  }
+
   .multi-option-toggle-button--active {
     &::after {
       @include pseudoElementSetup;
+
       top: 50%;
       right: 10px;
       transform: translateY(-50%);
@@ -70,16 +98,20 @@ export default {
     }
   }
 
-  .multi-option-toggle-icon {
-    position: relative;
-    top: 2px;
-    margin-left: 10px;
-    margin-right: 5px;
+  .multi-option-toggle-button--selected {
+    background-color: $booger;
+
+    .title {
+      color: white;
+    }
+
+    &.multi-option-toggle-button--active::after{
+      background-color: white;
+    }
+
+    &:hover {
+      background-color: lighten($booger, 5%);
+    }
   }
 
-  .multi-option-toggle-title {
-    font-size: 12px;
-    line-height: 17px;
-    color: $twilight-blue;
-  }
 </style>

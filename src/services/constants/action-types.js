@@ -12,3 +12,14 @@ export const APP_SET_LOADING = 'setLoading'
  * ---------------------------------- */
 export const AUTH_LOGIN = 'login'
 export const AUTH_LOGOUT = 'logout'
+
+/* -------------------------------------
+ * Aggregation Layer
+ * ---------------------------------- */
+export const AGGREGATION_LAYER_GET = 'getAggregationLayers'
+export const AGGREGATION_LAYER_SELECT = 'selectAggregationLayer'
+
+/* -------------------------------------
+ * Map
+ * ---------------------------------- */
+export const MAP_SET_BOUNDS = 'setMapBounds'
