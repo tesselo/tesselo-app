@@ -32,7 +32,7 @@ export default {
   watch: {
     bounds: {
       handler (newBounds) {
-        this.$refs.map.mapObject.fitBounds([
+        this.moveToBounds([
           [newBounds.xmin, newBounds.ymin],
           [newBounds.xmax, newBounds.ymax]
         ]);
@@ -42,7 +42,7 @@ export default {
   mounted: function() {
     Leaflet.Control.geocoder().addTo(this.$refs.map.mapObject)
 
-    var searchLayer = Leaflet.layerGroup().addTo(this.$refs.map.mapObject)
+    const searchLayer = Leaflet.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
 
     attachHomeControl(Leaflet)
@@ -55,6 +55,11 @@ export default {
 
     this.$refs.map.mapObject.zoomControl.remove()
     Leaflet.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject)
+  },
+  methods:  {
+    moveToBounds(bounds) {
+      this.$refs.map.mapObject.fitBounds(bounds)
+    } 
   }
 }
 </script>
