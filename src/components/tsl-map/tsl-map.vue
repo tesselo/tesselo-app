@@ -75,4 +75,8 @@ export default {
     height: 100vh;
     user-select: none;
   }
+
+  .tsl-map .leaflet-top.leaflet-right {
+    margin-top: 50px;
+  }
 </style>

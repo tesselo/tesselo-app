@@ -1,5 +1,9 @@
 <template>
   <div>
+    <img
+      src="/static/logo/logo-simple.svg"
+      alt="Tesselo Logo"
+      class="logo">
     <tsl-button
       class="logout-button"
       title="Logout"
@@ -37,7 +41,6 @@ import TslButton from '@/components/tsl-button/tsl-button'
 import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
 import Panel from '@/components/panel/panel'
 import AreasTable from '@/components/areas-table/areas-table'
-import loginFormVue from '../login/components/login-form/login-form.vue';
 
 export default {
   name: 'Home',
@@ -118,5 +121,13 @@ export default {
     z-index: z('content');
     max-height: 80vh;
     overflow: scroll;
+  }
+
+  .logo {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    width: 100px;
+    z-index: z('content');
   }
 </style>
