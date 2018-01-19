@@ -10,8 +10,7 @@
        "after-comment"
      ],
      ignore: [
-       "after-declaration",
-       "at-rule-no-unknown"
+       "after-declaration"
      ],
    }],
  }

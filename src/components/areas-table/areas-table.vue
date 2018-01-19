@@ -6,6 +6,8 @@
       :data="rows"
       max-height="500"
       @current-change="selectArea"
+      size="small"
+      :row-class-name="tableRowClassName"
       style="width: 100%">
       <el-table-column
         prop="name"
@@ -63,6 +65,7 @@ export default {
       rows: state => state.aggregationLayer.rows,
       next: state => state.aggregationLayer.next,
       previous: state => state.aggregationLayer.previous,
+      selectedLayer: state => state.aggregationLayer.selectedLayer
     })
   },
   beforeMount() {
@@ -90,6 +93,11 @@ export default {
     },
     selectPage(page) {
       this.getAggregationLayers({ page })
+    },
+    tableRowClassName(data) {
+      if (this.selectedLayer && data.row.id == this.selectedLayer.id) {
+        return 'selected'
+      }
     }
   }
 }
