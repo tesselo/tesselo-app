@@ -5,14 +5,24 @@
       :zoom="10"
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
-      <!-- <tile-layer url="https://tesselo.com/api/algebra/{z}/{x}/{y}.png?layers=r=26936,g=26934,b=26932&scale=10,3e3&alpha" /> -->
+      <v-protobuf
+        v-for="id in selectedLayer.aggregationAreas"
+        :key="id"
+        :url="`https://tesselo.com/api/vtiles/${id}/{z}/{y}/{x}.pbf`"
+        :options="mapOptions" />
     </map>
-  </div>  
+  </div>
 </template>
+
 <script>
+
 import { mapState } from 'vuex'
 import Leaflet from 'leaflet'
 import attachHomeControl from './lib/leaflet.home'
+import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
+import store from '@/services/store'
+import vectorStyle from './vector-style'
+
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
@@ -22,12 +32,36 @@ export default {
   name: 'TslMap',
   components: {
     Map,
-    TileLayer
+    TileLayer,
+    'v-protobuf': Vue2LeafletVectorGridProtobuf
   },
   computed: {
     ...mapState('map', {
       bounds: state => state.bounds
-    })
+    }),
+    ...mapState('aggregationLayer', {
+      selectedLayer: state => state.selectedLayer
+    }),
+    ...mapState('auth', {
+      token: state => state.token,
+      authenticated: state => state.authenticated
+    }),
+    mapOptions: function() {
+      const options = { 
+        rendererFactory: Leaflet.canvas.tile,
+        vectorTileLayerStyles: vectorStyle,
+        zIndex: 10
+      }
+      if (this.authenticated) {
+        options.fetchOptions = {
+          headers: new Headers({
+            'authorization': 'Token ' + store.getters['auth/token']
+          }),
+          credentials: 'same-origin'
+        }
+      }
+      return options
+    }
   },
   watch: {
     bounds: {
@@ -78,5 +112,16 @@ export default {
 
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
+  }
+
+  pre {
+    position: absolute;
+    padding: 20px;
+    top: 50vh;
+    left: 0;
+    z-index: 1000;
+    background-color: white;
+    width: 20vh;
+    height: 50vh;
   }
 </style>
