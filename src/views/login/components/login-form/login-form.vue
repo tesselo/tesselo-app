@@ -11,7 +11,7 @@
     >
       <span
         slot="error"
-        v-if="fields.username.touched">
+        v-if="fields.username && fields.username.touched">
         {{ errors.first('username') }}
       </span>
     </tsl-input>
@@ -27,7 +27,7 @@
     >
       <span
         slot="error"
-        v-if="fields.password.touched">
+        v-if="fields.password && fields.password.touched">
         {{ errors.first('password') }}
       </span>
     </tsl-input>
@@ -37,7 +37,7 @@
           type="button"
           title="Login"
           class="login-button"
-          :disabled="fields.username.invalid || fields.password.invalid"
+          :disabled="fields.username && (fields.username.invalid || fields.password.invalid)"
           :loading="loading"
           @click="submitForm"
         />
