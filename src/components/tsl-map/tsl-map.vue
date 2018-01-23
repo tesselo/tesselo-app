@@ -56,7 +56,7 @@ export default {
       const options = { 
         rendererFactory: Leaflet.canvas.tile,
         vectorTileLayerStyles: layerStyle,
-        zIndex: 99999
+        zIndex: 10
       }
 
       if (this.authenticated) {
