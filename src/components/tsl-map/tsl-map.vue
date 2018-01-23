@@ -6,9 +6,8 @@
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
       <v-protobuf
-        v-for="id in selectedLayer.aggregationAreas"
-        :key="id"
-        :url="`https://tesselo.com/api/vtiles/${id}/{z}/{y}/{x}.pbf`"
+        v-if="selectedLayer.id"
+        :url="vectorUrl"
         :options="mapOptions" />
     </map>
   </div>
@@ -21,7 +20,6 @@ import Leaflet from 'leaflet'
 import attachHomeControl from './lib/leaflet.home'
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import store from '@/services/store'
-import vectorStyle from './vector-style'
 
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
@@ -47,20 +45,36 @@ export default {
       authenticated: state => state.authenticated
     }),
     mapOptions: function() {
+      const polygonStyle = {
+        fill: false,
+        weight: 5,
+        fillColor: '#3333FF',
+        color: '#BB2222',
+        fillOpacity: 0.3,
+        opacity: 0.8
+      };
+
+      const layerStyle = {
+        [this.selectedLayer.name]: polygonStyle
+      }
+
       const options = { 
         rendererFactory: Leaflet.canvas.tile,
-        vectorTileLayerStyles: vectorStyle,
-        zIndex: 10
+        vectorTileLayerStyles: layerStyle,
+        zIndex: 99999
       }
       if (this.authenticated) {
         options.fetchOptions = {
           headers: new Headers({
             'authorization': 'Token ' + store.getters['auth/token']
           }),
-          credentials: 'same-origin'
+          credentials: 'include'
         }
       }
       return options
+    },
+    vectorUrl() {
+      return `https://tesselo.com/api/vtiles/${this.selectedLayer.id}/{z}/{y}/{x}.pbf`
     }
   },
   watch: {
