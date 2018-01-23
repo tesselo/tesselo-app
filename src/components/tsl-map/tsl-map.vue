@@ -68,8 +68,7 @@ export default {
         options.fetchOptions = {
           headers: new Headers({
             'authorization': 'Token ' + store.getters['auth/token']
-          }),
-          credentials: 'include'
+          })
         }
       }
 
