@@ -5,29 +5,73 @@
       :zoom="10"
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
-      <!-- <tile-layer url="https://tesselo.com/api/algebra/{z}/{x}/{y}.png?layers=r=26936,g=26934,b=26932&scale=10,3e3&alpha" /> -->
+      <v-protobuf
+        v-if="selectedLayer && selectedLayer.id"
+        :url="vectorUrl"
+        :options="mapOptions" />
     </map>
-  </div>  
+  </div>
 </template>
+
 <script>
+
 import { mapState } from 'vuex'
 import Leaflet from 'leaflet'
+import { Map, TileLayer } from 'vue2-leaflet'
 import attachHomeControl from './lib/leaflet.home'
+import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
+
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
-import { Map, TileLayer } from 'vue2-leaflet'
+import store from '@/services/store'
+import endpoints from '@/data/api/api.endpoints'
+import { polygonStyle } from './vector-style'
+
+
 
 export default {
   name: 'TslMap',
   components: {
     Map,
-    TileLayer
+    TileLayer,
+    'v-protobuf': Vue2LeafletVectorGridProtobuf
   },
   computed: {
     ...mapState('map', {
       bounds: state => state.bounds
-    })
+    }),
+    ...mapState('aggregationLayer', {
+      selectedLayer: state => state.selectedLayer
+    }),
+    ...mapState('auth', {
+      token: state => state.token,
+      authenticated: state => state.authenticated
+    }),
+    mapOptions: function() {
+      const layerStyle = {
+        [this.selectedLayer.name]: polygonStyle
+      }
+
+      const options = { 
+        rendererFactory: Leaflet.canvas.tile,
+        vectorTileLayerStyles: layerStyle,
+        zIndex: 10
+      }
+
+      if (this.authenticated) {
+        options.fetchOptions = {
+          headers: new Headers({
+            'authorization': 'Token ' + store.getters['auth/token']
+          })
+        }
+      }
+
+      return options
+    },
+    vectorUrl() {
+      return endpoints.map.vector(this.selectedLayer.id)
+    }
   },
   watch: {
     bounds: {
@@ -63,6 +107,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
   @import 'lib/leaflet.css';
   @import 'lib/leaflet.home.css';

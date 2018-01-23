@@ -5,7 +5,7 @@ export const formatError = (errors) => ({
 
 export const formatAggregationAreaResults = (rows) => {
   return rows.map(row => ({
-    aggregationAreas: row.aggregationAreas,
+    aggregationAreas: row.aggregationareas,
     description: row.description,
     id: row.id,
     maxZoomLevel: row.max_zoom_level,

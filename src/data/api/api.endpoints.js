@@ -20,5 +20,8 @@ export default {
       url: '/aggregationlayer',
       method: 'get'
     }
+  },
+  map: {
+    vector: (id) => `https://tesselo.com/api/vtiles/${id}/{z}/{x}/{y}.pbf`
   }
 }
