@@ -15,7 +15,7 @@
         width="300" />
       <el-table-column
         prop="nrOfAreas"
-        label="Files" />
+        label="Zones" />
     </el-table>
     <div 
       v-if="loading"
@@ -113,7 +113,7 @@ export default {
 
   .areas-table {
     margin: 20px 0 20px;
-    overflow: scroll;
+    overflow: auto;
   }
 
   .spinner-wrapper {
