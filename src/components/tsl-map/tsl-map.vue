@@ -6,7 +6,7 @@
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
       <v-protobuf
-        v-if="selectedLayer.id"
+        v-if="selectedLayer && selectedLayer.id"
         :url="vectorUrl"
         :options="mapOptions" />
     </map>
