@@ -17,15 +17,18 @@
 
 import { mapState } from 'vuex'
 import Leaflet from 'leaflet'
+import { Map, TileLayer } from 'vue2-leaflet'
 import attachHomeControl from './lib/leaflet.home'
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
-import store from '@/services/store'
-import endpoints from '@/data/api/api.endpoints'
 
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
-import { Map, TileLayer } from 'vue2-leaflet'
+import store from '@/services/store'
+import endpoints from '@/data/api/api.endpoints'
+import { polygonStyle } from './vector-style'
+
+
 
 export default {
   name: 'TslMap',
@@ -46,15 +49,6 @@ export default {
       authenticated: state => state.authenticated
     }),
     mapOptions: function() {
-      const polygonStyle = {
-        fill: false,
-        weight: 5,
-        fillColor: '#3333FF',
-        color: '#BB2222',
-        fillOpacity: 0.3,
-        opacity: 0.8
-      };
-
       const layerStyle = {
         [this.selectedLayer.name]: polygonStyle
       }
