@@ -20,6 +20,7 @@ import Leaflet from 'leaflet'
 import attachHomeControl from './lib/leaflet.home'
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import store from '@/services/store'
+import endpoints from '@/data/api/api.endpoints'
 
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
@@ -75,7 +76,7 @@ export default {
       return options
     },
     vectorUrl() {
-      return `https://tesselo.com/api/vtiles/${this.selectedLayer.id}/{z}/{x}/{y}.pbf`
+      return endpoints.map.vector(this.selectedLayer.id)
     }
   },
   watch: {
@@ -112,6 +113,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
   @import 'lib/leaflet.css';
   @import 'lib/leaflet.home.css';
@@ -127,16 +129,5 @@ export default {
 
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
-  }
-
-  pre {
-    position: absolute;
-    padding: 20px;
-    top: 50vh;
-    left: 0;
-    z-index: 1000;
-    background-color: white;
-    width: 20vh;
-    height: 50vh;
   }
 </style>
