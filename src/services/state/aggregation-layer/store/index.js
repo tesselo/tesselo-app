@@ -11,9 +11,7 @@ export default {
     previous: null,
     pageSize: 10,
     rows: [],
-    selectedLayer: {
-      aggregationAreas: []
-    }
+    selectedLayer: null
   },
   mutations,
   actions,
