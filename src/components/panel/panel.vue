@@ -39,7 +39,7 @@ export default {
   .panel {
     background-color: white;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 25px;
   }
 
