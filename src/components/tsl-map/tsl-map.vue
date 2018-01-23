@@ -58,6 +58,7 @@ export default {
         vectorTileLayerStyles: layerStyle,
         zIndex: 99999
       }
+
       if (this.authenticated) {
         options.fetchOptions = {
           headers: new Headers({
