@@ -1,5 +1,6 @@
 import endpoints from '@/data/api/api.endpoints'
 import client from '@/data/api/api.client'
+import { formatError } from '@/data/api/api.models.js'
 
 export default {
   /**
@@ -15,6 +16,9 @@ export default {
     return axiosInstance[endpoints.auth.login.method](endpoints.auth.login.url, user)
       .then((response) => {
         return Promise.resolve(response.data)
+      })
+      .catch((response) => {
+        throw formatError(response.data)
       })
   },
   /**

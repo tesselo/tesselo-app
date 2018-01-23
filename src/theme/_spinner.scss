@@ -1,0 +1,44 @@
+.spinner {
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  &.white {
+    &::before {
+      border-top-color: white;
+    }
+  }
+
+  &.twilight {
+    &::before {
+      border-top-color: $twilight-blue;
+    }
+  }
+}
+
+.spinner::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+
+  border: 2px solid transparent;
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+

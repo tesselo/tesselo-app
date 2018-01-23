@@ -11,5 +11,14 @@ export default {
       url: '/token-logout/',
       method: 'post'
     }
+  },
+  /* -------------------------------------
+   * AUTH
+   * ---------------------------------- */
+  aggregationLayer: {
+    list: {
+      url: '/aggregationlayer',
+      method: 'get'
+    }
   }
 }
