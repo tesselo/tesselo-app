@@ -9,7 +9,9 @@
       label="Username"
       placeholder="Your username"
     >
-      <span slot="error">
+      <span
+        slot="error"
+        v-if="fields.username.touched">
         {{ errors.first('username') }}
       </span>
     </tsl-input>
@@ -19,19 +21,22 @@
       type="password"
       v-model="password"
       value="'password'"
-      v-validate="'required'"
+      v-validate="'required|min:6'"
       label="Password"
       placeholder="Enter your password"
     >
-      <span slot="error">
+      <span
+        slot="error"
+        v-if="fields.password.touched">
         {{ errors.first('password') }}
       </span>
     </tsl-input>
     <div class="row">
-      <div class="col-12 d-flex flex-row justify-content-end button-wrapper">
+      <div class="col-12 d-flex flex-row justify-content-end">
         <tsl-button
           type="button"
           title="Login"
+          class="login-button"
           :disabled="fields.username.invalid || fields.password.invalid"
           :loading="loading"
           @click="submitForm"
@@ -102,8 +107,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .button-wrapper {
+  .login-button {
     margin-top: 30px;
+    margin-bottom: 10px;
   }
 </style>
 

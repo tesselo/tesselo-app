@@ -1,0 +1,34 @@
+.el-pager li {
+  color: $slate-grey;
+
+  &.active,
+  &:hover {
+    color: $booger !important;
+  }
+}
+
+.el-pagination button:hover .el-icon,
+.el-icon:hover::before {
+  color: $booger !important;
+}
+
+.el-table__row {
+
+  td {
+    border: 0 !important;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.selected .cell {
+    font-weight: 700 !important;
+    color: $twilight-blue;
+  }
+}
+
+.el-table__header th {
+  color: $bluey-grey;
+  border: 0 !important;
+}

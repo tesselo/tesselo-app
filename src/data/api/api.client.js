@@ -19,8 +19,7 @@ axiosInstance.interceptors.request.use(function (config) {
   return config
 })
 
-axiosInstance.interceptors.response.use(undefined,
-  (error) => {
+axiosInstance.interceptors.response.use(undefined, (error) => {
     if (error.response.status === 401) {
       store.dispatch(`auth/${actionTypes.AUTH_LOGOUT}`, {
         useApi: false

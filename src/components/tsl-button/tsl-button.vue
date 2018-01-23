@@ -19,7 +19,11 @@
     <span v-if="!loading">{{ title }}</span>
     <span
       v-else
-      class="spinner" />
+      class="spinner-wrapper">
+      <span
+        :class="['spinner', { 'white': theme === 'booger', 'twilight': theme === 'slight-transparent'}]"
+      />
+    </span>
   </button>
 </template>
 
@@ -83,15 +87,18 @@ export default {
 .tsl-button {
   position: relative;
   display: inline-block;
+
   width: auto;
   min-width: 130px;
-  height: 33px;
+  height: 37px;
   padding: 9px 20px;
-  font-weight: 300;
-  font-size: 12px;
+
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  font-weight: 400;
   text-align: center;
   text-decoration: none;
-  letter-spacing: -0.5px;
+
   vertical-align: middle;
   cursor: pointer;
   border-radius: 3px;
@@ -125,30 +132,10 @@ export default {
   }
 }
 
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
+.spinner-wrapper {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
 }
 
-.spinner {
-  display: block;
-  height: 12px;
-}
-
-.spinner::before {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 18px;
-  height: 18px;
-  margin-top: -9px;
-  margin-left: -9px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: white;
-  animation: spinner 1s linear infinite;
-}
 </style>
