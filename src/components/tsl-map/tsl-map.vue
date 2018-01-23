@@ -71,10 +71,11 @@ export default {
           credentials: 'include'
         }
       }
+
       return options
     },
     vectorUrl() {
-      return `https://tesselo.com/api/vtiles/${this.selectedLayer.id}/{z}/{y}/{x}.pbf`
+      return `https://tesselo.com/api/vtiles/${this.selectedLayer.id}/{z}/{x}/{y}.pbf`
     }
   },
   watch: {
