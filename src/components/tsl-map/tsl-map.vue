@@ -80,12 +80,6 @@ export default {
     },
     formulaURL() {
       return endpoints.map.formula(this.selectedFormula)
-
-      // if (!!this.selectedFormula) {
-      //   return endpoints.map.formula(this.selectedFormula)
-      // } else {
-      //   return ''
-      // }
     }
   },
   watch: {
