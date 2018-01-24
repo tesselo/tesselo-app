@@ -26,7 +26,11 @@
       <panel
         v-if="activePanel === 'layers'"
         title="Layers"
-        @close="closePanel('areas')" />
+        @close="closePanel('areas')">
+        <layers-table
+          @select="layersTableSelect"
+          slot="content" />
+      </panel>
     </div>
     <tsl-map />
   </div>
@@ -41,6 +45,7 @@ import TslButton from '@/components/tsl-button/tsl-button'
 import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
 import Panel from '@/components/panel/panel'
 import AreasTable from '@/components/areas-table/areas-table'
+import LayersTable from '@/components/layers-table/layers-table'
 
 export default {
   name: 'Home',
@@ -49,7 +54,8 @@ export default {
     TslButton,
     MultiOptionToggle,
     Panel,
-    AreasTable
+    AreasTable,
+    LayersTable
   },
   data() {
     return {
@@ -91,6 +97,18 @@ export default {
         if (item.key === 'areas') {
           item.selected = true
           item.title = area.name
+        }
+
+        return item
+      })
+    },
+    layersTableSelect(layer) {
+      this.closePanel()
+
+      this.menuItems = this.menuItems.map((item) => {
+        if (item.key === 'layers') {
+          item.selected = true
+          item.title = layer.name
         }
 
         return item

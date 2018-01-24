@@ -1,0 +1,14 @@
+.pre {
+  color: rgba(black, 0.8);
+  background-color: white;
+  padding: 20px;
+  outline: 3px dashed red;
+  font-family: monospace;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 700px;
+  height: 400px;
+  overflow: scroll;
+  z-index: z('goku');
+}
