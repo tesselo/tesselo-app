@@ -5,8 +5,11 @@
       :zoom="10"
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
+      <tile-layer
+        :url="formulaURL"
+        ref="tile" />
       <v-protobuf
-        v-if="selectedLayer && selectedLayer.id"
+        v-if="selectedLayer"
         :url="vectorUrl"
         :options="mapOptions" />
     </map>
@@ -14,7 +17,7 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 import { mapState } from 'vuex'
 import Leaflet from 'leaflet'
 import { Map, TileLayer } from 'vue2-leaflet'
@@ -44,6 +47,9 @@ export default {
     ...mapState('aggregationLayer', {
       selectedLayer: state => state.selectedLayer
     }),
+    ...mapState('formula', {
+      selectedFormula: state => state.selectedFormula
+    }),
     ...mapState('auth', {
       token: state => state.token,
       authenticated: state => state.authenticated
@@ -71,6 +77,15 @@ export default {
     },
     vectorUrl() {
       return endpoints.map.vector(this.selectedLayer.id)
+    },
+    formulaURL() {
+      return endpoints.map.formula(this.selectedFormula)
+
+      // if (!!this.selectedFormula) {
+      //   return endpoints.map.formula(this.selectedFormula)
+      // } else {
+      //   return ''
+      // }
     }
   },
   watch: {
@@ -99,6 +114,31 @@ export default {
 
     this.$refs.map.mapObject.zoomControl.remove()
     Leaflet.control.zoom({ position:'topright' }).addTo(this.$refs.map.mapObject)
+
+
+    this.$refs.tile.mapObject.__proto__.createTile = function(coords, done) {
+      var tile = document.createElement('img');
+      Leaflet.DomEvent.on(tile, 'load', Leaflet.Util.bind(this._tileOnLoad, this, done, tile));
+      Leaflet.DomEvent.on(tile, 'error', Leaflet.Util.bind(this._tileOnError, this, done, tile));
+
+      if (this.options.crossOrigin || this.options.crossOrigin === '') {
+        tile.crossOrigin = this.options.crossOrigin === true ? '' : this.options.crossOrigin;
+      }
+
+      const url = this.getTileUrl(coords);
+
+      axios({
+        method: 'GET',
+        url: url,
+        headers: { 'authorization': 'Token ' + store.getters['auth/token'] },
+        responseType: 'blob'
+      }).then((response) => {
+        tile.src = URL.createObjectURL(response.data);
+        done(null, tile);
+      })
+
+      return tile;
+    }
   },
   methods:  {
     moveToBounds(bounds) {

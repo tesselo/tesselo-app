@@ -5,6 +5,7 @@ import createPersistedState from 'vuex-persistedstate'
 import app from '@/services/state/app/store'
 import auth from '@/services/state/auth/store'
 import aggregationLayer from '@/services/state/aggregation-layer/store'
+import formula from '@/services/state/formula/store'
 import map from '@/services/state/map/store'
 
 const debug = process.env.NODE_ENV === 'development'
@@ -16,7 +17,8 @@ export const storeOptions = {
     app,
     auth,
     aggregationLayer,
-    map
+    map,
+    formula
   },
   strict: debug,
   plugins: [createPersistedState({

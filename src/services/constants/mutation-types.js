@@ -20,6 +20,12 @@ export const AGGREGATION_LAYER_SET_LAYERS = 'setLayers'
 export const AGGREGATION_LAYER_SELECT_LAYER = 'selectLayer'
 
 /* -------------------------------------
+ * Aggregation Layer
+ * ---------------------------------- */
+export const FORMULA_SET_FORMULAS = 'setFormulas'
+export const FORMULA_SELECT_FORMULA = 'selectFormula'
+
+/* -------------------------------------
  * MAP
  * ---------------------------------- */
 export const MAP_SET_BOUNDS = 'setMapBounds'

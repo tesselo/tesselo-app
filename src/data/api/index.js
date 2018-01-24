@@ -3,6 +3,7 @@ import client from '@/data/api/api.client'
 
 import auth from '@/data/api/services/api.auth.js'
 import aggregationLayer from '@/data/api/services/api.aggregation-layer.js'
+import formula from '@/data/api/services/api.formula.js'
 
 /**
  * Adapter between server API and client application
@@ -26,7 +27,8 @@ class APIAdapter {
   /* eslint-disable */
   services = {
     auth,
-    aggregationLayer
+    aggregationLayer,
+    formula
   }
 }
 
