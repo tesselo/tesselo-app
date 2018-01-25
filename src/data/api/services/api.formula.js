@@ -5,7 +5,7 @@ import { formatFormulaResults } from '@/data/api/api.models'
 export default {
  
   /**
-   * Gets formula
+   * Gets formulas
    * 
    * @param {any} [axiosInstance=client] 
    * @param {Object} options
