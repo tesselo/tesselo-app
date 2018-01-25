@@ -8,17 +8,24 @@ module.exports = {
     'vue'
   ],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
+    "\\.(css)$": "<rootDir>/node_modules/jest-css-modules"
   },
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
   },
+  transformIgnorePatterns: [
+    "node_modules/(?!vue2-leaflet-vectorgrid)"
+  ],
   testPathIgnorePatterns: [
     '<rootDir>/test/e2e'
   ],
   snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
-  setupFiles: ['<rootDir>/test/unit/setup'],
+  setupFiles: [
+    '<rootDir>/test/unit/setup',
+    'jest-localstorage-mock'
+  ],
   mapCoverage: true,
   coverageDirectory: '<rootDir>/test/unit/coverage',
   collectCoverageFrom: [
