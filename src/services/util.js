@@ -24,3 +24,10 @@ export const mockServer = function () {
 export const baseUrl = function () {
   return process.env.API_URL
 }
+
+// https://stackoverflow.com/a/12040639/2512424
+export const encodeObjectToQueryString = function(data) {
+  return Object.keys(data).map(function(key) {
+      return [key, data[key]].map(encodeURIComponent).join("=");
+  }).join("&");
+}  
