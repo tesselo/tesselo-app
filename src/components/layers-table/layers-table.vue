@@ -19,6 +19,12 @@
         prop="formula"
         label="Formula" 
         width="200" />
+      <el-table-column
+        prop="minVal"
+        label="Min" />
+      <el-table-column
+        prop="maxVal"
+        label="Max" />
     </el-table>
     <div 
       v-if="loading"
