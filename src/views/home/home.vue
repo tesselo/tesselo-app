@@ -91,7 +91,6 @@ export default {
       this.loggingOut = true
       this.logoutAction({})
         .then(() => {
-          console.log('after logout', this)
           this.$router.push({ name: 'Login' })
         })
     },
