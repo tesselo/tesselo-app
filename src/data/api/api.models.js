@@ -25,3 +25,18 @@ export const formatAggregationAreaResults = (rows) => {
     }
   }))
 }
+
+
+export const formatFormulaResults = (rows) => {
+  return rows.map(row => ({
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    acronym: row.acronym,
+    formula: row.formula,
+    minVal: row.min_val,
+    maxVal: row.max_val,
+    breaks: row.breaks,
+    colorPalette: row.color_palette
+  }))
+}
