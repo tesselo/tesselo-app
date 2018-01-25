@@ -4,7 +4,7 @@ import APIAdapter from '@/data/api'
 
 export default {
   /**
-   * Trigger API call for aggregation layers
+   * Trigger API call for formulas
    *
    * @param {any} context
    */
@@ -15,10 +15,10 @@ export default {
       })
   },
   /**
-   * Sets the selected layer
+   * Sets the selected formula
    * 
    * @param {any} context 
-   * @param {any} layer 
+   * @param {any} formula
    */
   [actionTypes.FORMULA_SELECT] (context, formula) {
     context.commit(mutationTypes.FORMULA_SELECT_FORMULA, formula)
