@@ -35,6 +35,8 @@ module.exports = {
     'sinon': false,
     'mount': false,
     'shallow': false,
-    'Vue': false
+    'Vue': false,
+    "createLocalVue": true,
+    "jest": true
   }
 }
