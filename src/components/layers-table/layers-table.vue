@@ -10,12 +10,15 @@
       :row-class-name="tableRowClassName"
       style="width: 100%">
       <el-table-column
-        prop="name"
-        label="Name"
-        width="300" />
+        prop="acronym"
+        label="Name" />
+      <el-table-column
+        prop="colorPalette"
+        label="Color" />
       <el-table-column
         prop="formula"
-        label="Formula" />
+        label="Formula" 
+        width="200" />
     </el-table>
     <div 
       v-if="loading"
