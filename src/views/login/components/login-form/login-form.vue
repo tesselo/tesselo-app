@@ -56,6 +56,7 @@
     
   </form>
 </template>
+
 <script>
 import { mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
@@ -96,6 +97,7 @@ export default {
       })
       .then(() => {
         this.loading = false
+        this.$router.push({ name: 'Home' })
       })
       .catch((errors) => {
         this.loading = false
