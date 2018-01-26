@@ -34,8 +34,7 @@ describe('Login Form', () => {
     })
 
     wrapper.find('.login-button').trigger('click')
-    console.warn(wrapper)
-
+    
     expect(wrapper.vm.login).toHaveBeenCalledWith({
       username: 'test', 
       password: 'password'
