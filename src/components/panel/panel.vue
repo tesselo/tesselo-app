@@ -41,6 +41,7 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     padding: 25px;
+    border-radius: 2px;
   }
 
   .panel-title {
