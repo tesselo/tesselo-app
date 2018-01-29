@@ -4,7 +4,7 @@ import APIAdapter from '@/data/api'
 
 export default {
   /**
-   * Trigger API call for aggregation layers
+   * Trigger API call to get formulas
    *
    * @param {any} context
    */
@@ -15,7 +15,7 @@ export default {
       })
   },
   /**
-   * Sets the selected layer
+   * Sets the selected formulas
    * 
    * @param {any} context 
    * @param {any} layer 
