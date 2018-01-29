@@ -383,8 +383,8 @@
     .scrollable-tab-menu__element {
       position: relative;
       flex: 0 0 auto;
-      padding: 14px 15px;
-      margin: 0 15px;
+      padding: 14px 10px;
+      margin: 0 5px;
       font-size: 14px;
       line-height: 14px;
       color: $twilight-blue;

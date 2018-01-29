@@ -68,8 +68,8 @@ export default {
   },
   data() {
     let years = []
-    for(let i = 0; i < 50; i++) {
-      years.push({ label: 2000 + i })
+    for(let i = 0; i <= 30; i++) {
+      years.push({ label: 1988 + i })
     }
     return {
       years
