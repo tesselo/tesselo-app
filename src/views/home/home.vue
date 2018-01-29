@@ -32,6 +32,13 @@
           slot="content" />
       </panel>
     </div>
+    <div class="selector-time-dimension-pannel">
+      <collapsible-panel
+        @toggle="toggleSTDPanel"
+        :open="stdPanelVisible">
+        <selector-time-dimension :show-picker="stdPanelVisible" />
+      </collapsible-panel>
+    </div>
     <tsl-map />
   </div>
 </template>
@@ -46,6 +53,8 @@ import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-tog
 import Panel from '@/components/panel/panel'
 import AreasTable from '@/components/areas-table/areas-table'
 import LayersTable from '@/components/layers-table/layers-table'
+import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
+import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
 
 export default {
   name: 'Home',
@@ -55,7 +64,9 @@ export default {
     MultiOptionToggle,
     Panel,
     AreasTable,
-    LayersTable
+    LayersTable,
+    CollapsiblePanel,
+    SelectorTimeDimension
   },
   data() {
     return {
@@ -72,7 +83,8 @@ export default {
           selected: false
         }
       ],
-      activePanel: ''
+      activePanel: '',
+      stdPanelVisible: false
     }
   },
   head: {
@@ -113,6 +125,9 @@ export default {
 
         return item
       })
+    },
+    toggleSTDPanel() {
+      this.stdPanelVisible = !this.stdPanelVisible
     }
   }
 }
@@ -146,6 +161,13 @@ export default {
     top: 20px;
     right: 10px;
     width: 100px;
+    z-index: z('content');
+  }
+  
+  .selector-time-dimension-pannel {
+    position: absolute;
+    bottom: 40px;
+    left: 200px;
     z-index: z('content');
   }
 </style>
