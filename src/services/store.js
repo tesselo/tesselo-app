@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
 
 import app from '@/services/state/app/store'
 import auth from '@/services/state/auth/store'
@@ -20,10 +19,7 @@ export const storeOptions = {
     map,
     formula
   },
-  strict: debug,
-  plugins: [createPersistedState({
-    paths: ['auth']
-  })]
+  strict: debug
 }
 
 export default new Vuex.Store(storeOptions)

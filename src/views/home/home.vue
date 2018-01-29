@@ -7,6 +7,7 @@
     <tsl-button
       class="logout-button"
       title="Logout"
+      :loading="loggingOut"
       @click="logout" />
     <div class="menu">
       <multi-option-toggle
@@ -59,6 +60,7 @@ export default {
   },
   data() {
     return {
+      loggingOut: false,
       menuItems: [
         {
           title: 'Areas',
@@ -82,8 +84,15 @@ export default {
   },
   methods: {
     ...mapActions('auth', {
-      logout: actionTypes.AUTH_LOGOUT
+      logoutAction: actionTypes.AUTH_LOGOUT
     }),
+    logout() {
+      this.loggingOut = true
+      this.logoutAction({})
+        .then(() => {
+          this.$router.push({ name: 'Login' })
+        })
+    },
     closePanel() {
       this.activePanel = ''
       this.$refs.panelSelector.unsetActive()

@@ -3,6 +3,8 @@ const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
+
 const baseWebpackConfig = require('./webpack.base.conf')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const StylelintPlugin = require('stylelint-webpack-plugin')
@@ -60,6 +62,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true
+    }),
+    new CircularDependencyPlugin({
+      exclude: /node_modules/,
+      // add errors to webpack instead of warnings
+      failOnError: true
     })
   ]
 })

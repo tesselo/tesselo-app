@@ -1,7 +1,5 @@
 import axios from 'axios'
 import { baseUrl } from '@/services/util'
-import store from '@/services/store'
-import { actionTypes } from '@/services/constants'
 
 const axiosInstance = axios.create({
   baseURL: baseUrl(),
@@ -12,8 +10,13 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use(function (config) {
-  if (store.getters['auth/isAuthenticated']) {
-    config.headers.Authorization = 'Token ' + store.getters['auth/token']
+  let auth
+  if (localStorage.getItem('auth')) {
+    auth = JSON.parse(localStorage.getItem('auth'))
+
+    if (auth.authenticated) {
+      config.headers.Authorization = 'Token ' + auth.token
+    }
   }
 
   return config
@@ -21,9 +24,7 @@ axiosInstance.interceptors.request.use(function (config) {
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
     if (error.response.status === 401) {
-      store.dispatch(`auth/${actionTypes.AUTH_LOGOUT}`, {
-        useApi: false
-      })
+      localStorage.removeItem('auth')
     }
     return Promise.reject(error.response)
   }

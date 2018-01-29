@@ -1,5 +1,3 @@
-import router from '@/services/router'
-
 import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/data/api'
 
@@ -19,7 +17,6 @@ export default {
           username: user.username,
           ...response
         })
-        router.push({ name: 'Home' })
       })
   },
 
@@ -35,8 +32,6 @@ export default {
     if (useApi) {
       await APIAdapter.services.auth.logout()
     }
-
-    router.push({ name: 'Login' })
     context.commit(mutationTypes.AUTH_REMOVE_AUTHENTICATION)
   }
 }
