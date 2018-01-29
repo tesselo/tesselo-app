@@ -57,11 +57,11 @@ export default {
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
 
-    background-color: white;
+    background-color: $palest-grey;
 
     svg {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       transform: translateY(-2px) rotate(180deg);
     }
 

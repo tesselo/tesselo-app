@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="selector-time-dimension">
     <div class="header d-flex flex-row justify-content-between align-items-center">
       <a
         href="javascript:void(0)"
@@ -38,11 +38,13 @@
       </a>
     </div>
     <div
-      v-show="showPicker"
+      v-if="showPicker"
       class="picker">
       <div class="picker__top-row d-flex flex-row justify-content-between">
         <div class="picker__year-select">
-          <scrollable-tab-menu :list="this.years" />
+          <scrollable-tab-menu
+            :list="years"
+            :start-at-index="years.length - 1" />
         </div>
         <div class="picker__type-select" />
       </div>
@@ -76,11 +78,16 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .selector-time-dimension {
+    min-width: 500px;
+    max-width: 700px;
+  }
+
   .header {
-    min-width: 400px;
+    width: 100%;
     min-height: 60px;
-    background-color: white;
-    background-repeat: 2px;
+    background-color: $palest-grey;
+    border-bottom: 1px solid $pale-grey;
   }
 
   .header svg {
@@ -122,10 +129,11 @@ export default {
   
   .picker__top-row {
     height: 40px;
+    width: 100%;
   }
 
   .picker__year-select {
-    max-width: 300px;
+    max-width: 400px;
   }
 
   .picker__type-select {
