@@ -41,7 +41,6 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     padding: 25px;
-    border-radius: 2px;
   }
 
   .panel-title {
@@ -56,9 +55,5 @@ export default {
     position: absolute;
     top: 28px;
     right: 20px;
-  }
-
-  .panel-content {
-    background-color: red;
   }
 </style>

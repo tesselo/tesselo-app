@@ -5,10 +5,21 @@
     <div class="scrollable-tab-menu">
       <a
         v-if="showLeftArrow"
-        title="left"
-        class="scrollable-tab-menu__nav scrollable-tab-menu__nav--left"
-        left-icon="cjicon cjicon-arrow-left"
-        @click="previous"/>
+        class="scrollable-tab-menu__nav scrollable-tab-menu__nav--left d-flex flex-row justify-content-center align-items-center"
+        @click="previous">
+        <svg
+          class="arrow-left"
+          width="12"
+          height="12"
+          x="0px"
+          y="0px"
+          viewBox="0 0 55.271 125">
+          <path
+            fill="#000000"
+            d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
+          />
+        </svg>
+      </a>
       <div
         ref="list"
         class="scrollable-tab-menu__list">
@@ -23,10 +34,20 @@
       </div>
       <a
         v-if="showRightArrow"
-        title="right"
-        class="scrollable-tab-menu__nav scrollable-tab-menu__nav--right"
-        left-icon="cjicon cjicon-arrow-right"
-        @click="next"/>
+        class="scrollable-tab-menu__nav scrollable-tab-menu__nav--right d-flex flex-row justify-content-center align-items-center"
+        @click="next">
+        <svg
+          width="12"
+          height="12"
+          x="0px"
+          y="0px"
+          viewBox="0 0 55.271 125">
+          <path
+            fill="#000000"
+            d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
+          />
+        </svg>
+      </a>
     </div>
   </div>
 </template>
@@ -286,60 +307,53 @@
   /* This wrapper was created to hide scrollbar on iOS Devices (together with bottom padding of .scrollable-tab-menu__list) */
   .scrollable-tab-menu-wrapper {
     width: 100%;
-    height: 52px;
+    height: 40px;
     overflow: hidden;
-    border-bottom: 1px solid $navy;
-    box-shadow: inset -1px 0 0 0 $lynch;
   }
 
   .scrollable-tab-menu {
     position: relative;
     width: 100%;
-    height: 52px;
+    height: 40px;
     background-color: white;
-
-    .magic-line {
-      position: absolute;
-      bottom: 1px;
-      z-index: $z1;
-      height: 4px;
-      background-color: blue;
-    }
 
     .scrollable-tab-menu__nav {
       position: absolute;
-      top: -1px;
+      top: 0;
       z-index: $z2;
-      width: 50px;
-      height: 50px;
+      width: 30px;
+      height: 40px;
       padding: 0;
       margin: 0;
       border: none;
       border-radius: 0;
 
+      cursor: pointer;
+
       &:active {
         box-shadow: none;
       }
 
-      .btn__icon {
-        position: relative;
-        top: 2px;
-        font-size: 12px;
-        color: $slate-grey;
-      }
-
       &.scrollable-tab-menu__nav--left {
         left: 0;
-        background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+        background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
 
         .btn__icon {
           left: -4px;
         }
       }
 
+      svg.arrow-left {
+        transform: translateY(-3px) rotate(180deg);
+      }
+
+      &:hover svg path {
+        fill: $booger;
+      }
+
       &.scrollable-tab-menu__nav--right {
         right: 0;
-        background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+        background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
 
         .btn__icon {
           right: -4px;
@@ -353,7 +367,7 @@
     left: 0;
     display: flex;
     flex-wrap: nowrap;
-    height: 65px;
+    height: 55px;
     padding-bottom: 15px;
     -webkit-overflow-scrolling: touch;
     overflow-x: auto;
@@ -371,15 +385,22 @@
       flex: 0 0 auto;
       padding: 14px 15px;
       margin: 0 15px;
-      font-size: 16px;
-      line-height: 20px;
+      font-size: 14px;
+      line-height: 14px;
       color: $twilight-blue;
+      font-weight: 400;
       text-align: center;
       cursor: pointer;
 
+      &:hover {
+        color: $slate-grey;
+        text-decoration: underline;
+      }
+
       &.scrollable-tab-menu__element--active {
-        color: red;
-        border-bottom: 4px solid purple;
+        color: $booger;
+        border-bottom: 4px solid $booger;
+        font-weight: 400;
       }
 
       &.scrollable-tab-menu__element--highlight::before {
