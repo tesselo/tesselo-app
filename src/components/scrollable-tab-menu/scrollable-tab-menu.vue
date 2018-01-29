@@ -307,22 +307,21 @@
   /* This wrapper was created to hide scrollbar on iOS Devices (together with bottom padding of .scrollable-tab-menu__list) */
   .scrollable-tab-menu-wrapper {
     width: 100%;
-    height: 40px;
+    height: 50px;
     overflow: hidden;
   }
 
   .scrollable-tab-menu {
     position: relative;
     width: 100%;
-    height: 40px;
-    background-color: white;
+    height: 50px;
 
     .scrollable-tab-menu__nav {
       position: absolute;
       top: 0;
       z-index: $z2;
       width: 30px;
-      height: 40px;
+      height: 49px;
       padding: 0;
       margin: 0;
       border: none;
@@ -367,7 +366,7 @@
     left: 0;
     display: flex;
     flex-wrap: nowrap;
-    height: 55px;
+    height: 100%;
     padding-bottom: 15px;
     -webkit-overflow-scrolling: touch;
     overflow-x: auto;
@@ -383,39 +382,30 @@
     .scrollable-tab-menu__element {
       position: relative;
       flex: 0 0 auto;
+      height: 50px;
       padding: 14px 10px;
       margin: 0 5px;
       font-size: 14px;
-      line-height: 14px;
+      line-height: 22px;
+      font-weight: 600;
       color: $twilight-blue;
-      font-weight: 400;
       text-align: center;
       cursor: pointer;
+      box-sizing: border-box;
 
       &:hover {
-        color: $slate-grey;
-        text-decoration: underline;
+        color: $booger;
+        text-decoration: none;
       }
 
       &.scrollable-tab-menu__element--active {
         color: $booger;
-        border-bottom: 4px solid $booger;
-        font-weight: 400;
-      }
+        border-bottom: 3px solid $booger;
+        font-weight: 600;
 
-      &.scrollable-tab-menu__element--highlight::before {
-        position: absolute;
-        top: 22px;
-        right: 1px;
-        width: 7px;
-        height: 7px;
-        content: '';
-        background-color: $booger;
-        border-radius: 50%;
-      }
-
-      &:hover {
-        text-decoration: none;
+        &:hover {
+          text-decoration: none;
+        }
       }
     }
   }

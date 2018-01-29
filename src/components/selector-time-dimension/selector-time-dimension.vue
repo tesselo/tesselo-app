@@ -17,9 +17,9 @@
           />
         </svg>
       </a>
-      <div class="header-title">
-        <div class="current-time">Jan 2018</div>
-        <div class="time-type">Monthly Composite</div>
+      <div class="header-text">
+        <div class="header__current-time">Jan 2018</div>
+        <div class="header__time-type">Monthly Composite</div>
       </div>
       <a
         href="javascript:void(0)"
@@ -46,18 +46,63 @@
             :list="years"
             :start-at-index="years.length - 1" />
         </div>
-        <div class="picker__type-select" />
+        <div class="picker__type-select d-flex flex-row justify-content-center align-items-center">
+          <simple-toggle
+            :list="timeTypes"
+            :active-index="timeTypes.indexOf(currentTimeType)"
+            @change="setTimeType" />
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row justify-content-center text-center">
+      <div
+        v-if="currentTimeType === 'Monthly'"
+        class="selector-time-dimension__items d-flex flex-row justify-content-between">
+        <a
+          href="javascript:void(0)"
+          v-for="month in months"
+          :key="month"
+          :title="month"
+          class="selector-time-dimension__item">
+          {{ month }}
+        </a>
+      </div>
+      <div
+        v-if="currentTimeType === 'Weekly'"
+        class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
+        <a
+          href="javascript:void(0)"
+          v-for="(week, index) in weeks"
+          :key="week"
+          :title="week"
+          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': index === currentItemIndex }]">
+          {{ week }}
+        </a>
+      </div>
+      <div
+        v-if="currentTimeType === 'Scenes'"
+        class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
+        <a
+          href="javascript:void(0)"
+          v-for="(scene, index) in scenes"
+          :key="scene"
+          :title="scene"
+          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': index === currentItemIndex }]">
+          {{ scene }}
+        </a>
       </div>
     </div>
   </div>
 </template>
 <script>
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
+import SimpleToggle from '@/components/simple-toggle/simple-toggle'
 
 export default {
   name: 'SelectorTimeDimension',
   components: {
-    ScrollableTabMenu
+    ScrollableTabMenu,
+    SimpleToggle
   },
   props: {
     showPicker: {
@@ -67,20 +112,54 @@ export default {
     }
   },
   data() {
-    let years = []
-    for(let i = 0; i <= 30; i++) {
-      years.push({ label: 1988 + i })
-    }
     return {
-      years
+      timeTypes: ['Monthly', 'Weekly', 'Scenes'],
+      currentTimeType: 'Monthly',
+      currentItemIndex: 10
+    }
+  },
+  computed: {
+    months: () => {
+      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Dez']
+    },
+    years: () => {
+      let years = []
+      for(let i = 0; i <= 30; i++) {
+        years.push({ label: 1988 + i })
+      }
+      return years
+    },
+    weeks: () => {
+      let weeks = []
+
+      for (let i = 1; i <= 52; i++) {
+        weeks.push(i)
+      }
+
+      return weeks
+    },
+    scenes: () => {
+      let scenes = []
+
+      for (let i = 1; i <= 140; i++) {
+        scenes.push(i)
+      }
+
+      return scenes
+    }
+  },
+  methods: {
+    setTimeType(newType) {
+      this.currentTimeType = newType
     }
   }
 }
 </script>
 <style lang="scss" scoped>
   .selector-time-dimension {
-    min-width: 500px;
-    max-width: 700px;
+    // min-width: 500px;
+    // max-width: 700px;
+    width: 700px;
   }
 
   .header {
@@ -112,31 +191,66 @@ export default {
     transform: translateY(-4px) rotate(180deg);
   }
 
-  .header-title {
+  .header-text {
     text-align: center;
   }
   
-  .current-time {
+  .header__current-time {
     font-size: 16px;
     line-height: 24px;
     font-weight: bold;
   }
 
-  .time-type {
+  .header__time-type {
     font-size: 14px;
     line-height: 20px;
   }
   
   .picker__top-row {
-    height: 40px;
+    height: 50px;
     width: 100%;
+    border-bottom: 1px solid $pale-grey;
   }
 
   .picker__year-select {
-    max-width: 400px;
+    width: 450px;
   }
 
   .picker__type-select {
-    width: 100px;
+    padding-right: 10px;
+  }
+
+  .selector-time-dimension__items {
+    max-height: 220px;
+    overflow: scroll;
+    padding: 15px;
+  }
+
+  .selector-time-dimension__item {
+    display: block;
+    padding: 10px 7px;
+    min-width: 40px;
+    height: 40px;
+    margin: 5px 5px;
+    font-size: 14px;
+    line-height: 20px;
+    text-decoration: none;
+    color: $lynch;
+    border-radius: 4px;
+    border: 1px solid transparent;
+
+    &:hover {
+      background-color: $palest-grey;
+      border: 1px solid $pale-grey;
+    }
+
+    &--active {
+      background-color: $booger;
+      color: white;
+
+      &:hover {
+        background-color: lighten($booger, 4%);
+      }
+    }
   }
 </style>
