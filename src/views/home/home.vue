@@ -117,7 +117,7 @@ export default {
       this.menuItems = this.menuItems.map((item) => {
         if (item.key === 'layers') {
           item.selected = true
-          item.title = layer.name
+          item.title = layer.acronym
         }
 
         return item
