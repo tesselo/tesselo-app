@@ -13,7 +13,8 @@ export default {
    * @returns 
    */
   getComposites (options, axiosInstance = client) {
-    return axiosInstance[endpoints.formula.list.method](endpoints.formula.list.url, options)
+    console.log('endpoints.time.listComposites', options)
+    return axiosInstance[endpoints.time.listComposites.method](endpoints.time.listComposites.url, { params: options})
       .then((response) => {
         console.log('getComposites')
         return Promise.resolve(response.data)
