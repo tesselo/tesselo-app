@@ -1,8 +1,14 @@
 <template>
   <div class="selector-time-dimension">
-    <div class="header d-flex flex-row justify-content-between align-items-center">
+    <div 
+      :class="['header d-flex flex-row align-items-center', {
+        'justify-content-between': selectedMoment,
+        'justify-content-center': !selectedMoment
+    }]">
       <a
+        v-if="selectedMoment"
         href="javascript:void(0)"
+        @click="selectPreviousMoment"
         class="navigator d-flex flex-column justify-content-center align-items-center">
         <svg
           class="arrow-left"
@@ -18,10 +24,17 @@
         </svg>
       </a>
       <div class="header-text">
-        <div class="header__current-time">Jan 2018</div>
-        <div class="header__time-type">Monthly Composite</div>
+        <div v-if="selectedMoment">
+          <div class="header__current-time">{{ selectedMoment.name }}</div>
+          <div class="header__time-type">{{ currentTimeType }} Composite</div>
+        </div>
+        <div
+          v-else
+          class="spinner twilight" />
       </div>
       <a
+        v-if="selectedMoment"
+        @click="selectNextMoment"
         href="javascript:void(0)"
         class="navigator d-flex flex-column justify-content-center align-items-center">
         <svg
@@ -43,6 +56,7 @@
       <div class="picker__top-row d-flex flex-row justify-content-between">
         <div class="picker__year-select">
           <scrollable-tab-menu
+            @selected="setYear"
             :list="years"
             :start-at-index="years.length - 1" />
         </div>
@@ -54,45 +68,37 @@
         </div>
       </div>
     </div>
+
     <div
-      v-if="showPicker"
+      v-if="showPicker && !loading && momentsList && momentsList.length"
       class="d-flex flex-row justify-content-center text-center">
       <div
-        v-if="currentTimeType === 'Monthly'"
-        class="selector-time-dimension__items d-flex flex-row justify-content-between">
-        <a
-          href="javascript:void(0)"
-          v-for="month in months"
-          :key="month"
-          :title="month"
-          class="selector-time-dimension__item">
-          {{ month }}
-        </a>
-      </div>
-      <div
-        v-if="currentTimeType === 'Weekly'"
+        v-if="momentsList"
         class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
         <a
           href="javascript:void(0)"
-          v-for="(week, index) in weeks"
-          :key="week"
-          :title="week"
-          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': index === currentItemIndex }]">
-          {{ week }}
+          v-for="item in momentsList"
+          @click="selectMoment(item)"
+          :key="item.id"
+          :title="item.name"
+          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]">
+          {{ item.nameToShow }}
         </a>
       </div>
-      <div
-        v-if="currentTimeType === 'Scenes'"
-        class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
-        <a
-          href="javascript:void(0)"
-          v-for="(scene, index) in scenes"
-          :key="scene"
-          :title="scene"
-          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': index === currentItemIndex }]">
-          {{ scene }}
-        </a>
+    </div>
+
+    <div
+      v-if="showPicker && loading"
+      class="spinner-panel">
+      <div class="spinner-wrapper">
+        <div class="spinner twilight" />
       </div>
+    </div>
+
+    <div
+      v-if="!loading && momentsList && momentsList.length === 0"
+      class="no-results-panel text-center d-flex flex-row justify-content-center align-items-center">
+      <h1>No results to display.</h1>
     </div>
   </div>
 </template>
@@ -127,35 +133,16 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedLayer: state => state.aggregationLayer.selectedLayer
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      momentsList: state => state.time.list,
+      selectedMoment: state => state.time.selectedMoment
     }),
-    months: () => {
-      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
     years: () => {
-      let years = []
-      for(let i = 0; i <= 30; i++) {
-        years.push({ label: 1988 + i })
+      const years = []
+      for (let i = 0; i <= 30; i++) {
+        years.push({ label: 1988 + i})
       }
       return years
-    },
-    weeks: () => {
-      let weeks = []
-
-      for (let i = 1; i <= 52; i++) {
-        weeks.push(i)
-      }
-
-      return weeks
-    },
-    scenes: () => {
-      let scenes = []
-
-      for (let i = 1; i <= 140; i++) {
-        scenes.push(i)
-      }
-
-      return scenes
     }
   },
   mounted() {
@@ -169,20 +156,52 @@ export default {
       selectMomentAction: actionTypes.TIME_SELECT_MOMENT
     }),
     getComposites({ interval }) {
+      this.loading = true
       this.getCompositesAction({
         interval,
+        aggregationlayer: this.selectedLayer.id,
         year: this.year
+      })
+      .then(() => {
+        this.loading = false
       })
     },
     getUniques() {
-      this.getUniquesAction()
+      this.loading = true
+      this.getUniquesAction({
+        aggregationlayer: this.selectedLayer.id,
+        year: this.year
+      }).then(() => {
+        this.loading = false
+      })
     },
     setTimeType(newType) {
-      this.currentTimeType = newType
-
-      if (newType == 'Scenes') {
-        this.getUniques()
+      if (this.currentTimeType === newType) {
+        return
       }
+
+      this.currentTimeType = newType
+      this.update()
+    },
+    setYear(newYear) {
+      this.year = newYear.label
+      this.update()
+    },
+    update() {
+      if (this.currentTimeType == 'Scenes') {
+        this.getUniques()
+      } else {
+        this.getComposites({ interval: this.currentTimeType })
+      }
+    },
+    selectMoment(moment) {
+      this.selectMomentAction(moment)
+    },
+    selectPreviousMoment() {
+
+    },
+    selectNextMoment() {
+      
     }
   }
 }
@@ -223,6 +242,11 @@ export default {
 
   .header-text {
     text-align: center;
+
+    .spinner {
+      width: 26px;
+      height: 26px;
+    }
   }
   
   .header__current-time {
@@ -282,5 +306,26 @@ export default {
         background-color: lighten($booger, 4%);
       }
     }
+  }
+
+  .no-results-panel {
+    height: 220px;
+    width: 100%;
+  }
+
+  .spinner-panel {
+    position: relative;
+    height: 220px;
+    width: 100%;
+  }
+
+  .spinner-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 30px;
+    height: 30px;
   }
 </style>

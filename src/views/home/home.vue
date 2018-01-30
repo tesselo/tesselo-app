@@ -35,7 +35,7 @@
     </div>
     <div
       class="selector-time-dimension-pannel"
-      v-if="selectedLayer && selectedFormula">
+      v-if="selectedLayer">
       <collapsible-panel
         @toggle="toggleSTDPanel"
         :open="stdPanelVisible">
