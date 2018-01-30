@@ -54,7 +54,9 @@
         </div>
       </div>
     </div>
-    <div class="d-flex flex-row justify-content-center text-center">
+    <div
+      v-if="showPicker"
+      class="d-flex flex-row justify-content-center text-center">
       <div
         v-if="currentTimeType === 'Monthly'"
         class="selector-time-dimension__items d-flex flex-row justify-content-between">
