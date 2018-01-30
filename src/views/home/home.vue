@@ -33,7 +33,9 @@
           slot="content" />
       </panel>
     </div>
-    <div class="selector-time-dimension-pannel">
+    <div
+      class="selector-time-dimension-pannel"
+      v-if="selectedLayer && selectedFormula">
       <collapsible-panel
         @toggle="toggleSTDPanel"
         :open="stdPanelVisible">
@@ -45,7 +47,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
 
 import TslMap from '@/components/tsl-map/tsl-map'
@@ -93,6 +95,12 @@ export default {
     title: {
       inner: 'Homepage'
     }
+  },
+  computed: {
+    ...mapState({
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      selectedFormula: state => state.formula.selectedFormula
+    })
   },
   methods: {
     ...mapActions('auth', {

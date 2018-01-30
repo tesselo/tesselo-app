@@ -53,8 +53,7 @@
 </template>
 
 <script>
-  // import schema from './cj-scrollable-tab-menu.schema'
-  import TslButton from '@/components/tsl-button/tsl-button'
+  // import TslButton from '@/components/tsl-button/tsl-button'
   import TWEEN from '@tweenjs/tween.js'
 
   /**
@@ -62,12 +61,12 @@
    * @type {Number} When an element is selected, an event called <code>selected</code> is emmited with the index of selected element as argument.
    */
   export default {
-    name: 'CjScrollableTabMenu',
+    name: 'ScrollableTabMenu',
 
-    // == Components
-    components: {
-      TslButton
-    },
+    // // == Components
+    // components: {
+    //   TslButton
+    // },
 
     // == Props
     props: {

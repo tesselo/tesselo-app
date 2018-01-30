@@ -18,7 +18,8 @@ export const storeOptions = {
     auth,
     aggregationLayer,
     map,
-    formula
+    formula,
+    time
   },
   strict: debug
 }

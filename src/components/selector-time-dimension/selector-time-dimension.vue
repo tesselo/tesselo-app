@@ -97,6 +97,9 @@
   </div>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex'
+import { actionTypes } from '@/services/constants'
+
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
 import SimpleToggle from '@/components/simple-toggle/simple-toggle'
 
@@ -117,10 +120,15 @@ export default {
     return {
       timeTypes: ['Monthly', 'Weekly', 'Scenes'],
       currentTimeType: 'Monthly',
-      currentItemIndex: 10
+      currentItemIndex: 10,
+      loading: false,
+      year: 2018
     }
   },
   computed: {
+    ...mapState({
+      selectedLayer: state => state.aggregationLayer.selectedLayer
+    }),
     months: () => {
       return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
@@ -150,9 +158,31 @@ export default {
       return scenes
     }
   },
+  mounted() {
+    this.loading = true
+    this.getComposites({ interval: 'Monthly' })
+  },
   methods: {
+    ...mapActions('time', {
+      getCompositesAction: actionTypes.TIME_GET_COMPOSITES,
+      getUniquesAction: actionTypes.TIME_GET_UNIQUES,
+      selectMomentAction: actionTypes.TIME_SELECT_MOMENT
+    }),
+    getComposites({ interval }) {
+      this.getCompositesAction({
+        interval,
+        year: this.year
+      })
+    },
+    getUniques() {
+      this.getUniquesAction()
+    },
     setTimeType(newType) {
       this.currentTimeType = newType
+
+      if (newType == 'Scenes') {
+        this.getUniques()
+      }
     }
   }
 }
