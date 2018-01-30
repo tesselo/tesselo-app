@@ -159,8 +159,6 @@ export default {
 </script>
 <style lang="scss" scoped>
   .selector-time-dimension {
-    // min-width: 500px;
-    // max-width: 700px;
     width: 700px;
   }
 
