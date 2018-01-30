@@ -1,9 +1,9 @@
 <template>
-  <div :class="['collapsible-panel', { open: open }]">
+  <div class="collapsible-panel">
     <a
       @click="$emit('toggle')"
       href="javascript:void(0)"
-      :class="['close d-flex flex-row justify-content-center align-items-center', { open: open }]">
+      :class="['close d-flex flex-row justify-content-center align-items-center', { 'close--rotate': open }]">
       <svg
         width="24"
         height="24"
@@ -65,7 +65,7 @@ export default {
       transform: translateY(-2px) rotate(180deg);
     }
 
-    &.open {
+    &--rotate {
       svg {
         transform: rotate(0deg);
       }

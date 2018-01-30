@@ -367,7 +367,6 @@
     display: flex;
     flex-wrap: nowrap;
     height: 100%;
-    padding-bottom: 15px;
     -webkit-overflow-scrolling: touch;
     overflow-x: auto;
 
