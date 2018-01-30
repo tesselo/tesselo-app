@@ -6,8 +6,7 @@ import getters from './time.getters'
 export default {
   namespaced: true,
   state: {
-    compositesList: null,
-    uniquesList: null,
+    list: null,
     selectedMoment: null
   },
   mutations,

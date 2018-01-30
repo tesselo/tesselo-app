@@ -276,7 +276,6 @@
         }
 
         this.activeElementIndex = index
-        console.log('active', this.activeElementIndex)
         return this.$emit('selected', this.list[index], index)
       },
 

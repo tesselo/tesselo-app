@@ -39,7 +39,7 @@ export default {
       method: 'get'
     },
     listUniques: {
-      url: '/sentinelaggregationlayer',
+      url: '/sentineltileaggregationlayer',
       method: 'get'
     }
   }

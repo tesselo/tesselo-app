@@ -24,3 +24,8 @@ export const mockServer = function () {
 export const baseUrl = function () {
   return process.env.API_URL
 }
+
+
+export const capitalizeFirstLetter = function(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
