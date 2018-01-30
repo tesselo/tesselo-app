@@ -56,8 +56,4 @@ export default {
     top: 28px;
     right: 20px;
   }
-
-  .panel-content {
-    background-color: red;
-  }
 </style>
