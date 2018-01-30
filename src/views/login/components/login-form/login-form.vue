@@ -11,7 +11,7 @@
     >
       <span
         slot="error"
-        v-if="fields.username && fields.username.touched">
+        v-if="usernameFlags.touched">
         {{ errors.first('username') }}
       </span>
     </tsl-input>
@@ -27,7 +27,7 @@
     >
       <span
         slot="error"
-        v-if="fields.password && fields.password.touched">
+        v-if="passwordFlags.touched">
         {{ errors.first('password') }}
       </span>
     </tsl-input>
@@ -37,7 +37,7 @@
           type="button"
           title="Login"
           class="login-button"
-          :disabled="fields.username && (fields.username.invalid || fields.password.invalid)"
+          :disabled="usernameFlags.invalid || passwordFlags.invalid"
           :loading="loading"
           @click="submitForm"
         />
@@ -56,7 +56,9 @@
     
   </form>
 </template>
+
 <script>
+import { mapFields } from 'vee-validate'
 import { mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
 
@@ -79,6 +81,10 @@ export default {
       }
     }
   },
+  computed: mapFields({
+    usernameFlags: 'username',
+    passwordFlags: 'password'
+  }),
   methods: {
     ...mapActions('auth', {
       login: actionTypes.AUTH_LOGIN
@@ -96,6 +102,7 @@ export default {
       })
       .then(() => {
         this.loading = false
+        this.$router.push({ name: 'Home' })
       })
       .catch((errors) => {
         this.loading = false

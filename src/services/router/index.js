@@ -4,8 +4,6 @@ import Router from 'vue-router'
 import Home from '@/views/home/home'
 import Login from '@/views/login/login'
 
-import store from '@/services/store'
-
 Vue.use(Router)
 
 const router = new Router({
@@ -27,7 +25,15 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  const authenticated = store.getters['auth/isAuthenticated']
+  let auth
+  let authenticated
+
+  if (localStorage.getItem('auth')) {
+    auth = JSON.parse(localStorage.getItem('auth'))
+    authenticated = auth.authenticated
+  } else {
+    authenticated = false
+  }
 
   if (to.meta.requiresAuthentication) {
     if (authenticated) {
@@ -38,6 +44,7 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
+
 })
 
 export default router

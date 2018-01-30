@@ -17,6 +17,13 @@ export default {
     state.token = token
     state.expires = expires
     state.authenticated = true
+
+    window.localStorage.setItem('auth', JSON.stringify({
+      username,
+      token,
+      expires,
+      authenticated: true
+    }))
   },
   /**
    * Removes the authentication after logout
@@ -28,6 +35,7 @@ export default {
     state.token = null
     state.expires = null
     state.authenticated = false
+    localStorage.removeItem('auth')
   }
 }
 
