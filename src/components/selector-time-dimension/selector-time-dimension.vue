@@ -122,7 +122,7 @@ export default {
   },
   computed: {
     months: () => {
-      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Dez']
+      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     years: () => {
       let years = []
@@ -159,8 +159,6 @@ export default {
 </script>
 <style lang="scss" scoped>
   .selector-time-dimension {
-    // min-width: 500px;
-    // max-width: 700px;
     width: 700px;
   }
 
@@ -233,7 +231,7 @@ export default {
     padding: 10px 7px;
     min-width: 40px;
     height: 40px;
-    margin: 5px 5px;
+    margin: 5px;
     font-size: 14px;
     line-height: 20px;
     text-decoration: none;
