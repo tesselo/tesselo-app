@@ -97,6 +97,12 @@
       }
     },
 
+    watch: {
+      startAtIndex(newValue) {
+        this.activeElementIndex = newValue
+      }
+    },
+
     // == Data
     data () {
       return {
