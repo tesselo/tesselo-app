@@ -16,10 +16,12 @@ export default {
       .then((response) => {
         context.commit(mutationTypes.TIME_SET_LIST, response.results)
 
-        if (options.autoSelect == 'first' && response.results[0]) {
-          context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[0])
-        } else if (options.autoSelect == 'last' && response.results[response.results.length - 1]) {
-          context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[response.results.length - 1])
+        if (response.results.length) {
+          if (options.autoSelect == 'first' && response.results[0]) {
+            context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[0])
+          } else if (options.autoSelect == 'last' && response.results[response.results.length - 1]) {
+            context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[response.results.length - 1])
+          }
         }
       })
   },
