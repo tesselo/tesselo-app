@@ -29,7 +29,8 @@ export const formatAggregationAreaResults = (rows) => {
 
 
 export const formatFormulaResults = (rows) => {
-  return rows.map(row => ({
+  return rows.map((row, index) => ({
+    index,
     id: row.id,
     name: row.name,
     description: row.description,
@@ -44,7 +45,8 @@ export const formatFormulaResults = (rows) => {
 
 
 export const formatCompositesList = (rows, options) => {
-  return rows.map(row => ({
+  return rows.map((row, index)=> ({
+    index,
     id: row.id,
     allZones: row.allZones,
     active: row.active,

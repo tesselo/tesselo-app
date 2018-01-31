@@ -58,12 +58,12 @@
           <scrollable-tab-menu
             @selected="setYear"
             :list="years"
-            :start-at-index="years.length - 1" />
+            :start-at-index="yearsListActiveIndex" />
         </div>
         <div class="picker__type-select d-flex flex-row justify-content-center align-items-center">
           <simple-toggle
             :list="timeTypes"
-            :active-index="timeTypes.indexOf(currentTimeType)"
+            :active-index="yearsListActiveIndex"
             @change="setTimeType" />
         </div>
       </div>
@@ -100,6 +100,8 @@
       class="no-results-panel text-center d-flex flex-row justify-content-center align-items-center">
       <h1>No results to display.</h1>
     </div>
+
+    <!-- <pre class="pre">yearsListActiveIndex : {{ yearsListActiveIndex }}</pre> -->
   </div>
 </template>
 <script>
@@ -137,41 +139,43 @@ export default {
       momentsList: state => state.time.list,
       selectedMoment: state => state.time.selectedMoment
     }),
-    years: () => {
+    years() {
       const years = []
       for (let i = 0; i <= 30; i++) {
         years.push({ label: 1988 + i})
       }
       return years
+    },
+    yearsListActiveIndex() {
+      let currentIndex
+      this.years.forEach((year, index) => {
+        if (year.label === this.year) {
+          currentIndex = index
+        }
+      })
+      return currentIndex
     }
   },
   mounted() {
-    this.loading = true
-    this.getComposites({ interval: 'Monthly' })
+    this.getList('Monthly', 'last')
   },
   methods: {
     ...mapActions('time', {
-      getCompositesAction: actionTypes.TIME_GET_COMPOSITES,
-      getUniquesAction: actionTypes.TIME_GET_UNIQUES,
+      getListAction: actionTypes.TIME_GET_LIST,
       selectMomentAction: actionTypes.TIME_SELECT_MOMENT
     }),
-    getComposites({ interval }) {
+    getList(interval, autoSelect) {
       this.loading = true
-      this.getCompositesAction({
-        interval,
-        aggregationlayer: this.selectedLayer.id,
-        year: this.year
+
+      this.getListAction({
+        params: {
+          interval,
+          aggregationlayer: this.selectedLayer.id,
+          year: this.year  
+        },
+        autoSelect
       })
       .then(() => {
-        this.loading = false
-      })
-    },
-    getUniques() {
-      this.loading = true
-      this.getUniquesAction({
-        aggregationlayer: this.selectedLayer.id,
-        year: this.year
-      }).then(() => {
         this.loading = false
       })
     },
@@ -181,28 +185,37 @@ export default {
       }
 
       this.currentTimeType = newType
-      this.update()
+      this.update('last')
     },
     setYear(newYear) {
       this.year = newYear.label
-      this.update()
+      this.update('last')
     },
-    update() {
-      if (this.currentTimeType == 'Scenes') {
-        this.getUniques()
-      } else {
-        this.getComposites({ interval: this.currentTimeType })
-      }
+    update(autoSelect) {
+      this.getList(this.currentTimeType, autoSelect)
     },
     selectMoment(moment) {
       this.selectMomentAction(moment)
     },
     selectPreviousMoment() {
-
+      const currentIndex = this.selectedMoment.index
+      if (currentIndex === 0) {
+        this.year = this.year - 1;
+        this.update('last')
+      } else {
+        this.selectMoment(this.momentsList[currentIndex - 1])
+      }
     },
     selectNextMoment() {
-      
-    }
+      const currentIndex = this.selectedMoment.index
+      if (currentIndex === this.momentsList.length - 1) {
+        this.year = this.year + 1;
+        this.update('first')
+      } else {
+        this.selectMoment(this.momentsList[currentIndex + 1])
+      }
+    },
+   
   }
 }
 </script>
