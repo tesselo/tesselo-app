@@ -5,24 +5,26 @@
         'justify-content-between': selectedMoment,
         'justify-content-center': !selectedMoment
     }]">
-      <a
-        v-if="selectedMoment"
-        href="javascript:void(0)"
-        @click="selectPreviousMoment"
-        class="navigator d-flex flex-column justify-content-center align-items-center">
-        <svg
-          class="arrow-left"
-          width="18"
-          height="18"
-          x="0px"
-          y="0px"
-          viewBox="0 0 55.271 125">
-          <path
-            fill="#000000"
-            d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
-          />
-        </svg>
-      </a>
+      <div class="navigator-wrapper">
+        <a
+          v-if="selectedMoment"
+          href="javascript:void(0)"
+          @click="selectPreviousMoment"
+          class="navigator d-flex flex-column justify-content-center align-items-center">
+          <svg
+            class="arrow-left"
+            width="18"
+            height="18"
+            x="0px"
+            y="0px"
+            viewBox="0 0 55.271 125">
+            <path
+              fill="#000000"
+              d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
+            />
+          </svg>
+        </a>
+      </div>
       <div class="header-text">
         <div v-if="selectedMoment">
           <div class="header__current-time">{{ selectedMoment.name }}</div>
@@ -32,23 +34,25 @@
           v-else
           class="spinner twilight" />
       </div>
-      <a
-        v-if="selectedMoment"
-        @click="selectNextMoment"
-        href="javascript:void(0)"
-        class="navigator d-flex flex-column justify-content-center align-items-center">
-        <svg
-          width="18"
-          height="18"
-          x="0px"
-          y="0px"
-          viewBox="0 0 55.271 125">
-          <path
-            fill="#000000"
-            d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
-          />
-        </svg>
-      </a>
+      <div class="navigator-wrapper">
+        <a
+          v-if="showNextButton"
+          @click="selectNextMoment"
+          href="javascript:void(0)"
+          class="navigator d-flex flex-column justify-content-center align-items-center">
+          <svg
+            width="18"
+            height="18"
+            x="0px"
+            y="0px"
+            viewBox="0 0 55.271 125">
+            <path
+              fill="#000000"
+              d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
+            />
+          </svg>
+        </a>
+      </div>
     </div>
     <div
       v-if="showPicker"
@@ -63,7 +67,7 @@
         <div class="picker__type-select d-flex flex-row justify-content-center align-items-center">
           <simple-toggle
             :list="timeTypes"
-            :active-index="yearsListActiveIndex"
+            :active-index="timeTypes.indexOf(currentTimeType)"
             @change="setTimeType" />
         </div>
       </div>
@@ -75,15 +79,25 @@
       <div
         v-if="momentsList"
         class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
-        <a
-          href="javascript:void(0)"
+        <el-popover
           v-for="item in momentsList"
-          @click="selectMoment(item)"
           :key="item.id"
-          :title="item.name"
-          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]">
-          {{ item.nameToShow }}
-        </a>
+          trigger="hover"
+          :title="popoverTitle(item)"
+          class="select-time-dimension__popover"
+          placement="top"
+          transition="none"
+          :open-delay="200">
+          <a
+            slot="reference"
+            href="javascript:void(0)"
+            @click="selectMoment(item)"
+            
+            :title="item.name"
+            :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]">
+            {{ item.nameToShow }}
+          </a>
+        </el-popover>
       </div>
     </div>
 
@@ -107,6 +121,8 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
+import { Popover as ElPopover } from 'element-ui'
+import 'element-ui/lib/theme-chalk/popover.css'
 
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
 import SimpleToggle from '@/components/simple-toggle/simple-toggle'
@@ -115,7 +131,8 @@ export default {
   name: 'SelectorTimeDimension',
   components: {
     ScrollableTabMenu,
-    SimpleToggle
+    SimpleToggle,
+    ElPopover
   },
   props: {
     showPicker: {
@@ -154,6 +171,18 @@ export default {
         }
       })
       return currentIndex
+    },
+    showPreviousButton() {
+      const isFirstItemInList = this.selectedMoment.index === 0
+      const isFirstYear = this.yearsListActiveIndex === 0
+      const isFirstItem = isFirstItemInList && isFirstYear
+      return this.selectedMoment && !isFirstItem
+    },
+    showNextButton() {
+      const isLastItemInList = this.selectedMoment.index === this.momentsList.length - 1
+      const isLastYear = this.yearsListActiveIndex === this.years.length - 1
+      const isLastItem = isLastItemInList && isLastYear
+      return this.selectedMoment && !isLastItem
     }
   },
   mounted() {
@@ -215,7 +244,14 @@ export default {
         this.selectMoment(this.momentsList[currentIndex + 1])
       }
     },
-   
+    popoverTitle(item) {
+      console.log(item)
+      if (item.type === 'Weekly' || item.type === 'Monthly') {
+        return item.minDate + ' to ' + item.maxDate
+      } else {
+        return item.date
+      }
+    }
   }
 }
 </script>
@@ -234,6 +270,11 @@ export default {
   .header svg {
     width: 18px;
     height: 18px;
+  }
+
+  .navigator-wrapper {
+    width: 30px;
+    height: 100;
   }
 
   .navigator {
