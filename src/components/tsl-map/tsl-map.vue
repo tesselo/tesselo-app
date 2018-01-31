@@ -6,7 +6,7 @@
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
       <tile-layer
-        v-show="selectedFormula"
+        v-show="selectedFormula && selectedMoment"
         :url="algebraUrl"
         ref="tile" />
       <v-protobuf
@@ -42,18 +42,13 @@ export default {
     'v-protobuf': Vue2LeafletVectorGridProtobuf
   },
   computed: {
-    ...mapState('map', {
-      bounds: state => state.bounds
-    }),
-    ...mapState('aggregationLayer', {
-      selectedLayer: state => state.selectedLayer
-    }),
-    ...mapState('formula', {
-      selectedFormula: state => state.selectedFormula
-    }),
-    ...mapState('auth', {
-      token: state => state.token,
-      authenticated: state => state.authenticated
+    ...mapState({
+      bounds: state => state.map.bounds,
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      selectedFormula: state => state.formula.selectedFormula,
+      selectedMoment: state => state.time.selectedMoment,
+      token: state => state.auth.token,
+      authenticated: state => state.auth.authenticated
     }),
     mapOptions: function() {
       const layerStyle = {
@@ -129,10 +124,11 @@ export default {
         tile.crossOrigin = this.options.crossOrigin === true ? '' : this.options.crossOrigin;
       }
 
+      const token = JSON.parse(localStorage.getItem('auth')).token
       axios({
         method: 'GET',
         url: url,
-        headers: { 'authorization': 'Token ' + store.getters['auth/token'] },
+        headers: { 'authorization': 'Token ' + token },
         responseType: 'blob'
       }).then((response) => {
         tile.src = URL.createObjectURL(response.data);
