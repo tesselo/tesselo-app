@@ -32,3 +32,23 @@
   color: $bluey-grey;
   border: 0 !important;
 }
+
+.el-popover.el-popper {
+  background-color: $navy;
+  padding: 7px 6px 2px !important;
+  border: 0 !important;
+
+  .popper__arrow {
+    &::after {
+      border-top-color: $navy !important;
+    }
+  }
+}
+
+.el-popover__title {
+  color: white !important;
+  font-size: 14px !important;
+  font-weight: 600;
+  margin-top: 6px;
+  text-align: center;
+}

@@ -29,8 +29,7 @@ export const formatAggregationAreaResults = (rows) => {
 
 
 export const formatFormulaResults = (rows) => {
-  return rows.map((row, index) => ({
-    index,
+  return rows.map(row => ({
     id: row.id,
     name: row.name,
     description: row.description,
@@ -70,11 +69,12 @@ export const formatCompositesList = (rows, options) => {
 
 export const formatUniquesList = (rows) => {
   return rows.map((row, index)=> ({
+    index,
     id: row.id,
     active: row.active,
     date: row.date,
     rasterlayerLookup: row.rasterlayer_lookup,
-    name: row.name,
+    name: row.date + ' Scene',
     nameToShow: index + 1,
     type: 'unique'
   }))
