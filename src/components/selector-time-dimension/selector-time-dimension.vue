@@ -173,12 +173,20 @@ export default {
       return currentIndex
     },
     showPreviousButton() {
+      if (!this.selectedMoment) {
+        return false
+      }
+
       const isFirstItemInList = this.selectedMoment.index === 0
       const isFirstYear = this.yearsListActiveIndex === 0
       const isFirstItem = isFirstItemInList && isFirstYear
       return this.selectedMoment && !isFirstItem
     },
     showNextButton() {
+      if (!this.selectedMoment) {
+        return false
+      }
+
       const isLastItemInList = this.selectedMoment.index === this.momentsList.length - 1
       const isLastYear = this.yearsListActiveIndex === this.years.length - 1
       const isLastItem = isLastItemInList && isLastYear
@@ -228,24 +236,37 @@ export default {
     },
     selectPreviousMoment() {
       const currentIndex = this.selectedMoment.index
-      if (currentIndex === 0) {
-        this.year = this.year - 1;
-        this.update('last')
+
+      if (this.momentsList.length) {
+        if (currentIndex === 0) {
+          this.year = this.year - 1;
+          this.update('last')
+        } else {
+          this.selectMoment(this.momentsList[currentIndex - 1])
+        }
       } else {
-        this.selectMoment(this.momentsList[currentIndex - 1])
+        this.year = this.year - 1;
+        this.update('first')
       }
     },
     selectNextMoment() {
       const currentIndex = this.selectedMoment.index
-      if (currentIndex === this.momentsList.length - 1) {
+
+      if (this.momentsList.length) {
+        const isLast = currentIndex === this.momentsList.length - 1
+  
+        if (isLast) {
+          this.year = this.year + 1;
+          this.update('first')
+        } else {
+          this.selectMoment(this.momentsList[currentIndex + 1])
+        }
+      } else {
         this.year = this.year + 1;
         this.update('first')
-      } else {
-        this.selectMoment(this.momentsList[currentIndex + 1])
       }
     },
     popoverTitle(item) {
-      console.log(item)
       if (item.type === 'Weekly' || item.type === 'Monthly') {
         return item.minDate + ' to ' + item.maxDate
       } else {
@@ -365,6 +386,10 @@ export default {
   .no-results-panel {
     height: 220px;
     width: 100%;
+
+    h1 {
+      font-size: 24px;
+    }
   }
 
   .spinner-panel {
