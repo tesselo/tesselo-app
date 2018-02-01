@@ -28,7 +28,6 @@ import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
-import store from '@/services/store'
 import endpoints from '@/data/api/api.endpoints'
 import { polygonStyle } from './vector-style'
 
@@ -61,10 +60,11 @@ export default {
         zIndex: 10
       }
 
+      const token = JSON.parse(localStorage.getItem('auth')).token
       if (this.authenticated) {
         options.fetchOptions = {
           headers: new Headers({
-            'authorization': 'Token ' + store.getters['auth/token']
+            'authorization': 'Token ' + token
           })
         }
       }
