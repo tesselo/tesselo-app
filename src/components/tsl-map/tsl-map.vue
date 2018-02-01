@@ -46,7 +46,6 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
-      token: state => state.auth.token,
       authenticated: state => state.auth.authenticated
     }),
     mapOptions: function() {
