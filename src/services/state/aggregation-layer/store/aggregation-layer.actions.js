@@ -11,7 +11,10 @@ export default {
   [actionTypes.AGGREGATION_LAYER_GET] (context, options) {
     return APIAdapter.services.aggregationLayer.get(options)
       .then((response) => {
-        context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYERS, response)
+        context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYERS, {
+          ...response,
+          page: options.page
+        })
       })
   },
   /**

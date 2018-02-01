@@ -11,7 +11,8 @@ export default {
     previous: null,
     pageSize: 10,
     rows: [],
-    selectedLayer: null
+    selectedLayer: null,
+    currentPage: 1
   },
   mutations,
   actions,
