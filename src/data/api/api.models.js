@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from '@/services/util'
 
 export const formatError = (errors) => ({
   nonFieldErrors: errors['non_field_errors']
@@ -38,5 +39,43 @@ export const formatFormulaResults = (rows) => {
     maxVal: row.max_val,
     breaks: row.breaks,
     colorPalette: row.color_palette
+  }))
+}
+
+
+export const formatCompositesList = (rows, options) => {
+  return rows.map((row, index)=> ({
+    index,
+    id: row.id,
+    allZones: row.allZones,
+    active: row.active,
+    official: row.official,
+    rasterlayerLookup: row.rasterlayer_lookup,
+    startWeek: row.startWeek,
+    maxDate: row.max_date,
+    minDate: row.min_date,
+    interval: row.interval,
+    type: row.interval,
+    name: row.name,
+    nameToShow: capitalizeFirstLetter(
+      row.name
+        .toLowerCase()
+        .replace('week', '')
+        .replace('month', '')
+        .replace(options.yearToRemove, '')
+    ).substring(0, 3),
+  }))
+}
+
+export const formatUniquesList = (rows) => {
+  return rows.map((row, index)=> ({
+    index,
+    id: row.id,
+    active: row.active,
+    date: row.date,
+    rasterlayerLookup: row.rasterlayer_lookup,
+    name: row.date + ' Scene',
+    nameToShow: index + 1,
+    type: 'unique'
   }))
 }

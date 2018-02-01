@@ -1,41 +1,58 @@
 <template>
   <div class="selector-time-dimension">
-    <div class="header d-flex flex-row justify-content-between align-items-center">
-      <a
-        href="javascript:void(0)"
-        class="navigator d-flex flex-column justify-content-center align-items-center">
-        <svg
-          class="arrow-left"
-          width="18"
-          height="18"
-          x="0px"
-          y="0px"
-          viewBox="0 0 55.271 125">
-          <path
-            fill="#000000"
-            d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
-          />
-        </svg>
-      </a>
-      <div class="header-text">
-        <div class="header__current-time">Jan 2018</div>
-        <div class="header__time-type">Monthly Composite</div>
+    <div 
+      :class="['header d-flex flex-row align-items-center', {
+        'justify-content-between': selectedMoment,
+        'justify-content-center': !selectedMoment
+    }]">
+      <div class="navigator-wrapper">
+        <a
+          v-if="selectedMoment"
+          href="javascript:void(0)"
+          @click="selectPreviousMoment"
+          class="navigator d-flex flex-column justify-content-center align-items-center">
+          <svg
+            class="arrow-left"
+            width="18"
+            height="18"
+            x="0px"
+            y="0px"
+            viewBox="0 0 55.271 125">
+            <path
+              fill="#000000"
+              d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
+            />
+          </svg>
+        </a>
       </div>
-      <a
-        href="javascript:void(0)"
-        class="navigator d-flex flex-column justify-content-center align-items-center">
-        <svg
-          width="18"
-          height="18"
-          x="0px"
-          y="0px"
-          viewBox="0 0 55.271 125">
-          <path
-            fill="#000000"
-            d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
-          />
-        </svg>
-      </a>
+      <div class="header-text">
+        <div v-if="selectedMoment">
+          <div class="header__current-time">{{ selectedMoment.name }}</div>
+          <div class="header__time-type">{{ currentTimeType }} Composite</div>
+        </div>
+        <div
+          v-else
+          class="spinner twilight" />
+      </div>
+      <div class="navigator-wrapper">
+        <a
+          v-if="showNextButton"
+          @click="selectNextMoment"
+          href="javascript:void(0)"
+          class="navigator d-flex flex-column justify-content-center align-items-center">
+          <svg
+            width="18"
+            height="18"
+            x="0px"
+            y="0px"
+            viewBox="0 0 55.271 125">
+            <path
+              fill="#000000"
+              d="M5.271,100c-1.349,0-2.697-0.515-3.727-1.544c-2.059-2.059-2.059-5.395,0-7.454L42.546,50L1.544,8.998  c-2.059-2.059-2.059-5.395,0-7.454s5.395-2.059,7.454,0l44.729,44.729c2.059,2.059,2.059,5.395,0,7.454L8.998,98.456  C7.969,99.485,6.62,100,5.271,100z"
+            />
+          </svg>
+        </a>
+      </div>
     </div>
     <div
       v-if="showPicker"
@@ -43,8 +60,9 @@
       <div class="picker__top-row d-flex flex-row justify-content-between">
         <div class="picker__year-select">
           <scrollable-tab-menu
+            @selected="setYear"
             :list="years"
-            :start-at-index="years.length - 1" />
+            :start-at-index="yearsListActiveIndex" />
         </div>
         <div class="picker__type-select d-flex flex-row justify-content-center align-items-center">
           <simple-toggle
@@ -54,49 +72,58 @@
         </div>
       </div>
     </div>
+
     <div
-      v-if="showPicker"
+      v-if="showPicker && !loading && momentsList && momentsList.length"
       class="d-flex flex-row justify-content-center text-center">
       <div
-        v-if="currentTimeType === 'Monthly'"
-        class="selector-time-dimension__items d-flex flex-row justify-content-between">
-        <a
-          href="javascript:void(0)"
-          v-for="month in months"
-          :key="month"
-          :title="month"
-          class="selector-time-dimension__item">
-          {{ month }}
-        </a>
-      </div>
-      <div
-        v-if="currentTimeType === 'Weekly'"
+        v-if="momentsList"
         class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
-        <a
-          href="javascript:void(0)"
-          v-for="(week, index) in weeks"
-          :key="week"
-          :title="week"
-          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': index === currentItemIndex }]">
-          {{ week }}
-        </a>
-      </div>
-      <div
-        v-if="currentTimeType === 'Scenes'"
-        class="selector-time-dimension__items d-flex flex-row flex-wrap justify-content-start">
-        <a
-          href="javascript:void(0)"
-          v-for="(scene, index) in scenes"
-          :key="scene"
-          :title="scene"
-          :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': index === currentItemIndex }]">
-          {{ scene }}
-        </a>
+        <el-popover
+          v-for="item in momentsList"
+          :key="item.id"
+          trigger="hover"
+          :title="popoverTitle(item)"
+          class="select-time-dimension__popover"
+          placement="top"
+          transition="none"
+          :open-delay="200">
+          <a
+            slot="reference"
+            href="javascript:void(0)"
+            @click="selectMoment(item)"
+            
+            :title="item.name"
+            :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]">
+            {{ item.nameToShow }}
+          </a>
+        </el-popover>
       </div>
     </div>
+
+    <div
+      v-if="showPicker && loading"
+      class="spinner-panel">
+      <div class="spinner-wrapper">
+        <div class="spinner twilight" />
+      </div>
+    </div>
+
+    <div
+      v-if="!loading && momentsList && momentsList.length === 0 && showPicker"
+      class="no-results-panel text-center d-flex flex-row justify-content-center align-items-center">
+      <h1>No results to display.</h1>
+    </div>
+
+    <!-- <pre class="pre">yearsListActiveIndex : {{ yearsListActiveIndex }}</pre> -->
   </div>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex'
+import { actionTypes } from '@/services/constants'
+import { Popover as ElPopover } from 'element-ui'
+import 'element-ui/lib/theme-chalk/popover.css'
+
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
 import SimpleToggle from '@/components/simple-toggle/simple-toggle'
 
@@ -104,7 +131,8 @@ export default {
   name: 'SelectorTimeDimension',
   components: {
     ScrollableTabMenu,
-    SimpleToggle
+    SimpleToggle,
+    ElPopover
   },
   props: {
     showPicker: {
@@ -117,42 +145,133 @@ export default {
     return {
       timeTypes: ['Monthly', 'Weekly', 'Scenes'],
       currentTimeType: 'Monthly',
-      currentItemIndex: 10
+      currentItemIndex: 10,
+      loading: false,
+      year: 2018
     }
   },
   computed: {
-    months: () => {
-      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
-    years: () => {
-      let years = []
-      for(let i = 0; i <= 30; i++) {
-        years.push({ label: 1988 + i })
+    ...mapState({
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      momentsList: state => state.time.list,
+      selectedMoment: state => state.time.selectedMoment
+    }),
+    years() {
+      const years = []
+      for (let i = 0; i <= 30; i++) {
+        years.push({ label: 1988 + i})
       }
       return years
     },
-    weeks: () => {
-      let weeks = []
-
-      for (let i = 1; i <= 52; i++) {
-        weeks.push(i)
-      }
-
-      return weeks
+    yearsListActiveIndex() {
+      let currentIndex
+      this.years.forEach((year, index) => {
+        if (year.label === this.year) {
+          currentIndex = index
+        }
+      })
+      return currentIndex
     },
-    scenes: () => {
-      let scenes = []
-
-      for (let i = 1; i <= 140; i++) {
-        scenes.push(i)
+    showPreviousButton() {
+      if (!this.selectedMoment) {
+        return false
       }
 
-      return scenes
+      const isFirstItemInList = this.selectedMoment.index === 0
+      const isFirstYear = this.yearsListActiveIndex === 0
+      const isFirstItem = isFirstItemInList && isFirstYear
+      return this.selectedMoment && !isFirstItem
+    },
+    showNextButton() {
+      if (!this.selectedMoment) {
+        return false
+      }
+
+      const isLastItemInList = this.selectedMoment.index === this.momentsList.length - 1
+      const isLastYear = this.yearsListActiveIndex === this.years.length - 1
+      const isLastItem = isLastItemInList && isLastYear
+      return this.selectedMoment && !isLastItem
     }
   },
+  mounted() {
+    this.getList('Monthly', 'last')
+  },
   methods: {
+    ...mapActions('time', {
+      getListAction: actionTypes.TIME_GET_LIST,
+      selectMomentAction: actionTypes.TIME_SELECT_MOMENT
+    }),
+    getList(interval, autoSelect) {
+      this.loading = true
+
+      this.getListAction({
+        params: {
+          interval,
+          aggregationlayer: this.selectedLayer.id,
+          year: this.year  
+        },
+        autoSelect
+      })
+      .then(() => {
+        this.loading = false
+      })
+    },
     setTimeType(newType) {
+      if (this.currentTimeType === newType) {
+        return
+      }
+
       this.currentTimeType = newType
+      this.update('last')
+    },
+    setYear(newYear) {
+      this.year = newYear.label
+      this.update('last')
+    },
+    update(autoSelect) {
+      this.getList(this.currentTimeType, autoSelect)
+    },
+    selectMoment(moment) {
+      this.selectMomentAction(moment)
+    },
+    selectPreviousMoment() {
+      const currentIndex = this.selectedMoment.index
+
+      if (this.momentsList.length) {
+        if (currentIndex === 0) {
+          this.year = this.year - 1;
+          this.update('last')
+        } else {
+          this.selectMoment(this.momentsList[currentIndex - 1])
+        }
+      } else {
+        this.year = this.year - 1;
+        this.update('first')
+      }
+    },
+    selectNextMoment() {
+      const currentIndex = this.selectedMoment.index
+
+      if (this.momentsList.length) {
+        const isLast = currentIndex === this.momentsList.length - 1
+  
+        if (isLast) {
+          this.year = this.year + 1;
+          this.update('first')
+        } else {
+          this.selectMoment(this.momentsList[currentIndex + 1])
+        }
+      } else {
+        this.year = this.year + 1;
+        this.update('first')
+      }
+    },
+    popoverTitle(item) {
+      if (item.type === 'Weekly' || item.type === 'Monthly') {
+        return item.minDate + ' to ' + item.maxDate
+      } else {
+        return item.date
+      }
     }
   }
 }
@@ -174,6 +293,11 @@ export default {
     height: 18px;
   }
 
+  .navigator-wrapper {
+    width: 30px;
+    height: 100;
+  }
+
   .navigator {
     padding: 5px;
     align-self: stretch;
@@ -193,6 +317,11 @@ export default {
 
   .header-text {
     text-align: center;
+
+    .spinner {
+      width: 26px;
+      height: 26px;
+    }
   }
   
   .header__current-time {
@@ -252,5 +381,30 @@ export default {
         background-color: lighten($booger, 4%);
       }
     }
+  }
+
+  .no-results-panel {
+    height: 220px;
+    width: 100%;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .spinner-panel {
+    position: relative;
+    height: 220px;
+    width: 100%;
+  }
+
+  .spinner-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 30px;
+    height: 30px;
   }
 </style>

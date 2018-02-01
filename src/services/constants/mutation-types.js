@@ -29,3 +29,9 @@ export const FORMULA_SELECT_FORMULA = 'selectFormula'
  * MAP
  * ---------------------------------- */
 export const MAP_SET_BOUNDS = 'setMapBounds'
+
+/* -------------------------------------
+ * TIME
+ * ---------------------------------- */
+ export const TIME_SET_LIST = 'setList'
+ export const TIME_SET_SELECTED_MOMENT = 'setSelectedMoment'

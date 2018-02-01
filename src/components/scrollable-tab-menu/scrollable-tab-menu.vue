@@ -53,8 +53,6 @@
 </template>
 
 <script>
-  // import schema from './cj-scrollable-tab-menu.schema'
-  import TslButton from '@/components/tsl-button/tsl-button'
   import TWEEN from '@tweenjs/tween.js'
 
   /**
@@ -62,14 +60,7 @@
    * @type {Number} When an element is selected, an event called <code>selected</code> is emmited with the index of selected element as argument.
    */
   export default {
-    name: 'CjScrollableTabMenu',
-
-    // == Components
-    components: {
-      TslButton
-    },
-
-    // == Props
+    name: 'ScrollableTabMenu',
     props: {
       /**
        * Array of strings or objects with the text to show on tabs.
@@ -111,6 +102,12 @@
         rightGap: 55, // 50px of arrow width plus 5px of gap,
         scrollTime: 500,
         listIsArray: false
+      }
+    },
+
+    watch: {
+      startAtIndex(newValue) {
+        this.activeElementIndex = newValue
       }
     },
 
@@ -277,7 +274,6 @@
         }
 
         this.activeElementIndex = index
-        console.log('active', this.activeElementIndex)
         return this.$emit('selected', this.list[index], index)
       },
 

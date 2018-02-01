@@ -6,6 +6,7 @@ import auth from '@/services/state/auth/store'
 import aggregationLayer from '@/services/state/aggregation-layer/store'
 import formula from '@/services/state/formula/store'
 import map from '@/services/state/map/store'
+import time from '@/services/state/time/store'
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -17,7 +18,8 @@ export const storeOptions = {
     auth,
     aggregationLayer,
     map,
-    formula
+    formula,
+    time
   },
   strict: debug
 }
