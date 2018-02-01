@@ -53,7 +53,6 @@
 </template>
 
 <script>
-  // import TslButton from '@/components/tsl-button/tsl-button'
   import TWEEN from '@tweenjs/tween.js'
 
   /**
@@ -62,13 +61,6 @@
    */
   export default {
     name: 'ScrollableTabMenu',
-
-    // // == Components
-    // components: {
-    //   TslButton
-    // },
-
-    // == Props
     props: {
       /**
        * Array of strings or objects with the text to show on tabs.
@@ -97,12 +89,6 @@
       }
     },
 
-    watch: {
-      startAtIndex(newValue) {
-        this.activeElementIndex = newValue
-      }
-    },
-
     // == Data
     data () {
       return {
@@ -116,6 +102,12 @@
         rightGap: 55, // 50px of arrow width plus 5px of gap,
         scrollTime: 500,
         listIsArray: false
+      }
+    },
+
+    watch: {
+      startAtIndex(newValue) {
+        this.activeElementIndex = newValue
       }
     },
 
