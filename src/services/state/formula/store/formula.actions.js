@@ -11,7 +11,10 @@ export default {
   [actionTypes.FORMULA_GET] (context, options) {
     return APIAdapter.services.formula.get(options)
       .then((response) => {
-        context.commit(mutationTypes.FORMULA_SET_FORMULAS, response)
+        context.commit(mutationTypes.FORMULA_SET_FORMULAS, {
+          ...response,
+          page: options.page
+        })
       })
   },
   /**

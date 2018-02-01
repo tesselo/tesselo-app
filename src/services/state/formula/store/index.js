@@ -9,7 +9,8 @@ export default {
     previous: null,
     pageSize: 10,
     rows: [],
-    selectedFormula: null
+    selectedFormula: null,
+    currentPage: 1
   },
   mutations,
   actions

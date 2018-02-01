@@ -2,7 +2,7 @@ import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/data/api'
 
 export default {
-[actionTypes.TIME_GET_LIST] (context, options) {
+  [actionTypes.TIME_GET_LIST] (context, options) {
     let apiCall
 
     if (['Monthly', 'Weekly'].indexOf(options.params.interval) !== -1) {

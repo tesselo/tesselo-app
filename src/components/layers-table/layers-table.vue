@@ -35,6 +35,7 @@
       v-if="total"
       :total="total"
       :page-size="pageSize"
+      :current-page="currentPage"
       layout="prev, pager, next"
       @current-change="selectPage" />
   </div>
@@ -74,11 +75,14 @@ export default {
       rows: state => state.formula.rows,
       next: state => state.formula.next,
       previous: state => state.formula.previous,
-      selectedFormula: state => state.formula.selectedFormula
+      selectedFormula: state => state.formula.selectedFormula,
+      currentPage: state => state.formula.currentPage
     })
   },
   beforeMount() {
-    this.getFormulas({page: 1})
+    if (this.rows.length === 0) {
+      this.getFormulas({ page: this.currentPage })
+    }
   },
   methods: {
     ...mapActions('formula', {
