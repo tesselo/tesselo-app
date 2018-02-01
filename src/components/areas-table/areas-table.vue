@@ -26,6 +26,7 @@
       v-if="total"
       :total="total"
       :page-size="pageSize"
+      :current-page="currentPage"
       layout="prev, pager, next"
       @current-change="selectPage" />
   </div>
@@ -65,11 +66,14 @@ export default {
       rows: state => state.aggregationLayer.rows,
       next: state => state.aggregationLayer.next,
       previous: state => state.aggregationLayer.previous,
-      selectedLayer: state => state.aggregationLayer.selectedLayer
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      currentPage: state => state.aggregationLayer.currentPage
     })
   },
   beforeMount() {
-    this.getAggregationLayers({page: 1})
+    if (this.rows.length === 0 ){
+      this.getAggregationLayers({page: this.currentPage})
+    }
   },
   methods: {
     ...mapActions('aggregationLayer', {
