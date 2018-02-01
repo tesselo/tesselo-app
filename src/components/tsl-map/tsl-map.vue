@@ -75,7 +75,7 @@ export default {
       return endpoints.map.vector(this.selectedLayer.id)
     },
     algebraUrl() {
-      return endpoints.map.algebra(this.selectedFormula)
+      return endpoints.map.algebra(this.selectedFormula, this.selectedMoment)
     }
   },
   watch: {

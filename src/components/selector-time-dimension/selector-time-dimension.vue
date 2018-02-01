@@ -110,7 +110,7 @@
     </div>
 
     <div
-      v-if="!loading && momentsList && momentsList.length === 0"
+      v-if="!loading && momentsList && momentsList.length === 0 && showPicker"
       class="no-results-panel text-center d-flex flex-row justify-content-center align-items-center">
       <h1>No results to display.</h1>
     </div>
