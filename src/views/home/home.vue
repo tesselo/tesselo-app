@@ -12,14 +12,19 @@
     <div class="menu">
       <multi-option-toggle
         ref="panelSelector"
-        :items="menuItems"
+        :items="mainMenu"
         @change="changeVisiblePanel" />
+    </div>
+    <div class="report-menu">
+      <multi-option-toggle
+        :items="reportMenu"
+        @change="reportMenuClick" />
     </div>
     <div class="panels-wrapper">
       <panel
         v-if="activePanel === 'areas'"
         title="Areas"
-        @close="closePanel('areas')">
+        @close="closeAllPanels()">
         <areas-table
           @select="areasTableSelect"
           slot="content" />
@@ -27,10 +32,16 @@
       <panel
         v-if="activePanel === 'layers'"
         title="Layers"
-        @close="closePanel('areas')">
+        @close="closeAllPanels()">
         <layers-table
           @select="layersTableSelect"
           slot="content" />
+      </panel>
+      <panel
+        v-if="activePanel === 'individual-report'"
+        title="Individual Report"
+        @close="closeAllPanels()">
+        <individual-report slot="content" />
       </panel>
     </div>
     <div
@@ -58,6 +69,7 @@ import AreasTable from '@/components/areas-table/areas-table'
 import LayersTable from '@/components/layers-table/layers-table'
 import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
 import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
+import IndividualReport from '@/components/individual-report/individual-report'
 
 export default {
   name: 'Home',
@@ -69,12 +81,13 @@ export default {
     AreasTable,
     LayersTable,
     CollapsiblePanel,
-    SelectorTimeDimension
+    SelectorTimeDimension,
+    IndividualReport
   },
   data() {
     return {
       loggingOut: false,
-      menuItems: [
+      mainMenu: [
         {
           title: 'Areas',
           icon: 'crosshair',
@@ -84,6 +97,32 @@ export default {
           title: 'Layers',
           icon: 'layers',
           key: 'layers',
+          selected: false
+        }
+      ],
+      reportMenu: [
+        {
+          title: 'Export to PDF',
+          icon: 'pdf',
+          key: 'export-pdf',
+          selected: false,
+          hide: true
+        }, {
+          title: 'Save Report',
+          icon: 'save',
+          key: 'save-report',
+          selected: false,
+          hide: true
+        }, {
+          title: 'Report History',
+          icon: 'report',
+          key: 'report-history',
+          selected: false,
+          hide: true
+        }, {
+          title: 'Create Report',
+          icon: 'report',
+          key: 'create-report',
           selected: false
         }
       ],
@@ -113,16 +152,18 @@ export default {
           this.$router.push({ name: 'Login' })
         })
     },
-    closePanel() {
+    closeAllPanels() {
       this.activePanel = ''
       this.$refs.panelSelector.unsetActive()
+      this.hideReportButtons()
     },
     changeVisiblePanel(activePanel) {
+      this.closeAllPanels()
       this.activePanel = activePanel
     },
     areasTableSelect(area) {
-      this.closePanel()
-      this.menuItems = this.menuItems.map((item) => {
+      this.closeAllPanels()
+      this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'areas') {
           item.selected = true
           item.title = area.name
@@ -132,9 +173,9 @@ export default {
       })
     },
     layersTableSelect(layer) {
-      this.closePanel()
+      this.closeAllPanels()
 
-      this.menuItems = this.menuItems.map((item) => {
+      this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'layers') {
           item.selected = true
           item.title = layer.acronym
@@ -142,9 +183,29 @@ export default {
 
         return item
       })
+      this.hideReportButtons()
     },
     toggleSTDPanel() {
       this.stdPanelVisible = !this.stdPanelVisible
+    },
+    reportMenuClick() {
+      this.showReportButtons()
+    },
+    showReportButtons() {
+      this.$refs.panelSelector.unsetActive()
+      this.activePanel = 'individual-report'
+      this.reportMenu = this.reportMenu.map(item => ({
+        ...item,
+        hide: false,
+        selected: item.key === 'create-report'
+      }))
+    },
+    hideReportButtons() {
+      this.reportMenu = this.reportMenu.map(item => ({
+        ...item,
+        hide: item.key !== 'create-report',
+        selected: false
+      }))
     }
   }
 }
@@ -160,6 +221,13 @@ export default {
   .menu {
     position: absolute;
     top: 65px;
+    left: 25px;
+    z-index: z('content');
+  }
+
+  .report-menu {
+    position: absolute;
+    bottom: 40px;
     left: 25px;
     z-index: z('content');
   }
@@ -184,7 +252,7 @@ export default {
   .selector-time-dimension-pannel {
     position: absolute;
     bottom: 40px;
-    left: 200px;
+    left: 240px;
     z-index: z('content');
   }
 </style>

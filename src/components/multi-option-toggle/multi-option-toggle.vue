@@ -2,6 +2,7 @@
   <div>
     <multi-option-toggle-button
       v-for="(item, index) in buttons"
+      v-if="!item.hide"
       :key="item.title"
       :title="item.title"
       :icon="item.icon"
@@ -41,6 +42,7 @@ export default {
   },
   methods: {
     setActive(activeIndex) {
+      console.log('setActive', activeIndex)
       this.activeIndex = activeIndex
       this.$emit('change', this.items[activeIndex].key)
       this.buttons = this.buttons.map((item, itemIndex) => ({
@@ -50,6 +52,7 @@ export default {
     },
     unsetActive() {
       this.activeIndex = null
+      console.log('unsetActive 2', this.activeIndex)
       this.buttons = this.buttons.map((item) => ({
         ...item,
         active: false
