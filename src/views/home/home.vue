@@ -4,11 +4,11 @@
       src="/static/logo/logo-simple.svg"
       alt="Tesselo Logo"
       class="logo">
-    <tsl-button
+    <!-- <tsl-button
       class="logout-button"
       title="Logout"
       :loading="loggingOut"
-      @click="logout" />
+      @click="logout" /> -->
     <div class="menu">
       <multi-option-toggle
         ref="panelSelector"
@@ -58,8 +58,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-import { actionTypes } from '@/services/constants'
+import { mapState } from 'vuex'
 
 import TslMap from '@/components/tsl-map/tsl-map'
 import TslButton from '@/components/tsl-button/tsl-button'
@@ -142,16 +141,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('auth', {
-      logoutAction: actionTypes.AUTH_LOGOUT
-    }),
-    logout() {
-      this.loggingOut = true
-      this.logoutAction({})
-        .then(() => {
-          this.$router.push({ name: 'Login' })
-        })
-    },
+
     closeAllPanels() {
       this.activePanel = ''
       this.$refs.panelSelector.unsetActive()
@@ -220,7 +210,7 @@ export default {
 
   .menu {
     position: absolute;
-    top: 65px;
+    top: 50px;
     left: 25px;
     z-index: z('content');
   }
