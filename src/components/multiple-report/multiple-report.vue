@@ -1,17 +1,17 @@
 <template>
-  <div class="individual-report">
-    <div class="individual-report__header d-flex flex-row justify-content-between">
-      <div class="individual-report__header-item">
-        <div class="individual-report__header-label">Layer</div>
-        <div class="individual-report__header-title">{{ selectedLayer.name }}</div>
+  <div class="multiple-report">
+    <div class="multiple-report__header d-flex flex-row justify-content-between">
+      <div class="multiple-report__header-item">
+        <div class="multiple-report__header-label">Layer</div>
+        <div class="multiple-report__header-title">{{ selectedLayer.name }}</div>
       </div>
-      <div class="individual-report__header-item">
-        <div class="individual-report__header-label">Moment</div>
-        <div class="individual-report__header-title">{{ selectedMoment.nameToShow }}</div>
+      <div class="multiple-report__header-item">
+        <div class="multiple-report__header-label">Moment</div>
+        <div class="multiple-report__header-title">{{ selectedMoment.nameToShow }}</div>
       </div>
-      <div class="individual-report__header-item">
-        <div class="individual-report__header-label">Formula</div>
-        <div class="individual-report__header-title">{{ selectedFormula.formula }}</div>
+      <div class="multiple-report__header-item">
+        <div class="multiple-report__header-label">Formula</div>
+        <div class="multiple-report__header-title">{{ selectedFormula.formula }}</div>
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'IndividualReport',
+  name: 'MultipleReport',
   computed: {
     ...mapState({
       selectedLayer: state => state.aggregationLayer.selectedLayer,
@@ -32,11 +32,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 
-  .individual-report {
+  .multiple-report {
     min-width: 500px;
   }
 
-  .individual-report__header {
+  .multiple-report__header {
     width: 100%;
     margin-top: 20px;
 

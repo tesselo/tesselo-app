@@ -33,10 +33,10 @@
           slot="content" />
       </panel>
       <panel
-        v-if="activePanel === 'individual-report'"
-        title="Individual Report"
+        v-if="activePanel === 'multiple-report'"
+        title="Multiple Region Report"
         @close="closeAllPanels()">
-        <individual-report slot="content" />
+        <multiple-report slot="content" />
       </panel>
     </div>
     <div
@@ -63,7 +63,7 @@ import AreasTable from '@/components/areas-table/areas-table'
 import LayersTable from '@/components/layers-table/layers-table'
 import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
 import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
-import IndividualReport from '@/components/individual-report/individual-report'
+import MultipleReport from '@/components/multiple-report/multiple-report'
 
 export default {
   name: 'Home',
@@ -76,7 +76,7 @@ export default {
     LayersTable,
     CollapsiblePanel,
     SelectorTimeDimension,
-    IndividualReport
+    MultipleReport
   },
   data() {
     return {
@@ -178,7 +178,7 @@ export default {
     },
     showReportButtons() {
       this.$refs.panelSelector.unsetActive()
-      this.activePanel = 'individual-report'
+      this.activePanel = 'multiple-report'
       this.reportMenu = this.reportMenu.map(item => ({
         ...item,
         hide: false,
