@@ -4,11 +4,6 @@
       src="/static/logo/logo-simple.svg"
       alt="Tesselo Logo"
       class="logo">
-    <!-- <tsl-button
-      class="logout-button"
-      title="Logout"
-      :loading="loggingOut"
-      @click="logout" /> -->
     <div class="menu">
       <multi-option-toggle
         ref="panelSelector"
