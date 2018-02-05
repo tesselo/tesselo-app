@@ -2,6 +2,7 @@
   <div>
     <multi-option-toggle-button
       v-for="(item, index) in buttons"
+      v-if="!item.hide"
       :key="item.title"
       :title="item.title"
       :icon="item.icon"
