@@ -37,9 +37,8 @@ export const getRegion = function(region, axiosInstance = client) {
  * @param {Array} regions
  * @param {any} [axiosInstance=client] 
  */
-export const getMultipleRegions = function(regions, axiosInstance = client) {
-  const promises = regions.map(region => getRegion(region))
-  return all(promises)
+export const getMultipleRegions = function(regions) {
+  return all(regions.map(region => getRegion(region)))
 }
 
 export default {
