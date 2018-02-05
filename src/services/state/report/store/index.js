@@ -5,7 +5,8 @@ import actions from './report.actions'
 export default {
   namespaced: true,
   state: {
-    reports: {}
+    reports: {},
+    selectedReport: null
   },
   mutations,
   actions

@@ -10,10 +10,9 @@ export const createRegionReport = function(region, axiosInstance = client) {
       acres: true,
       grouping: 'continuous'
     })
-    .then(({ data }) => {
-      resolve(data.results[0])
+    .then((response) => {
+      resolve(response.data)
     })
-
   })
 }
 

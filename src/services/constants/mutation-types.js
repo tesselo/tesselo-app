@@ -40,3 +40,4 @@ export const MAP_SET_BOUNDS = 'setMapBounds'
  * Report
  * ---------------------------------- */
 export const REPORT_SET_MULTIPLE_REGION = 'setMultipleRegionReport'
+export const REPORT_SET_SELECTED_MULTIPLE_REPORT = 'setSelectedMultipleReport'

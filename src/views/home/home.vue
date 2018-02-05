@@ -144,6 +144,7 @@ export default {
     },
     changeVisiblePanel(activePanel) {
       this.closeAllPanels()
+      this.stdPanelVisible = false
       this.activePanel = activePanel
     },
     areasTableSelect(area) {
@@ -172,13 +173,16 @@ export default {
     },
     toggleSTDPanel() {
       this.stdPanelVisible = !this.stdPanelVisible
+      this.closeAllPanels()
     },
     reportMenuClick() {
+      this.stdPanelVisible = false
+      this.$refs.panelSelector.unsetActive()
+      this.activePanel = 'multiple-report'
       this.showReportButtons()
     },
     showReportButtons() {
-      this.$refs.panelSelector.unsetActive()
-      this.activePanel = 'multiple-report'
+
       this.reportMenu = this.reportMenu.map(item => ({
         ...item,
         hide: false,

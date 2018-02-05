@@ -11,6 +11,7 @@ export const APP_SET_LOADING = 'setLoading'
  * Auth
  * ---------------------------------- */
 export const AUTH_LOGIN = 'login'
+export const AUTH_START = 'start'
 export const AUTH_LOGOUT = 'logout'
 
 /* -------------------------------------

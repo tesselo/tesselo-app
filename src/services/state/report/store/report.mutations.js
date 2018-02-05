@@ -18,6 +18,10 @@ export default {
       moment,
       report: response
     }
+    state.selectedReport = reportKey
+  },
+  [mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT]  (state, key) {
+    state.selectedReport = key
   }
 }
 

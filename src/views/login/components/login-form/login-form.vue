@@ -90,6 +90,8 @@ export default {
       login: actionTypes.AUTH_LOGIN
     }),
     submitForm: function() {
+      console.log('submitForm', this.username, this.password, this.login)
+
       this.loading = true
 
       this.formErrors = { // todo create cleanFormErrors mixin for form components
