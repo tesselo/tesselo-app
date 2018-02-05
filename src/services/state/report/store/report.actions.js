@@ -12,8 +12,6 @@ export default {
    * @param {any} { layer, formula, moment} 
    */
   [actionTypes.REPORT_GET_MULTIPLE_REGION] (context, { layer, formula, moment }) {
-    console.log('REPORT_GET_MULTIPLE_REGION');
-
     const objectKey = hash({ layer, formula, moment })
 
     if (context.state.reports[objectKey]) {
