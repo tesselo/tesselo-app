@@ -11,15 +11,20 @@ export default {
    * @param {any} context 
    * @param {any} { layer, formula, moment} 
    */
-  [actionTypes.REPORT_GET_MULTIPLE_REGION] (context, { layer, formula, moment, loadFromMemory }) {
+  [actionTypes.REPORT_GET_MULTIPLE_REGION] (context, { layer, formula, moment }) {
     console.log('REPORT_GET_MULTIPLE_REGION');
 
     const objectKey = hash({ layer, formula, moment })
 
-    // if (context.state.reports[objectKey] && loadFromMemory) {
-    //   context.commit(mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT, objectKey)
-    //   return Promise.resolve()
-    // }
+    if (context.state.reports[objectKey]) {
+
+      const finished = context.state.reports[objectKey].report.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
+
+      if (finished) {
+        context.commit(mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT, objectKey)
+        return Promise.resolve()
+      }
+    }
     
 
     let areaFormulaBands = {}

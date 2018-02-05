@@ -28,7 +28,7 @@
     </div>
     <div
       class="report-unfinished d-flex flex-column justify-content-center align-items-center"
-      v-if="!reportFinished">
+      v-if="!reportFinished && !loading">
       <h2>The selected report is not ready yet.</h2>
       <p>Trying again in {{ secondsToRetry }} seconds</p>
     </div>
@@ -185,6 +185,16 @@ export default {
   .report-unfinished {
     width: 100%;
     height: 300px;
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 24px;
+      margin-top: 8px;
+    }
   }
 
 </style>
