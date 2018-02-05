@@ -5,7 +5,7 @@ import actions from './report.actions'
 export default {
   namespaced: true,
   state: {
-    reports: []
+    reports: {}
   },
   mutations,
   actions

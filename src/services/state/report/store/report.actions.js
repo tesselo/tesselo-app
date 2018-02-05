@@ -28,7 +28,12 @@ export default {
     return APIAdapter.services.report.getMultipleRegions(areas)
       .then((response) => {
         console.log(response)
-        context.commit(mutationTypes.REPORT_SET_MULTIPLE_REGION, response)
+        context.commit(mutationTypes.REPORT_SET_MULTIPLE_REGION, {
+          layer,
+          formula,
+          moment,  
+          response
+        })
       })
 
   }

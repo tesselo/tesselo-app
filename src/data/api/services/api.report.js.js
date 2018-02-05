@@ -4,10 +4,16 @@ import client from '@/data/api/api.client'
 
 
 export const createRegionReport = function(region, axiosInstance = client) {
-  return axiosInstance[endpoints.report.createRegionReport.method](endpoints.report.createRegionReport.url, {
-    ...region,
-    acres: true,
-    grouping: 'continuous'
+  return new Promise((resolve) => {
+    axiosInstance[endpoints.report.createRegionReport.method](endpoints.report.createRegionReport.url, {
+      ...region,
+      acres: true,
+      grouping: 'continuous'
+    })
+    .then(({ data }) => {
+      resolve(data.results[0])
+    })
+
   })
 }
 
