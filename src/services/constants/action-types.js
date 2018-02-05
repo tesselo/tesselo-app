@@ -36,3 +36,8 @@ export const MAP_SET_BOUNDS = 'setMapBounds'
  * ---------------------------------- */
 export const TIME_GET_LIST = 'getList'
 export const TIME_SELECT_MOMENT = 'selectMoment'
+
+/* -------------------------------------
+ * Report
+ * ---------------------------------- */
+export const REPORT_GET_MULTIPLE_REGION = 'getMultipleRegionReport'

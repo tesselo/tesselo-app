@@ -18,7 +18,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import { actionTypes } from '@/services/constants'
+
 export default {
   name: 'MultipleReport',
   computed: {
@@ -26,6 +28,19 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment
+    })
+  },
+  mounted() {
+    // get report for current match of selections
+    this.getMultipleRegionReportAction({
+      layer: this.selectedLayer,
+      formula: this.selectedFormula,
+      moment: this.selectedMoment
+    })
+  },
+  methods: {
+    ...mapActions('report', {
+      getMultipleRegionReportAction: actionTypes.REPORT_GET_MULTIPLE_REGION
     })
   }
 }
