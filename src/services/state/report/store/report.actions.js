@@ -14,9 +14,9 @@ export default {
   [actionTypes.REPORT_GET_MULTIPLE_REGION] (context, { layer, formula, moment }) {
     const objectKey = hash({ layer, formula, moment })
 
-    if (context.state.reports[objectKey]) {
-
-      const finished = context.state.reports[objectKey].report.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
+    if (context.state.reports[objectKey] || context.state.savedReports[objectKey]) {
+      const report = context.state.reports[objectKey] || context.state.savedReports[objectKey]
+      const finished = report.results.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
 
       if (finished) {
         context.commit(mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT, objectKey)
@@ -49,6 +49,11 @@ export default {
           response
         })
       })
-
+  },
+  [actionTypes.REPORT_SAVE_MULTIPLE_REGION] (context) {
+    context.commit(mutationTypes.REPORT_SAVE_SELECTED_MULTIPLE_REPORT)
+  },
+  [actionTypes.REPORT_SELECT_MULTIPLE_REGION] (context, key) {
+    context.commit(mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT, key)
   }
 }

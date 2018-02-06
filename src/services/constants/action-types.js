@@ -42,3 +42,5 @@ export const TIME_SELECT_MOMENT = 'selectMoment'
  * Report
  * ---------------------------------- */
 export const REPORT_GET_MULTIPLE_REGION = 'getMultipleRegionReport'
+export const REPORT_SAVE_MULTIPLE_REGION = 'saveMultipleRegionReport'
+export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'

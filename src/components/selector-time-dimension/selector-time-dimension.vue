@@ -62,7 +62,7 @@
           <scrollable-tab-menu
             @selected="setYear"
             :list="years"
-            :start-at-index="yearsListActiveIndex" />
+            :start-at-index="yearsActiveIndex" />
         </div>
         <div class="picker__type-select d-flex flex-row justify-content-center align-items-center">
           <simple-toggle
@@ -114,8 +114,6 @@
       class="no-results-panel text-center d-flex flex-row justify-content-center align-items-center">
       <h1>No results to display.</h1>
     </div>
-
-    <!-- <pre class="pre">yearsListActiveIndex : {{ yearsListActiveIndex }}</pre> -->
   </div>
 </template>
 <script>
@@ -139,6 +137,11 @@ export default {
       type: Boolean,
       required: true,
       default: false
+    },
+    activeYear: {
+      type: Number,
+      required: true,
+      default: 2018
     }
   },
   data() {
@@ -147,14 +150,13 @@ export default {
       currentTimeType: 'Monthly',
       currentItemIndex: 10,
       loading: false,
-      year: 2018
     }
   },
   computed: {
     ...mapState({
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       momentsList: state => state.time.list,
-      selectedMoment: state => state.time.selectedMoment
+      selectedMoment: state => state.time.selectedMoment,
     }),
     years() {
       const years = []
@@ -162,15 +164,6 @@ export default {
         years.push({ label: 1988 + i})
       }
       return years
-    },
-    yearsListActiveIndex() {
-      let currentIndex
-      this.years.forEach((year, index) => {
-        if (year.label === this.year) {
-          currentIndex = index
-        }
-      })
-      return currentIndex
     },
     showPreviousButton() {
       if (!this.selectedMoment) {
@@ -183,7 +176,7 @@ export default {
       return this.selectedMoment && !isFirstItem
     },
     showNextButton() {
-      if (!this.selectedMoment) {
+      if (!this.selectedMoment || !this.momentsList) {
         return false
       }
 
@@ -193,8 +186,27 @@ export default {
       return this.selectedMoment && !isLastItem
     }
   },
+  watch: {
+    activeYear: {
+      immediate: true,
+      handler(newVal) {
+        this.year = newVal
+        this.setYearsActiveIndex()
+      }
+    }
+  },
   mounted() {
-    this.getList('Monthly', 'last')
+    let interval = 'Monthly'
+    let toSelect = 'last'
+
+    if (this.selectedMoment) {
+      console.log(1, this.selectedMoment, this.selectedMoment.year)
+      this.year = this.selectedMoment.year
+      interval = this.selectedMoment.interval
+      toSelect = null
+    }
+
+    this.getList(interval, toSelect)
   },
   methods: {
     ...mapActions('time', {
@@ -224,9 +236,10 @@ export default {
       this.currentTimeType = newType
       this.update('last')
     },
-    setYear(newYear) {
+    setYear(newYear, updateType) {
       this.year = newYear.label
-      this.update('last')
+      this.update(updateType)
+      this.$emit('year-change', newYear.label)
     },
     update(autoSelect) {
       this.getList(this.currentTimeType, autoSelect)
@@ -239,14 +252,12 @@ export default {
 
       if (this.momentsList.length) {
         if (currentIndex === 0) {
-          this.year = this.year - 1;
-          this.update('last')
+          this.setYear(this.year - 1, 'last')
         } else {
           this.selectMoment(this.momentsList[currentIndex - 1])
         }
       } else {
-        this.year = this.year - 1;
-        this.update('first')
+        this.setYear(this.year - 1, 'first')
       }
     },
     selectNextMoment() {
@@ -256,14 +267,12 @@ export default {
         const isLast = currentIndex === this.momentsList.length - 1
   
         if (isLast) {
-          this.year = this.year + 1;
-          this.update('first')
+          this.setYear(this.year + 1, 'first')
         } else {
           this.selectMoment(this.momentsList[currentIndex + 1])
         }
       } else {
-        this.year = this.year + 1;
-        this.update('first')
+        this.setYear(this.year + 1, 'first')
       }
     },
     popoverTitle(item) {
@@ -272,7 +281,16 @@ export default {
       } else {
         return item.date
       }
-    }
+    },
+    setYearsActiveIndex() {
+      let currentIndex
+      this.years.forEach((year, index) => {
+        if (year.label == this.year) {
+          this.yearsActiveIndex = index
+        }
+      })
+      return currentIndex
+    },
   }
 }
 </script>

@@ -19,7 +19,7 @@
       class="multiple-report__loading d-flex flex-row justify-content-center align-items-center">
       <div class="spinner twilight" />
     </div>
-    <div v-if="!loading && selectedReport && reportFinished">
+    <div v-if="!loading && selectedReport && finished">
       <bar-chart
         :width="500"
         :height="300"
@@ -28,7 +28,7 @@
     </div>
     <div
       class="report-unfinished d-flex flex-column justify-content-center align-items-center"
-      v-if="!reportFinished && !loading">
+      v-if="!finished && !loading">
       <h2>The selected report is not ready yet.</h2>
       <p>Trying again in {{ secondsToRetry }} seconds</p>
     </div>
@@ -48,8 +48,7 @@ export default {
   data() {
     return {
       loading: false,
-      secondsToRetry: null,
-      reportFinished: false
+      secondsToRetry: null
     }
   },
   computed: {
@@ -58,39 +57,51 @@ export default {
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
       selectedReport: state => state.report.selectedReport,
-      reports: state => state.report.reports
+      reports: state => ({
+        ...state.report.reports,
+        ...state.report.savedReports
+      })
     }),
     labels() {
-      return this.reports[this.selectedReport].report.map((reportItem) => reportItem.id)
+      return this.reports[this.selectedReport].results.map((reportItem) => reportItem.id)
     },
     datasets() {
       return [
         {
-          data: this.reports[this.selectedReport].report.map((reportItem) => reportItem.avg),
+          data: this.reports[this.selectedReport].results.map((reportItem) => reportItem.avg),
           label: 'Average',
           backgroundColor: '#aac343'
         }
       ]
     },
-
   },
   watch: {
-    selectedFormula() {
-      this.getReport()
+    selectedFormula: {
+      immediate: false,
+      handler() {
+        console.log(1)
+        this.getReport()
+      }
     },
-    selectedMoment() {
-      this.getReport()
+    selectedMoment: {
+      immediate: false,
+      handler() {
+        console.log(2)
+        this.getReport()
+      }
     },
-    selectedLayer() {
-      this.getReport()
-    },
-    report() {
-      console.log('report watcher')
-
+    selectedLayer: {
+      immediate: false,
+      handler() {
+        console.log(3)
+        this.getReport()
+      }
     }
   },
   mounted() {
-    this.getReport()
+    if (!this.reports[this.selectedReport]){
+      this.getReport()
+    }
   },
   beforeDestroy() {
     clearInterval(this.countdown)
@@ -100,19 +111,19 @@ export default {
       getMultipleRegionReportAction: actionTypes.REPORT_GET_MULTIPLE_REGION
     }),
     getReport() {
+      console.log('getReport', this.reports[this.selectedReport])
       this.loading = true
       clearInterval(this.countdown)
 
       this.getMultipleRegionReportAction({
         layer: this.selectedLayer,
         formula: this.selectedFormula,
-        moment: this.selectedMoment,
-        loadFromMemory: this.reportFinished
+        moment: this.selectedMoment
       })
       .then(() => {
         this.loading = false
 
-        if (!this.checkReportFinished()) {
+        if (!this.reports[this.selectedReport].finished) {
           this.secondsToRetry = 5
           this.countdown = setInterval(() => {
             this.secondsToRetry = this.secondsToRetry - 1
@@ -126,12 +137,8 @@ export default {
         }
       })
     },
-    checkReportFinished() {
-      if (!this.reports[this.selectedReport]) {
-        this.reportFinished = false
-      }
-      this.reportFinished =  this.reports[this.selectedReport].report.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
-      return this.reportFinished
+    finished() {
+      return this.reports[this.selectedReport].finished
     }
   }
 }

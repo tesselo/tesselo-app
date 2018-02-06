@@ -54,6 +54,7 @@ export const formatCompositesList = (rows, options) => {
     startWeek: row.startWeek,
     maxDate: row.max_date,
     minDate: row.min_date,
+    year: row.min_date.substring(0, 4),
     interval: row.interval,
     type: row.interval,
     name: row.name,
@@ -76,6 +77,7 @@ export const formatUniquesList = (rows) => {
     rasterlayerLookup: row.rasterlayer_lookup,
     name: row.date + ' Scene',
     nameToShow: index + 1,
-    type: 'unique'
+    type: 'unique',
+    year: row.date.substring(0, 4),
   }))
 }

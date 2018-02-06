@@ -16,12 +16,21 @@ export default {
       layer,
       formula,
       moment,
-      report: response
+      results: response,
+      finished: response.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
     }
     state.selectedReport = reportKey
   },
   [mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT]  (state, key) {
     state.selectedReport = key
+  },
+  [mutationTypes.REPORT_SAVE_SELECTED_MULTIPLE_REPORT] (state) {
+    state.savedReports[state.selectedReport] = state.reports[state.selectedReport]
+
+    // save in localstorage
+    const stored = JSON.parse(window.localStorage.getItem('savedReports')) || {}
+    stored[state.selectedReport] = state.reports[state.selectedReport]
+    window.localStorage.setItem('savedReports', JSON.stringify(stored))
   }
 }
 

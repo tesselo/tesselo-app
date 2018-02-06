@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state: {
     reports: {},
+    savedReports: JSON.parse(window.localStorage.getItem('savedReports')) || {},
     selectedReport: null
   },
   mutations,
