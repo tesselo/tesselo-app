@@ -200,7 +200,6 @@ export default {
     let toSelect = 'last'
 
     if (this.selectedMoment) {
-      console.log(1, this.selectedMoment, this.selectedMoment.year)
       this.year = this.selectedMoment.year
       interval = this.selectedMoment.interval
       toSelect = null

@@ -45,10 +45,18 @@ export default {
   components: {
     BarChart
   },
+  props: {
+    isNewReport: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
       loading: false,
-      secondsToRetry: null
+      secondsToRetry: null,
+      finished: false,
+      allReports: {}
     }
   },
   computed: {
@@ -57,50 +65,82 @@ export default {
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
       selectedReport: state => state.report.selectedReport,
-      reports: state => ({
-        ...state.report.reports,
-        ...state.report.savedReports
-      })
+      reports: state => state.report.reports,
+      savedReports: state => state.report.savedReports
     }),
     labels() {
-      return this.reports[this.selectedReport].results.map((reportItem) => reportItem.id)
+      if (this.allReports[this.selectedReport]) {
+        return this.allReports[this.selectedReport].results.map((reportItem) => reportItem.id)
+      } else {
+        return null
+      }
     },
     datasets() {
-      return [
-        {
-          data: this.reports[this.selectedReport].results.map((reportItem) => reportItem.avg),
-          label: 'Average',
-          backgroundColor: '#aac343'
-        }
-      ]
+      if (this.allReports[this.selectedReport]) {
+        return [
+          {
+            data: this.allReports[this.selectedReport].results.map((reportItem) => reportItem.avg),
+            label: 'Average',
+            backgroundColor: '#aac343'
+          }
+        ]
+      } else {
+        return null
+      }
     },
+    
   },
   watch: {
     selectedFormula: {
       immediate: false,
       handler() {
-        console.log(1)
         this.getReport()
       }
     },
     selectedMoment: {
       immediate: false,
       handler() {
-        console.log(2)
         this.getReport()
       }
     },
     selectedLayer: {
       immediate: false,
       handler() {
-        console.log(3)
         this.getReport()
       }
+    },
+    reports: {
+      immediate: false,
+      deep: true,
+      handler() {
+        console.log('changed reports')
+        this.setAllReports()
+      }
+    },
+    savedReports: {
+      immediate: false,
+      deep: true,
+      handler() {
+        console.log('changed savedReports')
+        this.setAllReports()
+      }
+    },
+    selectedReport() {
+      this.setAllReports()
+      this.setFinished()
     }
   },
-  mounted() {
-    if (!this.reports[this.selectedReport]){
+  beforeMount() {
+    if (this.isNewReport) {
+      this.setFinished()
       this.getReport()
+    } else {
+      this.setAllReports()
+      this.setFinished()
+
+      if (!this.finished) {
+        this.getReport()
+      }
     }
   },
   beforeDestroy() {
@@ -111,7 +151,6 @@ export default {
       getMultipleRegionReportAction: actionTypes.REPORT_GET_MULTIPLE_REGION
     }),
     getReport() {
-      console.log('getReport', this.reports[this.selectedReport])
       this.loading = true
       clearInterval(this.countdown)
 
@@ -122,8 +161,8 @@ export default {
       })
       .then(() => {
         this.loading = false
-
-        if (!this.reports[this.selectedReport].finished) {
+        this.setFinished()
+        if (!this.finished) {
           this.secondsToRetry = 5
           this.countdown = setInterval(() => {
             this.secondsToRetry = this.secondsToRetry - 1
@@ -137,8 +176,19 @@ export default {
         }
       })
     },
-    finished() {
-      return this.reports[this.selectedReport].finished
+    setFinished() {
+      console.log('is selectedreport defined', this.allReports[this.selectedReport], this.allReports, this.selectedReport)
+      if (this.allReports[this.selectedReport]) {
+        this.finished = this.allReports[this.selectedReport].finished
+      }
+    },
+    setAllReports() {
+      this.allReports = {
+        ...this.reports,
+        ...this.savedReports
+      }
+
+      console.log('setAllReports', this.allReports)
     }
   }
 }

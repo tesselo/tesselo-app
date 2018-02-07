@@ -36,7 +36,9 @@
         v-if="activePanel === 'multiple-report'"
         title="Multiple Region Report"
         @close="closeAllPanels()">
-        <multiple-report slot="content" />
+        <multiple-report
+          slot="content"
+          :is-new-report="isNewReport" />
       </panel>
       <panel
         v-if="activePanel === 'report-history'"
@@ -136,7 +138,8 @@ export default {
       ],
       activePanel: '',
       stdPanelVisible: false,
-      activeYear: 2018
+      activeYear: 2018,
+      isNewReport: false
     }
   },
   head: {
@@ -198,8 +201,11 @@ export default {
 
       switch (key) {
         case 'create-report':
+          this.isNewReport = true
+
           this.activePanel = 'multiple-report'
           this.showReportButtons()
+
           break
         case 'save-report':
           this.saveReport()
@@ -227,7 +233,9 @@ export default {
       this.activePanel = 'report-history'
     },
     selectReport(report) {
-      this.activeYear = report.moment.year
+      this.isNewReport = false
+
+      this.activeYear = parseInt(report.moment.year, 10)
 
       this.activePanel = 'multiple-report'
       this.mainMenu = this.mainMenu.map((item) => {
@@ -243,7 +251,7 @@ export default {
       })
     },
     setActiveYear(newVal) {
-      this.activeYear = newVal
+      this.activeYear = parseInt(newVal, 10)
     }
   }
 }
