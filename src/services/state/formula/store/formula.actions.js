@@ -25,5 +25,8 @@ export default {
    */
   [actionTypes.FORMULA_SELECT] (context, formula) {
     context.commit(mutationTypes.FORMULA_SELECT_FORMULA, formula)
+  },
+  [actionTypes.RESET] (context) {
+    context.commit(mutationTypes.FORMULA_RESET)
   }
 }

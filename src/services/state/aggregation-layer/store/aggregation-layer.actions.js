@@ -25,5 +25,8 @@ export default {
    */
   [actionTypes.AGGREGATION_LAYER_SELECT] (context, layer) {
     context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, layer)
+  },
+  [actionTypes.RESET] (context) {
+    context.commit(mutationTypes.AGGREGATION_LAYER_RESET)
   }
 }

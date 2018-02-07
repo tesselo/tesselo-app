@@ -6,6 +6,7 @@
  * ---------------------------------- */
 export const DETECT_DEVICE_TOUCH = 'detectTouchDevice'
 export const APP_SET_LOADING = 'setLoading'
+export const RESET = 'reset'
 
 /* -------------------------------------
  * Auth

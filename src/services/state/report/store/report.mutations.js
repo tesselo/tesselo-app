@@ -1,3 +1,4 @@
+import defaultState from './default-state'
 import hash from 'object-hash'
 import Vue from 'vue'
 
@@ -47,6 +48,10 @@ export default {
     const stored = JSON.parse(window.localStorage.getItem('savedReports')) || {}
     stored[state.selectedReport] = state.reports[state.selectedReport]
     window.localStorage.setItem('savedReports', JSON.stringify(stored))
+  },
+  [mutationTypes.REPORT_RESET] (state) {
+    state = defaultState
+    window.localStorage.removeItem('savedReports')
   }
 }
 

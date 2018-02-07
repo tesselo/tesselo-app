@@ -1,3 +1,4 @@
+import defaultState from './default-state'
 import { mutationTypes } from '@/services/constants'
 
 export default {
@@ -16,6 +17,9 @@ export default {
   },
   [mutationTypes.AGGREGATION_LAYER_SELECT_LAYER] (state, layer) {
     state.selectedLayer = layer
+  },
+  [mutationTypes.AGGREGATION_LAYER_RESET] (state) {
+    state = defaultState
   }
 }
 
