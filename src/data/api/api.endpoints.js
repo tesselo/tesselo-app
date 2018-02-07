@@ -66,5 +66,15 @@ export default {
       url: '/sentineltileaggregationlayer',
       method: 'get'
     }
+  },
+  report: {
+    getRegionReport: {
+      url: '/valuecountresult',
+      method: 'get'
+    },
+    createRegionReport: {
+      url: '/valuecountresult',
+      method: 'post'
+    }
   }
 }

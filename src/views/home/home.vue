@@ -36,7 +36,17 @@
         v-if="activePanel === 'multiple-report'"
         title="Multiple Region Report"
         @close="closeAllPanels()">
-        <multiple-report slot="content" />
+        <multiple-report
+          slot="content"
+          :is-new-report="isNewReport" />
+      </panel>
+      <panel
+        v-if="activePanel === 'report-history'"
+        title="Report History"
+        @close="closeAllPanels()">
+        <report-history
+          slot="content"
+          @select="selectReport"/>
       </panel>
     </div>
     <div
@@ -45,7 +55,10 @@
       <collapsible-panel
         @toggle="toggleSTDPanel"
         :open="stdPanelVisible">
-        <selector-time-dimension :show-picker="stdPanelVisible" />
+        <selector-time-dimension
+          :show-picker="stdPanelVisible"
+          :active-year="activeYear"
+          @year-change="setActiveYear"/>
       </collapsible-panel>
     </div>
     <tsl-map />
@@ -53,7 +66,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { actionTypes } from '@/services/constants'
 
 import TslMap from '@/components/tsl-map/tsl-map'
 import TslButton from '@/components/tsl-button/tsl-button'
@@ -64,6 +78,7 @@ import LayersTable from '@/components/layers-table/layers-table'
 import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
 import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
 import MultipleReport from '@/components/multiple-report/multiple-report'
+import ReportHistory from '@/components/report-history/report-history'
 
 export default {
   name: 'Home',
@@ -76,7 +91,8 @@ export default {
     LayersTable,
     CollapsiblePanel,
     SelectorTimeDimension,
-    MultipleReport
+    MultipleReport,
+    ReportHistory
   },
   data() {
     return {
@@ -112,7 +128,7 @@ export default {
           icon: 'report',
           key: 'report-history',
           selected: false,
-          hide: true
+          hide: false
         }, {
           title: 'Create Report',
           icon: 'report',
@@ -121,7 +137,9 @@ export default {
         }
       ],
       activePanel: '',
-      stdPanelVisible: false
+      stdPanelVisible: false,
+      activeYear: (new Date()).getFullYear(),
+      isNewReport: false
     }
   },
   head: {
@@ -136,7 +154,9 @@ export default {
     })
   },
   methods: {
-
+    ...mapActions('report', {
+      saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
+    }),
     closeAllPanels() {
       this.activePanel = ''
       this.$refs.panelSelector.unsetActive()
@@ -144,6 +164,7 @@ export default {
     },
     changeVisiblePanel(activePanel) {
       this.closeAllPanels()
+      this.stdPanelVisible = false
       this.activePanel = activePanel
     },
     areasTableSelect(area) {
@@ -172,25 +193,65 @@ export default {
     },
     toggleSTDPanel() {
       this.stdPanelVisible = !this.stdPanelVisible
+      this.closeAllPanels()
     },
-    reportMenuClick() {
-      this.showReportButtons()
+    reportMenuClick(key) {
+      this.stdPanelVisible = false
+      this.$refs.panelSelector.unsetActive()
+
+      switch (key) {
+        case 'create-report':
+          this.isNewReport = true
+
+          this.activePanel = 'multiple-report'
+          this.showReportButtons()
+
+          break
+        case 'save-report':
+          this.saveReport()
+          break
+        case 'report-history':
+          this.openReportHistory()
+          break
+      }
     },
     showReportButtons() {
-      this.$refs.panelSelector.unsetActive()
-      this.activePanel = 'multiple-report'
       this.reportMenu = this.reportMenu.map(item => ({
         ...item,
         hide: false,
-        selected: item.key === 'create-report'
+        selected: false
       }))
     },
     hideReportButtons() {
       this.reportMenu = this.reportMenu.map(item => ({
         ...item,
-        hide: item.key !== 'create-report',
+        hide: !(item.key === 'create-report' || item.key === 'report-history'),
         selected: false
       }))
+    },
+    openReportHistory() {
+      this.activePanel = 'report-history'
+    },
+    selectReport(report) {
+      this.isNewReport = false
+
+      this.activeYear = parseInt(report.moment.year, 10)
+
+      this.activePanel = 'multiple-report'
+      this.mainMenu = this.mainMenu.map((item) => {
+        item.selected = true
+        if (item.key === 'areas') {
+          item.title = report.layer.name
+        }
+        if (item.key === 'layers') {
+          item.title = report.formula.name
+        }
+
+        return item
+      })
+    },
+    setActiveYear(newVal) {
+      this.activeYear = parseInt(newVal, 10)
     }
   }
 }

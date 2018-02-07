@@ -35,3 +35,10 @@ export const MAP_SET_BOUNDS = 'setMapBounds'
  * ---------------------------------- */
  export const TIME_SET_LIST = 'setList'
  export const TIME_SET_SELECTED_MOMENT = 'setSelectedMoment'
+
+ /* -------------------------------------
+ * Report
+ * ---------------------------------- */
+export const REPORT_SET_MULTIPLE_REGION = 'setMultipleRegionReport'
+export const REPORT_SET_SELECTED_MULTIPLE_REPORT = 'setSelectedMultipleReport'
+export const REPORT_SAVE_SELECTED_MULTIPLE_REPORT = 'saveSelectedMultipleReport'

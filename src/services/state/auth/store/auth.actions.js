@@ -33,5 +33,13 @@ export default {
       await APIAdapter.services.auth.logout()
     }
     context.commit(mutationTypes.AUTH_REMOVE_AUTHENTICATION)
+  },
+  [actionTypes.AUTH_START] (context) {
+    const auth = JSON.parse(window.localStorage.getItem('auth'))
+
+    if (auth) {
+      context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, auth)
+    }
+    return
   }
 }
