@@ -1,14 +1,11 @@
-
+import state from './default-state'
 import mutations from './time.mutations'
 import actions from './time.actions'
 import getters from './time.getters'
 
 export default {
   namespaced: true,
-  state: {
-    list: null,
-    selectedMoment: null
-  },
+  state,
   mutations,
   actions,
   getters

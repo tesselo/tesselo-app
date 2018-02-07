@@ -27,5 +27,8 @@ export default {
   },
   [actionTypes.TIME_SELECT_MOMENT] (context, moment) {
     context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, moment)
+  },
+  [actionTypes.RESET] (context) {
+    context.commit(mutationTypes.TIME_RESET)
   }
 }

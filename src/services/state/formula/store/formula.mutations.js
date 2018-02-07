@@ -1,3 +1,4 @@
+import defaultState from './default-state'
 import { mutationTypes } from '@/services/constants'
 
 export default {
@@ -22,6 +23,9 @@ export default {
    */
   [mutationTypes.FORMULA_SELECT_FORMULA] (state, formula) {
     state.selectedFormula = formula
+  },
+  [mutationTypes.FORMULA_RESET] (state) {
+    state = { ...defaultState }
   }
 }
 

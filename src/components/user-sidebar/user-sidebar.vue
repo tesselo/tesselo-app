@@ -94,11 +94,8 @@ export default {
       logoutAction: actionTypes.AUTH_LOGOUT
     }),
     logout() {
-      this.logoutAction({})
-        .then(() => {
-          this.open = false
-          this.$router.push({ name: 'Login' })
-        })
+      this.open = false
+      this.$router.push({ name: 'Logout' })
     },
   }
 }

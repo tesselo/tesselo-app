@@ -55,5 +55,8 @@ export default {
   },
   [actionTypes.REPORT_SELECT_MULTIPLE_REGION] (context, key) {
     context.commit(mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT, key)
+  },
+  [actionTypes.RESET] (context) {
+    context.commit(mutationTypes.REPORT_RESET)
   }
 }
