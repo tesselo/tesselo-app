@@ -14,6 +14,11 @@ import App from '@/views/app/app'
 import router from '@/services/router'
 import store from '@/services/store'
 
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+
+Vue.use(ElementUI, { locale })
+
 Vue.use(Router)
 Vue.router = router
 

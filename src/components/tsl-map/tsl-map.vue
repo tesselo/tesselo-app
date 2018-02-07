@@ -3,6 +3,7 @@
     <Map
       ref="map"
       :zoom="10"
+      :max-zoom="14"
       :center="[41.1471288,-8.6116238]">
       <tile-layer url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
       <tile-layer
@@ -28,7 +29,6 @@ import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import 'leaflet-control-geocoder'
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 
-import store from '@/services/store'
 import endpoints from '@/data/api/api.endpoints'
 import { polygonStyle } from './vector-style'
 
@@ -47,7 +47,6 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
-      token: state => state.auth.token,
       authenticated: state => state.auth.authenticated
     }),
     mapOptions: function() {
@@ -61,10 +60,11 @@ export default {
         zIndex: 10
       }
 
+      const token = JSON.parse(localStorage.getItem('auth')).token
       if (this.authenticated) {
         options.fetchOptions = {
           headers: new Headers({
-            'authorization': 'Token ' + store.getters['auth/token']
+            'authorization': 'Token ' + token
           })
         }
       }

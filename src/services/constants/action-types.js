@@ -11,6 +11,7 @@ export const APP_SET_LOADING = 'setLoading'
  * Auth
  * ---------------------------------- */
 export const AUTH_LOGIN = 'login'
+export const AUTH_START = 'start'
 export const AUTH_LOGOUT = 'logout'
 
 /* -------------------------------------
@@ -36,3 +37,10 @@ export const MAP_SET_BOUNDS = 'setMapBounds'
  * ---------------------------------- */
 export const TIME_GET_LIST = 'getList'
 export const TIME_SELECT_MOMENT = 'selectMoment'
+
+/* -------------------------------------
+ * Report
+ * ---------------------------------- */
+export const REPORT_GET_MULTIPLE_REGION = 'getMultipleRegionReport'
+export const REPORT_SAVE_MULTIPLE_REGION = 'saveMultipleRegionReport'
+export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'

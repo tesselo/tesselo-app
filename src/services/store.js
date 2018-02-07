@@ -7,6 +7,7 @@ import aggregationLayer from '@/services/state/aggregation-layer/store'
 import formula from '@/services/state/formula/store'
 import map from '@/services/state/map/store'
 import time from '@/services/state/time/store'
+import report from '@/services/state/report/store'
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -19,7 +20,8 @@ export const storeOptions = {
     aggregationLayer,
     map,
     formula,
-    time
+    time,
+    report
   },
   strict: debug
 }
