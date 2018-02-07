@@ -61,6 +61,15 @@
           @year-change="setActiveYear"/>
       </collapsible-panel>
     </div>
+    <div
+      class="selector-time-dimension-pannel"
+      v-if="selectedLayer">
+      <collapsible-panel
+        @toggle="toggleSTDPanel"
+        :open="stdPanelVisible">
+        <selector-time-dimension :show-picker="stdPanelVisible" />
+      </collapsible-panel>
+    </div>
     <tsl-map />
   </div>
 </template>

@@ -25,7 +25,6 @@ export default {
     })
   },
   getUniques (options, axiosInstance = client) {
-    ('getUniques', options)
     return axiosInstance[endpoints.time.listUniques.method](endpoints.time.listUniques.url, {
       params: {
         ...options,
