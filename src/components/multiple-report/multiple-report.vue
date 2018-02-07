@@ -39,6 +39,7 @@
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
 import BarChart from '@/components/bar-chart/bar-chart'
+import reportHistoryVue from '../report-history/report-history.vue';
 
 export default {
   name: 'MultipleReport',

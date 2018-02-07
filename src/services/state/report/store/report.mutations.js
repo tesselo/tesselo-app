@@ -23,18 +23,23 @@ export default {
       results: response,
       finished: response.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
     })
-    // state.reports[reportKey] = {
-    //   layer,
-    //   formula,
-    //   moment,
-    //   results: response,
-    //   finished: response.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
-    // }
-
   },
+  /**
+   * Sets the selected report key
+   * the report key is created using object-hash of { layer, formula, moment }
+   * 
+   * @param {any} state 
+   * @param {any} key 
+   */
   [mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT]  (state, key) {
     state.selectedReport = key
   },
+  /**
+   * Saves report object to localstorage
+   * Sets report object in state.savedReports
+   * 
+   * @param {any} state 
+   */
   [mutationTypes.REPORT_SAVE_SELECTED_MULTIPLE_REPORT] (state) {
     Vue.set(state.savedReports, state.selectedReport, state.reports[state.selectedReport])
 

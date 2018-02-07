@@ -141,7 +141,7 @@ export default {
     activeYear: {
       type: Number,
       required: true,
-      default: 2018
+      default: (new Date()).getFullYear()
     }
   },
   data() {

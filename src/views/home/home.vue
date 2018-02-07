@@ -138,7 +138,7 @@ export default {
       ],
       activePanel: '',
       stdPanelVisible: false,
-      activeYear: 2018,
+      activeYear: (new Date()).getFullYear(),
       isNewReport: false
     }
   },
