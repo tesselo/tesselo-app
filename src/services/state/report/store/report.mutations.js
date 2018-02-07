@@ -30,14 +30,12 @@ export default {
     //   results: response,
     //   finished: response.reduce((accumulator, reportItem) => reportItem.status === 'Finished' && accumulator, true)
     // }
-    console.log('MUTATION', reportKey, state.reports)
 
   },
   [mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT]  (state, key) {
     state.selectedReport = key
   },
   [mutationTypes.REPORT_SAVE_SELECTED_MULTIPLE_REPORT] (state) {
-    console.log('set', state.savedReports, state.selectedReport, state.reports[state.selectedReport])
     Vue.set(state.savedReports, state.selectedReport, state.reports[state.selectedReport])
 
     // save in localstorage

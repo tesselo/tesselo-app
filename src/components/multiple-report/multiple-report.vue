@@ -113,7 +113,6 @@ export default {
       immediate: false,
       deep: true,
       handler() {
-        console.log('changed reports')
         this.setAllReports()
       }
     },
@@ -121,7 +120,6 @@ export default {
       immediate: false,
       deep: true,
       handler() {
-        console.log('changed savedReports')
         this.setAllReports()
       }
     },
@@ -177,7 +175,6 @@ export default {
       })
     },
     setFinished() {
-      console.log('is selectedreport defined', this.allReports[this.selectedReport], this.allReports, this.selectedReport)
       if (this.allReports[this.selectedReport]) {
         this.finished = this.allReports[this.selectedReport].finished
       }
@@ -187,8 +184,6 @@ export default {
         ...this.reports,
         ...this.savedReports
       }
-
-      console.log('setAllReports', this.allReports)
     }
   }
 }

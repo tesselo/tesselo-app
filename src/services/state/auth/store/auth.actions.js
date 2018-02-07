@@ -11,7 +11,6 @@ export default {
    * @param {String} user.password
    */
   [actionTypes.AUTH_LOGIN] (context, user) {
-    console.log(actionTypes.AUTH_LOGIN)
     return APIAdapter.services.auth.login(user)
       .then((response) => {
         context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, {

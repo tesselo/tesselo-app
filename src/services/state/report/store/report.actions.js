@@ -13,7 +13,6 @@ export default {
    */
   [actionTypes.REPORT_GET_MULTIPLE_REGION] (context, { layer, formula, moment }) {
     const objectKey = hash({ layer, formula, moment })
-    console.log('REPORT_GET_MULTIPLE_REGION', objectKey)
 
     if (context.state.reports[objectKey] || context.state.savedReports[objectKey]) {
       const report = context.state.reports[objectKey] || context.state.savedReports[objectKey]
