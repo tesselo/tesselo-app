@@ -135,12 +135,11 @@ export default {
   props: {
     showPicker: {
       type: Boolean,
-      required: true,
-      default: false
+      required: true
     },
     activeYear: {
       type: Number,
-      required: true,
+      required: false,
       default: (new Date()).getFullYear()
     }
   },
