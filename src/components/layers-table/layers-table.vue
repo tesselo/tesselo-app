@@ -18,12 +18,14 @@
       <el-table-column
         prop="formula"
         label="Formula" 
-        width="200" />
+        width="250" />
       <el-table-column
         prop="minVal"
+        width="50"
         label="Min" />
       <el-table-column
         prop="maxVal"
+        width="50"
         label="Max" />
     </el-table>
     <div 
@@ -118,6 +120,7 @@ export default {
     min-width: 400px;
     min-height: 400px;
     max-height: 700px;
+    max-width: 800px;
   }
 
   .layers-table {
