@@ -117,6 +117,8 @@
   </div>
 </template>
 <script>
+import { debounce } from 'lodash'
+
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
 import { Popover as ElPopover } from 'element-ui'
@@ -211,20 +213,22 @@ export default {
       getListAction: actionTypes.TIME_GET_LIST,
       selectMomentAction: actionTypes.TIME_SELECT_MOMENT
     }),
-    getList(interval, autoSelect) {
-      this.loading = true
-
+    debouncedGetList: debounce(function (interval, autoSelect) {
       this.getListAction({
         params: {
           interval,
           aggregationlayer: this.selectedLayer.id,
-          year: this.year  
+          year: this.activeYear  
         },
         autoSelect
       })
       .then(() => {
         this.loading = false
       })
+    }, 1000),
+    getList(interval, autoSelect) {
+      this.loading = true
+      this.debouncedGetList(interval, autoSelect)
     },
     setTimeType(newType) {
       if (this.currentTimeType === newType) {

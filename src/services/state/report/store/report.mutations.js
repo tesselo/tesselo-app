@@ -49,7 +49,7 @@ export default {
     stored[state.selectedReport] = state.reports[state.selectedReport]
     window.localStorage.setItem('savedReports', JSON.stringify(stored))
   },
-  [mutationTypes.REPORT_RESET] (state) {
+  [mutationTypes.REPORT_RESET] (state) {  // eslint-disable-line
     state = defaultState
     window.localStorage.removeItem('savedReports')
   }

@@ -24,7 +24,7 @@ export default {
   [mutationTypes.FORMULA_SELECT_FORMULA] (state, formula) {
     state.selectedFormula = formula
   },
-  [mutationTypes.FORMULA_RESET] (state) {
+  [mutationTypes.FORMULA_RESET] (state) {  // eslint-disable-line
     state = { ...defaultState }
   }
 }

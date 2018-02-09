@@ -61,15 +61,6 @@
           @year-change="setActiveYear"/>
       </collapsible-panel>
     </div>
-    <div
-      class="selector-time-dimension-pannel"
-      v-if="selectedLayer">
-      <collapsible-panel
-        @toggle="toggleSTDPanel"
-        :open="stdPanelVisible">
-        <selector-time-dimension :show-picker="stdPanelVisible" />
-      </collapsible-panel>
-    </div>
     <tsl-map />
   </div>
 </template>
@@ -142,7 +133,8 @@ export default {
           title: 'Create Report',
           icon: 'report',
           key: 'create-report',
-          selected: false
+          selected: false,
+          hide: true
         }
       ],
       activePanel: '',
@@ -224,6 +216,19 @@ export default {
           break
       }
     },
+    updateReportButtons() {
+      this.reportMenu = this.reportMenu.map(item => {
+        let hide = false
+        if (item.key === 'create-report' && !this.selectedLayer && !this.selectedFormula) {
+          hide = true
+        }
+
+        return {
+          ...item,
+          hide
+        }
+      })
+    },
     showReportButtons() {
       this.reportMenu = this.reportMenu.map(item => ({
         ...item,
@@ -232,11 +237,23 @@ export default {
       }))
     },
     hideReportButtons() {
-      this.reportMenu = this.reportMenu.map(item => ({
-        ...item,
-        hide: !(item.key === 'create-report' || item.key === 'report-history'),
-        selected: false
-      }))
+      this.reportMenu = this.reportMenu.map(item => {
+        let hide = true
+
+        if (item.key === 'report-history') {
+          hide = false
+        }
+
+        if (item.key === 'create-report' && this.selectedFormula && this.selectedLayer) {
+          hide = false
+        }
+
+        return {
+          ...item,
+          hide,
+          selected: false
+        }
+      })
     },
     openReportHistory() {
       this.activePanel = 'report-history'

@@ -25,6 +25,7 @@
     "detect-it": "^3.0.4",
     "element-ui": "^2.0.11",
     "leaflet-control-geocoder": "^1.5.8",
+    "lodash": "^4.17.5",
     "object-hash": "^1.2.0",
     "v-media-query": "^1.0.3",
     "vee-validate": "^2.0.3",

@@ -5,7 +5,7 @@ export default {
   [mutationTypes.MAP_SET_BOUNDS] (state, bounds) {
     state.bounds = bounds
   },
-  [mutationTypes.MAP_RESET] (state) {
+  [mutationTypes.MAP_RESET] (state) {  // eslint-disable-line
     state = defaultState
   }
 }
