@@ -18,7 +18,7 @@ export default {
   [mutationTypes.AGGREGATION_LAYER_SELECT_LAYER] (state, layer) {
     state.selectedLayer = layer
   },
-  [mutationTypes.AGGREGATION_LAYER_RESET] (state) {
+  [mutationTypes.AGGREGATION_LAYER_RESET] (state) { // eslint-disable-line
     state = defaultState
   }
 }

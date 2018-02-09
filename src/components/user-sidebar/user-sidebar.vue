@@ -28,7 +28,7 @@
       </a>
       <div class="top">
         <div class="username">
-          <h2>Pixelmatters</h2>
+          <h2>{{ username }}</h2>
         </div>
         <div class="separator" />
         <div class="report">
@@ -80,7 +80,8 @@ export default {
   },
   computed: {
     ...mapState({
-      authenticated: state => state.auth.authenticated
+      authenticated: state => state.auth.authenticated,
+      username: state => state.auth.username
     })
   },
   methods: {

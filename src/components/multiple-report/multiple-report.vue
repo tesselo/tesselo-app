@@ -53,6 +53,9 @@ export default {
   },
   data() {
     return {
+      config: {
+        retryTime: 10
+      },
       loading: false,
       secondsToRetry: null,
       finished: false,
@@ -70,7 +73,7 @@ export default {
     }),
     labels() {
       if (this.allReports[this.selectedReport]) {
-        return this.allReports[this.selectedReport].results.map((reportItem) => reportItem.id)
+        return this.allReports[this.selectedReport].results.map((reportItem) => reportItem.name)
       } else {
         return null
       }
@@ -161,7 +164,7 @@ export default {
         this.loading = false
         this.setFinished()
         if (!this.finished) {
-          this.secondsToRetry = 5
+          this.secondsToRetry = this.config.retryTime
           this.countdown = setInterval(() => {
             this.secondsToRetry = this.secondsToRetry - 1
 

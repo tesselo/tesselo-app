@@ -128,7 +128,9 @@ export default {
       axios({
         method: 'GET',
         url: url,
-        headers: { 'authorization': 'Token ' + token },
+        headers: {
+          'authorization': 'Token ' + token
+        },
         responseType: 'blob'
       }).then((response) => {
         tile.src = URL.createObjectURL(response.data);
