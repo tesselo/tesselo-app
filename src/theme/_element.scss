@@ -12,6 +12,10 @@
   color: $booger !important;
 }
 
+.el-table::before {
+  display: none !important;
+}
+
 .el-table__row {
 
   td {

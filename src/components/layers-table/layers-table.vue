@@ -11,19 +11,19 @@
       style="width: 100%">
       <el-table-column
         prop="acronym"
+        width="200"
         label="Name" />
-      <el-table-column
-        prop="colorPalette"
-        label="Color" />
       <el-table-column
         prop="formula"
         label="Formula" 
-        width="250" />
+        width="320" />
       <el-table-column
+        class="number"
         prop="minVal"
         width="50"
         label="Min" />
       <el-table-column
+        class="number"
         prop="maxVal"
         width="50"
         label="Max" />
@@ -117,10 +117,11 @@ export default {
 <style scoped lang="scss">
   .layers-panel {
     position: relative;
-    min-width: 400px;
+    min-width: 700px;
+
     min-height: 400px;
     max-height: 700px;
-    max-width: 800px;
+    max-width: 1000px;
   }
 
   .layers-table {

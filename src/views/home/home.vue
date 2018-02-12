@@ -306,10 +306,12 @@ export default {
 
   .panels-wrapper {
     position: absolute;
-    top: 69px;
+    top: 54px;
     left: 200px;
     z-index: z('content');
-    max-height: 80vh;
+
+    max-height: calc(100vh - 204px);
+    border-radius: 2px;
     overflow: auto;
   }
 
