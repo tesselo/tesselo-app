@@ -27,6 +27,9 @@ npm run build
 # build for production with minification with staging api
 npm run build:staging
 
+# build for production with minification with staging api, assets being loaded from app.tesselo.com subdomain.
+npm run build:production
+
 # build for production and view the bundle analyzer report
 npm run build --report
 ```
