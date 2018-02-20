@@ -4,6 +4,24 @@
 
 const path = require('path')
 
+// Get assets public path from config.
+let assetsPublicPath
+let conf
+switch (process.env.NODE_ENV) {
+  case 'devstage':
+    conf = require('./devstage.env')
+    assetsPublicPath = conf.ASSETS_PUBLIC_PATH.replace(/"/g, "")
+    break;
+  case 'staging':
+    conf = require('./staging.env')
+    assetsPublicPath = conf.ASSETS_PUBLIC_PATH.replace(/"/g, "")
+    break;
+  case 'production':
+    conf = require('./prod.env')
+    assetsPublicPath = conf.ASSETS_PUBLIC_PATH.replace(/"/g, "")
+    break;
+}
+
 module.exports = {
   dev: {
 
@@ -55,7 +73,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: 'https://app.tesselo.com/mosaic/',
+    assetsPublicPath: assetsPublicPath,
 
     /**
      * Source Maps

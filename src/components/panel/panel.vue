@@ -9,7 +9,7 @@
       href="javascript:void(0)"
       @click="$emit('close')"
       class="panel-close">
-      <img src="/static/icons/close.svg">
+      <img :src="iconCloseUrl">
     </a>
     <slot
       name="content"
@@ -30,6 +30,11 @@ export default {
       type: Boolean,
       required: false,
       default: true
+    }
+  },
+  data: function() {
+    return {
+      iconCloseUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/close.svg'
     }
   }
 }

@@ -9,9 +9,9 @@
     ]"
     :title="title"
     @click="$emit('click')">
-    <img 
+    <img
       v-if="icon"
-      :src="`/static/icons/${icon}.svg`"
+      :src="iconUrl"
       class="multi-option-toggle-icon">
     <span class="title">{{ title }}</span>
   </a>
@@ -39,6 +39,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    }
+  },
+  data: function() {
+    return {
+      iconUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/' + this.icon + '.svg'
     }
   }
 }

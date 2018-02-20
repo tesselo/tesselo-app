@@ -54,7 +54,7 @@ export default {
         [this.selectedLayer.name]: polygonStyle
       }
 
-      const options = { 
+      const options = {
         rendererFactory: Leaflet.canvas.tile,
         vectorTileLayerStyles: layerStyle,
         zIndex: 10
@@ -143,7 +143,7 @@ export default {
   methods:  {
     moveToBounds(bounds) {
       this.$refs.map.mapObject.fitBounds(bounds)
-    } 
+    }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <img
-      src="/static/logo/logo-simple.svg"
+      :src="logoSimpleUrl"
       alt="Tesselo Logo"
       class="logo">
     <div class="menu">
@@ -140,7 +140,8 @@ export default {
       activePanel: '',
       stdPanelVisible: false,
       activeYear: (new Date()).getFullYear(),
-      isNewReport: false
+      isNewReport: false,
+      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg'
     }
   },
   head: {
@@ -322,7 +323,7 @@ export default {
     width: 100px;
     z-index: z('content');
   }
-  
+
   .selector-time-dimension-pannel {
     position: absolute;
     bottom: 40px;

@@ -17,6 +17,9 @@ switch (process.env.NODE_ENV) {
   case 'testing':
     env = require('../config/test.env');
     break;
+  case 'devstage':
+    env = require('../config/devstage.env');
+    break;
   case 'staging':
     env = require('../config/staging.env');
     break;

@@ -1,5 +1,7 @@
 <template>
-  <div class="login">
+  <div
+    class="login"
+    :style="{backgroundImage: backgroundImage}">
     <div class="content">
       <login-header v-if="showHeader"/>
       <div class="container">
@@ -26,7 +28,8 @@ export default {
   },
   data: function() {
     return {
-      showHeader: false
+      showHeader: false,
+      backgroundImage: "url(" + process.env.ASSETS_PUBLIC_PATH + "static/background/map.jpg)"
     }
   }
 }
@@ -35,10 +38,8 @@ export default {
 <style lang="scss" scoped>
   .login {
     position: relative;
-
     min-width: 100vw;
     min-height: 100vh;
-    background-image: url(/static/background/map.jpg);
     background-size: cover;
     background-repeat: no-repeat;
 
@@ -59,7 +60,7 @@ export default {
     z-index: z('content');
     padding-top: 151px;
   }
-  
+
   h1,
   h4 {
     color: white;

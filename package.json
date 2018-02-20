@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "build": "node build/build.js",
+    "build:dev": "NODE_ENV=devstage node build/build.js",
     "build:staging": "NODE_ENV=staging node build/build.js",
     "build:production": "NODE_ENV=production node build/build.js",
     "start": "npm run dev",

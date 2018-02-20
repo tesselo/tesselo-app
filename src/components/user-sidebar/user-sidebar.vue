@@ -6,7 +6,7 @@
       href="javascript:void(0)"
       class="open d-flex flex-row justify-content-center align-items-center">
       <img
-        src="/static/icons/hamburger.svg"
+        :src="iconHamburgerUrl"
         alt="">
     </a>
     <div :class="['user-sidebar d-flex flex-column justify-content-between align-items-start', { 'user-sidebar--open': open }]">
@@ -75,7 +75,8 @@ export default {
   name: 'UserSidebar',
   data() {
     return {
-      open: false
+      open: false,
+      iconHamburgerUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/hamburger.svg'
     }
   },
   computed: {
@@ -144,7 +145,7 @@ export default {
       fill: white;
     }
   }
-  
+
   .top {
     width: 80%;
 
