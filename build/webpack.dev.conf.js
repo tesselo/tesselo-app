@@ -20,6 +20,9 @@ switch (process.env.NODE_ENV) {
   case 'mock':
     env = require('../config/mock.env');
     break;
+  case 'localhost':
+    env = require('../config/dev.localhost.env');
+    break;
   default:
     env = require('../config/dev.env');
 }
