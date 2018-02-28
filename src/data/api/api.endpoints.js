@@ -31,16 +31,16 @@ export default {
     }
   },
   map: {
-    vector: (id) => `https://tesselo.com/api/vtiles/${id}/{z}/{x}/{y}.pbf`,
+    vector: (id) => `${process.env.API_URL}vtiles/${id}/{z}/{x}/{y}.pbf`,
     algebra: (formula, moment) => {
       if (!formula || !moment) {
         return ''
       }
 
       const presentBands = getPresentSentinelBands(formula.formula)
-      
+
       const bandsParam = presentBands.map(band => band.search + '=' + moment.rasterlayerLookup[band.rasterlayerName]).join(',')
-      
+
       let formulaParam = encodeURIComponent(formula.formula.replace(/\s/g,''))
 
       let colorMapParam = {
@@ -51,10 +51,10 @@ export default {
         over:[249,247,174]
       }
 
-      
+
       colorMapParam = encodeURIComponent(JSON.stringify(colorMapParam))
-      
-      return `https://tesselo.com/api/algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
+
+      return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
     }
   },
   time: {
