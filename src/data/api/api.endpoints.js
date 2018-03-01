@@ -1,5 +1,4 @@
-import { getPresentSentinelBands } from '@/services/util.js'
-
+import { getColorMapParam, getPresentSentinelBands } from '@/services/util.js'
 
 export default {
   /* -------------------------------------
@@ -41,18 +40,9 @@ export default {
 
       const bandsParam = presentBands.map(band => band.search + '=' + moment.rasterlayerLookup[band.rasterlayerName]).join(',')
 
-      let formulaParam = encodeURIComponent(formula.formula.replace(/\s/g,''))
+      const formulaParam = encodeURIComponent(formula.formula.replace(/\s/g,''))
 
-      let colorMapParam = {
-        continuous: true,
-        range: [-1,1],
-        from: [165,0,38],
-        to:[0,104,55],
-        over:[249,247,174]
-      }
-
-
-      colorMapParam = encodeURIComponent(JSON.stringify(colorMapParam))
+      const colorMapParam = getColorMapParam(formula)
 
       return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
     }

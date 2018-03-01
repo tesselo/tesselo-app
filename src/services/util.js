@@ -1,3 +1,5 @@
+import colorbrewer from 'colorbrewer'
+
 /**
  * Get current page domain
  */
@@ -82,4 +84,41 @@ export const getPresentSentinelBands = (formula) => {
   })
 
   return presentBands
+}
+
+
+export const hexToRgb = (hex) => {
+  // From https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb#5624139
+  // Remove initial # character.
+  if (hex.startsWith('#')) {
+    hex = hex.substring(1)
+  }
+  const bigint = parseInt(hex, 16)
+  const rgb = [
+    (bigint >> 16) & 255,
+    (bigint >> 8) & 255,
+    bigint & 255
+  ]
+  return rgb
+}
+
+
+export const getColorMapParam = (formula) => {
+  // Try getting the color palette from color brewer, otherwise use default.
+  let palette
+  if (formula.colorPalette in colorbrewer) {
+    const brew = colorbrewer[formula.colorPalette][11]
+    palette = [brew[0], brew[5], brew[10]].map(color => hexToRgb(color))
+  } else {
+    palette = [[165,0,38], [0,104,55], [249,247,174]]
+  }
+  // Construct query parameter with color range.
+  const colorMapParam = {
+    continuous: true,
+    range: [formula.minVal, formula.maxVal],
+    from: palette[0],
+    over: palette[1],
+    to: palette[2]
+  }
+  return encodeURIComponent(JSON.stringify(colorMapParam))
 }
