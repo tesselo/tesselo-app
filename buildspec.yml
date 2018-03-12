@@ -4,6 +4,7 @@ phases:
   pre_build:
     commands:
       - echo "Installing npm dependencies"
+      - npm install -g npm@latest
       - npm install
   build:
     commands:
