@@ -35,16 +35,25 @@ export default {
       if (!formula || !moment) {
         return ''
       }
+      // Catch RGB mode.
+      if (formula.acronym === 'RGB') {
+        const bandsParam = [
+          'r=' + moment.rasterlayerLookup['B04.jp2'],
+          'g=' + moment.rasterlayerLookup['B03.jp2'],
+          'b=' + moment.rasterlayerLookup['B02.jp2']
+        ].join(',')
+        return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&scale=10,3e3`
+      } else {
+        const presentBands = getPresentSentinelBands(formula.formula)
 
-      const presentBands = getPresentSentinelBands(formula.formula)
+        const bandsParam = presentBands.map(band => band.search + '=' + moment.rasterlayerLookup[band.rasterlayerName]).join(',')
 
-      const bandsParam = presentBands.map(band => band.search + '=' + moment.rasterlayerLookup[band.rasterlayerName]).join(',')
+        const formulaParam = encodeURIComponent(formula.formula.replace(/\s/g,''))
 
-      const formulaParam = encodeURIComponent(formula.formula.replace(/\s/g,''))
+        const colorMapParam = getColorMapParam(formula)
 
-      const colorMapParam = getColorMapParam(formula)
-
-      return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
+        return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
+      }
     }
   },
   time: {
