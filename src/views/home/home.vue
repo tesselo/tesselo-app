@@ -308,16 +308,16 @@ export default {
     @media (min-width: 576px) {
       bottom: 40px;
       left: 25px;
+      right: inherit;
     }
   }
 
   .panels-wrapper {
     position: absolute;
     overflow: auto;
-    z-index: z('content');
-    width: 98%;
-    height: 98%;
-    margin: 1%;
+    z-index: z('panels');
+    width: 100%;
+    height: 100%;
     @media (min-width: 576px) {
       top: 54px;
       left: 200px;
