@@ -15,7 +15,9 @@
         :items="reportMenu"
         @change="reportMenuClick" />
     </div>
-    <div class="panels-wrapper">
+    <div
+      class="panels-wrapper"
+      v-if="activePanel">
       <panel
         v-if="activePanel === 'areas'"
         title="Areas"
@@ -300,20 +302,34 @@ export default {
 
   .report-menu {
     position: absolute;
-    bottom: 40px;
-    left: 25px;
     z-index: z('content');
+    right: 5px;
+    bottom: 65px;
+    @media (min-width: 576px) {
+      bottom: 40px;
+      left: 25px;
+    }
   }
 
   .panels-wrapper {
     position: absolute;
-    top: 54px;
-    left: 200px;
-    z-index: z('content');
-
-    max-height: calc(100vh - 204px);
-    border-radius: 2px;
     overflow: auto;
+    z-index: z('content');
+    width: 98%;
+    height: 98%;
+    margin: 1%;
+    @media (min-width: 576px) {
+      top: 54px;
+      left: 200px;
+      width: auto;
+      height: auto;
+      margin: 0px;
+      max-height: calc(100vh - 204px);
+      border-radius: 2px;
+    }
+    .panel {
+      height: 100%;
+    }
   }
 
   .logo {
@@ -326,8 +342,12 @@ export default {
 
   .selector-time-dimension-pannel {
     position: absolute;
-    bottom: 40px;
-    left: 240px;
     z-index: z('content');
+    bottom: 0px;
+    left: 0px;
+    @media (min-width: 576px) {
+      bottom: 40px;
+      left: 240px;
+    }
   }
 </style>

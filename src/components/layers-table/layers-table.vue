@@ -15,7 +15,7 @@
         label="Name" />
       <el-table-column
         prop="formula"
-        label="Formula" 
+        label="Formula"
         width="320" />
       <el-table-column
         class="number"
@@ -28,7 +28,7 @@
         width="50"
         label="Max" />
     </el-table>
-    <div 
+    <div
       v-if="loading"
       class="spinner-wrapper">
       <div class="spinner twilight" />
@@ -117,11 +117,9 @@ export default {
 <style scoped lang="scss">
   .layers-panel {
     position: relative;
-    min-width: 700px;
-
     min-height: 400px;
-    max-height: 700px;
-    max-width: 1000px;
+    max-height: 100%;
+    max-width: 100%;
   }
 
   .layers-table {

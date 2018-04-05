@@ -331,7 +331,8 @@
 
       &.scrollable-tab-menu__nav--left {
         left: 0;
-        background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
+        // background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
+        background: white;
 
         .btn__icon {
           left: -4px;
@@ -348,7 +349,8 @@
 
       &.scrollable-tab-menu__nav--right {
         right: 0;
-        background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
+        // background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
+        background: white;
 
         .btn__icon {
           right: -4px;
@@ -364,7 +366,7 @@
     flex-wrap: nowrap;
     height: 100%;
     -webkit-overflow-scrolling: touch;
-    overflow-x: auto;
+    overflow-x: hidden;
 
     &::-webkit-scrollbar {
       display: none;

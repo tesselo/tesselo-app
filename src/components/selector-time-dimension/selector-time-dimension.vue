@@ -1,6 +1,6 @@
 <template>
   <div class="selector-time-dimension">
-    <div 
+    <div
       :class="['header d-flex flex-row align-items-center', {
         'justify-content-between': selectedMoment,
         'justify-content-center': !selectedMoment
@@ -57,13 +57,7 @@
     <div
       v-if="showPicker"
       class="picker">
-      <div class="picker__top-row d-flex flex-row justify-content-between">
-        <div class="picker__year-select">
-          <scrollable-tab-menu
-            @selected="setYear"
-            :list="years"
-            :start-at-index="yearsActiveIndex" />
-        </div>
+      <div class="picker__top-row d-flex flex-row justify-content-center">
         <div class="picker__type-select d-flex flex-row justify-content-center align-items-center">
           <simple-toggle
             :list="timeTypes"
@@ -72,7 +66,18 @@
         </div>
       </div>
     </div>
-
+    <div
+      v-if="showPicker"
+      class="picker">
+      <div class="picker__top-row d-flex flex-row jjustify-content-center">
+        <div class="picker__year-select">
+          <scrollable-tab-menu
+            @selected="setYear"
+            :list="years"
+            :start-at-index="yearsActiveIndex" />
+        </div>
+      </div>
+    </div>
     <div
       v-if="showPicker && !loading && momentsList && momentsList.length"
       class="d-flex flex-row justify-content-center text-center">
@@ -92,7 +97,7 @@
             slot="reference"
             href="javascript:void(0)"
             @click="selectMoment(item)"
-            
+
             :title="item.name"
             :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]">
             {{ item.nameToShow }}
@@ -218,7 +223,7 @@ export default {
         params: {
           interval,
           aggregationlayer: this.selectedLayer.id,
-          year: this.activeYear  
+          year: this.activeYear
         },
         autoSelect
       })
@@ -267,7 +272,7 @@ export default {
 
       if (this.momentsList.length) {
         const isLast = currentIndex === this.momentsList.length - 1
-  
+
         if (isLast) {
           this.setYear(this.year + 1, 'first')
         } else {
@@ -298,7 +303,10 @@ export default {
 </script>
 <style lang="scss" scoped>
   .selector-time-dimension {
-    width: 700px;
+    width: 100vw;
+    @media (min-width: 576px) {
+      width: 700px;
+    }
   }
 
   .header {
@@ -343,7 +351,7 @@ export default {
       height: 26px;
     }
   }
-  
+
   .header__current-time {
     font-size: 16px;
     line-height: 24px;
@@ -354,7 +362,7 @@ export default {
     font-size: 14px;
     line-height: 20px;
   }
-  
+
   .picker__top-row {
     height: 50px;
     width: 100%;
@@ -362,7 +370,7 @@ export default {
   }
 
   .picker__year-select {
-    width: 450px;
+    width: 100%;
   }
 
   .picker__type-select {
@@ -371,7 +379,7 @@ export default {
 
   .selector-time-dimension__items {
     max-height: 220px;
-    overflow: scroll;
+    overflow: auto;
     padding: 15px;
   }
 

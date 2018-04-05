@@ -17,7 +17,7 @@
         prop="nrOfAreas"
         label="Zones" />
     </el-table>
-    <div 
+    <div
       v-if="loading"
       class="spinner-wrapper">
       <div class="spinner twilight" />
@@ -110,9 +110,9 @@ export default {
 <style scoped lang="scss">
   .areas-panel {
     position: relative;
-    min-width: 400px;
     min-height: 400px;
-    max-height: 700px;
+    max-height: 100%;
+    max-width: 100%;
   }
 
   .areas-table {
