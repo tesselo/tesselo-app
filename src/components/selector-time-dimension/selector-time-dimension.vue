@@ -304,7 +304,7 @@ export default {
 <style lang="scss" scoped>
   .selector-time-dimension {
     width: 100vw;
-    @media (min-width: 576px) {
+    @media (min-width: 768px) {
       width: 700px;
     }
   }

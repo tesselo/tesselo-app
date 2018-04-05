@@ -305,7 +305,7 @@ export default {
     z-index: z('content');
     right: 5px;
     bottom: 65px;
-    @media (min-width: 576px) {
+    @media (min-width: 768px) {
       bottom: 40px;
       left: 25px;
       right: inherit;
@@ -318,7 +318,7 @@ export default {
     z-index: z('panels');
     width: 100%;
     height: 100%;
-    @media (min-width: 576px) {
+    @media (min-width: 768px) {
       top: 54px;
       left: 200px;
       width: auto;
@@ -345,7 +345,7 @@ export default {
     z-index: z('content');
     bottom: 0px;
     left: 0px;
-    @media (min-width: 576px) {
+    @media (min-width: 768px) {
       bottom: 40px;
       left: 240px;
     }
