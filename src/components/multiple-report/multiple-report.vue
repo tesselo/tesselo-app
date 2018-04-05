@@ -5,7 +5,7 @@
         <div class="multiple-report__header-label">Layer</div>
         <div class="multiple-report__header-title">{{ selectedLayer.name }}</div>
       </div>
-      <div class="multiple-report__header-item"> 
+      <div class="multiple-report__header-item">
         <div class="multiple-report__header-label">Moment</div>
         <div class="multiple-report__header-title">{{ selectedMoment.name }}</div>
       </div>
@@ -91,7 +91,7 @@ export default {
         return null
       }
     },
-    
+
   },
   watch: {
     selectedFormula: {
@@ -194,7 +194,6 @@ export default {
 <style lang="scss" scoped>
 
   .multiple-report {
-    min-width: 500px;
     max-width: 700px;
   }
 

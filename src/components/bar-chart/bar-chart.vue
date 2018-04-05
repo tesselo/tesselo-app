@@ -18,9 +18,9 @@ export default {
       labels: this.labels,
       datasets: this.datasets
     }, {
-      responsive: false
+      responsive: true
     })
-  } 
+  }
 }
 </script>
 
