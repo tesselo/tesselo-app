@@ -5,12 +5,10 @@
     <div class="content">
       <login-header v-if="showHeader"/>
       <div class="container">
-        <div class="row d-flex flex-md-row justify-content-center">
-          <div class="col-4">
-            <h1>Login</h1>
-            <h4>Login to Tesselo, enter your details below.</h4>
-            <login-form class="login-form" />
-          </div>
+        <div class="col-lg-4 offset-lg-4">
+          <h1>Login</h1>
+          <h4>Login to Tesselo, enter your details below.</h4>
+          <login-form class="login-form" />
         </div>
       </div>
     </div>
@@ -58,7 +56,7 @@ export default {
   .content {
     position: relative;
     z-index: z('content');
-    padding-top: 151px;
+    padding-top: 10%;
   }
 
   h1,
