@@ -152,7 +152,7 @@ export default {
   },
   data() {
     return {
-      timeTypes: ['Monthly', 'Weekly', 'Scenes'],
+      timeTypes: ['Monthly', 'Weekly', 'Scenes', 'Custom'],
       currentTimeType: 'Monthly',
       currentItemIndex: 10,
       loading: false,
@@ -283,7 +283,7 @@ export default {
       }
     },
     popoverTitle(item) {
-      if (item.type === 'Weekly' || item.type === 'Monthly') {
+      if (item.type === 'Weekly' || item.type === 'Monthly' || item.type == 'Custom') {
         return item.minDate + ' to ' + item.maxDate
       } else {
         return item.date

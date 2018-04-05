@@ -5,13 +5,13 @@ export default {
   [actionTypes.TIME_GET_LIST] (context, options) {
     let apiCall
 
-    if (['Monthly', 'Weekly'].indexOf(options.params.interval) !== -1) {
+    if (['Monthly', 'Weekly', 'Custom'].indexOf(options.params.interval) !== -1) {
       apiCall = APIAdapter.services.time.getComposites
     } else {
       apiCall = APIAdapter.services.time.getUniques
     }
 
-    
+
     return apiCall(options.params)
       .then((response) => {
         context.commit(mutationTypes.TIME_SET_LIST, response.results)
