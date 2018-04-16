@@ -18,10 +18,8 @@
         :url="tileProvider.url"
         :attribution="tileProvider.attribution" />
       <l-tile-layer
-        v-show="selectedFormula && selectedMoment"
-        :url="algebraUrl"
-        @add="patchCreateTile"
-        ref="tile" />
+        :visible="showSelected"
+        :url="algebraUrl" />
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
@@ -31,12 +29,14 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapState } from 'vuex'
 
 import L from 'leaflet'
 
 import { LMap, LTileLayer, LControlLayers, LControlZoom, LControlAttribution } from 'vue2-leaflet'
+
+// Tile layer class that has token auth requests built in.
+import './authenticated-tile-layer'
 
 // Geosearch plugin.
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
@@ -113,7 +113,8 @@ export default {
         position: 'topright',
         showMarker: false,
         autoClose: true
-      }
+      },
+      tileClass: L.authenticatedTileLayer
     }
   },
   computed: {
@@ -122,13 +123,13 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
-      authenticated: state => state.auth.authenticated
+      authenticated: state => state.auth.authenticated,
+      showSelected: state => Boolean(state.formula.selectedFormula && state.time.selectedMoment)
     }),
     protobufOptions: function() {
       const layerStyle = {
         [this.selectedLayer.name]: polygonStyle
       }
-      console.log('factory', L.canvas.tile)
 
       const options = {
         rendererFactory: L.canvas.tile,
@@ -173,44 +174,7 @@ export default {
   },
   methods:  {
     moveToBounds(bounds) {
-      console.log('bounds', bounds, this.$refs.map.mapObject)
       this.$refs.map.mapObject.fitBounds(bounds)
-    },
-    patchCreateTile(){
-      const defaultCreateTile = this.$refs.tile.mapObject.__proto__.createTile
-
-      this.$refs.tile.mapObject.__proto__.createTile = function(coords, done) {
-        const url = this.getTileUrl(coords);
-
-        const tesseloAPI = url.indexOf('tesselo') != -1
-
-        if (!tesseloAPI) {
-          return defaultCreateTile.call(this, coords, done)
-        }
-
-        const tile = document.createElement('img')
-        L.DomEvent.on(tile, 'load', L.Util.bind(this._tileOnLoad, this, done, tile))
-        L.DomEvent.on(tile, 'error', L.Util.bind(this._tileOnError, this, done, tile))
-
-        if (this.options.crossOrigin || this.options.crossOrigin === '') {
-          tile.crossOrigin = this.options.crossOrigin === true ? '' : this.options.crossOrigin;
-        }
-
-        const token = JSON.parse(localStorage.getItem('auth')).token
-        axios({
-          method: 'GET',
-          url: url,
-          headers: {
-            'authorization': 'Token ' + token
-          },
-          responseType: 'blob'
-        }).then((response) => {
-          tile.src = URL.createObjectURL(response.data);
-          done(null, tile);
-        })
-
-        return tile;
-      }
     }
   }
 }
