@@ -19,6 +19,7 @@
         :attribution="tileProvider.attribution" />
       <l-tile-layer
         :visible="showSelected"
+        :z-index="9"
         :url="algebraUrl" />
       <v-protobuf
         v-if="selectedLayer"
