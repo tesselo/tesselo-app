@@ -25,7 +25,9 @@ axiosInstance.interceptors.request.use(function (config) {
 axiosInstance.interceptors.response.use(undefined, (error) => {
     if (error.response.status === 401) {
       localStorage.removeItem('auth')
-      window.location.href = '/logout'
+      if (!window.location.href.includes('/login')) {
+        window.location.href = process.env.ROUTER_BASE + '/logout'
+      }
     }
     return Promise.reject(error.response)
   }
