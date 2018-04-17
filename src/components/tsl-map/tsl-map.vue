@@ -105,6 +105,12 @@ export default {
           attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
         },
+        {
+          name: 'Terrain',
+          visible: false,
+          attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
+          url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png'
+        }
       ],
       mapOptions: {
         zoomControl: false,
