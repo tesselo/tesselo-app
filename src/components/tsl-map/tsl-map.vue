@@ -19,8 +19,10 @@
         :attribution="tileProvider.attribution" />
       <l-tile-layer
         :visible="showSelected"
+        :url="algebraUrl"
         :z-index="9"
-        :url="algebraUrl" />
+        @add="setOpacitySlider"
+        ref="sentinel" />
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
@@ -36,6 +38,9 @@ import L from 'leaflet'
 
 import { LMap, LTileLayer, LControlLayers, LControlZoom, LControlAttribution } from 'vue2-leaflet'
 
+// API
+import endpoints from '@/data/api/api.endpoints'
+
 // Tile layer class that has token auth requests built in.
 import './authenticated-tile-layer'
 
@@ -48,10 +53,12 @@ import VGeosearch from 'vue2-leaflet-geosearch'
 import 'leaflet.defaultextent'
 import 'leaflet.defaultextent/dist/leaflet.defaultextent.css'
 
+// Opacity slider.
+import 'leaflet-range'
+import 'leaflet-range/L.Control.Range.css'
+
 // Vector grids for vue.
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
-
-import endpoints from '@/data/api/api.endpoints'
 import { polygonStyle } from './vector-style'
 
 
@@ -171,11 +178,29 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
+    L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject)
   },
   methods:  {
     moveToBounds(bounds) {
       this.$refs.map.mapObject.fitBounds(bounds)
+    },
+    setOpacitySlider(event) {
+      // Instantiate opacity control.
+      const slider = L.control.range({
+        position: 'topright',
+        min: 0,
+        max: 100,
+        value: 100,
+        step: 1,
+        orient: 'vertical',
+        iconClass: 'leaflet-range-icon'
+      })
+
+      slider.on('input change', function(e) {
+        event.target.setOpacity(e.value / 100)
+      });
+
+      this.$refs.map.mapObject.addControl(slider)
     }
   }
 }
@@ -200,8 +225,12 @@ export default {
   .leaflet-control-layers {
     .leaflet-control-layers-toggle {
       background-size: 22px 22px;
-      width: 26px;
-      height: 26px;
+      width: 30px;
+      height: 30px;
+      @media (min-width: 768px) {
+        width: 26px;
+        height: 26px;
+      }
     }
   }
 </style>
