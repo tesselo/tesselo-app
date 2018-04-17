@@ -8,7 +8,7 @@
       <l-control-zoom :position="zoomPosition" />
       <v-geosearch :options="geosearchOptions" />
       <l-control-layers :position="layersPosition" />
-      <l-control-attribution :position="attributionPosition" />
+      <l-control-attribution :position="attributionPosition" prefix="" />
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         layer-type="base"
@@ -21,8 +21,7 @@
         :visible="showSelected"
         :url="algebraUrl"
         :z-index="9"
-        @add="setOpacitySlider"
-        ref="sentinel" />
+        @add="setOpacitySlider" />
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
@@ -105,16 +104,16 @@ export default {
           visible: false,
           attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-        }
+        },
       ],
       mapOptions: {
         zoomControl: false,
-        attributionControl: false
+        attributionControl: false,
+
       },
       zoomPosition: 'topright',
       layersPosition: 'bottomright',
       attributionPosition: 'bottomright',
-      attributionPrefix: '',
       geosearchOptions: {
         provider: new OpenStreetMapProvider(),
         style: 'button',
@@ -170,6 +169,11 @@ export default {
           [newBounds.xmin, newBounds.ymin],
           [newBounds.xmax, newBounds.ymax]
         ]);
+        // Set the new default extent to the bounds of this area of interest.
+        if (this.defaultExtent) {
+          this.defaultExtent.setCenter(this.$refs.map.mapObject.getCenter())
+          this.defaultExtent.setZoom(this.$refs.map.mapObject.getZoom())
+        }
       }
     }
   },
@@ -178,7 +182,7 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject)
+    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject)
   },
   methods:  {
     moveToBounds(bounds) {
