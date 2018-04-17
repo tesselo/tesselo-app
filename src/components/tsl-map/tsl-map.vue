@@ -8,7 +8,9 @@
       <l-control-zoom :position="zoomPosition" />
       <v-geosearch :options="geosearchOptions" />
       <l-control-layers :position="layersPosition" />
-      <l-control-attribution :position="attributionPosition" prefix="" />
+      <l-control-attribution
+        :position="attributionPosition"
+        prefix="" />
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         layer-type="base"
