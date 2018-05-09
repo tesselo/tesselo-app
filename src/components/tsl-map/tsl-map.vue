@@ -22,6 +22,7 @@
       <l-tile-layer
         :visible="showSelected"
         :url="algebraUrl"
+        :tile-layer-class="tileLayerClass"
         :z-index="9"
         @add="setOpacitySlider" />
       <v-protobuf
@@ -117,7 +118,6 @@ export default {
       mapOptions: {
         zoomControl: false,
         attributionControl: false,
-
       },
       zoomPosition: 'topright',
       layersPosition: 'bottomright',
@@ -129,7 +129,7 @@ export default {
         showMarker: false,
         autoClose: true
       },
-      tileClass: L.authenticatedTileLayer
+      tileLayerClass: L.authenticatedTileLayer
     }
   },
   computed: {
