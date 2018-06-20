@@ -15,6 +15,10 @@ L.AuthenticatedTileLayer = L.TileLayer.extend({
     if (this.options.crossOrigin || this.options.crossOrigin === '') {
       tile.crossOrigin = this.options.crossOrigin === true ? '' : this.options.crossOrigin
     }
+    // Abort if no url was set on this layer.
+    if(!url) {
+      return tile
+    }
     // Get auth token from local storage.
     const token = JSON.parse(localStorage.getItem('auth')).token
     // Get tile data using axios and assign result to dom element asynchronously.
