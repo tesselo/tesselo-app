@@ -50,6 +50,14 @@
           slot="content"
           @select="selectReport"/>
       </panel>
+      <panel
+        v-if="activePanel === 'predicted'"
+        title="Predicted Layers"
+        @close="closeAllPanels()">
+        <predicted-layers-table
+          @select="predictedLayersTableSelect"
+          slot="content" />
+      </panel>
     </div>
     <div
       class="selector-time-dimension-pannel"
@@ -81,6 +89,7 @@ import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
 import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
 import MultipleReport from '@/components/multiple-report/multiple-report'
 import ReportHistory from '@/components/report-history/report-history'
+import PredictedLayersTable from '@/components/predicted-layers-table/predicted-layers-table'
 
 export default {
   name: 'Home',
@@ -94,7 +103,8 @@ export default {
     CollapsiblePanel,
     SelectorTimeDimension,
     MultipleReport,
-    ReportHistory
+    ReportHistory,
+    PredictedLayersTable
   },
   data() {
     return {
@@ -109,6 +119,12 @@ export default {
           title: 'Layers',
           icon: 'layers',
           key: 'layers',
+          selected: false
+        },
+        {
+          title: 'Predicted',
+          icon: 'layers',
+          key: 'predicted',
           selected: false
         }
       ],
@@ -154,7 +170,8 @@ export default {
   computed: {
     ...mapState({
       selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedFormula: state => state.formula.selectedFormula
+      selectedFormula: state => state.formula.selectedFormula,
+      selectedPredictedLayer: state => state.predictedLayer.selectedLayer
     })
   },
   methods: {
@@ -194,6 +211,22 @@ export default {
         return item
       })
       this.hideReportButtons()
+    },
+    predictedLayersTableSelect(layer) {
+      this.closeAllPanels()
+
+      this.mainMenu = this.mainMenu.map((item) => {
+        if (item.key === 'predicted') {
+          if (layer) {
+            item.selected = true
+            item.title = layer.nameToShow
+          } else {
+            item.selected = false
+            item.title = 'Predicted'
+          }
+        }
+        return item
+      })
     },
     toggleSTDPanel() {
       this.stdPanelVisible = !this.stdPanelVisible

@@ -45,3 +45,9 @@ export const TIME_SELECT_MOMENT = 'selectMoment'
 export const REPORT_GET_MULTIPLE_REGION = 'getMultipleRegionReport'
 export const REPORT_SAVE_MULTIPLE_REGION = 'saveMultipleRegionReport'
 export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'
+
+/* -------------------------------------
+ * Predicted Layer
+ * ---------------------------------- */
+export const PREDICTED_LAYER_GET = 'getPredictedLayers'
+export const PREDICTED_LAYER_SELECT = 'selectPredictedLayer'

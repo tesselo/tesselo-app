@@ -81,3 +81,18 @@ export const formatUniquesList = (rows) => {
     year: row.date.substring(0, 4),
   }))
 }
+
+export const predictedLayerResults = (rows) => {
+  return rows.map(row => ({
+    id: row.id,
+    classifier: row.classifier,
+    sentineltile: row.sentineltile,
+    composite: row.composite,
+    rasterlayer: row.rasterlayer,
+    log: row.log,
+    created: row.created,
+    classifierName: row.classifier_name,
+    sourceName: row.source_name,
+    nameToShow: capitalizeFirstLetter(row.classifier_name + ' ' + row.source_name),
+  }))
+}

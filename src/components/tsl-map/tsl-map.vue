@@ -25,6 +25,11 @@
         :tile-layer-class="tileLayerClass"
         :z-index="9"
         @add="setOpacitySlider" />
+      <l-tile-layer
+        :visible="showPredicted"
+        :url="predictedUrl"
+        :tile-layer-class="tileLayerClass"
+        :z-index="9" />
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
@@ -139,9 +144,11 @@ export default {
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
       authenticated: state => state.auth.authenticated,
-      showSelected: state => Boolean(state.formula.selectedFormula && state.time.selectedMoment)
+      showSelected: state => Boolean(state.formula.selectedFormula && state.time.selectedMoment),
+      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
+      showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
-    protobufOptions: function() {
+    protobufOptions() {
       const layerStyle = {
         [this.selectedLayer.name]: polygonStyle
       }
@@ -168,6 +175,9 @@ export default {
     },
     algebraUrl() {
       return endpoints.map.algebra(this.selectedFormula, this.selectedMoment)
+    },
+    predictedUrl() {
+      return endpoints.map.predicted(this.selectedPredictedLayer)
     }
   },
   watch: {

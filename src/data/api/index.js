@@ -6,6 +6,7 @@ import aggregationLayer from '@/data/api/services/api.aggregation-layer.js'
 import formula from '@/data/api/services/api.formula.js'
 import time from '@/data/api/services/api.time.js'
 import report from '@/data/api/services/api.report.js'
+import predictedLayer from '@/data/api/services/api.predicted-layer.js'
 
 /**
  * Adapter between server API and client application
@@ -32,7 +33,8 @@ class APIAdapter {
     aggregationLayer,
     formula,
     time,
-    report
+    report,
+    predictedLayer
   }
 }
 

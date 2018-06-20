@@ -22,7 +22,7 @@ export const AGGREGATION_LAYER_SELECT_LAYER = 'selectLayer'
 export const AGGREGATION_LAYER_RESET = 'resetAggregationLayer'
 
 /* -------------------------------------
- * Aggregation Layer
+ * Formula
  * ---------------------------------- */
 export const FORMULA_SET_FORMULAS = 'setFormulas'
 export const FORMULA_SELECT_FORMULA = 'selectFormula'
@@ -48,3 +48,10 @@ export const REPORT_SET_MULTIPLE_REGION = 'setMultipleRegionReport'
 export const REPORT_SET_SELECTED_MULTIPLE_REPORT = 'setSelectedMultipleReport'
 export const REPORT_SAVE_SELECTED_MULTIPLE_REPORT = 'saveSelectedMultipleReport'
 export const REPORT_RESET = 'resetReport'
+
+/* -------------------------------------
+ * Predicted Layer
+ * ---------------------------------- */
+export const PREDICTED_LAYER_SET_LAYERS = 'setLayers'
+export const PREDICTED_LAYER_SELECT_LAYER = 'selectLayer'
+export const PREDICTED_LAYER_RESET = 'resetAggregationLayer'

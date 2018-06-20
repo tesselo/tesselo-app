@@ -54,6 +54,13 @@ export default {
 
         return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
       }
+    },
+    predicted: (predictedLayer) => {
+      if(!predictedLayer) {
+        return ''
+      }
+      const rasterlayer_id = predictedLayer.rasterlayer
+      return `${process.env.API_URL}tile/${rasterlayer_id}/{z}/{x}/{y}.png`
     }
   },
   time: {
@@ -74,6 +81,12 @@ export default {
     createRegionReport: {
       url: '/valuecountresult',
       method: 'post'
+    }
+  },
+  predictedLayer: {
+    list: {
+      url: '/predictedlayer',
+      method: 'get'
     }
   }
 }
