@@ -10,12 +10,15 @@
       :row-class-name="tableRowClassName"
       style="width: 100%">
       <el-table-column
-        prop="nameToShow"
-        label="Name"
-        width="300" />
+        prop="classifierName"
+        label="Classifier"
+        min-width="200"
+        show-overflow-tooltip />
       <el-table-column
-        prop="created"
-        label="Created" />
+        prop="sourceType"
+        label="Data layer"
+        min-width="250"
+        show-overflow-tooltip />
     </el-table>
     <div
       v-if="loading"
@@ -119,7 +122,7 @@ export default {
     max-width: 100%;
   }
 
-  .predicted-layer-table {
+  .predicted-layers-table {
     margin: 20px 0 20px;
     overflow: auto;
   }

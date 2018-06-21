@@ -123,7 +123,7 @@ export default {
         },
         {
           title: 'Predicted',
-          icon: 'layers',
+          icon: 'net',
           key: 'predicted',
           selected: false
         }

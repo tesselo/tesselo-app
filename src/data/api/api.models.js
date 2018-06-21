@@ -90,9 +90,10 @@ export const predictedLayerResults = (rows) => {
     composite: row.composite,
     rasterlayer: row.rasterlayer,
     log: row.log,
-    created: row.created,
-    classifierName: row.classifier_name,
+    chunksCount: row.chunks_count,
+    chunksDone: row.chunks_done,
+    classifierName: capitalizeFirstLetter(row.classifier_name),
     sourceName: row.source_name,
-    nameToShow: capitalizeFirstLetter(row.classifier_name + ' ' + row.source_name),
+    sourceType: row.composite ? 'Composite over ' + row.source_name : 'Scene from ' + row.source_name,
   }))
 }
