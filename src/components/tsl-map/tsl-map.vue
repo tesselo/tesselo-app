@@ -13,12 +13,13 @@
         prefix="" />
       <l-tile-layer
         v-for="tileProvider in tileProviders"
-        layer-type="base"
         :key="tileProvider.name"
         :name="tileProvider.name"
         :visible="tileProvider.visible"
         :url="tileProvider.url"
-        :attribution="tileProvider.attribution" />
+        :attribution="tileProvider.attribution"
+        layer-type="base"
+      />
       <l-tile-layer
         :visible="showSelected"
         :url="algebraUrl"

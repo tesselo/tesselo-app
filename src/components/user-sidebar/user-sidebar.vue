@@ -2,18 +2,20 @@
   <div class="user-sidebar-wrapper">
     <a
       v-if="authenticated"
-      @click="openSidebar"
       href="javascript:void(0)"
-      class="open d-flex flex-row justify-content-center align-items-center">
+      class="open d-flex flex-row justify-content-center align-items-center"
+      @click="openSidebar"
+    >
       <img
         :src="iconHamburgerUrl"
         alt="">
     </a>
     <div :class="['user-sidebar d-flex flex-column justify-content-between align-items-start', { 'user-sidebar--open': open }]">
       <a
-        @click="closeSidebar"
         href="javascript:void(0)"
-        class="close">
+        class="close"
+        @click="closeSidebar"
+      >
         <svg
           width="24"
           height="24"
@@ -57,8 +59,9 @@
           <p><a href="mailto:mail@tesselo.com">mail@tesselo.com</a></p>
         </div>
         <div
+          class="logout"
           @click="logout"
-          class="logout">
+        >
           <div class="separator" />
           <a href="javascript:void(0)">Logout</a>
         </div>

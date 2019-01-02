@@ -1,12 +1,13 @@
 <template>
   <div class="report-history-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
-      class="report-history-table"
       :data="rows"
-      @current-change="selectReport"
-      size="small"
       :row-class-name="tableRowClassName"
-      style="width: 100%">
+      class="report-history-table"
+      size="small"
+      style="width: 100%"
+      @current-change="selectReport"
+    >
       <el-table-column
         prop="layer.name"
         label="Area" />

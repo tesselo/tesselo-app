@@ -1,44 +1,44 @@
 <template>
   <form class="tsl-form">
     <tsl-input
+      v-validate="'required'"
+      v-model="username"
       name="username"
       type="text"
-      v-model="username"
       value="'username'"
-      v-validate="'required'"
       label="Username"
       placeholder="Your username"
     >
       <span
-        slot="error"
         v-if="usernameFlags.touched">
+        slot="error"
         {{ errors.first('username') }}
       </span>
     </tsl-input>
 
     <tsl-input
+      v-validate="'required|min:6'"
+      v-model="password"
       name="password"
       type="password"
-      v-model="password"
       value="'password'"
-      v-validate="'required|min:6'"
       label="Password"
       placeholder="Enter your password"
     >
       <span
-        slot="error"
-        v-if="passwordFlags.touched">
+        v-if="passwordFlags.touched"
+        slot="error">
         {{ errors.first('password') }}
       </span>
     </tsl-input>
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end">
         <tsl-button
+          :disabled="usernameFlags.invalid || passwordFlags.invalid"
+          :loading="loading"
           type="button"
           title="Login"
           class="login-button"
-          :disabled="usernameFlags.invalid || passwordFlags.invalid"
-          :loading="loading"
           @click="submitForm"
         />
       </div>
@@ -46,14 +46,14 @@
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end">
         <p
-          class="tsl-form__control-error text-right"
+          v-for="error in formErrors.nonFieldErrors"
           :key="error"
-          v-for="error in formErrors.nonFieldErrors">
+          class="tsl-form__control-error text-right">
           {{ error }}
         </p>
       </div>
     </div>
-    
+
   </form>
 </template>
 

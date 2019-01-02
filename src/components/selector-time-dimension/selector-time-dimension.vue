@@ -9,8 +9,9 @@
         <a
           v-if="selectedMoment"
           href="javascript:void(0)"
+          class="navigator d-flex flex-column justify-content-center align-items-center"
           @click="selectPreviousMoment"
-          class="navigator d-flex flex-column justify-content-center align-items-center">
+        >
           <svg
             class="arrow-left"
             width="18"
@@ -37,9 +38,10 @@
       <div class="navigator-wrapper">
         <a
           v-if="showNextButton"
-          @click="selectNextMoment"
           href="javascript:void(0)"
-          class="navigator d-flex flex-column justify-content-center align-items-center">
+          class="navigator d-flex flex-column justify-content-center align-items-center"
+          @click="selectNextMoment"
+        >
           <svg
             width="18"
             height="18"
@@ -72,9 +74,10 @@
       <div class="picker__top-row d-flex flex-row jjustify-content-center">
         <div class="picker__year-select">
           <scrollable-tab-menu
-            @selected="setYear"
             :list="years"
-            :start-at-index="yearsActiveIndex" />
+            :start-at-index="yearsActiveIndex"
+            @selected="setYear"
+          />
         </div>
       </div>
     </div>
@@ -87,19 +90,20 @@
         <el-popover
           v-for="item in momentsList"
           :key="item.id"
-          trigger="hover"
+          :open-delay="200"
           :title="popoverTitle(item)"
+          trigger="hover"
           class="select-time-dimension__popover"
           placement="top"
           transition="none"
-          :open-delay="200">
+        >
           <a
             slot="reference"
+            :title="item.name"
+            :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]"
             href="javascript:void(0)"
             @click="selectMoment(item)"
-
-            :title="item.name"
-            :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]">
+          >
             {{ item.nameToShow }}
           </a>
         </el-popover>

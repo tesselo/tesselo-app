@@ -1,7 +1,8 @@
 <template>
   <div
+    v-if="list"
     class="scrollable-tab-menu-wrapper"
-    v-if="list">
+  >
     <div class="scrollable-tab-menu">
       <a
         v-if="showLeftArrow"
@@ -26,8 +27,11 @@
         <a
           v-for="(element, index) in list"
           :key="index"
+          :class="{
+            'scrollable-tab-menu__element--active' : activeElementIndex === index,
+            'scrollable-tab-menu__element--highlight': hightlightElementAtIndex === index
+          }"
           class="scrollable-tab-menu__element"
-          :class="{'scrollable-tab-menu__element--active' : activeElementIndex === index, 'scrollable-tab-menu__element--highlight': hightlightElementAtIndex === index}"
           @click="onClickElement(index)">
           {{ element.label }}
         </a>

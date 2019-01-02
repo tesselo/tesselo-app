@@ -1,14 +1,14 @@
 <template>
   <div class="areas-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
-      class="areas-table"
       v-if="!loading"
       :data="rows"
-      max-height="500"
-      @current-change="selectArea"
-      size="small"
       :row-class-name="tableRowClassName"
-      style="width: 100%">
+      class="areas-table"
+      max-height="500"
+      size="small"
+      style="width: 100%"
+      @current-change="selectArea">
       <el-table-column
         prop="name"
         label="Name"

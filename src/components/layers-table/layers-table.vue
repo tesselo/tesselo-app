@@ -1,14 +1,14 @@
 <template>
   <div class="layers-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
-      class="layers-table"
       v-if="!loading"
       :data="rows"
-      max-height="500"
-      @current-change="selectLayer"
-      size="small"
       :row-class-name="tableRowClassName"
-      style="width: 100%">
+      class="layers-table"
+      max-height="500"
+      size="small"
+      style="width: 100%"
+      @current-change="selectLayer">
       <el-table-column
         prop="acronym"
         width="200"

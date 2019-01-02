@@ -6,9 +6,10 @@
       {{ title }}
     </div>
     <a
+      class="panel-close"
       href="javascript:void(0)"
       @click="$emit('close')"
-      class="panel-close">
+    >
       <img :src="iconCloseUrl">
     </a>
     <slot
