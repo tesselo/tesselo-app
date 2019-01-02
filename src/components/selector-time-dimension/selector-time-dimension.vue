@@ -160,6 +160,7 @@ export default {
       currentTimeType: 'Monthly',
       currentItemIndex: 10,
       loading: false,
+      yearsActiveIndex: 0,
     }
   },
   computed: {
@@ -205,6 +206,7 @@ export default {
       }
     }
   },
+
   mounted() {
     let interval = 'Monthly'
     let toSelect = 'last'
@@ -216,7 +218,14 @@ export default {
     }
 
     this.getList(interval, toSelect)
+
+    document.body.addEventListener('keydown', this.handleKeyboardNavigation)
   },
+
+  beforeDestroy () {
+    document.body.removeEventListener('keydown', this.handleKeyboardNavigation)
+  },
+
   methods: {
     ...mapActions('time', {
       getListAction: actionTypes.TIME_GET_LIST,
@@ -247,6 +256,31 @@ export default {
       this.currentTimeType = newType
       this.update('last')
     },
+
+    selectNextType () {
+      let nextTypeIndex = this.timeTypes.findIndex(type => type === this.currentTimeType)
+
+      if (nextTypeIndex === this.timeTypes.length - 1) {
+        nextTypeIndex = 0
+      } else {
+        nextTypeIndex++
+      }
+
+      this.setTimeType(this.timeTypes[nextTypeIndex])
+    },
+
+    selectPreviousType () {
+      let nextTypeIndex = this.timeTypes.findIndex(type => type === this.currentTimeType)
+
+      if (nextTypeIndex === 0) {
+        nextTypeIndex = this.timeTypes.length - 1
+      } else {
+        nextTypeIndex--
+      }
+
+      this.setTimeType(this.timeTypes[nextTypeIndex])
+    },
+
     setYear(newYear, updateType) {
       this.year = newYear.label
       this.update(updateType)
@@ -259,6 +293,8 @@ export default {
       this.selectMomentAction(moment)
     },
     selectPreviousMoment() {
+      if (!this.selectedMoment) return
+
       const currentIndex = this.selectedMoment.index
 
       if (this.momentsList.length) {
@@ -272,6 +308,8 @@ export default {
       }
     },
     selectNextMoment() {
+      if (!this.selectedMoment) return
+
       const currentIndex = this.selectedMoment.index
 
       if (this.momentsList.length) {
@@ -302,6 +340,26 @@ export default {
       })
       return currentIndex
     },
+
+    handleKeyboardNavigation (e) {
+      const event = e || window.event
+      const keyCode = event.keyCode || event.which
+      const ARROW_KEY_CODES = {
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40
+      }
+
+      if (event.shiftKey) {
+        switch (keyCode) {
+          case ARROW_KEY_CODES.LEFT: this.selectPreviousMoment(); break;
+          case ARROW_KEY_CODES.UP:  this.selectNextType(); break;
+          case ARROW_KEY_CODES.RIGHT: this.selectNextMoment(); break;
+          case ARROW_KEY_CODES.DOWN: this.selectPreviousType(); break;
+        }
+      }
+    }
   }
 }
 </script>

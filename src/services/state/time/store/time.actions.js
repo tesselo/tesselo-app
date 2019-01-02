@@ -11,7 +11,6 @@ export default {
       apiCall = APIAdapter.services.time.getUniques
     }
 
-
     return apiCall(options.params)
       .then((response) => {
         context.commit(mutationTypes.TIME_SET_LIST, response.results)
