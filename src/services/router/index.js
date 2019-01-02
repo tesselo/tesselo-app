@@ -3,7 +3,6 @@ import Router from 'vue-router'
 
 import Home from '@/views/home/home'
 import Login from '@/views/login/login'
-import Logout from '@/views/logout/logout'
 
 Vue.use(Router)
 
@@ -22,10 +21,6 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
-    }, {
-      path: '/logout',
-      name: 'Logout',
-      component: Logout
     }
   ]
 })

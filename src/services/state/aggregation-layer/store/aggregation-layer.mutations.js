@@ -1,12 +1,12 @@
-import defaultState from './default-state'
+import defaultState from './aggregation-layer.state'
 import { mutationTypes } from '@/services/constants'
 
 export default {
   /**
    * Sets aggregation layers
-   * 
-   * @param {any} state 
-   * @param {any} { count, next, previous, results} 
+   *
+   * @param {any} state
+   * @param {any} { count, next, previous, results}
    */
   [mutationTypes.AGGREGATION_LAYER_SET_LAYERS] (state, { count, next, previous, results, page }) {
     state.total = count

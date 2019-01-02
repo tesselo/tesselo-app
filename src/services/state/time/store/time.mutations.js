@@ -1,4 +1,4 @@
-import defaultState from './default-state'
+import defaultState from './time.state'
 import { mutationTypes } from '@/services/constants'
 
 export default {
@@ -8,7 +8,7 @@ export default {
   [mutationTypes.TIME_SET_SELECTED_MOMENT] (state, moment) {
     state.selectedMoment = moment
   },
-  
+
   [mutationTypes.TIME_RESET] (state) { // eslint-disable-line
     state = defaultState
   }

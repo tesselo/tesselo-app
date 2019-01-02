@@ -1,12 +1,12 @@
-import defaultState from './default-state'
+import defaultState from './formula.state'
 import { mutationTypes } from '@/services/constants'
 
 export default {
   /**
    * Sets available formulas
-   * 
-   * @param {any} state 
-   * @param {any} { count, next, previous, results} 
+   *
+   * @param {any} state
+   * @param {any} { count, next, previous, results}
    */
   [mutationTypes.FORMULA_SET_FORMULAS] (state, { count, next, previous, results, page }) {
     state.total = count
@@ -17,9 +17,9 @@ export default {
   },
   /**
    * Sets selected formula
-   * 
-   * @param {any} state 
-   * @param {any} formula 
+   *
+   * @param {any} state
+   * @param {any} formula
    */
   [mutationTypes.FORMULA_SELECT_FORMULA] (state, formula) {
     state.selectedFormula = formula

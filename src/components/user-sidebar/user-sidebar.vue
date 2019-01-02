@@ -100,7 +100,8 @@ export default {
     }),
     logout() {
       this.open = false
-      this.$router.push({ name: 'Logout' })
+      this.logoutAction()
+      this.$router.push({ name: 'Login' })
     },
   }
 }

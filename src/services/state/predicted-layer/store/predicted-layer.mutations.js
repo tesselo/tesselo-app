@@ -1,4 +1,4 @@
-import defaultState from './default-state'
+import defaultState from './predicted-layer.state'
 import { mutationTypes } from '@/services/constants'
 
 export default {

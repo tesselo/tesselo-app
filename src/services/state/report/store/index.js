@@ -1,4 +1,4 @@
-import state from './default-state'
+import state from './report.state'
 import mutations from './report.mutations'
 import actions from './report.actions'
 
