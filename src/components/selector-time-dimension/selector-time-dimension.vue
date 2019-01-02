@@ -156,7 +156,7 @@ export default {
   },
   data() {
     return {
-      timeTypes: ['Monthly', 'Weekly', 'Scenes', 'Custom'],
+      timeTypes: ['Monthly', 'Scenes', 'Custom'],
       currentTimeType: 'Monthly',
       currentItemIndex: 10,
       loading: false,
