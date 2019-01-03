@@ -46,6 +46,9 @@ npm run server:mock
 # run app with mock api setting (server:mock should be running)
 npm run dev:mock
 
+# run app with localhost api setting (django dev server should be running)
+npm run dev:localhost
+
 # run javascript linters
 npm run lint
 
