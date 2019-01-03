@@ -166,7 +166,7 @@ export default {
     }),
     years() {
       const years = []
-      for (let i = 0; i <= 30; i++) {
+      for (let i = 0; i <= 31; i++) {
         years.push({ label: 1988 + i})
       }
       return years
