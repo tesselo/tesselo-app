@@ -2,7 +2,7 @@
   <div class="predicted-layers-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
       v-if="!loading"
-      :data="rows"
+      :data="filteredRows"
       :row-class-name="tableRowClassName"
       class="predicted-layers-table"
       max-height="500"
@@ -18,7 +18,7 @@
         prop="sourceType"
         label="Data layer"
         min-width="250"
-        show-overflow-tooltip />
+        show-overflow-tooltip/>
     </el-table>
     <div
       v-if="loading"
@@ -26,8 +26,8 @@
       <div class="spinner twilight" />
     </div>
     <el-pagination
-      v-if="total"
-      :total="total"
+      v-if="filteredRows.length"
+      :total="filteredRows.length"
       :page-size="pageSize"
       :current-page="currentPage"
       layout="prev, pager, next"
@@ -59,7 +59,8 @@ export default {
   },
   data() {
     return {
-      loading: false
+      loading: false,
+      filteredRows: []
     }
   },
   computed: {
@@ -70,14 +71,30 @@ export default {
       next: state => state.predictedLayer.next,
       previous: state => state.predictedLayer.previous,
       selectedLayer: state => state.predictedLayer.selectedLayer,
-      currentPage: state => state.predictedLayer.currentPage
+      currentPage: state => state.predictedLayer.currentPage,
+    }),
+    ...mapState('time', {
+      selectedYear: state => state.selectedMoment && state.selectedMoment.year
     })
   },
+
+  watch: {
+    rows: {
+      deep: true,
+      handler () {
+        this.filterRows()
+      }
+    }
+  },
+
   beforeMount() {
     if (this.rows.length === 0 ){
       this.getPredictedLayers({page: this.currentPage})
+    } else {
+      this.filterRows()
     }
   },
+
   methods: {
     ...mapActions('predictedLayer', {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
@@ -86,6 +103,20 @@ export default {
     ...mapActions('map', {
       setMapBounds: actionTypes.MAP_SET_BOUNDS
     }),
+
+    filterRows () {
+      if (this.selectedYear) {
+        // Filter predirected layers based on selected Year
+        this.filteredRows = this.rows.filter(
+          entry => {
+            return entry.sourceName.includes(this.selectedYear)
+          }
+        )
+      } else {
+        this.filteredRows = this.rows
+      }
+    },
+
     getPredictedLayers(options) {
       this.loading = true
       this.getPredictedLayersAction(options)

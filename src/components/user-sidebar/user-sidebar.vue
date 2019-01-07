@@ -71,8 +71,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-import { actionTypes } from '@/services/constants'
+import { mapState } from 'vuex'
 
 export default {
   name: 'UserSidebar',
