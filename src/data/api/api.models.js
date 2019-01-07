@@ -85,6 +85,7 @@ export const formatUniquesList = (rows) => {
 export const predictedLayerResults = (rows) => {
   return rows.map(row => ({
     id: row.id,
+    aggregationLayerName: row.aggregationlayer_name,
     classifier: row.classifier,
     sentineltile: row.sentineltile,
     composite: row.composite,
@@ -93,6 +94,7 @@ export const predictedLayerResults = (rows) => {
     chunksCount: row.chunks_count,
     chunksDone: row.chunks_done,
     classifierName: capitalizeFirstLetter(row.classifier_name),
+    classifierType: row.classifier_type,
     sourceName: row.source_name,
     sourceType: row.composite ? 'Composite over ' + row.source_name : 'Scene from ' + row.source_name,
     nameToShow: capitalizeFirstLetter(row.classifier_name + ' over ' + row.source_name)

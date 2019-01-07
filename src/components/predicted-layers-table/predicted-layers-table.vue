@@ -15,8 +15,18 @@
         min-width="200"
         show-overflow-tooltip />
       <el-table-column
-        prop="sourceType"
-        label="Data layer"
+        prop="classifierType"
+        label="Classifier Type"
+        min-width="250"
+        show-overflow-tooltip/>
+      <el-table-column
+        prop="sourceName"
+        label="Source Name"
+        min-width="140"
+        show-overflow-tooltip/>
+      <el-table-column
+        prop="aggregationLayerName"
+        label="Aggregation Layer"
         min-width="250"
         show-overflow-tooltip/>
     </el-table>
