@@ -95,13 +95,9 @@ export default {
     closeSidebar() {
       this.open = false
     },
-    ...mapActions('auth', {
-      logoutAction: actionTypes.AUTH_LOGOUT
-    }),
     logout() {
       this.open = false
-      this.logoutAction()
-      this.$router.push({ name: 'Login' })
+      this.$router.push({ name: 'Logout' })
     },
   }
 }
