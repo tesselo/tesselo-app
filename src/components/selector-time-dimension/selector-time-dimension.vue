@@ -150,7 +150,6 @@ export default {
     },
     activeYear: {
       type: Number,
-      required: false,
       default: (new Date()).getFullYear()
     }
   },
@@ -171,7 +170,7 @@ export default {
     }),
     years() {
       const years = []
-      for (let i = 0; i <= 30; i++) {
+      for (let i = 0; i <= ((new Date().getFullYear()) - 1988); i++) {
         years.push({ label: 1988 + i})
       }
       return years
