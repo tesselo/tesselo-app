@@ -76,7 +76,7 @@
           <scrollable-tab-menu
             :list="years"
             :start-at-index="yearsActiveIndex"
-            @selected="setYear"
+            @selected="setYear($event.label)"
           />
         </div>
       </div>
@@ -282,9 +282,9 @@ export default {
     },
 
     setYear(newYear, updateType) {
-      this.year = newYear.label
+      this.year = newYear
       this.update(updateType)
-      this.$emit('year-change', newYear.label)
+      this.$emit('year-change', newYear)
     },
     update(autoSelect) {
       this.getList(this.currentTimeType, autoSelect)
