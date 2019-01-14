@@ -30,7 +30,8 @@
         :visible="showPredicted"
         :url="predictedUrl"
         :tile-layer-class="tileLayerClass"
-        :z-index="9" />
+        :z-index="10"
+        @add="setOpacitySliderPredictedLayer" />
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
@@ -209,6 +210,24 @@ export default {
     },
     setOpacitySlider(event) {
       // Instantiate opacity control.
+      const slider = L.control.range({
+        position: 'topright',
+        min: 0,
+        max: 100,
+        value: 100,
+        step: 1,
+        orient: 'vertical',
+        iconClass: 'leaflet-range-icon'
+      })
+
+      slider.on('input change', function(e) {
+        event.target.setOpacity(e.value / 100)
+      });
+
+      this.$refs.map.mapObject.addControl(slider)
+    },
+
+    setOpacitySliderPredictedLayer (event) {
       const slider = L.control.range({
         position: 'topright',
         min: 0,
