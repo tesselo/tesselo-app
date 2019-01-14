@@ -84,6 +84,8 @@ export default {
   },
   data () {
     return {
+      algebraSlider: null,
+      predictedSlider: null,
       tileProviders: [
         {
           name: 'B&W OpenStreetMap',
@@ -210,7 +212,7 @@ export default {
     },
     setOpacitySlider(event) {
       // Instantiate opacity control.
-      const slider = L.control.range({
+      this.algebraSlider = L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
@@ -220,15 +222,25 @@ export default {
         iconClass: 'leaflet-range-icon'
       })
 
-      slider.on('input change', function(e) {
+      this.algebraSlider.on('input change', function(e) {
         event.target.setOpacity(e.value / 100)
       });
 
-      this.$refs.map.mapObject.addControl(slider)
+      let predictedRemoved = false
+      if (this.predictedSlider !== null) {
+        predictedRemoved = true
+        this.$refs.map.mapObject.removeControl(this.predictedSlider)
+      }
+
+      this.$refs.map.mapObject.addControl(this.algebraSlider)
+
+      if (predictedRemoved) {
+        this.$refs.map.mapObject.addControl(this.predictedSlider)
+      }
     },
 
     setOpacitySliderPredictedLayer (event) {
-      const slider = L.control.range({
+      this.predictedSlider = L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
@@ -238,11 +250,11 @@ export default {
         iconClass: 'leaflet-range-icon'
       })
 
-      slider.on('input change', function(e) {
+      this.predictedSlider.on('input change', function(e) {
         event.target.setOpacity(e.value / 100)
       });
 
-      this.$refs.map.mapObject.addControl(slider)
+      this.$refs.map.mapObject.addControl(this.predictedSlider)
     }
   }
 }
