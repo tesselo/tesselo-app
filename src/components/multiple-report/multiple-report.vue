@@ -21,8 +21,6 @@
     </div>
     <div v-if="!loading && selectedReport && finished">
       <bar-chart
-        :width="500"
-        :height="300"
         :labels="labels"
         :datasets="datasets" />
     </div>
