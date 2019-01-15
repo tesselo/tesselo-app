@@ -94,6 +94,10 @@ export default {
       handler () {
         this.filterRows()
       }
+    },
+    selectedYear () {
+      console.log('selected year')
+      this.filterRows()
     }
   },
 
