@@ -86,9 +86,10 @@
     <div
       v-if="showPicker && isScenes"
       class="picker">
-      <div class="picker__top-row d-flex flex-row jjustify-content-center">
-        <div class="picker__year-select">
+      <div class="picker__top-row picker__month d-flex flex-row jjustify-content-center">
+        <div class="picker__month-select">
           <scrollable-tab-menu
+            :show-navigation="false"
             :list="months"
             :start-at-index="0"
             @selected="setMonth($event)"
@@ -101,20 +102,20 @@
       v-if="showPicker && !loading && isScenes && momentsList && momentsList.length"
       class="scenes-view">
       <div class="scenes-view__container">
-        Y: {{ activeYear }}
-        M: {{ activeMonth }}
         <div class="scenes-view__calendar">
           <div class="scenes-view__calendar-labels">
             <span
               v-for="(day, index) in daysOfWeek"
-              :key="`label-${index}`">
+              :key="`label-${index}`"
+              class="is-label">
               {{ day }}
             </span>
             <span
-              v-for="(day, index) in daysOfMonth"
-              :key="`day-${index}`">
-              <template v-if="day !== -1">
-                {{ day }}
+              v-for="(data, index) in detailedDaysOfMonth"
+              :key="`day-${index}`"
+              :class="{'has-scene': data.moments && data.moments.length }">
+              <template v-if="data.day !== -1">
+                {{ data.day }}
               </template>
             </span>
           </div>
@@ -244,7 +245,7 @@ export default {
       ],
       activeMonth: 0,
       daysOfWeek: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-      daysOfMonth: []
+      detailedDaysOfMonth: []
     }
   },
   computed: {
@@ -291,11 +292,21 @@ export default {
       handler(newVal) {
         this.year = newVal
         this.setYearsActiveIndex()
-        this.daysOfMonth = this.getDaysOfMonth(this.year, this.activeMonth)
+
+        if (this.isScenes) {
+          this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+        }
       }
     },
     activeMonth () {
-      this.daysOfMonth = this.getDaysOfMonth(this.year, this.activeMonth)
+      if (this.isScenes) {
+        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+      }
+    },
+    momentsList () {
+      if (this.isScenes) {
+        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+      }
     }
   },
 
@@ -312,8 +323,6 @@ export default {
     this.getList(interval, toSelect)
 
     document.body.addEventListener('keydown', this.handleKeyboardNavigation)
-
-    this.daysOfMonth = this.getDaysOfMonth(this.year, this.activeMonth)
   },
 
   beforeDestroy () {
@@ -321,19 +330,45 @@ export default {
   },
 
   methods: {
-    getDaysOfMonth (year, month) {
+    getDetailedDaysOfMonth (year, month) {
       const firstDay = (new Date(year, month)).getDay();
       const totalDaysInMonth = 32 - new Date(year, month, 32).getDate();
       const daysInMonth = []
 
+      // Add placeholder days if 1st day of month start in other than Monday
       for (let i = 1 ; i < firstDay; i++) {
-        daysInMonth.push(-1)
+        daysInMonth.push({
+          day: -1
+        })
       }
 
+      //
+      const filteredMoments = this.momentsList.filter(moment => {
+        const date = moment.date.split('-')
+        const year = Number(date[0])
+        let month = date[1].charAt(0) === '0' ? Number(date[1].charAt(1)) : Number(date[1])
+
+        // Decrement 1 to month, since it start at 0 (January)
+        month--
+
+        return year === this.activeYear && month === this.activeMonth
+      })
+
+      // Add the days of the respective month
+      // filtered scenes by day
       for (let j = 1 ; j <= totalDaysInMonth; j++) {
-        daysInMonth.push(j)
-      }
+        const filteredMomentsByDay = filteredMoments.filter(moment => {
+          const date = moment.date.split('-')
+          const day = date[2].charAt(0) === '0' ? Number(date[2].charAt(1)) : Number(date[2])
 
+          return day === j
+        })
+
+        daysInMonth.push({
+          day: j,
+          moments: filteredMomentsByDay
+        })
+      }
       return daysInMonth
     },
 
@@ -550,6 +585,10 @@ export default {
     width: 100%;
   }
 
+  .picker__month {
+    padding-left: 30px;
+  }
+
   .picker__type-select {
     padding-right: 10px;
   }
@@ -621,21 +660,67 @@ export default {
     &__calendar {
       flex: 1;
       display: flex;
-      padding: 20px;
+      margin: 20px;
+      padding-bottom: 6px;
+      border-radius: 3px;
+      border: 1px solid $pale-grey;
     }
 
     &__calendar-labels {
+      position: relative;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 38px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: $pale-grey;
+      }
 
       .column {
         flex-basis: 100%;
       }
 
       span {
+        position: relative;
+        padding: 12px 0;
+        font-size: 14px;
         width: 14%;
         text-align: center;
+        color: $bluey-grey;
+        font-style: italic;
+
+        &.is-label,
+        &.has-scene {
+          color: $navy;
+          font-style: normal;
+        }
+
+        &.has-scene {
+          cursor: pointer;
+          border-radius: 3px;
+
+          &:hover {
+            background-color: $pale-grey;
+          }
+        }
+
+        &.has-scene::before {
+          content: '';
+          position: absolute;
+          bottom: 4px;
+          left: 50%;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: $booger;
+          transform: translateX(-50%);
+        }
       }
     }
 

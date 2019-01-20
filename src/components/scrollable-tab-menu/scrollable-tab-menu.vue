@@ -5,7 +5,7 @@
   >
     <div class="scrollable-tab-menu">
       <a
-        v-if="showLeftArrow"
+        v-if="showNavigation && showLeftArrow"
         class="scrollable-tab-menu__nav scrollable-tab-menu__nav--left d-flex flex-row justify-content-center align-items-center"
         @click="previous">
         <svg
@@ -37,7 +37,7 @@
         </a>
       </div>
       <a
-        v-if="showRightArrow"
+        v-if="showNavigation && showRightArrow"
         class="scrollable-tab-menu__nav scrollable-tab-menu__nav--right d-flex flex-row justify-content-center align-items-center"
         @click="next">
         <svg
@@ -66,6 +66,11 @@
   export default {
     name: 'ScrollableTabMenu',
     props: {
+      showNavigation: {
+        type: Boolean,
+        default: true
+      },
+
       /**
        * Array of strings or objects with the text to show on tabs.
        */
