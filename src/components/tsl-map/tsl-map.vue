@@ -287,4 +287,12 @@ export default {
       }
     }
   }
+
+  .leaflet-control-container .leaflet-range-control {
+    width: 30px;
+
+    .leaflet-range-icon {
+      background-position: 1px;
+    }
+  }
 </style>
