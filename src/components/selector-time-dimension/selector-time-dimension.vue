@@ -81,8 +81,51 @@
         </div>
       </div>
     </div>
+
+
     <div
-      v-if="showPicker && !loading && momentsList && momentsList.length"
+      v-if="showPicker && isScenes"
+      class="picker">
+      <div class="picker__top-row d-flex flex-row jjustify-content-center">
+        <div class="picker__year-select">
+          <scrollable-tab-menu
+            :list="months"
+            :start-at-index="0"
+            @selected="setMonth($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-if="showPicker && !loading && isScenes && momentsList && momentsList.length"
+      class="scenes-view">
+      <div class="scenes-view__container">
+        Y: {{ activeYear }}
+        M: {{ activeMonth }}
+        <div class="scenes-view__calendar">
+          <div class="scenes-view__calendar-labels">
+            <span
+              v-for="(day, index) in daysOfWeek"
+              :key="`label-${index}`">
+              {{ day }}
+            </span>
+            <span
+              v-for="(day, index) in daysOfMonth"
+              :key="`day-${index}`">
+              <template v-if="day !== -1">
+                {{ day }}
+              </template>
+            </span>
+          </div>
+        </div>
+        <div class="scenes-view__details">
+          Scenes detail
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="showPicker && !loading && !isScenes && momentsList && momentsList.length"
       class="d-flex flex-row justify-content-center text-center">
       <div
         v-if="momentsList"
@@ -160,6 +203,48 @@ export default {
       currentItemIndex: 10,
       loading: false,
       yearsActiveIndex: 0,
+      sceneSelectedValue: new Date(),
+      months: [
+        {
+          label: 'Jan'
+        },
+        {
+          label: 'Fev'
+        },
+        {
+          label: 'Mar'
+        },
+        {
+          label: 'Apr'
+        },
+        {
+          label: 'May'
+        },
+        {
+          label: 'Jun'
+        },
+        {
+          label: 'Jul'
+        },
+        {
+          label: 'Aug'
+        },
+        {
+          label: 'Sep'
+        },
+        {
+          label: 'Oct'
+        },
+        {
+          label: 'Nov'
+        },
+        {
+          label: 'Dez'
+        },
+      ],
+      activeMonth: 0,
+      daysOfWeek: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+      daysOfMonth: []
     }
   },
   computed: {
@@ -194,6 +279,10 @@ export default {
       const isLastYear = this.yearsListActiveIndex === this.years.length - 1
       const isLastItem = isLastItemInList && isLastYear
       return this.selectedMoment && !isLastItem
+    },
+
+    isScenes () {
+      return this.currentTimeType === 'Scenes'
     }
   },
   watch: {
@@ -202,11 +291,15 @@ export default {
       handler(newVal) {
         this.year = newVal
         this.setYearsActiveIndex()
+        this.daysOfMonth = this.getDaysOfMonth(this.year, this.activeMonth)
       }
+    },
+    activeMonth () {
+      this.daysOfMonth = this.getDaysOfMonth(this.year, this.activeMonth)
     }
   },
 
-  mounted() {
+  mounted () {
     let interval = 'Monthly'
     let toSelect = 'last'
 
@@ -219,6 +312,8 @@ export default {
     this.getList(interval, toSelect)
 
     document.body.addEventListener('keydown', this.handleKeyboardNavigation)
+
+    this.daysOfMonth = this.getDaysOfMonth(this.year, this.activeMonth)
   },
 
   beforeDestroy () {
@@ -226,6 +321,22 @@ export default {
   },
 
   methods: {
+    getDaysOfMonth (year, month) {
+      const firstDay = (new Date(year, month)).getDay();
+      const totalDaysInMonth = 32 - new Date(year, month, 32).getDate();
+      const daysInMonth = []
+
+      for (let i = 1 ; i < firstDay; i++) {
+        daysInMonth.push(-1)
+      }
+
+      for (let j = 1 ; j <= totalDaysInMonth; j++) {
+        daysInMonth.push(j)
+      }
+
+      return daysInMonth
+    },
+
     ...mapActions('time', {
       getListAction: actionTypes.TIME_GET_LIST,
       selectMomentAction: actionTypes.TIME_SELECT_MOMENT
@@ -285,6 +396,11 @@ export default {
       this.update(updateType)
       this.$emit('year-change', newYear)
     },
+
+    setMonth (data) {
+      this.activeMonth = this.months.findIndex(month => month.label === data.label)
+    },
+
     update(autoSelect) {
       this.getList(this.currentTimeType, autoSelect)
     },
@@ -495,5 +611,36 @@ export default {
 
     width: 30px;
     height: 30px;
+  }
+
+  .scenes-view {
+    &__container {
+      display: flex;
+    }
+
+    &__calendar {
+      flex: 1;
+      display: flex;
+      padding: 20px;
+    }
+
+    &__calendar-labels {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      .column {
+        flex-basis: 100%;
+      }
+
+      span {
+        width: 14%;
+        text-align: center;
+      }
+    }
+
+    &__details {
+      flex: 1;
+    }
   }
 </style>
