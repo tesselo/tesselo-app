@@ -79,6 +79,12 @@ export const formatUniquesList = (rows) => {
     nameToShow: index + 1,
     type: 'unique',
     year: row.date.substring(0, 4),
+    angleAltitude: row.angle_altitude,
+    angleAzimuth: row.angle_azimuth,
+    cloudyPixelPercentage: row.cloudy_pixel_percentage,
+    dataCoveragePercentage: row.data_coverage_percentage,
+    level: row.level,
+    mgrs: row.mgrs,
   }))
 }
 
