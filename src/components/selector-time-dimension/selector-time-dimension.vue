@@ -91,7 +91,7 @@
           <scrollable-tab-menu
             :show-navigation="false"
             :list="months"
-            :start-at-index="0"
+            :start-at-index="tabMenuActiveMonthIndex"
             @selected="setMonth($event)"
           />
         </div>
@@ -221,7 +221,7 @@
   </div>
 </template>
 <script>
-import { debounce } from 'lodash'
+import { debounce, cloneDeep } from 'lodash'
 
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
@@ -306,11 +306,13 @@ export default {
           completed: 'December'
         },
       ],
+      tabMenuActiveMonthIndex: 0,
       activeMonth: 0,
       daysOfWeek: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
       detailedDaysOfMonth: [],
       detailedSceneActive: null,
-      sceneMomentIndexSelected: 0
+      sceneMomentIndexSelected: 0,
+      loadLastMonthScene: false
     }
   },
   computed: {
@@ -422,7 +424,15 @@ export default {
 
     setDetailedScene (data) {
       if (!data) {
-        const data = this.detailedDaysOfMonth.find(data => data.moments && data.moments.length)
+        let data
+        if (this.loadLastMonthScene) {
+          this.loadLastMonthScene = false
+          data = cloneDeep(this.detailedDaysOfMonth)
+            .reverse()
+            .find(data => data.moments && data.moments.length)
+        } else {
+          data = this.detailedDaysOfMonth.find(data => data.moments && data.moments.length)
+        }
         this.detailedSceneActive = data
       } else if (data.moments && data.moments.length) {
         this.detailedSceneActive = data
@@ -432,6 +442,51 @@ export default {
         this.sceneMomentIndexSelected = 0
       } else if (this.detailedSceneActive) {
         this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+      }
+    },
+
+    selectPreviousScene () {
+      const sceneActiveDayIndex = this.detailedDaysOfMonth.findIndex(data => data.day === this.detailedSceneActive.day)
+      const leftArray = cloneDeep(this.detailedDaysOfMonth).slice(0, sceneActiveDayIndex).reverse()
+      const newIndex = leftArray.findIndex(data => data.moments && data.moments.length > 0)
+
+      // Navigate to previous day in current month
+      if (newIndex >= 0) {
+        this.setDetailedScene(leftArray[newIndex])
+      } else {
+        if (this.activeMonth === 0) { // Navigate for december of previous year
+          this.year--
+          this.setYearsActiveIndex()
+          this.activeMonth = 11
+        } else { // Navigate for previous month
+          this.activeMonth--
+        }
+
+        this.tabMenuActiveMonthIndex = this.activeMonth
+        this.loadLastMonthScene = true
+      }
+    },
+
+    selectNextScene () {
+      console.log('Next scene')
+      let sceneActiveDayIndex = this.detailedDaysOfMonth.findIndex(data => data.day === this.detailedSceneActive.day)
+      const rightArray = cloneDeep(this.detailedDaysOfMonth).slice(++sceneActiveDayIndex)
+      const newIndex = rightArray.findIndex(data => data.moments && data.moments.length > 0)
+
+      console.log({newIndex, rightArray})
+      // Navigate to next day in current month
+      if (newIndex >= 0) {
+        this.setDetailedScene(rightArray[newIndex])
+      } else {
+        if (this.activeMonth === 11) { // Navigate for january of next year
+          this.year++
+          this.setYearsActiveIndex()
+          this.activeMonth = 0
+        } else {
+          this.activeMonth++ // Navigate for next month
+        }
+
+        this.tabMenuActiveMonthIndex = this.activeMonth
       }
     },
 
@@ -548,7 +603,13 @@ export default {
       this.selectMomentAction(moment)
     },
     selectPreviousMoment() {
+      console.log('select previpus')
       if (!this.selectedMoment) return
+
+      if (this.isScenes) {
+        this.selectPreviousScene()
+        return
+      }
 
       const currentIndex = this.selectedMoment.index
 
@@ -564,6 +625,11 @@ export default {
     },
     selectNextMoment() {
       if (!this.selectedMoment) return
+
+      if (this.isScenes) {
+        this.selectNextScene()
+        return
+      }
 
       const currentIndex = this.selectedMoment.index
 

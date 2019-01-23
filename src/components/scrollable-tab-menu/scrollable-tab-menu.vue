@@ -24,6 +24,7 @@
       <div
         ref="list"
         class="scrollable-tab-menu__list">
+        {{ activeElementIndex }} - {{ startAtIndex }}
         <a
           v-for="(element, index) in list"
           :key="index"
@@ -116,6 +117,7 @@
 
     watch: {
       startAtIndex(newValue) {
+        console.log('Watch!!')
         this.activeElementIndex = newValue
       }
     },

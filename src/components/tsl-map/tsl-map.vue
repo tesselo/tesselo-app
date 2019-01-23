@@ -219,7 +219,7 @@ export default {
         value: 100,
         step: 1,
         orient: 'vertical',
-        iconClass: 'leaflet-range-icon'
+        iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
 
       this.algebraSlider.on('input change', function(e) {
@@ -247,7 +247,7 @@ export default {
         value: 100,
         step: 1,
         orient: 'vertical',
-        iconClass: 'leaflet-range-icon'
+        iconClass: 'leaflet-range-icon leaflet-range-predicted'
       })
 
       this.predictedSlider.on('input change', function(e) {
