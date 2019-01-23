@@ -113,7 +113,11 @@
             <span
               v-for="(data, index) in detailedDaysOfMonth"
               :key="`day-${index}`"
-              :class="{'has-scene': data.moments && data.moments.length }">
+              :class="{
+                'has-scene': data.moments && data.moments.length,
+                'active': detailedSceneActive ? detailedSceneActive.day === data.day : false
+              }"
+              @click="setDetailedScene(data)">
               <template v-if="data.day !== -1">
                 {{ data.day }}
               </template>
@@ -121,7 +125,54 @@
           </div>
         </div>
         <div class="scenes-view__details">
-          Scenes detail
+          <template v-if="!detailedSceneActive">
+            <div class="scene-details-empty-state">
+              No data
+            </div>
+          </template>
+          <template v-else>
+            <div class="scene-details-date">
+              {{ months[activeMonth].completed }} {{ detailedSceneActive.day }}
+            </div>
+            <div class="scene-details-weekday">
+              {{ getSceneWeekDay }}
+            </div>
+            <el-select
+              v-model="sceneMomentIndexSelected"
+              class="scene-details-location"
+              placeholder="Select">
+              <el-option
+                v-for="(sceneMGRS, index) in getScenesMGRS"
+                :key="sceneMGRS"
+                :label="sceneMGRS"
+                :value="index"/>
+            </el-select>
+            <div v-if="detailedSceneActive.moments.length > 1">
+              Dropdown
+            </div>
+            <div class="scene-details-info">
+              <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].cloudyPixelPercentage">
+                <b>Cloud coverage: </b>
+                {{ detailedSceneActive.moments[sceneMomentIndexSelected].cloudyPixelPercentage }}%
+              </div>
+              <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].dataCoveragePercentage">
+                <b>Data coverage: </b>
+                {{ detailedSceneActive.moments[sceneMomentIndexSelected].dataCoveragePercentage }}%
+              </div>
+              <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].angleAzimuth">
+                <b>Azimuth angle: </b>
+                {{ Number(detailedSceneActive.moments[sceneMomentIndexSelected].angleAzimuth).toFixed(2) }}º
+              </div>
+              <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].level">
+                <b>Process level: </b>
+                {{ detailedSceneActive.moments[sceneMomentIndexSelected].level.toUpperCase() }}
+              </div>
+              <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].status">
+                <b>Status: </b>
+                {{ detailedSceneActive.moments[sceneMomentIndexSelected].status }}
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -207,45 +258,59 @@ export default {
       sceneSelectedValue: new Date(),
       months: [
         {
-          label: 'Jan'
+          label: 'Jan',
+          completed: 'January'
         },
         {
-          label: 'Fev'
+          label: 'Feb',
+          completed: 'February'
         },
         {
-          label: 'Mar'
+          label: 'Mar',
+          completed: 'March'
         },
         {
-          label: 'Apr'
+          label: 'Apr',
+          completed: 'April'
         },
         {
-          label: 'May'
+          label: 'May',
+          completed: 'May'
         },
         {
-          label: 'Jun'
+          label: 'Jun',
+          completed: 'June'
         },
         {
-          label: 'Jul'
+          label: 'Jul',
+          completed: 'July'
         },
         {
-          label: 'Aug'
+          label: 'Aug',
+          completed: 'August'
         },
         {
-          label: 'Sep'
+          label: 'Sep',
+          completed: 'September'
         },
         {
-          label: 'Oct'
+          label: 'Oct',
+          completed: 'October'
         },
         {
-          label: 'Nov'
+          label: 'Nov',
+          completed: 'November'
         },
         {
-          label: 'Dez'
+          label: 'Dec',
+          completed: 'December'
         },
       ],
       activeMonth: 0,
-      daysOfWeek: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-      detailedDaysOfMonth: []
+      daysOfWeek: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+      detailedDaysOfMonth: [],
+      detailedSceneActive: null,
+      sceneMomentIndexSelected: 0
     }
   },
   computed: {
@@ -254,6 +319,14 @@ export default {
       momentsList: state => state.time.list,
       selectedMoment: state => state.time.selectedMoment,
     }),
+    getSceneWeekDay () {
+      if (!this.detailedSceneActive) return ''
+
+      const date = new Date(this.activeYear, this.activeMonth, this.detailedSceneActive.day)
+      const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+      return weekDays[date.getDay()]
+    },
+
     years() {
       const years = []
       for (let i = 0; i <= ((new Date().getFullYear()) - 1988); i++) {
@@ -284,6 +357,13 @@ export default {
 
     isScenes () {
       return this.currentTimeType === 'Scenes'
+    },
+
+    getScenesMGRS () {
+      return this.detailedSceneActive.moments.reduce((acc, val) => {
+        acc.push(val.mgrs)
+        return acc
+      }, [])
     }
   },
   watch: {
@@ -292,21 +372,22 @@ export default {
       handler(newVal) {
         this.year = newVal
         this.setYearsActiveIndex()
-
-        if (this.isScenes) {
-          this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
-        }
+        this.handleScenesData()
       }
     },
     activeMonth () {
-      if (this.isScenes) {
-        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
-      }
+      this.handleScenesData()
     },
     momentsList () {
-      if (this.isScenes) {
-        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+      this.handleScenesData()
+    },
+    currentTimeType (newValue) {
+      if (newValue !== 'Scenes') {
+        this.detailedSceneActive = null
       }
+    },
+    sceneMomentIndexSelected () {
+      this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
     }
   },
 
@@ -330,13 +411,37 @@ export default {
   },
 
   methods: {
+    handleScenesData () {
+      this.detailedSceneActive = null
+
+      if (this.isScenes) {
+        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+        this.setDetailedScene()
+      }
+    },
+
+    setDetailedScene (data) {
+      if (!data) {
+        const data = this.detailedDaysOfMonth.find(data => data.moments && data.moments.length)
+        this.detailedSceneActive = data
+      } else if (data.moments && data.moments.length) {
+        this.detailedSceneActive = data
+      }
+
+      if (this.sceneMomentIndexSelected !== 0) {
+        this.sceneMomentIndexSelected = 0
+      } else if (this.detailedSceneActive) {
+        this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+      }
+    },
+
     getDetailedDaysOfMonth (year, month) {
       const firstDay = (new Date(year, month)).getDay();
       const totalDaysInMonth = 32 - new Date(year, month, 32).getDate();
       const daysInMonth = []
 
       // Add placeholder days if 1st day of month start in other than Monday
-      for (let i = 1 ; i < firstDay; i++) {
+      for (let i = 0 ; i < firstDay; i++) {
         daysInMonth.push({
           day: -1
         })
@@ -660,7 +765,7 @@ export default {
     &__calendar {
       flex: 1;
       display: flex;
-      margin: 20px;
+      margin: 26px 40px;
       padding-bottom: 6px;
       border-radius: 3px;
       border: 1px solid $pale-grey;
@@ -675,7 +780,7 @@ export default {
       &::before {
         content: '';
         position: absolute;
-        top: 38px;
+        top: 34px;
         left: 0;
         right: 0;
         height: 1px;
@@ -688,7 +793,8 @@ export default {
 
       span {
         position: relative;
-        padding: 12px 0;
+        margin-top: 4px;
+        padding: 6px 0 12px;
         font-size: 14px;
         width: 14%;
         text-align: center;
@@ -701,12 +807,20 @@ export default {
           font-style: normal;
         }
 
-        &.has-scene {
+        &.active {
+          background-color: $lynch;
+          color: white;
+          cursor: default;
+          border-radius: 3px;
+        }
+
+        &.has-scene:not(.active) {
           cursor: pointer;
           border-radius: 3px;
 
           &:hover {
             background-color: $pale-grey;
+            color: $navy;
           }
         }
 
@@ -726,6 +840,68 @@ export default {
 
     &__details {
       flex: 1;
+
+      .scene-details-date {
+        margin-top: 25px;
+        font-size: 20px;
+        font-weight: 600;
+        color: $navy;
+      }
+
+      .scene-details-weekday {
+        position: relative;
+        padding-bottom: 16px;
+        margin-top: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        color: $slate-grey;
+
+        &::before {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 30px;
+          height: 1px;
+          background-color: $pale-grey;
+        }
+      }
+
+      .scene-details-location {
+        position: relative;
+        margin-top: 12px;
+
+        &::before {
+          content: 'Location: ';
+          position: absolute;
+          z-index: 1;
+          top: 11px;
+          left: 18px;
+          color: $navy;
+        }
+
+        /deep/ .el-input {
+          max-width: 180px;
+        }
+
+        /deep/ input {
+          padding-left: 90px;
+        }
+      }
+
+      .scene-details-info {
+        margin-top: 14px;
+        font-size: 14px;
+
+        > div {
+          margin-top: 8px;
+        }
+
+        b {
+          font-weight: 600;
+          color: $navy;
+        }
+      }
     }
   }
 </style>

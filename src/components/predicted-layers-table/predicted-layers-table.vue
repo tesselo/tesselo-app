@@ -96,7 +96,6 @@ export default {
       }
     },
     selectedYear () {
-      console.log('selected year')
       this.filterRows()
     }
   },

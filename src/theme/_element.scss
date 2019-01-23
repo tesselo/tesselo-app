@@ -56,3 +56,12 @@
   margin-top: 6px;
   text-align: center;
 }
+
+.el-select input.el-input__inner:focus,
+.el-select .el-input.is-focus input.el-input__inner {
+  border-color: $lynch;
+}
+
+li.el-select-dropdown__item.selected {
+  color: $booger;
+}

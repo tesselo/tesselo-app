@@ -85,6 +85,7 @@ export const formatUniquesList = (rows) => {
     dataCoveragePercentage: row.data_coverage_percentage,
     level: row.level,
     mgrs: row.mgrs,
+    status: row.status
   }))
 }
 
