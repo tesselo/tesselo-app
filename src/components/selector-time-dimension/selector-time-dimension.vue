@@ -127,7 +127,7 @@
         <div class="scenes-view__details">
           <template v-if="!detailedSceneActive">
             <div class="scene-details-empty-state">
-              No data
+              No data available
             </div>
           </template>
           <template v-else>
@@ -468,12 +468,10 @@ export default {
     },
 
     selectNextScene () {
-      console.log('Next scene')
       let sceneActiveDayIndex = this.detailedDaysOfMonth.findIndex(data => data.day === this.detailedSceneActive.day)
       const rightArray = cloneDeep(this.detailedDaysOfMonth).slice(++sceneActiveDayIndex)
       const newIndex = rightArray.findIndex(data => data.moments && data.moments.length > 0)
 
-      console.log({newIndex, rightArray})
       // Navigate to next day in current month
       if (newIndex >= 0) {
         this.setDetailedScene(rightArray[newIndex])
@@ -603,7 +601,6 @@ export default {
       this.selectMomentAction(moment)
     },
     selectPreviousMoment() {
-      console.log('select previpus')
       if (!this.selectedMoment) return
 
       if (this.isScenes) {
@@ -906,6 +903,11 @@ export default {
 
     &__details {
       flex: 1;
+
+      .scene-details-empty-state {
+        margin-top: 40px;
+        font-size: 20px;
+      }
 
       .scene-details-date {
         margin-top: 25px;
