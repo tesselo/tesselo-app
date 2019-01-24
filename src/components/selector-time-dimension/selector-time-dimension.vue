@@ -361,6 +361,10 @@ export default {
       return this.currentTimeType === 'Scenes'
     },
 
+    isMonthly () {
+      return this.currentTimeType === 'Monthly'
+    },
+
     getScenesMGRS () {
       return this.detailedSceneActive.moments.reduce((acc, val) => {
         acc.push(val.mgrs)
@@ -382,6 +386,7 @@ export default {
     },
     momentsList () {
       this.handleScenesData()
+      this.checkClosestMoment()
     },
     currentTimeType (newValue) {
       if (newValue !== 'Scenes') {
@@ -413,6 +418,43 @@ export default {
   },
 
   methods: {
+    checkClosestMoment () {
+      if (this.isMonthly) {
+
+        if (!this.selectedMoment) {
+          if (this.momentsList && this.momentsList.length) {
+            this.selectMomentAction(this.momentsList[0])
+          }
+          return
+        }
+
+        // Check if in the current moments' list is the same month as the one from @selectedMoment
+        const momentIndex = this.momentsList.findIndex(moment => new Date(moment.minDate).getMonth() === new Date(this.selectedMoment.minDate).getMonth())
+
+        // If not exists, we need to check the closest one
+        if (momentIndex === -1) {
+          const selectedMomentMonth = new Date(this.selectedMoment.minDate).getMonth()
+
+          // Check if there is a month available that is bigger than the @selectedMoment
+          const selectedMoment = this.momentsList.some(moment => {
+            const auxiliarMonth = new Date(moment.minDate).getMonth()
+            if (auxiliarMonth > selectedMomentMonth) {
+              this.selectMomentAction(moment)
+              return true
+            }
+          })
+
+          // If there is not an available month bigger than the current @selectedMoment, let's set the last one of the list
+          if (!selectedMoment) {
+            this.selectMomentAction(this.momentsList[this.momentsList.length - 1])
+          }
+        } else {
+          // if same month exists on the list, just set it
+          this.selectMomentAction(this.momentsList[momentIndex])
+        }
+      }
+    },
+
     handleScenesData () {
       this.detailedSceneActive = null
 
