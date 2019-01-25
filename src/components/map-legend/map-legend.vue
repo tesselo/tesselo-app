@@ -28,6 +28,11 @@
       <span v-if="min"> {{ min }} </span>
       <span v-if="max"> {{ max }} </span>
     </div>
+    <div
+      v-if="tip"
+      class="map-legend-tip">
+      {{ tip }}
+    </div>
   </div>
 </template>
 
@@ -49,6 +54,10 @@ export default {
     max: {
       type: Number,
       default: null
+    },
+    tip: {
+      type: String,
+      default: ''
     }
   },
 
@@ -75,7 +84,7 @@ export default {
   .map-legend-wrapper {
     position: fixed;
     z-index: 1000;
-    min-width: 155px;
+    width: 155px;
     background: white;
     padding: 10px;
     border-radius: 3px;
@@ -119,6 +128,10 @@ export default {
         flex: 1;
         text-align: right;
       }
+    }
+
+    .map-legend-tip {
+      font-size: 10px;
     }
   }
 </style>

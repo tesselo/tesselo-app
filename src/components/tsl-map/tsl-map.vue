@@ -51,7 +51,8 @@
       :data="selectedPredictedLayer.legend"
       :class="{'predicted-legend--layer-visible': showFormulaLegend}"
       label="Predicted Layer"
-      class="predicted-legend"/>
+      class="predicted-legend"
+      tip="Hover colors to see details."/>
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -348,7 +349,17 @@ export default {
     left: 25px;
 
     &--layer-visible {
-      top: 240px;
+      top: 250px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        height: 1px;
+        left: 10px;
+        right: 10px;
+        background-color: $pale-grey;
+      }
     }
   }
 </style>
