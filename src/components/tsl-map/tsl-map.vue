@@ -37,11 +37,29 @@
         :url="vectorUrl"
         :options="protobufOptions" />
     </l-map>
+
+    <map-legend
+      v-if="showFormulaLegend"
+      :data="selectedFormulaLegend"
+      :min="selectedFormula.minVal"
+      :max="selectedFormula.maxVal"
+      label="Layer"
+      class="layer-legend"/>
+
+    <map-legend
+      v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length"
+      :data="selectedPredictedLayer.legend"
+      :class="{'predicted-legend--layer-visible': showFormulaLegend}"
+      label="Predicted Layer"
+      class="predicted-legend"/>
+
+    <h1> {{ selectedFormulaLegend }} </h1>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { getColorsFromPallete } from '@/services/util.js'
 
 import L from 'leaflet'
 
@@ -70,6 +88,8 @@ import 'leaflet-range/L.Control.Range.css'
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import { polygonStyle } from './vector-style'
 
+import MapLegend from '@/components/map-legend/map-legend.vue'
+
 
 export default {
   name: 'TslMap',
@@ -80,7 +100,8 @@ export default {
     LControlZoom,
     LControlAttribution,
     VGeosearch,
-    'v-protobuf': Vue2LeafletVectorGridProtobuf
+    'v-protobuf': Vue2LeafletVectorGridProtobuf,
+    MapLegend
   },
   data () {
     return {
@@ -152,6 +173,27 @@ export default {
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
+
+    showFormulaLegend () {
+      return this.selectedFormula && this.selectedFormulaLegend && this.selectedFormulaLegend.length
+    },
+
+    selectedFormulaLegend () {
+      if (this.selectedFormula) {
+        const colors = getColorsFromPallete(this.selectedFormula.colorPalette)
+        const legend = []
+        colors.forEach(color => {
+          legend.push({
+            color
+          })
+        })
+
+        return legend
+      } else {
+        return []
+      }
+    },
+
     protobufOptions() {
       const layerStyle = {
         [this.selectedLayer.name]: polygonStyle
@@ -293,6 +335,20 @@ export default {
 
     .leaflet-range-icon {
       background-position: 1px;
+    }
+  }
+
+  .layer-legend {
+    top: 177px;
+    left: 25px;
+  }
+
+  .predicted-legend {
+    top: 177px;
+    left: 25px;
+
+    &--layer-visible {
+      top: 240px;
     }
   }
 </style>

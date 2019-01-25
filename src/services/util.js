@@ -122,3 +122,22 @@ export const getColorMapParam = (formula) => {
   }
   return encodeURIComponent(JSON.stringify(colorMapParam))
 }
+
+export const getColorsFromPallete = (formula) => {
+  // Try getting the color palette from color brewer, otherwise use default.
+  let palette
+  if (formula.colorPalette in colorbrewer) {
+    const brew = colorbrewer[formula.colorPalette][9]
+    palette = [brew[0], brew[4], brew[8]].map(color => hexToRgb(color))
+  } else {
+    palette = [[165,0,38], [0,104,55], [249,247,174]]
+  }
+  // Construct query parameter with color range.
+  const colorMapParam = [
+    `rgb(${palette[0]})`,
+    `rgb(${palette[1]})`,
+    `rgb(${palette[2]})`
+  ]
+
+  return colorMapParam
+}
