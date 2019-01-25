@@ -10,7 +10,6 @@ import { HorizontalBar } from 'vue-chartjs'
 
 export default {
   name: 'BarChart',
-  // extends: HorizontalBar,
 
   components: {
     HorizontalBar
@@ -45,19 +44,6 @@ export default {
     }, {
       responsive: true
     })
-    // this.renderChart({
-    //   labels: ['Jan...', 'February'],
-    //   datasets: [
-    //     {
-    //       label: 'Data One',
-    //       backgroundColor: '#f87979',
-    //       data: [40, 20]
-    //     }
-    //   ]},
-    //   {
-    //     responsive: true
-    //   }
-    // )
   }
 }
 </script>
