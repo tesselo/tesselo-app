@@ -27,7 +27,7 @@
         </a>
       </div>
       <div class="header-text">
-        <div v-if="selectedMoment">
+        <div v-if="selectedMoment && !loading">
           <div class="header__current-time">{{ selectedMoment.name }}</div>
           <div class="header__time-type">{{ currentTimeType }} Composite</div>
         </div>
