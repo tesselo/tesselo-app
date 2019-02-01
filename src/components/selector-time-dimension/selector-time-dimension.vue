@@ -32,9 +32,9 @@
           <div class="header__time-type">{{ currentTimeType }} Composite</div>
         </div>
         <div v-else-if="!selectedMoment && !loading">
-            <div class="scene-details-empty-state">
-              No data available
-            </div>
+          <div class="scene-details-empty-state">
+            No data available
+          </div>
         </div>
         <div
           v-else
