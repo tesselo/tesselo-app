@@ -28,7 +28,15 @@
       </div>
       <div class="header-text">
         <div v-if="selectedMoment && !loading">
-          <div class="header__current-time">{{ selectedMoment.name }}</div>
+          <div
+            v-if="!isScenes && !isCustom"
+            class="header__current-time">{{ selectedMoment.name }}</div>
+          <div
+            v-if="isScenes && !isCustom"
+            class="header__current-time">{{ getSceneDate }}</div>
+          <div
+            v-if="!isScenes && isCustom"
+            class="header__current-time">{{ getSceneDate }}</div>
           <div class="header__time-type">{{ currentTimeType }} Composite</div>
         </div>
         <div v-else-if="!selectedMoment && !loading">
@@ -366,6 +374,10 @@ export default {
       return this.currentTimeType === 'Scenes'
     },
 
+    isCustom () {
+      return this.currentTimeType === 'Custom'
+    },
+
     isMonthly () {
       return this.currentTimeType === 'Monthly'
     },
@@ -375,6 +387,13 @@ export default {
         acc.push(val.mgrs)
         return acc
       }, [])
+    },
+
+    getSceneDate(){
+      if(this.detailedSceneActive){
+        return `${this.detailedSceneActive.day} ${this.months[this.activeMonth].completed} ${this.activeYear}`;
+      }
+      return `${this.months[this.activeMonth].completed} ${this.activeYear}`;
     }
   },
   watch: {
@@ -602,6 +621,7 @@ export default {
       if (this.currentTimeType === newType) {
         return
       }
+      this.activeMonth=0;
 
       this.currentTimeType = newType
       this.update('last')
