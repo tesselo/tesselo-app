@@ -254,6 +254,10 @@ export default {
       this.$refs.map.mapObject.fitBounds(bounds)
     },
     setOpacitySlider(event) {
+       if (this.algebraSlider !== null) {
+        this.$refs.map.mapObject.removeControl(this.algebraSlider)
+      }
+
       // Instantiate opacity control.
       this.algebraSlider = L.control.range({
         position: 'topright',
