@@ -1,8 +1,7 @@
 <template>
   <div>
     <multi-option-toggle-button
-      v-for="(item, index) in buttons"
-      v-if="!item.hide"
+      v-for="(item, index) in buttonsFilterHidden"
       :key="item.title"
       :title="item.title"
       :icon="item.icon"
@@ -30,6 +29,11 @@ export default {
     return {
       buttons: [],
       activeIndex: null
+    }
+  },
+  computed: {
+    buttonsFilterHidden(){
+      return this.buttons.filter(button => !button.hide);
     }
   },
   watch: {

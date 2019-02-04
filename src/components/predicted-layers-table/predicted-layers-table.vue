@@ -81,6 +81,7 @@ export default {
       next: state => state.predictedLayer.next,
       previous: state => state.predictedLayer.previous,
       selectedLayer: state => state.predictedLayer.selectedLayer,
+      areaSelectedLayer : state => state.aggregationLayer.selectedLayer,
       currentPage: state => state.predictedLayer.currentPage,
     }),
     ...mapState('time', {
@@ -126,7 +127,9 @@ export default {
           }
         )
       } else {
-        this.filteredRows = this.rows
+        if(!this.areaSelectedLayer){
+          this.filteredRows = this.rows;
+        }
       }
     },
 

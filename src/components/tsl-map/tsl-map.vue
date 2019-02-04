@@ -247,13 +247,18 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject)
+    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
+    this.$refs.map.mapObject.keyboard.disable();
   },
   methods:  {
     moveToBounds(bounds) {
       this.$refs.map.mapObject.fitBounds(bounds)
     },
     setOpacitySlider(event) {
+       if (this.algebraSlider !== null) {
+        this.$refs.map.mapObject.removeControl(this.algebraSlider)
+      }
+
       // Instantiate opacity control.
       this.algebraSlider = L.control.range({
         position: 'topright',
