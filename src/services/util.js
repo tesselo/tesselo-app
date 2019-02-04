@@ -123,11 +123,11 @@ export const getColorMapParam = (formula) => {
   return encodeURIComponent(JSON.stringify(colorMapParam))
 }
 
-export const getColorsFromPallete = (formula) => {
+export const getColorsFromPallete = ({ colorPalette }) => {
   // Try getting the color palette from color brewer, otherwise use default.
   let palette
-  if (formula.colorPalette in colorbrewer) {
-    const brew = colorbrewer[formula.colorPalette][9]
+  if (colorPalette in colorbrewer) {
+    const brew = colorbrewer[colorPalette][9]
     palette = [brew[0], brew[4], brew[8]].map(color => hexToRgb(color))
   } else {
     palette = [[165,0,38], [0,104,55], [249,247,174]]

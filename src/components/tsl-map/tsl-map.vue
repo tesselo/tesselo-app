@@ -181,7 +181,7 @@ export default {
 
     selectedFormulaLegend () {
       if (this.selectedFormula) {
-        const colors = getColorsFromPallete(this.selectedFormula.colorPalette)
+        const colors = getColorsFromPallete(this.selectedFormula)
         const legend = []
         colors.forEach(color => {
           legend.push({
