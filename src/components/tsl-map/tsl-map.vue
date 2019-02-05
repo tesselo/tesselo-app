@@ -13,12 +13,13 @@
         prefix="" />
       <l-tile-layer
         v-for="tileProvider in tileProviders"
-        layer-type="base"
         :key="tileProvider.name"
         :name="tileProvider.name"
         :visible="tileProvider.visible"
         :url="tileProvider.url"
-        :attribution="tileProvider.attribution" />
+        :attribution="tileProvider.attribution"
+        layer-type="base"
+      />
       <l-tile-layer
         :visible="showSelected"
         :url="algebraUrl"
@@ -29,17 +30,37 @@
         :visible="showPredicted"
         :url="predictedUrl"
         :tile-layer-class="tileLayerClass"
-        :z-index="9" />
+        :z-index="10"
+        @add="setOpacitySliderPredictedLayer" />
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
         :options="protobufOptions" />
     </l-map>
+
+    <map-legend
+      v-if="showFormulaLegend"
+      :data="selectedFormulaLegend"
+      :min="selectedFormula.minVal"
+      :max="selectedFormula.maxVal"
+      label="Layer"
+      class="layer-legend"/>
+
+    <map-legend
+      v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length"
+      :data="selectedPredictedLayer.legend"
+      :class="{'predicted-legend--layer-visible': showFormulaLegend}"
+      label="Predicted Layer"
+      class="predicted-legend"
+      tip="Hover colors to see details."/>
+
+    <h1> {{ selectedFormulaLegend }} </h1>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { getColorsFromPallete } from '@/services/util.js'
 
 import L from 'leaflet'
 
@@ -68,6 +89,8 @@ import 'leaflet-range/L.Control.Range.css'
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import { polygonStyle } from './vector-style'
 
+import MapLegend from '@/components/map-legend/map-legend.vue'
+
 
 export default {
   name: 'TslMap',
@@ -78,10 +101,13 @@ export default {
     LControlZoom,
     LControlAttribution,
     VGeosearch,
-    'v-protobuf': Vue2LeafletVectorGridProtobuf
+    'v-protobuf': Vue2LeafletVectorGridProtobuf,
+    MapLegend
   },
   data () {
     return {
+      algebraSlider: null,
+      predictedSlider: null,
       tileProviders: [
         {
           name: 'B&W OpenStreetMap',
@@ -148,6 +174,27 @@ export default {
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
+
+    showFormulaLegend () {
+      return this.selectedFormula && this.selectedFormulaLegend && this.selectedFormulaLegend.length
+    },
+
+    selectedFormulaLegend () {
+      if (this.selectedFormula) {
+        const colors = getColorsFromPallete(this.selectedFormula)
+        const legend = []
+        colors.forEach(color => {
+          legend.push({
+            color
+          })
+        })
+
+        return legend
+      } else {
+        return []
+      }
+    },
+
     protobufOptions() {
       const layerStyle = {
         [this.selectedLayer.name]: polygonStyle
@@ -200,29 +247,62 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject)
+    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
+    this.$refs.map.mapObject.keyboard.disable();
   },
   methods:  {
     moveToBounds(bounds) {
       this.$refs.map.mapObject.fitBounds(bounds)
     },
     setOpacitySlider(event) {
+       if (this.algebraSlider !== null) {
+        this.$refs.map.mapObject.removeControl(this.algebraSlider)
+      }
+
       // Instantiate opacity control.
-      const slider = L.control.range({
+      this.algebraSlider = L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
         value: 100,
         step: 1,
         orient: 'vertical',
-        iconClass: 'leaflet-range-icon'
+        iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
 
-      slider.on('input change', function(e) {
+      this.algebraSlider.on('input change', function(e) {
         event.target.setOpacity(e.value / 100)
       });
 
-      this.$refs.map.mapObject.addControl(slider)
+      let predictedRemoved = false
+      if (this.predictedSlider !== null) {
+        predictedRemoved = true
+        this.$refs.map.mapObject.removeControl(this.predictedSlider)
+      }
+
+      this.$refs.map.mapObject.addControl(this.algebraSlider)
+
+      if (predictedRemoved) {
+        this.$refs.map.mapObject.addControl(this.predictedSlider)
+      }
+    },
+
+    setOpacitySliderPredictedLayer (event) {
+      this.predictedSlider = L.control.range({
+        position: 'topright',
+        min: 0,
+        max: 100,
+        value: 100,
+        step: 1,
+        orient: 'vertical',
+        iconClass: 'leaflet-range-icon leaflet-range-predicted'
+      })
+
+      this.predictedSlider.on('input change', function(e) {
+        event.target.setOpacity(e.value / 100)
+      });
+
+      this.$refs.map.mapObject.addControl(this.predictedSlider)
     }
   }
 }
@@ -252,6 +332,38 @@ export default {
       @media (min-width: 768px) {
         width: 26px;
         height: 26px;
+      }
+    }
+  }
+
+  .leaflet-control-container .leaflet-range-control {
+    width: 30px;
+
+    .leaflet-range-icon {
+      background-position: 1px;
+    }
+  }
+
+  .layer-legend {
+    top: 177px;
+    left: 25px;
+  }
+
+  .predicted-legend {
+    top: 177px;
+    left: 25px;
+
+    &--layer-visible {
+      top: 250px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        height: 1px;
+        left: 10px;
+        right: 10px;
+        background-color: $pale-grey;
       }
     }
   }

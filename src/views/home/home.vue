@@ -16,23 +16,25 @@
         @change="reportMenuClick" />
     </div>
     <div
-      class="panels-wrapper"
-      v-if="activePanel">
+      v-if="activePanel"
+      class="panels-wrapper">
       <panel
         v-if="activePanel === 'areas'"
         title="Areas"
         @close="closeAllPanels()">
         <areas-table
+          slot="content"
           @select="areasTableSelect"
-          slot="content" />
+        />
       </panel>
       <panel
         v-if="activePanel === 'layers'"
         title="Layers"
         @close="closeAllPanels()">
         <layers-table
+          slot="content"
           @select="layersTableSelect"
-          slot="content" />
+        />
       </panel>
       <panel
         v-if="activePanel === 'multiple-report'"
@@ -55,16 +57,19 @@
         title="Predicted Layers"
         @close="closeAllPanels()">
         <predicted-layers-table
+          slot="content"
           @select="predictedLayersTableSelect"
-          slot="content" />
+        />
       </panel>
     </div>
     <div
+      v-if="selectedLayer"
       class="selector-time-dimension-pannel"
-      v-if="selectedLayer">
+    >
       <collapsible-panel
+        :open="stdPanelVisible"
         @toggle="toggleSTDPanel"
-        :open="stdPanelVisible">
+      >
         <selector-time-dimension
           :show-picker="stdPanelVisible"
           :active-year="activeYear"

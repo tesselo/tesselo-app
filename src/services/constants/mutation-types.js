@@ -1,6 +1,11 @@
 // Mutation types constants should be named respecting
 // the following structure: <namespace>_<verb>_<property>
 
+/**
+ * GLOBAL
+ */
+export const RESET_STORE = 'resetStore'
+
 /* -------------------------------------
  * App
  * ---------------------------------- */

@@ -1,10 +1,11 @@
 <template>
   <div
+    v-if="list"
     class="scrollable-tab-menu-wrapper"
-    v-if="list">
+  >
     <div class="scrollable-tab-menu">
       <a
-        v-if="showLeftArrow"
+        v-if="showNavigation && showLeftArrow"
         class="scrollable-tab-menu__nav scrollable-tab-menu__nav--left d-flex flex-row justify-content-center align-items-center"
         @click="previous">
         <svg
@@ -26,14 +27,17 @@
         <a
           v-for="(element, index) in list"
           :key="index"
+          :class="{
+            'scrollable-tab-menu__element--active' : activeElementIndex === index,
+            'scrollable-tab-menu__element--highlight': hightlightElementAtIndex === index
+          }"
           class="scrollable-tab-menu__element"
-          :class="{'scrollable-tab-menu__element--active' : activeElementIndex === index, 'scrollable-tab-menu__element--highlight': hightlightElementAtIndex === index}"
           @click="onClickElement(index)">
           {{ element.label }}
         </a>
       </div>
       <a
-        v-if="showRightArrow"
+        v-if="showNavigation && showRightArrow"
         class="scrollable-tab-menu__nav scrollable-tab-menu__nav--right d-flex flex-row justify-content-center align-items-center"
         @click="next">
         <svg
@@ -62,6 +66,11 @@
   export default {
     name: 'ScrollableTabMenu',
     props: {
+      showNavigation: {
+        type: Boolean,
+        default: true
+      },
+
       /**
        * Array of strings or objects with the text to show on tabs.
        */

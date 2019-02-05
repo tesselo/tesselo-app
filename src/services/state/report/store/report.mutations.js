@@ -1,4 +1,4 @@
-import defaultState from './default-state'
+import defaultState from './report.state'
 import hash from 'object-hash'
 import Vue from 'vue'
 
@@ -7,12 +7,12 @@ import { mutationTypes } from '@/services/constants'
 export default {
   /**
    * Sets multiple region report
-   * 
-   * @param {any} state 
+   *
+   * @param {any} state
    * @param {any} report
    */
   [mutationTypes.REPORT_SET_MULTIPLE_REGION] (state, { layer, formula, moment, response }) {
-    
+
     const reportKey = hash({ layer, formula, moment })
 
     state.selectedReport = reportKey
@@ -28,9 +28,9 @@ export default {
   /**
    * Sets the selected report key
    * the report key is created using object-hash of { layer, formula, moment }
-   * 
-   * @param {any} state 
-   * @param {any} key 
+   *
+   * @param {any} state
+   * @param {any} key
    */
   [mutationTypes.REPORT_SET_SELECTED_MULTIPLE_REPORT]  (state, key) {
     state.selectedReport = key
@@ -38,8 +38,8 @@ export default {
   /**
    * Saves report object to localstorage
    * Sets report object in state.savedReports
-   * 
-   * @param {any} state 
+   *
+   * @param {any} state
    */
   [mutationTypes.REPORT_SAVE_SELECTED_MULTIPLE_REPORT] (state) {
     Vue.set(state.savedReports, state.selectedReport, state.reports[state.selectedReport])

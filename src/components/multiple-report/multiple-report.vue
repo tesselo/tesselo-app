@@ -21,14 +21,13 @@
     </div>
     <div v-if="!loading && selectedReport && finished">
       <bar-chart
-        :width="500"
-        :height="300"
         :labels="labels"
         :datasets="datasets" />
     </div>
     <div
+      v-if="!finished && !loading"
       class="report-unfinished d-flex flex-column justify-content-center align-items-center"
-      v-if="!finished && !loading">
+    >
       <h2>The selected report is not ready yet.</h2>
       <p>Trying again in {{ secondsToRetry }} seconds</p>
     </div>
@@ -192,7 +191,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
   .multiple-report {
     max-width: 700px;
   }

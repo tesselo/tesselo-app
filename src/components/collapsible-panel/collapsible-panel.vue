@@ -1,9 +1,10 @@
 <template>
   <div class="collapsible-panel">
     <a
-      @click="$emit('toggle')"
+      :class="['close d-flex flex-row justify-content-center align-items-center', { 'close--rotate': open }]"
       href="javascript:void(0)"
-      :class="['close d-flex flex-row justify-content-center align-items-center', { 'close--rotate': open }]">
+      @click="$emit('toggle')"
+    >
       <svg
         width="24"
         height="24"

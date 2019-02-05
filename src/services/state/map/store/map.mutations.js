@@ -1,4 +1,4 @@
-import defaultState from './default-state'
+import defaultState from './map.state'
 import { mutationTypes } from '@/services/constants'
 
 export default {

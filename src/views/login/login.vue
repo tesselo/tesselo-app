@@ -1,7 +1,8 @@
 <template>
   <div
+    :style="{backgroundImage: backgroundImage}"
     class="login"
-    :style="{backgroundImage: backgroundImage}">
+  >
     <div class="content">
       <login-header v-if="showHeader"/>
       <div class="container">

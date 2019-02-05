@@ -79,12 +79,20 @@ export const formatUniquesList = (rows) => {
     nameToShow: index + 1,
     type: 'unique',
     year: row.date.substring(0, 4),
+    angleAltitude: row.angle_altitude,
+    angleAzimuth: row.angle_azimuth,
+    cloudyPixelPercentage: row.cloudy_pixel_percentage,
+    dataCoveragePercentage: row.data_coverage_percentage,
+    level: row.level,
+    mgrs: row.mgrs,
+    status: row.status
   }))
 }
 
 export const predictedLayerResults = (rows) => {
   return rows.map(row => ({
     id: row.id,
+    aggregationLayerName: row.aggregationlayer_name,
     classifier: row.classifier,
     sentineltile: row.sentineltile,
     composite: row.composite,
@@ -93,8 +101,10 @@ export const predictedLayerResults = (rows) => {
     chunksCount: row.chunks_count,
     chunksDone: row.chunks_done,
     classifierName: capitalizeFirstLetter(row.classifier_name),
+    classifierType: row.classifier_type,
     sourceName: row.source_name,
     sourceType: row.composite ? 'Composite over ' + row.source_name : 'Scene from ' + row.source_name,
-    nameToShow: capitalizeFirstLetter(row.classifier_name + ' over ' + row.source_name)
+    nameToShow: capitalizeFirstLetter(row.classifier_name + ' over ' + row.source_name),
+    legend: row.legend
   }))
 }

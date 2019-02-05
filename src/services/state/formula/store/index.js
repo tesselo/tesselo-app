@@ -1,4 +1,4 @@
-import state from './default-state'
+import state from './formula.state'
 import mutations from './formula.mutations'
 import actions from './formula.actions'
 

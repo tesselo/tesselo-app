@@ -18,11 +18,13 @@ const router = new Router({
       meta: {
         requiresAuthentication: true
       }
-    }, {
+    },
+    {
       path: '/login',
       name: 'Login',
       component: Login
-    }, {
+    },
+    {
       path: '/logout',
       name: 'Logout',
       component: Logout

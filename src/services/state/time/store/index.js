@@ -1,4 +1,4 @@
-import state from './default-state'
+import state from './time.state'
 import mutations from './time.mutations'
 import actions from './time.actions'
 import getters from './time.getters'
