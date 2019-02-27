@@ -1,13 +1,13 @@
 <template>
   <div>
     <multi-option-toggle-button
-      v-for="(item, index) in buttonsFilterHidden"
+      v-for="item in buttonsFilterHidden"
       :key="item.title"
       :title="item.title"
       :icon="item.icon"
       :active="item.active"
       :selected="item.selected"
-      @click="setActive(index)" />
+      @click="setActive(item.key)" />
   </div>
 </template>
 
@@ -27,8 +27,7 @@ export default {
   },
   data() {
     return {
-      buttons: [],
-      activeIndex: null
+      buttons: []
     }
   },
   computed: {
@@ -45,16 +44,15 @@ export default {
     }
   },
   methods: {
-    setActive(activeIndex) {
-      this.activeIndex = activeIndex
-      this.$emit('change', this.items[activeIndex].key)
-      this.buttons = this.buttons.map((item, itemIndex) => ({
+    setActive(itemKey) {
+      this.$emit('change', itemKey)
+
+      this.buttons = this.buttons.map(item => ({
         ...item,
-        active: activeIndex == itemIndex,
+        active: item.key == itemKey,
       }))
     },
     unsetActive() {
-      this.activeIndex = null
       this.buttons = this.buttons.map((item) => ({
         ...item,
         active: false
