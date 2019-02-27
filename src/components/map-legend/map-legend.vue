@@ -25,8 +25,8 @@
       </template>
     </div>
     <div class="map-legend-limits">
-      <span v-if="min"> {{ min }} </span>
-      <span v-if="max"> {{ max }} </span>
+      <span v-if="min === 0 || min"> {{ min }} </span>
+      <span v-if="max === 0 || max"> {{ max }} </span>
     </div>
     <div
       v-if="tip"
@@ -93,6 +93,9 @@ export default {
       display: block;
       font-size: 12px;
       margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .map-legend {
