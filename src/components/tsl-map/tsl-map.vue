@@ -51,6 +51,7 @@
       :data="selectedPredictedLayer.legend"
       :class="{'predicted-legend--layer-visible': showFormulaLegend}"
       :label="selectedPredictedLayer.classifierName"
+      format="list"
       class="predicted-legend"
       tip="Hover colors to see details."/>
 
@@ -251,7 +252,7 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
+    this.defaultExtent = L && L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
   },
   methods:  {
@@ -264,7 +265,7 @@ export default {
       }
 
       // Instantiate opacity control.
-      this.algebraSlider = L.control.range({
+      this.algebraSlider = L && L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
@@ -292,7 +293,7 @@ export default {
     },
 
     setOpacitySliderPredictedLayer (event) {
-      this.predictedSlider = L.control.range({
+      this.predictedSlider = L && L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
