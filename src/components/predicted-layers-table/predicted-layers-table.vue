@@ -12,7 +12,7 @@
       <el-table-column
         prop="classifierName"
         label="Classifier"
-        min-width="200"
+        min-width="350"
         show-overflow-tooltip />
       <el-table-column
         prop="classifierType"
@@ -21,13 +21,8 @@
         show-overflow-tooltip/>
       <el-table-column
         prop="sourceName"
-        label="Source Name"
+        label="Date"
         min-width="140"
-        show-overflow-tooltip/>
-      <el-table-column
-        prop="aggregationLayerName"
-        label="Aggregation Layer"
-        min-width="250"
         show-overflow-tooltip/>
     </el-table>
     <div
@@ -123,7 +118,8 @@ export default {
         // Filter predirected layers based on selected Year
         this.filteredRows = this.rows.filter(
           entry => {
-            return entry.sourceName.includes(this.selectedYear)
+            return entry.sourceName.includes(this.selectedYear) &&
+            entry.aggregationLayerName === this.areaSelectedLayer.name
           }
         )
       } else {
