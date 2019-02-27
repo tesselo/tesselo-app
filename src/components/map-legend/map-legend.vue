@@ -1,38 +1,50 @@
 <template>
   <div class="map-legend-wrapper">
     <label v-if="label"> {{ label }} </label>
-    <div
-      :style="legendStyle"
-      class="map-legend">
-      <template v-for="entry in data">
-        <el-tooltip
-          v-if="entry.name"
-          :key="`tooltip-${entry.color}`"
-          :content="entry.name"
-          :open-delay="200"
-          class="item"
-          effect="dark"
-          placement="top">
+    <template v-if="format === 'legend'">
+      <div
+        :style="legendStyle"
+        class="map-legend">
+        <template v-for="entry in data">
+          <el-tooltip
+            v-if="entry.name"
+            :key="`tooltip-${entry.color}`"
+            :content="entry.name"
+            :open-delay="200"
+            class="item"
+            effect="dark"
+            placement="top">
+            <div
+              :style="legendPartialStyle"
+              class="map-legend__partial map-legend__partial--tooltip"/>
+          </el-tooltip>
           <div
+            v-else
+            :key="entry.color"
             :style="legendPartialStyle"
-            class="map-legend__partial map-legend__partial--tooltip"/>
-        </el-tooltip>
-        <div
-          v-else
-          :key="entry.color"
-          :style="legendPartialStyle"
-          class="map-legend__partial" />
-      </template>
-    </div>
-    <div class="map-legend-limits">
-      <span v-if="min === 0 || min"> {{ min }} </span>
-      <span v-if="max === 0 || max"> {{ max }} </span>
-    </div>
-    <div
-      v-if="tip"
-      class="map-legend-tip">
-      {{ tip }}
-    </div>
+            class="map-legend__partial" />
+        </template>
+      </div>
+      <div class="map-legend-limits">
+        <span v-if="min === 0 || min"> {{ min }} </span>
+        <span v-if="max === 0 || max"> {{ max }} </span>
+      </div>
+      <div
+        v-if="tip"
+        class="map-legend-tip">
+        {{ tip }}
+      </div>
+    </template>
+    <template v-if="format === 'list'">
+      <ul class="map-list">
+        <li v-for="entry in data" 
+          :key="`list-color-${entry.color}`"
+          class="map-list__entry">
+          <div class="map-list__color" :style="{'background-color': entry.color}" />
+          <div class="map-list__name"> {{ entry.name }} </div>
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
@@ -58,6 +70,14 @@ export default {
     tip: {
       type: String,
       default: ''
+    },
+    format: {
+      type: String,
+      default: 'legend',
+      validator: value => [
+        'legend',
+        'list'
+      ].includes(value)
     }
   },
 
@@ -136,6 +156,32 @@ export default {
 
     .map-legend-tip {
       font-size: 10px;
+    }
+
+    .map-list {
+      max-height: 260px;
+      overflow: auto;
+
+      &__entry {
+        margin-top: 8px;
+        display: flex;
+      }
+
+      &__color {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+      }
+      
+      &__name {
+        margin-left: 6px;
+        max-width: calc(100% - 30px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 20px;
+        font-size: 12px;
+      }
     }
   }
 </style>
