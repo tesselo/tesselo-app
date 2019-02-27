@@ -43,7 +43,7 @@
       :data="selectedFormulaLegend"
       :min="selectedFormula.minVal"
       :max="selectedFormula.maxVal"
-      :label="selectedFormula.name"
+      :label="selectedFormula.acronym"
       class="layer-legend"/>
 
     <map-legend
@@ -176,7 +176,11 @@ export default {
     }),
 
     showFormulaLegend () {
-      return this.selectedFormula && this.selectedFormulaLegend && this.selectedFormulaLegend.length
+      console.log('Selected formula: ', this.selectedFormula)
+      return this.selectedFormula && 
+        this.selectedFormula.formula !== 'RGB' &&
+        this.selectedFormulaLegend && 
+        this.selectedFormulaLegend.length
     },
 
     selectedFormulaLegend () {

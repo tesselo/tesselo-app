@@ -90,6 +90,7 @@ export default {
     border-radius: 3px;
 
     label {
+      padding-bottom: 2px;
       display: block;
       font-size: 12px;
       margin-bottom: 8px;
