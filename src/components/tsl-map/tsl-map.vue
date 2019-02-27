@@ -43,14 +43,14 @@
       :data="selectedFormulaLegend"
       :min="selectedFormula.minVal"
       :max="selectedFormula.maxVal"
-      label="Layer"
+      :label="selectedFormula.name"
       class="layer-legend"/>
 
     <map-legend
       v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length"
       :data="selectedPredictedLayer.legend"
       :class="{'predicted-legend--layer-visible': showFormulaLegend}"
-      label="Predicted Layer"
+      :label="selectedPredictedLayer.classifierName"
       class="predicted-legend"
       tip="Hover colors to see details."/>
 
