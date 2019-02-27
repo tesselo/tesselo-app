@@ -13,7 +13,7 @@
       v-if="icon"
       :src="iconUrl"
       class="multi-option-toggle-icon">
-    <span class="title">{{ title }}</span>
+    <span class="title"> {{ title }}</span>
   </a>
 </template>
 
