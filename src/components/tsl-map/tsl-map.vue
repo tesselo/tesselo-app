@@ -43,14 +43,15 @@
       :data="selectedFormulaLegend"
       :min="selectedFormula.minVal"
       :max="selectedFormula.maxVal"
-      label="Layer"
+      :label="selectedFormula.acronym"
       class="layer-legend"/>
 
     <map-legend
       v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length"
       :data="selectedPredictedLayer.legend"
       :class="{'predicted-legend--layer-visible': showFormulaLegend}"
-      label="Predicted Layer"
+      :label="selectedPredictedLayer.classifierName"
+      format="list"
       class="predicted-legend"
       tip="Hover colors to see details."/>
 
@@ -176,7 +177,10 @@ export default {
     }),
 
     showFormulaLegend () {
-      return this.selectedFormula && this.selectedFormulaLegend && this.selectedFormulaLegend.length
+      return this.selectedFormula && 
+        this.selectedFormula.formula !== 'RGB' &&
+        this.selectedFormulaLegend && 
+        this.selectedFormulaLegend.length
     },
 
     selectedFormulaLegend () {
