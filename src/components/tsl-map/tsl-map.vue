@@ -177,7 +177,6 @@ export default {
     }),
 
     showFormulaLegend () {
-      console.log('Selected formula: ', this.selectedFormula)
       return this.selectedFormula && 
         this.selectedFormula.formula !== 'RGB' &&
         this.selectedFormulaLegend && 
@@ -252,7 +251,7 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    this.defaultExtent = L && L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
+    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
   },
   methods:  {
@@ -265,7 +264,7 @@ export default {
       }
 
       // Instantiate opacity control.
-      this.algebraSlider = L && L.control.range({
+      this.algebraSlider = L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
@@ -293,7 +292,7 @@ export default {
     },
 
     setOpacitySliderPredictedLayer (event) {
-      this.predictedSlider = L && L.control.range({
+      this.predictedSlider = L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
