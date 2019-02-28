@@ -37,10 +37,13 @@
     </template>
     <template v-if="format === 'list'">
       <ul class="map-list">
-        <li v-for="entry in data" 
+        <li 
+          v-for="entry in data" 
           :key="`list-color-${entry.color}`"
           class="map-list__entry">
-          <div class="map-list__color" :style="{'background-color': entry.color}" />
+          <div 
+            :style="{'background-color': entry.color}"
+            class="map-list__color" />
           <div class="map-list__name"> {{ entry.name }} </div>
         </li>
       </ul>
