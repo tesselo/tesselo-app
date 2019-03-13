@@ -244,6 +244,12 @@ export default {
           this.defaultExtent.setZoom(this.$refs.map.mapObject.getZoom())
         }
       }
+    },
+    'selectedPredictedLayer.id' (newValue) {
+      if (!newValue && this.predictedSlider !== null) {
+        this.$refs.map.mapObject.removeControl(this.predictedSlider)
+        this.predictedSlider = null
+      }
     }
   },
   mounted: function() {
