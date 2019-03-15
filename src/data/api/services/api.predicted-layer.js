@@ -13,7 +13,17 @@ export default {
    * @returns
    */
   get (options, axiosInstance = client) {
-    return axiosInstance[endpoints.predictedLayer.list.method](endpoints.predictedLayer.list.url + '?page=' + options.page)
+    let url = endpoints.predictedLayer.list.url + '?page=' + options.page
+
+    if (options.year) {
+      url += `&year=${options.year}`
+    }
+
+    if (options.areaName) {
+      url += `&areaName=${options.areaName}`
+    }
+
+    return axiosInstance[endpoints.predictedLayer.list.method](encodeURI(url))
       .then((response) => {
         return Promise.resolve({
           ...response.data,
