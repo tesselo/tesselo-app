@@ -2,7 +2,7 @@
   <div class="predicted-layers-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
       v-if="!loading"
-      :data="filteredRows"
+      :data="rows"
       :row-class-name="tableRowClassName"
       class="predicted-layers-table"
       max-height="500"
@@ -31,8 +31,8 @@
       <div class="spinner twilight" />
     </div>
     <el-pagination
-      v-if="filteredRows.length"
-      :total="filteredRows.length"
+      v-if="rows.length"
+      :total="total"
       :page-size="pageSize"
       :current-page="currentPage"
       layout="prev, pager, next"
@@ -85,23 +85,13 @@ export default {
   },
 
   watch: {
-    rows: {
-      deep: true,
-      handler () {
-        this.filterRows()
-      }
-    },
     selectedYear () {
-      this.filterRows()
+      this.getPredictedLayers({ page: this.currentPage })
     }
   },
 
   beforeMount() {
-    if (this.rows.length === 0 ){
-      this.getPredictedLayers({page: this.currentPage})
-    } else {
-      this.filterRows()
-    }
+    this.getPredictedLayers({ page: this.currentPage })
   },
 
   methods: {

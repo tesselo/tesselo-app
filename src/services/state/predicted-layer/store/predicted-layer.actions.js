@@ -8,10 +8,21 @@ export default {
    *
    * @param {any} context
    */
-  [actionTypes.PREDICTED_LAYER_GET] (context, options) {
+  [actionTypes.PREDICTED_LAYER_GET] ({ rootState, commit }, options) {
+    const year = rootState.time.selectedMoment && rootState.time.selectedMoment.year
+    const areaName = rootState.aggregationLayer.selectedLayer && rootState.aggregationLayer.selectedLayer.name
+
+    if (year) {
+      options.year = year
+    }
+
+    if (areaName) {
+      options.areaName = areaName
+    }
+
     return APIAdapter.services.predictedLayer.get(options)
       .then((response) => {
-        context.commit(mutationTypes.PREDICTED_LAYER_SET_LAYERS, {
+        commit(mutationTypes.PREDICTED_LAYER_SET_LAYERS, {
           ...response,
           page: options.page
         })
