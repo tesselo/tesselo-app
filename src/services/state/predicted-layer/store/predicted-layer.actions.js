@@ -16,7 +16,7 @@ export default {
       options.year = year
     }
 
-    if (areaName) {
+    if (areaId) {
       options.areaId = areaId
     }
 
