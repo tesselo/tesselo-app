@@ -20,7 +20,7 @@ export default {
     }
 
     if (options.areaName) {
-      url += `&areaName=${options.areaName}`
+      url += `&aggregationlayer=${options.areaId}`
     }
 
     return axiosInstance[endpoints.predictedLayer.list.method](encodeURI(url))
