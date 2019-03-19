@@ -19,7 +19,7 @@ export default {
       url += `&year=${options.year}`
     }
 
-    if (options.areaName) {
+    if (options.areaId) {
       url += `&aggregationlayer=${options.areaId}`
     }
 
