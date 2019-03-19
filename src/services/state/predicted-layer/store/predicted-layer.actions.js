@@ -10,14 +10,14 @@ export default {
    */
   [actionTypes.PREDICTED_LAYER_GET] ({ rootState, commit }, options) {
     const year = rootState.time.selectedMoment && rootState.time.selectedMoment.year
-    const areaName = rootState.aggregationLayer.selectedLayer && rootState.aggregationLayer.selectedLayer.name
+    const areaId = rootState.aggregationLayer.selectedLayer && rootState.aggregationLayer.selectedLayer.id
 
     if (year) {
       options.year = year
     }
 
     if (areaName) {
-      options.areaName = areaName
+      options.areaId = areaId
     }
 
     return APIAdapter.services.predictedLayer.get(options)
