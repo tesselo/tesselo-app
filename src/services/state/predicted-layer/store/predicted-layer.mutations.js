@@ -1,3 +1,4 @@
+import defaultState from './predicted-layer.state'
 import { mutationTypes } from '@/services/constants'
 
 export default {
@@ -17,12 +18,7 @@ export default {
   [mutationTypes.PREDICTED_LAYER_SELECT_LAYER] (state, layer) {
     state.selectedLayer = layer
   },
-  [mutationTypes.PREDICTED_LAYER_RESET] (state) {
-    state.total = 0
-    state.previous = null
-    state.next = null
-    state.rows = []
-    state.currentPage = 1
-    state.selectedLayer = null
+  [mutationTypes.PREDICTED_LAYER_RESET] (state) { // eslint-disable-line
+    state = defaultState
   }
 }
