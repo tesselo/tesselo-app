@@ -164,7 +164,7 @@ export default {
       stdPanelVisible: false,
       activeYear: (new Date()).getFullYear(),
       isNewReport: false,
-      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg'
+      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg',
     }
   },
   head: {
@@ -174,15 +174,111 @@ export default {
   },
   computed: {
     ...mapState({
+      aggregationLayerRows: state => state.aggregationLayer.rows,
+      formulaRows: state => state.formula.rows,
+      predictedLayerRows: state => state.predictedLayer.rows,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer
     })
   },
+
+  beforeMount() {
+    // Get rows from first page
+    this.getAggregationLayers({page: 1})
+    this.getFormulas({page: 1})
+    this.getPredictedLayers({ page: 1 })
+  },
+
   methods: {
     ...mapActions('report', {
       saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
     }),
+
+    ...mapActions('aggregationLayer', {
+      getAggregationLayersAction: actionTypes.AGGREGATION_LAYER_GET,
+      selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
+    }),
+
+    ...mapActions('formula', {
+      getFormulasAction: actionTypes.FORMULA_GET,
+      selectFormula: actionTypes.FORMULA_SELECT
+    }),
+
+    ...mapActions('predictedLayer', {
+      getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
+      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT
+    }),
+
+    ...mapActions('map', {
+      setMapBounds: actionTypes.MAP_SET_BOUNDS
+    }),
+
+    /**
+     * Get rows from first page (aggregation/area) and select selectDefaultArea
+     */
+    getAggregationLayers(options) {
+      this.getAggregationLayersAction(options)
+        .then(() => {
+          this.selectDefaultArea()
+        })
+    },
+
+    /**
+     * Get rows from first page (formular/layer) and select first
+     */
+    getFormulas(options) {
+      this.getFormulasAction(options)
+        .then(() => {
+          this.selectDefaultLayer()
+        })
+    },
+
+
+    /**
+     * Get rows from first page (predicted layer) and select first
+     */
+    getPredictedLayers(options) {
+      this.getPredictedLayersAction(options)
+        .then(() => {
+          this.selectLayer()
+        })
+    },
+    /**
+     * Select default area and set map bounds
+     */
+    selectDefaultArea() {
+      const area = this.aggregationLayerRows[0]
+
+      if(area){
+        this.selectAggregationLayer(area)
+        this.setMapBounds(area.bounds)
+        this.areasTableSelect(area)
+      }
+    },
+
+    /**
+     * Select default layer
+     */
+     selectDefaultLayer() {
+      const formula = this.formulaRows[0]
+      if(formula){
+        this.selectFormula(formula)
+        this.layersTableSelect(formula)
+      }
+    },
+
+    /**
+     * Select default predicted layer
+     */
+    selectLayer() {
+      const predictedLayer = this.predictedLayerRows[0]
+      if(predictedLayer && this.selectedLayer && predictedLayer.id === this.selectedLayer.id) {
+          this.selectPredictedLayer(predictedLayer)
+          this.predictedLayersTableSelect(predictedLayer)
+      }
+    },
+
     closeAllPanels() {
       this.activePanel = ''
       this.$refs.panelSelector.unsetActive()
