@@ -403,6 +403,7 @@ export default {
         this.year = newVal
         this.setYearsActiveIndex()
         this.handleScenesData()
+        this.$router.replace({query: {...this.$route.query, year: this.year}})
       }
     },
     activeMonth () {
@@ -419,6 +420,12 @@ export default {
     },
     sceneMomentIndexSelected () {
       this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+    },
+    selectedMoment(newVal){
+      if(newVal)this.$router.replace({query: {...this.$route.query, selectedMoment: this.selectedMoment.id}})
+      if(!newVal && this.$route.query.selectedMoment){
+        this.$router.replace({query: {...this.$route.query, selectedMoment: '' }})
+      }
     }
   },
 
@@ -600,6 +607,7 @@ export default {
       getListAction: actionTypes.TIME_GET_LIST,
       selectMomentAction: actionTypes.TIME_SELECT_MOMENT
     }),
+
     debouncedGetList: debounce(function (interval, autoSelect) {
       this.getListAction({
         params: {
@@ -613,16 +621,17 @@ export default {
         this.loading = false
       })
     }, 1000),
+
     getList(interval, autoSelect) {
       this.loading = true
       this.debouncedGetList(interval, autoSelect)
     },
+
     setTimeType(newType) {
       if (this.currentTimeType === newType) {
         return
       }
       this.activeMonth=0;
-
       this.currentTimeType = newType
       this.update('last')
     },
@@ -635,7 +644,6 @@ export default {
       } else {
         nextTypeIndex++
       }
-
       this.setTimeType(this.timeTypes[nextTypeIndex])
     },
 
@@ -659,11 +667,14 @@ export default {
 
     setMonth (data) {
       this.activeMonth = this.months.findIndex(month => month.label === data.label)
+      this.$router.replace({query: {...this.$route.query, month: this.activeMonth}})
     },
 
     update(autoSelect) {
+      this.$router.replace({query: {...this.$route.query, currentTimeType: this.currentTimeType}})
       this.getList(this.currentTimeType, autoSelect)
     },
+
     selectMoment(moment) {
       this.selectMomentAction(moment)
     },
@@ -697,6 +708,7 @@ export default {
 
       const currentIndex = this.selectedMoment.index
 
+
       if (this.momentsList.length) {
         const isLast = currentIndex === this.momentsList.length - 1
 
@@ -709,6 +721,7 @@ export default {
         this.setYear(this.year + 1, 'first')
       }
     },
+
     popoverTitle(item) {
       if (item.type === 'Weekly' || item.type === 'Monthly' || item.type == 'Custom') {
         return item.minDate + ' to ' + item.maxDate
@@ -716,6 +729,7 @@ export default {
         return item.date
       }
     },
+
     setYearsActiveIndex() {
       let currentIndex
       this.years.forEach((year, index) => {

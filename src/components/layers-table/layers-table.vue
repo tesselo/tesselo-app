@@ -100,6 +100,7 @@ export default {
     },
     selectLayer(area) {
       this.selectFormula(area)
+      this.$router.replace({query: {...this.$route.query,layer: area.id}})
       this.$emit('select', area)
     },
     selectPage(page) {
