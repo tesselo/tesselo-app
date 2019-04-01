@@ -177,7 +177,13 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer
-    })
+    }),
+    isPhone() {
+      return this.$deviceInfo.isPhone;
+    },
+    isTouch() {
+      return this.$deviceInfo.isTouch;
+    },
   },
   methods: {
     ...mapActions('report', {
