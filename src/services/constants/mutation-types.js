@@ -59,4 +59,4 @@ export const REPORT_RESET = 'resetReport'
  * ---------------------------------- */
 export const PREDICTED_LAYER_SET_LAYERS = 'setLayers'
 export const PREDICTED_LAYER_SELECT_LAYER = 'selectLayer'
-export const PREDICTED_LAYER_RESET = 'resetAggregationLayer'
+export const PREDICTED_LAYER_RESET = 'resetPredictedLayer'
