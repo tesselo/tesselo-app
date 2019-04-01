@@ -114,6 +114,7 @@ export default {
   data() {
     return {
       loggingOut: false,
+      firstLoad:true,
       mainMenu: [
         {
           title: 'Areas',
@@ -174,15 +175,94 @@ export default {
   },
   computed: {
     ...mapState({
+      aggregationLayer: state => state.aggregationLayer,
+      formulaRows: state => state.formula,
+      predictedLayerRows: state => state.predictedLayer.rows,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer
     })
   },
+  watch: {
+    '$route.query': {
+      immediate: true,
+      handler(){
+        const query = this.$route.query
+        if (query.area && this.firstLoad==true) {
+          this.getAggregationLayerID(query.area)
+        }
+        if(query.layer && this.firstLoad==true){
+          this.getFormulaID(query.layer)
+        }
+        if(query.year && this.firstLoad==true){
+          this.activeYear= parseInt(query.year)
+        }
+        this.firstLoad=false
+      },
+    },
+  },
   methods: {
+    ...mapActions('aggregationLayer', {
+      getAggregationLayersAction: actionTypes.AGGREGATION_LAYER_GET,
+      getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
+      selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
+    }),
+
+    ...mapActions('formula', {
+      getFormulasAction: actionTypes.FORMULA_GET,
+      getFormulaIDAction: actionTypes.FORMULA_GET_ID,
+      selectFormula: actionTypes.FORMULA_SELECT
+    }),
+
     ...mapActions('report', {
       saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
     }),
+
+    ...mapActions('map', {
+      setMapBounds: actionTypes.MAP_SET_BOUNDS
+    }),
+
+
+    getAggregationLayerID(options){
+       this.getAggregationLayerIDAction(options)
+        .then(() => {
+          this.selectBookmarkArea()
+        })
+    },
+
+    /**
+     * Get rows from first page (formular/layer) and select first
+     */
+    getFormulaID(options) {
+      this.getFormulaIDAction(options)
+        .then(() => {
+          this.selectBookmarkLayer()
+        })
+    },
+
+    /**
+     * Select bookmark/URL Area
+     */
+     selectBookmarkArea() {
+      const area = this.aggregationLayer.row
+      if(area){
+        this.selectAggregationLayer(area)
+        this.setMapBounds(area.bounds)
+        this.areasTableSelect(area)
+      }
+    },
+
+    /**
+     * Select bookmark/URL layer
+     */
+     selectBookmarkLayer() {
+      const formula = this.formulaRows.row
+      if(formula){
+        this.selectFormula(formula)
+        this.layersTableSelect(formula)
+      }
+    },
+
     closeAllPanels() {
       this.activePanel = ''
       this.$refs.panelSelector.unsetActive()

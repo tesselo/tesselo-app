@@ -259,7 +259,7 @@ export default {
     activeYear: {
       type: Number,
       default: (new Date()).getFullYear()
-    }
+    },
   },
   data() {
     return {
@@ -269,6 +269,7 @@ export default {
       loading: false,
       yearsActiveIndex: 0,
       sceneSelectedValue: new Date(),
+      firstLoad: false,
       months: [
         {
           label: 'Jan',
@@ -397,6 +398,20 @@ export default {
     }
   },
   watch: {
+    '$route.query': {
+      immediate: true,
+      handler(){
+        const query = this.$route.query
+        // if(this.$route.query.selectedMomentId && this.$route.query.currentTimeType=='Monthly'){
+        //   const moment = this.momentsList.find(item=> item.id == parseInt(this.$route.query.selectedMomentId))[0]
+        //   this.selectMoment(moment)
+        // }
+        // if (query.month && this.firstLoad==true) {
+        //   this.activeMonth = query.month
+        // }
+        this.firstLoad=false
+      },
+    },
     activeYear: {
       immediate: true,
       handler(newVal) {
@@ -421,16 +436,11 @@ export default {
     sceneMomentIndexSelected () {
       this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
     },
-    selectedMoment(newVal){
-      if(newVal)this.$router.replace({query: {...this.$route.query, selectedMoment: this.selectedMoment.id}})
-      if(!newVal && this.$route.query.selectedMoment){
-        this.$router.replace({query: {...this.$route.query, selectedMoment: '' }})
-      }
-    }
   },
 
   mounted () {
-    let interval = 'Monthly'
+    let interval = this.$route.query.currentTimeType ? this.$route.query.currentTimeType : 'Monthly'
+    this.currentTimeType = interval
     let toSelect = 'last'
 
     if (this.selectedMoment) {
@@ -490,7 +500,9 @@ export default {
       this.detailedSceneActive = null
 
       if (this.isScenes) {
-        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+        let month = 0
+        this.$route.query.month ? month = this.$route.query.month : this.activeMonth
+        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, month)
         this.setDetailedScene()
       }
     },
@@ -513,8 +525,10 @@ export default {
 
       if (this.sceneMomentIndexSelected !== 0) {
         this.sceneMomentIndexSelected = 0
+        // this.$router.replace({query: {...this.$route.query, selectedSceneId:null}})
       } else if (this.detailedSceneActive) {
         this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+        // this.$router.replace({query: {...this.$route.query, selectedSceneId: this.detailedSceneActive.moments[this.sceneMomentIndexSelected].id}})
       }
     },
 
@@ -677,6 +691,9 @@ export default {
 
     selectMoment(moment) {
       this.selectMomentAction(moment)
+      if(this.selectMoment)this.$router.replace({query: {...this.$route.query, selectedMomentId: this.selectedMoment.id}})
+      if(this.selectMoment)this.$router.replace({query: {...this.$route.query, selectedYear: this.selectedMoment.year}})
+      if(this.selectMoment)this.$router.replace({query: {...this.$route.query, selectedDate: this.selectedMoment.date}})
     },
     selectPreviousMoment() {
       if (!this.selectedMoment) return

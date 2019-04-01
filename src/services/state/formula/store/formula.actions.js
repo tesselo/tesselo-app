@@ -17,10 +17,23 @@ export default {
         })
       })
   },
+
+  /**
+   * Trigger API call for formula by ID
+   *
+   * @param {any} context
+   */
+  [actionTypes.FORMULA_GET_ID] (context, options) {
+    return APIAdapter.services.formula.getById(options)
+      .then((response) => {
+        context.commit(mutationTypes.FORMULA_ID_SET, response)
+      })
+  },
+
   /**
    * Sets the selected formula
-   * 
-   * @param {any} context 
+   *
+   * @param {any} context
    * @param {any} formula
    */
   [actionTypes.FORMULA_SELECT] (context, formula) {

@@ -23,6 +23,7 @@ export const AUTH_REMOVE_AUTHENTICATION = 'removeAuthentication'
  * Aggregation Layer
  * ---------------------------------- */
 export const AGGREGATION_LAYER_SET_LAYERS = 'setLayers'
+export const AGGREGATION_LAYER_SET_LAYER_ID= 'setLayerId'
 export const AGGREGATION_LAYER_SELECT_LAYER = 'selectLayer'
 export const AGGREGATION_LAYER_RESET = 'resetAggregationLayer'
 
@@ -30,6 +31,7 @@ export const AGGREGATION_LAYER_RESET = 'resetAggregationLayer'
  * Formula
  * ---------------------------------- */
 export const FORMULA_SET_FORMULAS = 'setFormulas'
+export const FORMULA_ID_SET= 'setFormulaId'
 export const FORMULA_SELECT_FORMULA = 'selectFormula'
 export const FORMULA_RESET = 'resetFormula'
 
