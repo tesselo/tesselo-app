@@ -207,7 +207,8 @@ export default {
 
     ...mapActions('predictedLayer', {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
-      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT
+      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
+      resetPredictedLayer: actionTypes.RESET
     }),
 
     ...mapActions('map', {
@@ -291,6 +292,8 @@ export default {
     },
     areasTableSelect(area) {
       this.closeAllPanels()
+      this.resetPredictedLayer()
+
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'areas') {
           item.selected = true
@@ -439,6 +442,7 @@ export default {
     z-index: z('content');
     right: 5px;
     bottom: 65px;
+
     @media (min-width: 768px) {
       bottom: 40px;
       left: 25px;
@@ -457,7 +461,7 @@ export default {
       left: 200px;
       width: auto;
       height: auto;
-      margin: 0px;
+      margin: 0;
       max-height: calc(100vh - 204px);
       border-radius: 2px;
     }
@@ -477,8 +481,9 @@ export default {
   .selector-time-dimension-pannel {
     position: absolute;
     z-index: z('content');
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
+
     @media (min-width: 768px) {
       bottom: 40px;
       left: 240px;
