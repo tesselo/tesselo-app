@@ -192,17 +192,17 @@ export default {
         const query = this.$route.query
         if(query.area && this.firstLoad == true){
           this.getAggregationLayer({page:null, area: query.area})
-        } else {
+        } else if(this.firstLoad == true) {
           this.getAggregationLayer({page: 1, area:null})
         }
         if(query.layer && this.firstLoad == true){
           this.getFormulas({page: null, layer: query.layer})
-        } else {
+        } else if(this.firstLoad == true) {
           this.getFormulas({page: 1, layer:null})
         }
         if(query.predictedlayer && this.firstLoad == true){
          this.getPredictedLayers({page: null, layer:query.predictedlayer})
-        } else {
+        } else if(this.firstLoad == true) {
           this.getPredictedLayers({ page: 1, layer:null})
         }
         if(query.selectedYear && this.firstLoad == true){
@@ -318,6 +318,7 @@ export default {
         })
       }
     },
+
     /**
      * Select predicted layer
      */

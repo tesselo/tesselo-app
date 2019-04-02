@@ -284,12 +284,10 @@ export default {
     },
     bounds: {
       handler (newBounds) {
-        if(this.firstLoad == true){
-          this.moveToBounds([
-            [newBounds.xmin, newBounds.ymin],
-            [newBounds.xmax, newBounds.ymax]
-          ]);
-        }
+        this.moveToBounds([
+          [newBounds.xmin, newBounds.ymin],
+          [newBounds.xmax, newBounds.ymax]
+        ]);
         // Set the new default extent to the bounds of this area of interest.
         if (this.defaultExtent) {
           this.defaultExtent.setCenter(this.$refs.map.mapObject.getCenter())
