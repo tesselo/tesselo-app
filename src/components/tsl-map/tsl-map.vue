@@ -110,6 +110,7 @@ export default {
   data () {
     return {
       zoom: 2,
+      firstLoad: true,
       lOpacity: {
         isSet: false,
         value:0,
@@ -255,26 +256,27 @@ export default {
       immediate: true,
       handler(){
         const query = this.$route.query
-        if (query.zoom) {
+        if (query.zoom && this.firstLoad == true) {
           this.zoom = parseInt(this.$route.query.zoom)
         }
-        if(query.mapOption){
+        if(query.mapOption && this.firstLoad == true){
           this.urlLayer = this.tileProviders.find(item => item.slug === query.mapOption).slug
         }else{
           this.tileProviders[0].visible=true
         }
-        if(query.lOpacity) {
+        if(query.lOpacity && this.firstLoad == true) {
           this.lOpacity = { isSet: true, value: query.lOpacity }
         }
-        if(query.pOpacity) {
+        if(query.pOpacity && this.firstLoad == true) {
           this.pOpacity = { isSet: true, value: query.pOpacity }
         }
-        if(query.centerLat && query.centerLng){
+        if(query.centerLat && query.centerLng && this.firstLoad == true){
           this.centerBound= {
             lat: query.centerLat,
             lng: query.centerLng
           }
         }
+        this.firstLoad = false
       },
     },
     zoom(newValue) {
@@ -282,10 +284,12 @@ export default {
     },
     bounds: {
       handler (newBounds) {
-        this.moveToBounds([
-          [newBounds.xmin, newBounds.ymin],
-          [newBounds.xmax, newBounds.ymax]
-        ]);
+        if(this.firstLoad == true){
+          this.moveToBounds([
+            [newBounds.xmin, newBounds.ymin],
+            [newBounds.xmax, newBounds.ymax]
+          ]);
+        }
         // Set the new default extent to the bounds of this area of interest.
         if (this.defaultExtent) {
           this.defaultExtent.setCenter(this.$refs.map.mapObject.getCenter())

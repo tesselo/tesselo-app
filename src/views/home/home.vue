@@ -165,7 +165,7 @@ export default {
       stdPanelVisible: false,
       activeYear: (new Date()).getFullYear(),
       isNewReport: false,
-      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg'
+      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg',
     }
   },
   head: {
@@ -178,94 +178,94 @@ export default {
       aggregationLayer: state => state.aggregationLayer,
       formulaRows: state => state.formula,
       predictedLayer: state => state.predictedLayer,
-      predictedLayerRows: state => state.predictedLayer.rows,
+      predictedLayerRows: state => state.predictedLayer,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer
     })
   },
+
   watch: {
     '$route.query': {
       immediate: true,
       handler(){
         const query = this.$route.query
-        if (query.area && this.firstLoad == true) {
-          this.getAggregationLayerID(query.area)
+        if(query.area && this.firstLoad == true){
+          this.getAggregationLayer({page:null, area: query.area})
+        } else {
+          this.getAggregationLayer({page: 1, area:null})
         }
         if(query.layer && this.firstLoad == true){
-          this.getFormulaID(query.layer)
+          this.getFormulas({page: null, layer: query.layer})
+        } else {
+          this.getFormulas({page: 1, layer:null})
+        }
+        if(query.predictedlayer && this.firstLoad == true){
+         this.getPredictedLayers({page: null, layer:query.predictedlayer})
+        } else {
+          this.getPredictedLayers({ page: 1, layer:null})
         }
         if(query.selectedYear && this.firstLoad == true){
           this.activeYear= parseInt(query.selectedYear)
-        }
-        if(query.predictedlayer && this.firstLoad == true){
-          this.getPredictedLayerID(query.predictedlayer)
         }
         this.firstLoad = false
       },
     },
   },
+
   methods: {
     ...mapActions('aggregationLayer', {
       getAggregationLayersAction: actionTypes.AGGREGATION_LAYER_GET,
       getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
       selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
     }),
-
     ...mapActions('formula', {
       getFormulasAction: actionTypes.FORMULA_GET,
       getFormulaIDAction: actionTypes.FORMULA_GET_ID,
       selectFormula: actionTypes.FORMULA_SELECT
     }),
-
     ...mapActions('predictedLayer', {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
       getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
       selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
       resetPredictedLayer: actionTypes.RESET
     }),
-
     ...mapActions('report', {
       saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
     }),
-
     ...mapActions('map', {
       setMapBounds: actionTypes.MAP_SET_BOUNDS
     }),
 
-
-    getAggregationLayerID(options){
-       this.getAggregationLayerIDAction(options)
-        .then(() => {
-          this.selectBookmarkArea()
-        })
-    },
-
     /**
-     * Get rows from first page (formular/layer) and select first
+     * Get aggregation areas from action
+     *
+     * @param options
      */
-    getFormulaID(options) {
-      this.getFormulaIDAction(options)
+    getAggregationLayer(options){
+      if(options.area){
+        this.getAggregationLayerIDAction(options.area)
         .then(() => {
-          this.selectBookmarkLayer()
+          this.selectArea('urlId')
         })
-    },
-
-    /**
-     * Get rows from first page (formular/layer) and select first
-     */
-    getPredictedLayerID(options) {
-      this.getPredictedLayersIDAction(options)
+      }else if(options.page){
+        this.getAggregationLayersAction(options)
         .then(() => {
-          this.selectBookmarkPredictedLayer()
+          this.selectArea('default')
         })
+      }
     },
-
     /**
-     * Select bookmark/URL Area
+     * Select area and set map bounds
+     *
+     * @param action
      */
-     selectBookmarkArea() {
-      const area = this.aggregationLayer.row
+    selectArea(action) {
+      let area = null
+      action=='default'
+        ? (area = this.aggregationLayer.rows[0])
+        : (area = this.aggregationLayer.row)
+
       if(area){
         this.selectAggregationLayer(area)
         this.setMapBounds(area.bounds)
@@ -274,21 +274,62 @@ export default {
     },
 
     /**
-     * Select bookmark/URL layer
+     * Get rows from first page (formular/layer) and select first
      */
-     selectBookmarkLayer() {
-      const formula = this.formulaRows.row
+    getFormulas(options) {
+      if(options.layer){
+        this.getFormulaIDAction(options.layer)
+        .then(() => {
+          this.selectLayer('urlId')
+        })
+      }else if(options.page){
+        this.getFormulasAction(options)
+        .then(() => {
+          this.selectLayer('default')
+        })
+      }
+    },
+    /**
+      * Select layer
+      */
+    selectLayer(action) {
+      let formula = null
+      action=='default'
+        ? (formula = this.formulaRows.rows[0])
+        : (formula = this.formulaRows.row)
       if(formula){
         this.selectFormula(formula)
         this.layersTableSelect(formula)
       }
     },
-
     /**
-     * Select bookmark/URL layer
+     * Get rows from first page (predicted layer) and select first
      */
-     selectBookmarkPredictedLayer() {
-      const predictedLayer = this.predictedLayer.row
+    getPredictedLayers(options) {
+      if(options.layer){
+          this.getPredictedLayersIDAction(options.layer)
+        .then(() => {
+          this.selectLayerPredicted('urlId')
+        })
+      }else if(options.page){
+        this.getPredictedLayersAction(options)
+        .then(() => {
+          this.selectLayerPredicted('default')
+        })
+      }
+    },
+    /**
+     * Select predicted layer
+     */
+     selectLayerPredicted(action) {
+      let predictedLayer = null
+      if(action=='default') {
+        if(predictedLayer && this.selectedLayer && predictedLayer.id === this.selectedLayer.id) {
+          predictedLayer = this.predictedLayerRows.rows[0]
+        }
+      } else {
+        predictedLayer = this.predictedLayerRows.row
+      }
       if(predictedLayer) {
           this.selectPredictedLayer(predictedLayer)
           this.predictedLayersTableSelect(predictedLayer)
@@ -307,6 +348,8 @@ export default {
     },
     areasTableSelect(area) {
       this.closeAllPanels()
+      this.resetPredictedLayer()
+
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'areas') {
           item.selected = true
@@ -455,6 +498,7 @@ export default {
     z-index: z('content');
     right: 5px;
     bottom: 65px;
+
     @media (min-width: 768px) {
       bottom: 40px;
       left: 25px;
@@ -468,15 +512,17 @@ export default {
     z-index: z('panels');
     width: 100%;
     height: 100%;
+
     @media (min-width: 768px) {
       top: 54px;
       left: 200px;
       width: auto;
       height: auto;
-      margin: 0px;
+      margin: 0;
       max-height: calc(100vh - 204px);
       border-radius: 2px;
     }
+
     .panel {
       height: 100%;
     }
@@ -493,8 +539,9 @@ export default {
   .selector-time-dimension-pannel {
     position: absolute;
     z-index: z('content');
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
+
     @media (min-width: 768px) {
       bottom: 40px;
       left: 240px;
