@@ -1,6 +1,6 @@
 import endpoints from '@/data/api/api.endpoints'
 import client from '@/data/api/api.client'
-import { predictedLayerResults } from '@/data/api/api.models'
+import { predictedLayerResults, predictedLayerResult } from '@/data/api/api.models'
 
 export default {
 
@@ -29,6 +29,20 @@ export default {
           ...response.data,
           results: predictedLayerResults(response.data.results)
         })
+      })
+  },
+  /**
+   * Gets predictedLayer by ID.
+   *
+   * @param {any} [axiosInstance=client]
+   * @param {Object} options (ID)
+   * @returns
+   */
+  getById (options, axiosInstance = client) {
+    let url = endpoints.predictedLayer.list.url + '/' + options
+    return axiosInstance[endpoints.predictedLayer.list.method](encodeURI(url))
+      .then((response) => {
+        return Promise.resolve(predictedLayerResult(response.data))
       })
   }
 }

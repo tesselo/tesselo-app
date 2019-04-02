@@ -110,6 +110,14 @@ export default {
   data () {
     return {
       zoom: 2,
+      lOpacity: {
+        isSet: false,
+        value:0,
+      },
+      pOpacity: {
+        isSet: false,
+        value:0,
+      },
       centerBound: null,
       urlLayer: null,
       algebraSlider: null,
@@ -255,6 +263,12 @@ export default {
         }else{
           this.tileProviders[0].visible=true
         }
+        if(query.lOpacity) {
+          this.lOpacity = { isSet: true, value: query.lOpacity }
+        }
+        if(query.pOpacity) {
+          this.pOpacity = { isSet: true, value: query.pOpacity }
+        }
         if(query.centerLat && query.centerLng){
           this.centerBound= {
             lat: query.centerLat,
@@ -330,7 +344,7 @@ export default {
         position: 'topright',
         min: 0,
         max: 100,
-        value: 100,
+        value: this.lOpacity.isSet ? parseFloat(this.lOpacity.value) * 100 : 100,
         step: 1,
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-layer'
@@ -360,7 +374,7 @@ export default {
         position: 'topright',
         min: 0,
         max: 100,
-        value: 100,
+        value: this.pOpacity.isSet ? parseFloat(this.pOpacity.value) * 100 : 100,
         step: 1,
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-predicted'

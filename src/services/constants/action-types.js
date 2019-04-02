@@ -52,4 +52,5 @@ export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'
  * Predicted Layer
  * ---------------------------------- */
 export const PREDICTED_LAYER_GET = 'getPredictedLayers'
+export const PREDICTED_LAYER_GET_ID = 'getPredictedLayerID'
 export const PREDICTED_LAYER_SELECT = 'selectPredictedLayer'

@@ -54,7 +54,6 @@ export const formatAggregationAreaResult = (row) => {
   }
 }
 
-
 export const formatFormulaResults = (rows) => {
   return rows.map(row => ({
     id: row.id,
@@ -131,6 +130,30 @@ export const formatUniquesList = (rows) => {
     mgrs: row.mgrs,
     status: row.status
   }))
+}
+
+/**
+ * Format predictedLayerResult
+ * @param {*} row
+ */
+export const predictedLayerResult = (row) => {
+  return {
+    id: row.id,
+    aggregationLayerName: row.aggregationlayer_name,
+    classifier: row.classifier,
+    sentineltile: row.sentineltile,
+    composite: row.composite,
+    rasterlayer: row.rasterlayer,
+    log: row.log,
+    chunksCount: row.chunks_count,
+    chunksDone: row.chunks_done,
+    classifierName: capitalizeFirstLetter(row.classifier_name),
+    classifierType: row.classifier_type,
+    sourceName: row.source_name,
+    sourceType: row.composite ? 'Composite over ' + row.source_name : 'Scene from ' + row.source_name,
+    nameToShow: capitalizeFirstLetter(row.classifier_name + ' over ' + row.source_name),
+    legend: row.legend
+  }
 }
 
 export const predictedLayerResults = (rows) => {

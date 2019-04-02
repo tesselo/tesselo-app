@@ -398,17 +398,15 @@ export default {
     }
   },
   watch: {
-    '$route.query': {
+     '$route.query': {
       immediate: true,
       handler(){
         const query = this.$route.query
-        // if(this.$route.query.selectedMomentId && this.$route.query.currentTimeType=='Monthly'){
-        //   const moment = this.momentsList.find(item=> item.id == parseInt(this.$route.query.selectedMomentId))[0]
-        //   this.selectMoment(moment)
-        // }
-        // if (query.month && this.firstLoad==true) {
-        //   this.activeMonth = query.month
-        // }
+        if (query.selectedMonth) {
+          const month = this.months.findIndex(item => item.label == query.selectedMonth)
+          this.activeMonth= month
+
+        }
         this.firstLoad=false
       },
     },
@@ -418,11 +416,15 @@ export default {
         this.year = newVal
         this.setYearsActiveIndex()
         this.handleScenesData()
-        this.$router.replace({query: {...this.$route.query, year: this.year}})
       }
     },
-    activeMonth () {
-      this.handleScenesData()
+    activeMonth: {
+      immediate: true,
+      handler(newVal) {
+        this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
+        this.activeMonth = newVal
+        this.handleScenesData()
+      }
     },
     momentsList () {
       this.handleScenesData()
@@ -436,6 +438,20 @@ export default {
     sceneMomentIndexSelected () {
       this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
     },
+    selectedMoment(newVal){
+      if(newVal){
+        this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
+        this.$router.replace({query: {...this.$route.query, selectedYear: newVal.year}})
+        if(this.currentTimeType == 'Monthly') {
+          this.$router.replace({query: {...this.$route.query, selectedMonth: newVal.nameToShow}})
+        }
+      }
+      if(!newVal && this.$route.query.selectedMoment){
+        this.$router.replace({query: {...this.$route.query, selectedMomentId: null }})
+        this.$router.replace({query: {...this.$route.query, selectedYear: null }})
+        this.$router.replace({query: {...this.$route.query, selectedMonth: null}})
+      }
+    }
   },
 
   mounted () {
@@ -461,7 +477,12 @@ export default {
   methods: {
     checkClosestMoment () {
       if (this.isMonthly) {
-
+        if(this.$route.query.selectedMomentId && this.$route.query.currentTimeType=='Monthly'){
+          if (this.momentsList && this.momentsList.length) {
+            const moment = this.momentsList.find(item=> item.id == parseInt(this.$route.query.selectedMomentId))
+            this.selectMoment(moment)
+          }
+        }
         if (!this.selectedMoment) {
           if (this.momentsList && this.momentsList.length) {
             this.selectMomentAction(this.momentsList[0])
@@ -501,7 +522,7 @@ export default {
 
       if (this.isScenes) {
         let month = 0
-        this.$route.query.month ? month = this.$route.query.month : this.activeMonth
+        this.$route.query.selectedMonth ? month = this.activeMonth : month = 0
         this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, month)
         this.setDetailedScene()
       }
@@ -510,7 +531,12 @@ export default {
     setDetailedScene (data) {
       if (!data) {
         let data
-        if (this.loadLastMonthScene) {
+        const momentId = this.$route.query.selectedMomentId;
+        if(momentId && this.$route.query.currentTimeType=='Scenes' ){
+          const filteredData = cloneDeep(this.detailedDaysOfMonth)
+            .filter(data => data.moments && data.moments.length)
+          data = filteredData.find(data => (data.moments && data.moments[0].id == momentId))
+        } else if (!momentId && this.loadLastMonthScene) {
           this.loadLastMonthScene = false
           data = cloneDeep(this.detailedDaysOfMonth)
             .reverse()
@@ -525,10 +551,8 @@ export default {
 
       if (this.sceneMomentIndexSelected !== 0) {
         this.sceneMomentIndexSelected = 0
-        // this.$router.replace({query: {...this.$route.query, selectedSceneId:null}})
       } else if (this.detailedSceneActive) {
         this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
-        // this.$router.replace({query: {...this.$route.query, selectedSceneId: this.detailedSceneActive.moments[this.sceneMomentIndexSelected].id}})
       }
     },
 
@@ -681,19 +705,18 @@ export default {
 
     setMonth (data) {
       this.activeMonth = this.months.findIndex(month => month.label === data.label)
-      this.$router.replace({query: {...this.$route.query, month: this.activeMonth}})
     },
 
     update(autoSelect) {
       this.$router.replace({query: {...this.$route.query, currentTimeType: this.currentTimeType}})
+      if(this.currentTimeType !== 'Scenes' && this.$route.query.selectedDate) {
+        this.$router.replace({query: {...this.$route.query, selectedDate: null }})
+      }
       this.getList(this.currentTimeType, autoSelect)
     },
 
     selectMoment(moment) {
       this.selectMomentAction(moment)
-      if(this.selectMoment)this.$router.replace({query: {...this.$route.query, selectedMomentId: this.selectedMoment.id}})
-      if(this.selectMoment)this.$router.replace({query: {...this.$route.query, selectedYear: this.selectedMoment.year}})
-      if(this.selectMoment)this.$router.replace({query: {...this.$route.query, selectedDate: this.selectedMoment.date}})
     },
     selectPreviousMoment() {
       if (!this.selectedMoment) return

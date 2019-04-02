@@ -15,6 +15,17 @@ export default {
     state.rows = results
     state.currentPage = page
   },
+
+  /**
+   * Sets predicted layer with ID
+   *
+   * @param {any} state
+   * @param {any} result
+   */
+  [mutationTypes.PREDICTED_LAYER_SET_ID_LAYER] (state, result) {
+    state.row = result
+  },
+
   [mutationTypes.PREDICTED_LAYER_SELECT_LAYER] (state, layer) {
     state.selectedLayer = layer
   },

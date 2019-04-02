@@ -177,6 +177,7 @@ export default {
     ...mapState({
       aggregationLayer: state => state.aggregationLayer,
       formulaRows: state => state.formula,
+      predictedLayer: state => state.predictedLayer,
       predictedLayerRows: state => state.predictedLayer.rows,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
@@ -188,16 +189,19 @@ export default {
       immediate: true,
       handler(){
         const query = this.$route.query
-        if (query.area && this.firstLoad==true) {
+        if (query.area && this.firstLoad == true) {
           this.getAggregationLayerID(query.area)
         }
-        if(query.layer && this.firstLoad==true){
+        if(query.layer && this.firstLoad == true){
           this.getFormulaID(query.layer)
         }
-        if(query.year && this.firstLoad==true){
-          this.activeYear= parseInt(query.year)
+        if(query.selectedYear && this.firstLoad == true){
+          this.activeYear= parseInt(query.selectedYear)
         }
-        this.firstLoad=false
+        if(query.predictedlayer && this.firstLoad == true){
+          this.getPredictedLayerID(query.predictedlayer)
+        }
+        this.firstLoad = false
       },
     },
   },
@@ -212,6 +216,13 @@ export default {
       getFormulasAction: actionTypes.FORMULA_GET,
       getFormulaIDAction: actionTypes.FORMULA_GET_ID,
       selectFormula: actionTypes.FORMULA_SELECT
+    }),
+
+    ...mapActions('predictedLayer', {
+      getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
+      getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
+      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
+      resetPredictedLayer: actionTypes.RESET
     }),
 
     ...mapActions('report', {
@@ -241,6 +252,16 @@ export default {
     },
 
     /**
+     * Get rows from first page (formular/layer) and select first
+     */
+    getPredictedLayerID(options) {
+      this.getPredictedLayersIDAction(options)
+        .then(() => {
+          this.selectBookmarkPredictedLayer()
+        })
+    },
+
+    /**
      * Select bookmark/URL Area
      */
      selectBookmarkArea() {
@@ -260,6 +281,17 @@ export default {
       if(formula){
         this.selectFormula(formula)
         this.layersTableSelect(formula)
+      }
+    },
+
+    /**
+     * Select bookmark/URL layer
+     */
+     selectBookmarkPredictedLayer() {
+      const predictedLayer = this.predictedLayer.row
+      if(predictedLayer) {
+          this.selectPredictedLayer(predictedLayer)
+          this.predictedLayersTableSelect(predictedLayer)
       }
     },
 
