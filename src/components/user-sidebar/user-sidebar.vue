@@ -109,7 +109,7 @@ export default {
     left: 0;
     z-index: z('sidebar');
     width: 100vw;
-    height: 100vh;
+    height: 100%;
 
     pointer-events: none;
   }
@@ -239,7 +239,7 @@ export default {
   }
 
   .open {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 1;

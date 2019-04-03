@@ -7,6 +7,7 @@
       :icon="item.icon"
       :active="item.active"
       :selected="item.selected"
+      :is-touch="isTouch"
       @click="setActive(item.key)" />
   </div>
 </template>
@@ -23,6 +24,11 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    isTouch:{
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {

@@ -5,9 +5,14 @@
       :zoom="2"
       :max-zoom="18"
       :options="mapOptions">
-      <l-control-zoom :position="zoomPosition" />
-      <v-geosearch :options="geosearchOptions" />
-      <l-control-layers :position="layersPosition" />
+      <l-control-zoom
+        v-if="!isTouch"
+        :show="showControls"
+        :position="zoomPosition" />
+      <v-geosearch
+        :options="geosearchOptions" />
+      <l-control-layers
+        :position="layersPosition" />
       <l-control-attribution
         :position="attributionPosition"
         prefix="" />
@@ -39,7 +44,8 @@
     </l-map>
 
     <map-legend
-      v-if="showFormulaLegend"
+      v-if="showFormulaLegend && !isTouch"
+      v-show="showControls"
       :data="selectedFormulaLegend"
       :min="selectedFormula.minVal"
       :max="selectedFormula.maxVal"
@@ -105,6 +111,13 @@ export default {
     'v-protobuf': Vue2LeafletVectorGridProtobuf,
     MapLegend
   },
+  props: {
+    showControls:{
+      type: Boolean,
+      default: true,
+      required: false,
+    },
+  },
   data () {
     return {
       algebraSlider: null,
@@ -159,7 +172,7 @@ export default {
         style: 'button',
         position: 'topright',
         showMarker: false,
-        autoClose: true
+        autoClose: true,
       },
       tileLayerClass: L.authenticatedTileLayer
     }
@@ -175,11 +188,13 @@ export default {
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
-
+    isTouch() {
+      return this.$deviceInfo.isTouch;
+    },
     showFormulaLegend () {
-      return this.selectedFormula && 
+      return this.selectedFormula &&
         this.selectedFormula.formula !== 'RGB' &&
-        this.selectedFormulaLegend && 
+        this.selectedFormulaLegend &&
         this.selectedFormulaLegend.length
     },
 
@@ -249,6 +264,13 @@ export default {
       if (!newValue && this.predictedSlider !== null) {
         this.$refs.map.mapObject.removeControl(this.predictedSlider)
         this.predictedSlider = null
+      }
+    },
+    showControls(newValue){
+      if(newValue==true){
+        this.$refs.map.mapObject._controlCorners.topright.hidden = false
+      } else {
+        this.$refs.map.mapObject._controlCorners.topright.hidden = true
       }
     }
   },
@@ -325,20 +347,59 @@ export default {
     position: fixed;
     top: 0;
     z-index: 1;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     user-select: none;
+
+    > h1 {
+      display: none;
+    }
   }
 
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
+    height: 100%;
+    min-width: 170px;
+
+    .leaflet-control {
+      display: block;
+      max-width: 34px;
+      margin-left: auto;
+    }
+
+    .leaflet-range-control {
+      position: absolute;
+      top: 132px;
+      right: 0;
+      margin-left: 40px;
+      z-index: 0;
+
+      @media (min-width: 768px) {
+        top: 200px;
+      }
+
+      &:nth-last-of-type(2) {
+        right: 40px;
+        margin-left: 0;
+      }
+    }
+  }
+
+  .tsl-map .leaflet-touch .leaflet-range-control {
+    top: 132px;
   }
 
   .leaflet-control-layers {
+    max-width: 34px;
+    margin-left: auto;
+    display: block;
+    float: none;
+
     .leaflet-control-layers-toggle {
       background-size: 22px 22px;
       width: 30px;
       height: 30px;
+
       @media (min-width: 768px) {
         width: 26px;
         height: 26px;
@@ -348,10 +409,21 @@ export default {
 
   .leaflet-control-container .leaflet-range-control {
     width: 30px;
+    height: 208px;
+    display: block;
+    float: none;
+    top: 132px;
+    right: -90px;
+    left: auto;
 
     .leaflet-range-icon {
       background-position: 1px;
     }
+  }
+
+  .leaflet-control-layers-expanded {
+    max-width: none !important;
+    z-index: 1;
   }
 
   .layer-legend {
