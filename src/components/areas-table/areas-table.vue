@@ -93,6 +93,7 @@ export default {
     selectArea(area) {
       this.selectAggregationLayer(area)
       this.setMapBounds(area.bounds)
+      this.$router.replace({query: {...this.$route.query,area: area.id}})
       this.$emit('select', area)
     },
     selectPage(page) {

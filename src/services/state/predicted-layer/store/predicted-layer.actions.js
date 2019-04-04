@@ -29,6 +29,18 @@ export default {
       })
   },
   /**
+   * Trigger API call for predicted layer by ID
+   *
+   * @param {any} context
+   */
+  [actionTypes.PREDICTED_LAYER_GET_ID] ({ rootState, commit }, options) {
+    return APIAdapter.services.predictedLayer.getById(options)
+      .then((response) => {
+        commit(mutationTypes.PREDICTED_LAYER_SET_ID_LAYER, response)
+      })
+  },
+
+  /**
    * Sets the selected layer
    *
    * @param {any} context

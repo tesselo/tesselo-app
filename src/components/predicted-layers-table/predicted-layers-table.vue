@@ -128,9 +128,11 @@ export default {
     },
     selectLayer(layer) {
       if(this.selectedLayer && layer.id === this.selectedLayer.id) {
+        this.$router.replace({query: {...this.$route.query,predictedlayer: layer.id}})
         this.selectPredictedLayer()
         this.$emit('select')
       } else {
+        this.$router.replace({query: {...this.$route.query,predictedlayer: layer.id}})
         this.selectPredictedLayer(layer)
         this.$emit('select', layer)
       }

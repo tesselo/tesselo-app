@@ -259,7 +259,7 @@ export default {
     activeYear: {
       type: Number,
       default: (new Date()).getFullYear()
-    }
+    },
   },
   data() {
     return {
@@ -269,6 +269,7 @@ export default {
       loading: false,
       yearsActiveIndex: 0,
       sceneSelectedValue: new Date(),
+      firstLoad: false,
       months: [
         {
           label: 'Jan',
@@ -397,6 +398,18 @@ export default {
     }
   },
   watch: {
+     '$route.query': {
+      immediate: true,
+      handler(){
+        const query = this.$route.query
+        if (query.selectedMonth) {
+          const month = this.months.findIndex(item => item.label == query.selectedMonth)
+          this.activeMonth= month
+
+        }
+        this.firstLoad=false
+      },
+    },
     activeYear: {
       immediate: true,
       handler(newVal) {
@@ -405,8 +418,13 @@ export default {
         this.handleScenesData()
       }
     },
-    activeMonth () {
-      this.handleScenesData()
+    activeMonth: {
+      immediate: true,
+      handler(newVal) {
+        this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
+        this.activeMonth = newVal
+        this.handleScenesData()
+      }
     },
     momentsList () {
       this.handleScenesData()
@@ -419,11 +437,26 @@ export default {
     },
     sceneMomentIndexSelected () {
       this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+    },
+    selectedMoment(newVal){
+      if(newVal){
+        this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
+        this.$router.replace({query: {...this.$route.query, selectedYear: newVal.year}})
+        if(this.currentTimeType == 'Monthly') {
+          this.$router.replace({query: {...this.$route.query, selectedMonth: newVal.nameToShow}})
+        }
+      }
+      if(!newVal && this.$route.query.selectedMoment){
+        this.$router.replace({query: {...this.$route.query, selectedMomentId: null }})
+        this.$router.replace({query: {...this.$route.query, selectedYear: null }})
+        this.$router.replace({query: {...this.$route.query, selectedMonth: null}})
+      }
     }
   },
 
   mounted () {
-    let interval = 'Monthly'
+    let interval = this.$route.query.currentTimeType ? this.$route.query.currentTimeType : 'Monthly'
+    this.currentTimeType = interval
     let toSelect = 'last'
 
     if (this.selectedMoment) {
@@ -444,7 +477,12 @@ export default {
   methods: {
     checkClosestMoment () {
       if (this.isMonthly) {
-
+        if(this.$route.query.selectedMomentId && this.$route.query.currentTimeType=='Monthly'){
+          if (this.momentsList && this.momentsList.length) {
+            const moment = this.momentsList.find(item=> item.id == parseInt(this.$route.query.selectedMomentId))
+            this.selectMoment(moment)
+          }
+        }
         if (!this.selectedMoment) {
           if (this.momentsList && this.momentsList.length) {
             this.selectMomentAction(this.momentsList[0])
@@ -483,7 +521,9 @@ export default {
       this.detailedSceneActive = null
 
       if (this.isScenes) {
-        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, this.activeMonth)
+        let month = 0
+        this.$route.query.selectedMonth ? month = this.activeMonth : month = 0
+        this.detailedDaysOfMonth = this.getDetailedDaysOfMonth(this.activeYear, month)
         this.setDetailedScene()
       }
     },
@@ -491,7 +531,12 @@ export default {
     setDetailedScene (data) {
       if (!data) {
         let data
-        if (this.loadLastMonthScene) {
+        const momentId = this.$route.query.selectedMomentId;
+        if(momentId && this.$route.query.currentTimeType=='Scenes' ){
+          const filteredData = cloneDeep(this.detailedDaysOfMonth)
+            .filter(data => data.moments && data.moments.length)
+          data = filteredData.find(data => (data.moments && data.moments[0].id == momentId))
+        } else if (!momentId && this.loadLastMonthScene) {
           this.loadLastMonthScene = false
           data = cloneDeep(this.detailedDaysOfMonth)
             .reverse()
@@ -600,6 +645,7 @@ export default {
       getListAction: actionTypes.TIME_GET_LIST,
       selectMomentAction: actionTypes.TIME_SELECT_MOMENT
     }),
+
     debouncedGetList: debounce(function (interval, autoSelect) {
       this.getListAction({
         params: {
@@ -613,16 +659,17 @@ export default {
         this.loading = false
       })
     }, 1000),
+
     getList(interval, autoSelect) {
       this.loading = true
       this.debouncedGetList(interval, autoSelect)
     },
+
     setTimeType(newType) {
       if (this.currentTimeType === newType) {
         return
       }
       this.activeMonth=0;
-
       this.currentTimeType = newType
       this.update('last')
     },
@@ -635,7 +682,6 @@ export default {
       } else {
         nextTypeIndex++
       }
-
       this.setTimeType(this.timeTypes[nextTypeIndex])
     },
 
@@ -662,8 +708,13 @@ export default {
     },
 
     update(autoSelect) {
+      this.$router.replace({query: {...this.$route.query, currentTimeType: this.currentTimeType}})
+      if(this.currentTimeType !== 'Scenes' && this.$route.query.selectedDate) {
+        this.$router.replace({query: {...this.$route.query, selectedDate: null }})
+      }
       this.getList(this.currentTimeType, autoSelect)
     },
+
     selectMoment(moment) {
       this.selectMomentAction(moment)
     },
@@ -697,6 +748,7 @@ export default {
 
       const currentIndex = this.selectedMoment.index
 
+
       if (this.momentsList.length) {
         const isLast = currentIndex === this.momentsList.length - 1
 
@@ -709,6 +761,7 @@ export default {
         this.setYear(this.year + 1, 'first')
       }
     },
+
     popoverTitle(item) {
       if (item.type === 'Weekly' || item.type === 'Monthly' || item.type == 'Custom') {
         return item.minDate + ' to ' + item.maxDate
@@ -716,6 +769,7 @@ export default {
         return item.date
       }
     },
+
     setYearsActiveIndex() {
       let currentIndex
       this.years.forEach((year, index) => {

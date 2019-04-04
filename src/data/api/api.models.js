@@ -27,6 +27,32 @@ export const formatAggregationAreaResults = (rows) => {
   }))
 }
 
+/**
+ * Format aggregation area object
+ * @param {*} row
+ */
+export const formatAggregationAreaResult = (row) => {
+  return {
+    aggregationAreas: row.aggregationareas,
+    description: row.description,
+    id: row.id,
+    maxZoomLevel: row.max_zoom_level,
+    minZoomLevel:  row.min_zoom_level,
+    modified: row.modified,
+    name: row.name,
+    nameColumn: row.name_column,
+    nrOfAreas: row.nr_of_areas,
+    parseLog: row.parse_log,
+    shapefile: row.shapefile,
+    simplificationTolerance: row.simplification_tolerance,
+    bounds: {
+      ymin: row.extent[0],
+      xmin: row.extent[1],
+      ymax: row.extent[2],
+      xmax: row.extent[3],
+    }
+  }
+}
 
 export const formatFormulaResults = (rows) => {
   return rows.map(row => ({
@@ -42,6 +68,23 @@ export const formatFormulaResults = (rows) => {
   }))
 }
 
+/**
+ * Format formula
+ * @param {*} row
+ */
+export const formatFormulaResult = (row) => {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    acronym: row.acronym,
+    formula: row.formula,
+    minVal: row.min_val,
+    maxVal: row.max_val,
+    breaks: row.breaks,
+    colorPalette: row.color_palette
+  }
+}
 
 export const formatCompositesList = (rows, options) => {
   return rows.map((row, index)=> ({
@@ -87,6 +130,30 @@ export const formatUniquesList = (rows) => {
     mgrs: row.mgrs,
     status: row.status
   }))
+}
+
+/**
+ * Format predictedLayerResult
+ * @param {*} row
+ */
+export const predictedLayerResult = (row) => {
+  return {
+    id: row.id,
+    aggregationLayerName: row.aggregationlayer_name,
+    classifier: row.classifier,
+    sentineltile: row.sentineltile,
+    composite: row.composite,
+    rasterlayer: row.rasterlayer,
+    log: row.log,
+    chunksCount: row.chunks_count,
+    chunksDone: row.chunks_done,
+    classifierName: capitalizeFirstLetter(row.classifier_name),
+    classifierType: row.classifier_type,
+    sourceName: row.source_name,
+    sourceType: row.composite ? 'Composite over ' + row.source_name : 'Scene from ' + row.source_name,
+    nameToShow: capitalizeFirstLetter(row.classifier_name + ' over ' + row.source_name),
+    legend: row.legend
+  }
 }
 
 export const predictedLayerResults = (rows) => {

@@ -17,11 +17,24 @@ export default {
         })
       })
   },
+
+  /**
+   * Trigger API call for aggregation layers with given ID
+   *
+   * @param {any} context
+   */
+  [actionTypes.AGGREGATION_LAYER_GET_ID] (context, options) {
+    return APIAdapter.services.aggregationLayer.getById(options)
+      .then((response) => {
+        context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYER_ID, response)
+      })
+  },
+
   /**
    * Sets the selected layer
-   * 
-   * @param {any} context 
-   * @param {any} layer 
+   *
+   * @param {any} context
+   * @param {any} layer
    */
   [actionTypes.AGGREGATION_LAYER_SELECT] (context, layer) {
     context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, layer)

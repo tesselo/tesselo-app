@@ -147,6 +147,7 @@ export default {
     return {
       loggingOut: false,
       showControls: true,
+      firstLoad:true,
       mainMenu: [
         {
           title: 'Areas',
@@ -209,9 +210,10 @@ export default {
   },
   computed: {
     ...mapState({
-      aggregationLayerRows: state => state.aggregationLayer.rows,
-      formulaRows: state => state.formula.rows,
-      predictedLayerRows: state => state.predictedLayer.rows,
+      aggregationLayer: state => state.aggregationLayer,
+      formulaRows: state => state.formula,
+      predictedLayer: state => state.predictedLayer,
+      predictedLayerRows: state => state.predictedLayer,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer
@@ -224,73 +226,86 @@ export default {
     },
   },
 
-  beforeMount() {
-    // Get rows from first page
-    this.getAggregationLayers({page: 1})
-    this.getFormulas({page: 1})
-    this.getPredictedLayers({ page: 1 })
+  watch: {
+    '$route.query': {
+      immediate: true,
+      handler(){
+        const query = this.$route.query
+        if(query.area && this.firstLoad == true){
+          this.getAggregationLayer({page:null, area: query.area})
+        } else if(this.firstLoad == true) {
+          this.getAggregationLayer({page: 1, area:null})
+        }
+        if(query.layer && this.firstLoad == true){
+          this.getFormulas({page: null, layer: query.layer})
+        } else if(this.firstLoad == true) {
+          this.getFormulas({page: 1, layer:null})
+        }
+        if(query.predictedlayer && this.firstLoad == true){
+         this.getPredictedLayers({page: null, layer:query.predictedlayer})
+        } else if(this.firstLoad == true) {
+          this.getPredictedLayers({ page: 1, layer:null})
+        }
+        if(query.selectedYear && this.firstLoad == true){
+          this.activeYear= parseInt(query.selectedYear)
+        }
+        this.firstLoad = false
+      },
+    },
   },
 
   methods: {
-    ...mapActions('report', {
-      saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
-    }),
-
     ...mapActions('aggregationLayer', {
       getAggregationLayersAction: actionTypes.AGGREGATION_LAYER_GET,
+      getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
       selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
     }),
-
     ...mapActions('formula', {
       getFormulasAction: actionTypes.FORMULA_GET,
+      getFormulaIDAction: actionTypes.FORMULA_GET_ID,
       selectFormula: actionTypes.FORMULA_SELECT
     }),
-
     ...mapActions('predictedLayer', {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
+      getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
       selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
       resetPredictedLayer: actionTypes.RESET
     }),
-
+    ...mapActions('report', {
+      saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
+    }),
     ...mapActions('map', {
       setMapBounds: actionTypes.MAP_SET_BOUNDS
     }),
 
     /**
-     * Get rows from first page (aggregation/area) and select selectDefaultArea
+     * Get aggregation areas from action
+     *
+     * @param options
      */
-    getAggregationLayers(options) {
-      this.getAggregationLayersAction(options)
+    getAggregationLayer(options){
+      if(options.area){
+        this.getAggregationLayerIDAction(options.area)
         .then(() => {
-          this.selectDefaultArea()
+          this.selectArea('urlId')
         })
-    },
-
-    /**
-     * Get rows from first page (formular/layer) and select first
-     */
-    getFormulas(options) {
-      this.getFormulasAction(options)
+      }else if(options.page){
+        this.getAggregationLayersAction(options)
         .then(() => {
-          this.selectDefaultLayer()
+          this.selectArea('default')
         })
-    },
-
-
-    /**
-     * Get rows from first page (predicted layer) and select first
-     */
-    getPredictedLayers(options) {
-      this.getPredictedLayersAction(options)
-        .then(() => {
-          this.selectLayer()
-        })
+      }
     },
     /**
-     * Select default area and set map bounds
+     * Select area and set map bounds
+     *
+     * @param action
      */
-    selectDefaultArea() {
-      const area = this.aggregationLayerRows[0]
+    selectArea(action) {
+      let area = null
+      action=='default'
+        ? (area = this.aggregationLayer.rows[0])
+        : (area = this.aggregationLayer.row)
 
       if(area){
         this.selectAggregationLayer(area)
@@ -300,22 +315,64 @@ export default {
     },
 
     /**
-     * Select default layer
+     * Get rows from first page (formular/layer) and select first
      */
-     selectDefaultLayer() {
-      const formula = this.formulaRows[0]
+    getFormulas(options) {
+      if(options.layer){
+        this.getFormulaIDAction(options.layer)
+        .then(() => {
+          this.selectLayer('urlId')
+        })
+      }else if(options.page){
+        this.getFormulasAction(options)
+        .then(() => {
+          this.selectLayer('default')
+        })
+      }
+    },
+    /**
+      * Select layer
+      */
+    selectLayer(action) {
+      let formula = null
+      action=='default'
+        ? (formula = this.formulaRows.rows[0])
+        : (formula = this.formulaRows.row)
       if(formula){
         this.selectFormula(formula)
         this.layersTableSelect(formula)
       }
     },
+    /**
+     * Get rows from first page (predicted layer) and select first
+     */
+    getPredictedLayers(options) {
+      if(options.layer){
+          this.getPredictedLayersIDAction(options.layer)
+        .then(() => {
+          this.selectLayerPredicted('urlId')
+        })
+      }else if(options.page){
+        this.getPredictedLayersAction(options)
+        .then(() => {
+          this.selectLayerPredicted('default')
+        })
+      }
+    },
 
     /**
-     * Select default predicted layer
+     * Select predicted layer
      */
-    selectLayer() {
-      const predictedLayer = this.predictedLayerRows[0]
-      if(predictedLayer && this.selectedLayer && predictedLayer.id === this.selectedLayer.id) {
+     selectLayerPredicted(action) {
+      let predictedLayer = null
+      if(action=='default') {
+        if(predictedLayer && this.selectedLayer && predictedLayer.id === this.selectedLayer.id) {
+          predictedLayer = this.predictedLayerRows.rows[0]
+        }
+      } else {
+        predictedLayer = this.predictedLayerRows.row
+      }
+      if(predictedLayer) {
           this.selectPredictedLayer(predictedLayer)
           this.predictedLayersTableSelect(predictedLayer)
       }

@@ -4,6 +4,7 @@ export default {
   previous: null,
   pageSize: 10,
   rows: [],
+  row: null,
   selectedFormula: null,
   currentPage: 1
 }

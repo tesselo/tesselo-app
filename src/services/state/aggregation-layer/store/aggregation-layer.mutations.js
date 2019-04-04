@@ -15,6 +15,15 @@ export default {
     state.rows = results
     state.currentPage = page
   },
+  /**
+   * Sets aggregation layer Bookmark / URL
+   *
+   * @param {any} state
+   * @param {any} { count, next, previous, results}
+   */
+  [mutationTypes.AGGREGATION_LAYER_SET_LAYER_ID] (state, result) {
+    state.row = result
+  },
   [mutationTypes.AGGREGATION_LAYER_SELECT_LAYER] (state, layer) {
     state.selectedLayer = layer
   },
