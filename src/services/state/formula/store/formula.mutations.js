@@ -15,6 +15,17 @@ export default {
     state.rows = results
     state.currentPage = page
   },
+
+  /**
+   * Sets available formula with ID
+   *
+   * @param {any} state
+   * @param {any} {result}
+   */
+  [mutationTypes.FORMULA_ID_SET] (state, result) {
+    state.row = result
+  },
+
   /**
    * Sets selected formula
    *

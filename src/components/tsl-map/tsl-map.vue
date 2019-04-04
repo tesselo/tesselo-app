@@ -2,9 +2,11 @@
   <div class="tsl-map">
     <l-map
       ref="map"
-      :zoom="2"
+      :zoom.sync="zoom"
       :max-zoom="18"
-      :options="mapOptions">
+      :options="mapOptions"
+      @update:bounds="updateBounds"
+      @baselayerchange="setMapOption">
       <l-control-zoom :position="zoomPosition" />
       <v-geosearch :options="geosearchOptions" />
       <l-control-layers :position="layersPosition" />
@@ -107,40 +109,58 @@ export default {
   },
   data () {
     return {
+      zoom: 2,
+      firstLoad: true,
+      lOpacity: {
+        isSet: false,
+        value:0,
+      },
+      pOpacity: {
+        isSet: false,
+        value:0,
+      },
+      centerBound: null,
+      urlLayer: null,
       algebraSlider: null,
       predictedSlider: null,
       tileProviders: [
         {
+          slug:'BW_OpenStreetMap',
           name: 'B&W OpenStreetMap',
-          visible: true,
+          visible: false,
           url: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
           attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         },
         {
+          slug:'OpenStreetMap',
           name: 'OpenStreetMap',
           visible: false,
           attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
           url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         },
         {
+          slug: 'NAIP_RGB',
           name: 'NAIP RGB',
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
           url: 'https://tesselo.com/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255'
         },
         {
+          slug: 'NAIP_NDVI',
           name: 'NAIP NDVI',
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
           url: 'https://tesselo.com/api/naip/{z}/{x}/{y}.png?formula=(B4-B1)/(B1%2BB4)&colormap=%7B"continuous":true,"range":[-0.9,0.9],"from":[165,0,38],"to":[0,104,55],"over":[249,247,174]%7D'
         },
         {
+          slug: 'World_Imagery',
           name: 'World Imagery',
           visible: false,
           attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
         },
         {
+          slug: 'Terrain',
           name: 'Terrain',
           visible: false,
           attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
@@ -177,9 +197,9 @@ export default {
     }),
 
     showFormulaLegend () {
-      return this.selectedFormula && 
+      return this.selectedFormula &&
         this.selectedFormula.formula !== 'RGB' &&
-        this.selectedFormulaLegend && 
+        this.selectedFormulaLegend &&
         this.selectedFormulaLegend.length
     },
 
@@ -232,6 +252,36 @@ export default {
     }
   },
   watch: {
+    '$route.query': {
+      immediate: true,
+      handler(){
+        const query = this.$route.query
+        if (query.zoom && this.firstLoad == true) {
+          this.zoom = parseInt(this.$route.query.zoom)
+        }
+        if(query.mapOption && this.firstLoad == true){
+          this.urlLayer = this.tileProviders.find(item => item.slug === query.mapOption).slug
+        }else{
+          this.tileProviders[0].visible=true
+        }
+        if(query.lOpacity && this.firstLoad == true) {
+          this.lOpacity = { isSet: true, value: query.lOpacity }
+        }
+        if(query.pOpacity && this.firstLoad == true) {
+          this.pOpacity = { isSet: true, value: query.pOpacity }
+        }
+        if(query.centerLat && query.centerLng && this.firstLoad == true){
+          this.centerBound= {
+            lat: query.centerLat,
+            lng: query.centerLng
+          }
+        }
+        this.firstLoad = false
+      },
+    },
+    zoom(newValue) {
+      this.$router.replace({query: {...this.$route.query,zoom: newValue}})
+    },
     bounds: {
       handler (newBounds) {
         this.moveToBounds([
@@ -250,7 +300,7 @@ export default {
         this.$refs.map.mapObject.removeControl(this.predictedSlider)
         this.predictedSlider = null
       }
-    }
+    },
   },
   mounted: function() {
     // Instantiate location search bar.
@@ -259,12 +309,34 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
+    // If values are read from the URL center and
+    if(this.centerBound) this.moveToCenter();
+    if(this.urlLayer) this.tileProviders.find(item => item.slug === this.urlLayer).visible=true
   },
   methods:  {
+    /**
+     * Set bounds on URL
+     */
+    updateBounds(){
+      this.$router.replace({query: {...this.$route.query,zoom: this.zoom}});
+      this.$router.replace({query: {...this.$route.query, centerLat: this.$refs.map.mapObject.getCenter().lat }});
+      this.$router.replace({query: {...this.$route.query, centerLng: this.$refs.map.mapObject.getCenter().lng }});
+    },
     moveToBounds(bounds) {
       this.$refs.map.mapObject.fitBounds(bounds)
     },
+    moveToCenter() {
+      this.$refs.map.mapObject.panTo(this.centerBound)
+    },
+    /**
+     * Set selected option on URL based on index
+     */
+    setMapOption(event){
+      const selected = this.tileProviders.find(item => item.name === event.name);
+      this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
+    },
     setOpacitySlider(event) {
+      const { $router, $route } = this
        if (this.algebraSlider !== null) {
         this.$refs.map.mapObject.removeControl(this.algebraSlider)
       }
@@ -274,7 +346,7 @@ export default {
         position: 'topright',
         min: 0,
         max: 100,
-        value: 100,
+        value: this.lOpacity.isSet ? parseFloat(this.lOpacity.value) * 100 : 100,
         step: 1,
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-layer'
@@ -282,6 +354,7 @@ export default {
 
       this.algebraSlider.on('input change', function(e) {
         event.target.setOpacity(e.value / 100)
+        $router.replace({query: {...$route.query,lOpacity: e.value / 100}})
       });
 
       let predictedRemoved = false
@@ -298,11 +371,12 @@ export default {
     },
 
     setOpacitySliderPredictedLayer (event) {
+      const { $router, $route } = this
       this.predictedSlider = L.control.range({
         position: 'topright',
         min: 0,
         max: 100,
-        value: 100,
+        value: this.pOpacity.isSet ? parseFloat(this.pOpacity.value) * 100 : 100,
         step: 1,
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-predicted'
@@ -310,6 +384,7 @@ export default {
 
       this.predictedSlider.on('input change', function(e) {
         event.target.setOpacity(e.value / 100)
+        $router.replace({query: {...$route.query, pOpacity: e.value / 100}})
       });
 
       this.$refs.map.mapObject.addControl(this.predictedSlider)
