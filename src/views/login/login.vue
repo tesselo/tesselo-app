@@ -37,8 +37,8 @@ export default {
 <style lang="scss" scoped>
   .login {
     position: relative;
-    min-width: 100vw;
-    min-height: 100vh;
+    min-width: 100%;
+    min-height: 100%;
     background-size: cover;
     background-repeat: no-repeat;
 

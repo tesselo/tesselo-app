@@ -1,5 +1,7 @@
 <template>
-  <div class="map-legend-wrapper">
+  <div
+    :class="['map-legend-wrapper', {
+    'map-legend-wrapper__touch': isTouch == true}]">
     <label v-if="label"> {{ label }} </label>
     <template v-if="format === 'legend'">
       <div
@@ -37,11 +39,11 @@
     </template>
     <template v-if="format === 'list'">
       <ul class="map-list">
-        <li 
-          v-for="entry in data" 
+        <li
+          v-for="entry in data"
           :key="`list-color-${entry.color}`"
           class="map-list__entry">
-          <div 
+          <div
             :style="{'background-color': entry.color}"
             class="map-list__color" />
           <div class="map-list__name"> {{ entry.name }} </div>
@@ -81,10 +83,13 @@ export default {
         'legend',
         'list'
       ].includes(value)
-    }
+    },
   },
 
   computed: {
+    isTouch() {
+      return this.$deviceInfo.isTouch;
+    },
     legendStyle () {
       var colors = this.data.map(entry => entry.color)
       colors.join(',')
@@ -111,6 +116,10 @@ export default {
     background: white;
     padding: 10px;
     border-radius: 3px;
+
+    &__touch {
+      top: 38%;
+    }
 
     label {
       padding-bottom: 2px;
@@ -175,7 +184,7 @@ export default {
         height: 20px;
         flex: 0 0 20px;
       }
-      
+
       &__name {
         margin-left: 6px;
         max-width: calc(100% - 30px);

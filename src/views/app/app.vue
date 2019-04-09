@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-container">
     <router-view/>
     <user-sidebar />
   </div>
@@ -25,3 +25,9 @@ export default {
   }
 }
 </script>
+<style >
+ .main-container {
+   height: 100%;
+   width: 100%;
+ }
+</style>

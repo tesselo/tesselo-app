@@ -1,17 +1,48 @@
 <template>
-  <div>
-    <img
-      :src="logoSimpleUrl"
-      alt="Tesselo Logo"
-      class="logo">
-    <div class="menu">
+  <div class="fixed-container">
+    <div
+      v-if="isTouch">
+      <img
+        :src="logoSimpleUrl"
+        alt="Tesselo Logo"
+        class="logo">
+      <div class="contol-menu">
+        <p
+          class ="control-menu-text"
+          @click="showControls=!showControls">
+          <span v-if="!showControls">Show Controls
+            <img
+              :src="combinedShapeOff"
+              alt=""
+              class="contol-menu-icon">
+          </span>
+          <span v-if="showControls">Hide Controls
+            <img
+              :src="combinedShapeOn"
+              alt=""
+              class="contol-menu-icon">
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      v-if="showControls"
+      class="menu">
       <multi-option-toggle
         ref="panelSelector"
+        :is-touch="isTouch"
         :items="mainMenu"
         @change="changeVisiblePanel" />
     </div>
-    <div class="report-menu">
+    <div
+      v-if="showControls"
+      class="report-menu">
+      <report-menu
+        v-if="isTouch"
+        :items="reportMenu"
+        @change="reportMenuClick" />
       <multi-option-toggle
+        v-if="!isTouch"
         :items="reportMenu"
         @change="reportMenuClick" />
     </div>
@@ -46,7 +77,7 @@
       </panel>
       <panel
         v-if="activePanel === 'report-history'"
-        title="Report History"
+        title="Reports"
         @close="closeAllPanels()">
         <report-history
           slot="content"
@@ -63,20 +94,19 @@
       </panel>
     </div>
     <div
-      v-if="selectedLayer"
-      class="selector-time-dimension-pannel"
-    >
+      v-if="selectedLayer && showControls"
+      class="selector-time-dimension-pannel">
       <collapsible-panel
         :open="stdPanelVisible"
-        @toggle="toggleSTDPanel"
-      >
+        @toggle="toggleSTDPanel">
         <selector-time-dimension
           :show-picker="stdPanelVisible"
           :active-year="activeYear"
           @year-change="setActiveYear"/>
       </collapsible-panel>
     </div>
-    <tsl-map />
+    <tsl-map
+      :show-controls="showControls"/>
   </div>
 </template>
 
@@ -95,6 +125,7 @@ import SelectorTimeDimension from '@/components/selector-time-dimension/selector
 import MultipleReport from '@/components/multiple-report/multiple-report'
 import ReportHistory from '@/components/report-history/report-history'
 import PredictedLayersTable from '@/components/predicted-layers-table/predicted-layers-table'
+import ReportMenu from '@/components/report-menu/report-menu'
 
 export default {
   name: 'Home',
@@ -109,11 +140,13 @@ export default {
     SelectorTimeDimension,
     MultipleReport,
     ReportHistory,
-    PredictedLayersTable
+    PredictedLayersTable,
+    ReportMenu
   },
   data() {
     return {
       loggingOut: false,
+      showControls: true,
       firstLoad:true,
       mainMenu: [
         {
@@ -166,6 +199,8 @@ export default {
       activeYear: (new Date()).getFullYear(),
       isNewReport: false,
       logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg',
+      combinedShapeOn: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-on.svg',
+      combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg'
     }
   },
   head: {
@@ -182,7 +217,13 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer
-    })
+    }),
+    isPhone() {
+      return this.$deviceInfo.isPhone;
+    },
+    isTouch() {
+      return this.$deviceInfo.isTouch;
+    },
   },
 
   watch: {
@@ -480,6 +521,67 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .fixed-container {
+    position: fixed;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .contol-menu {
+    position: relative;
+    align-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 100;
+    width: 139.2px;
+    height: 32px;
+    border-radius: 25px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 4px 0 black;
+    background-color: #001931;
+    vertical-align: middle;
+    text-align: center;
+
+    &::before,
+    &::after {
+      position: absolute;
+      top: -9px;
+      width: 20px;
+      height: 30px;
+      transform: rotate(-31deg);
+      background-color: #001931;
+      content: '';
+      z-index: 0;
+    }
+
+    &::before {
+      left: -3px;
+    }
+
+    &::after {
+      right: -3px;
+      transform: rotate(31deg);
+    }
+  }
+
+  .control-menu-text {
+    position: relative;
+    display: inline-block;
+    margin: 7px 0 0;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    line-height: 17px;
+    color: #fff;
+  }
+
+  .contol-menu-icon {
+    position: relative;
+    z-index: 1;
+  }
+
   .logout-button {
     position: absolute;
     top: 20px;
@@ -492,13 +594,14 @@ export default {
     top: 50px;
     left: 25px;
     z-index: z('content');
+    overflow: hidden;
   }
 
   .report-menu {
     position: absolute;
-    z-index: z('content');
     right: 5px;
     bottom: 65px;
+    overflow: hidden;
 
     @media (min-width: 768px) {
       bottom: 40px;
@@ -509,10 +612,11 @@ export default {
 
   .panels-wrapper {
     position: absolute;
-    overflow: auto;
+    overflow-y: scroll;
     z-index: z('panels');
     width: 100%;
     height: 100%;
+    top: 0;
 
     @media (min-width: 768px) {
       top: 54px;
@@ -520,7 +624,8 @@ export default {
       width: auto;
       height: auto;
       margin: 0;
-      max-height: calc(100vh - 204px);
+      max-height: calc(100% - 204px);
+      
       border-radius: 2px;
     }
 

@@ -1,10 +1,12 @@
 <template>
-  <a
+  <div
+    v-if="!isTouch"
     :class="[
       'multi-option-toggle-button d-flex flex-row justify-content-start align-items-center',
       {
         'multi-option-toggle-button--active': active,
-        'multi-option-toggle-button--selected': selected
+        'multi-option-toggle-button--selected': selected,
+        'multi-option-toggle-button--superior': ( title=='Export to PDF' || title=='Save Report')
       }
     ]"
     :title="title"
@@ -14,7 +16,27 @@
       :src="iconUrl"
       class="multi-option-toggle-icon">
     <span class="title"> {{ title }}</span>
-  </a>
+  </div>
+  <div
+    v-else
+    :class="[
+      'multi-option-toggle-button--touch multi-option-toggle-button d-flex flex-column align-items-center',
+      {
+        'multi-option-toggle-button--superior': ( title=='Export to PDF' || title=='Save Report')
+      }
+    ]"
+    :title="title"
+    @click="$emit('click')">
+    <div class="align-items-center">
+      <img
+        v-if="icon"
+        :src="iconUrl"
+        class="multi-option-toggle-icon multi-option-toggle-icon--touch">
+    </div>
+    <div :class="['align-items-center', {'container-title--touch': selected}]">
+      <span class="title title--touch"> {{ title }}</span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -39,6 +61,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    isTouch: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data: function() {
@@ -52,7 +79,7 @@ export default {
 <style scoped lang="scss">
   .multi-option-toggle-button {
     position: relative;
-
+    z-index: 101;
     display: block;
     height: 37px;
     width: 155px;
@@ -62,6 +89,12 @@ export default {
     background-color: white;
     cursor: pointer;
     user-select: none;
+
+    &--touch {
+      width: 72px;
+      height: 47px;
+      border-radius: 2px;
+    }
 
     &:hover {
       background-color: darken(white, 5%);
@@ -73,6 +106,10 @@ export default {
     top: 2px;
     margin-left: 10px;
     margin-right: 5px;
+  }
+
+  .multi-option-toggle-icon--touch {
+    margin-left: 5px;
   }
 
   .title {
@@ -88,6 +125,17 @@ export default {
     color: $twilight-blue;
   }
 
+  .container-title--touch {
+    width: 100%;
+    margin-left: 4px;
+  }
+
+  .title--touch {
+    margin-right: 0;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
   .multi-option-toggle-button--active {
     &::after {
       @include pseudoElementSetup;
@@ -101,6 +149,10 @@ export default {
       background-color: $booger;
       border-radius: 4px;
     }
+  }
+
+  .multi-option-toggle-button--superior {
+    z-index: 104;
   }
 
   .multi-option-toggle-button--selected {

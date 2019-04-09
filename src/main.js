@@ -1,4 +1,7 @@
 
+// Require compiled modernizr.js before application loads.
+require('@/services/modernizr')
+
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -8,6 +11,7 @@ import vMediaQuery from 'v-media-query'
 import { sync } from 'vuex-router-sync'
 import VueHead from 'vue-head'
 import VeeValidate from 'vee-validate'
+import DeviceInfo from '@/plugins/device-info'
 
 import '@/theme/main.scss'
 import App from '@/views/app/app'
@@ -23,6 +27,7 @@ Vue.use(Router)
 Vue.router = router
 
 Vue.use(Vuex)
+Vue.use(DeviceInfo)
 sync(store, router)
 
 Vue.use(vMediaQuery, {
