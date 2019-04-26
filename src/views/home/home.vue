@@ -625,7 +625,6 @@ export default {
       height: auto;
       margin: 0;
       max-height: calc(100% - 204px);
-      
       border-radius: 2px;
     }
 

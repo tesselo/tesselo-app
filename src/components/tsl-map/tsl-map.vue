@@ -299,10 +299,13 @@ export default {
     },
     bounds: {
       handler (newBounds) {
-        this.moveToBounds([
-          [newBounds.xmin, newBounds.ymin],
-          [newBounds.xmax, newBounds.ymax]
-        ]);
+        const query = this.$route.query
+        if(!query.centerLat && !query.centerLng ){
+          this.moveToBounds([
+            [newBounds.xmin, newBounds.ymin],
+            [newBounds.xmax, newBounds.ymax]
+          ]);
+        }
         // Set the new default extent to the bounds of this area of interest.
         if (this.defaultExtent) {
           this.defaultExtent.setCenter(this.$refs.map.mapObject.getCenter())
