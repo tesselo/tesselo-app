@@ -300,7 +300,8 @@ export default {
     bounds: {
       handler (newBounds) {
         const query = this.$route.query
-        if(!query.centerLat && !query.centerLng ){
+        const bounds = L.bounds([newBounds.xmin, newBounds.ymin], [newBounds.xmax, newBounds.ymax])
+        if( (!query.centerLat && !query.centerLng) || (query.centerLat !== bounds.x && query.centerLng !== bounds.y)) {
           this.moveToBounds([
             [newBounds.xmin, newBounds.ymin],
             [newBounds.xmax, newBounds.ymax]
