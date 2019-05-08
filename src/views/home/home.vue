@@ -522,11 +522,14 @@ export default {
 </script>
 <style lang="scss" scoped>
   .fixed-container {
-    position: fixed;
+    position: absolute;
     display: inline-block;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+
+    @media (min-width: 768px) {
+      overflow: hidden;
+    }
   }
 
   .contol-menu {
