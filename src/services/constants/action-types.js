@@ -54,3 +54,19 @@ export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'
 export const PREDICTED_LAYER_GET = 'getPredictedLayers'
 export const PREDICTED_LAYER_GET_ID = 'getPredictedLayerID'
 export const PREDICTED_LAYER_SELECT = 'selectPredictedLayer'
+
+
+/* -------------------------------------
+ * Bookmark Folder
+ * ---------------------------------- */
+export const BOOKMARK_FOLDER_GET = 'getBookmarkFolder'
+export const BOOKMARK_FOLDER_SAVE = 'saveBookmarkFolder'
+export const BOOKMARK_FOLDER_EDIT = 'editBookmarkFolder'
+export const BOOKMARK_FOLDER_DELETE= 'deleteBookmarkFolder'
+
+/* -------------------------------------
+ * Bookmark
+ * ---------------------------------- */
+export const BOOKMARK_SAVE = 'saveBookmark'
+export const BOOKMARK_EDIT = 'putBookmark'
+export const BOOKMARK_DELETE= 'deleteBookmark'

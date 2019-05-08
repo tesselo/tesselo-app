@@ -88,5 +88,42 @@ export default {
       url: '/predictedlayer',
       method: 'get'
     }
+  },
+  bookmarkFolder:{
+    getBookmarkFolder: {
+      url: '/bookmarkfolder',
+      method: 'get'
+    },
+    saveBookmarkFolder: {
+      url: '/bookmarkfolder',
+      method: 'post'
+    },
+    editBookmarkFolder: {
+      url: '/bookmarkfolder',
+      method: 'put'
+    },
+    deleteBookmarkFolder: {
+      url: '/bookmarkfolder',
+      method: 'delete'
+    },
+
+  },
+  bookmark: {
+    getBookmark: {
+      url: '/bookmark',
+      method: 'get'
+    },
+    saveBookmark: {
+      url: '/bookmark',
+      method: 'post'
+    },
+    editBookmark: {
+      url: '/bookmark',
+      method: 'put'
+    },
+    deleteBookmark: {
+      url: '/bookmark',
+      method: 'delete'
+    },
   }
 }

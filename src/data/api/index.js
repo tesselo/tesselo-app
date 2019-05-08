@@ -7,13 +7,15 @@ import formula from '@/data/api/services/api.formula.js'
 import time from '@/data/api/services/api.time.js'
 import report from '@/data/api/services/api.report.js'
 import predictedLayer from '@/data/api/services/api.predicted-layer.js'
+import bookmarkFolder from '@/data/api/services/api.bookmark-folder.js'
+import bookmark from '@/data/api/services/api.bookmark.js'
 
 /**
  * Adapter between server API and client application
  * @class APIAdapter
  */
 class APIAdapter {
-  constructor () {
+  constructor() {
     if (!APIAdapter.instance) {
       APIAdapter.instance = this
     }
@@ -34,7 +36,9 @@ class APIAdapter {
     formula,
     time,
     report,
-    predictedLayer
+    predictedLayer,
+    bookmarkFolder,
+    bookmark
   }
 }
 

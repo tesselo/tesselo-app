@@ -63,3 +63,17 @@ export const PREDICTED_LAYER_SET_LAYERS = 'setLayers'
 export const PREDICTED_LAYER_SELECT_LAYER = 'selectLayer'
 export const PREDICTED_LAYER_SET_ID_LAYER= 'setLayerId'
 export const PREDICTED_LAYER_RESET = 'resetPredictedLayer'
+
+/* -------------------------------------
+ *  Bookmark Folder
+ * ---------------------------------- */
+export const BOOKMARK_FOLDER_SET = 'setBookmarkFolder'
+export const BOOKMARK_FOLDER_DELETE = 'deleteBookmarkFolder'
+export const BOOKMARK_FOLDER_RESET = 'resetBookmarkFolder'
+
+/* -------------------------------------
+ *  Bookmark Folder
+ * ---------------------------------- */
+export const BOOKMARK_SET = 'setBookmark'
+export const BOOKMARK_DELETE = 'deleteBookmark'
+export const BOOKMARK_RESET = 'resetBookmark'

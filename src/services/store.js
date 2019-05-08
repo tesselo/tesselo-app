@@ -9,6 +9,8 @@ import map from '@/services/state/map/store'
 import time from '@/services/state/time/store'
 import report from '@/services/state/report/store'
 import predictedLayer from '@/services/state/predicted-layer/store'
+import bookmarkFolder from '@/services/state/bookmark-folder/store'
+import bookmark from '@/services/state/bookmark/store'
 
 import { mutationTypes } from '@/services/constants'
 import { cloneDeep } from 'lodash'
@@ -20,6 +22,8 @@ import predictedLayerState from '@/services/state/predicted-layer/store/predicte
 import formulaState from '@/services/state/formula/store/formula.state'
 import reportState from '@/services/state/report/store/report.state'
 import timeState from '@/services/state/time/store/time.state'
+import bookmarkFolderState from './state/bookmark-folder/store/bookmark-folder.state';
+import bookmarkState from './state/bookmark/store/bookmark.state';
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -33,7 +37,9 @@ const initialState = {
   predictedLayer: cloneDeep(predictedLayerState),
   formula: cloneDeep(formulaState),
   report: cloneDeep(reportState),
-  time: cloneDeep(timeState)
+  time: cloneDeep(timeState),
+  bookmarkFolder: cloneDeep(bookmarkFolderState),
+  bookmark: cloneDeep(bookmarkState),
 }
 
 export const storeOptions = {
@@ -45,7 +51,9 @@ export const storeOptions = {
     formula,
     time,
     report,
-    predictedLayer
+    predictedLayer,
+    bookmarkFolder,
+    bookmark
   },
 
   mutations: {
