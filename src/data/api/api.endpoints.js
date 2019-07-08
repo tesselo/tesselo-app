@@ -42,7 +42,7 @@ export default {
           'g=' + moment.rasterlayerLookup['B03.jp2'],
           'b=' + moment.rasterlayerLookup['B02.jp2']
         ].join(',')
-        return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&scale=0,4e3&alpha&enhance_brightness=1.6&enhance_sharpness=1.2&enhance_color=1.2&enhance_contrast=1.1`
+        return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&scale=0,1e4&alpha&enhance_brightness=3.0&enhance_sharpness=1.2&enhance_color=1.9&enhance_contrast=1.5`
       } else {
         const presentBands = getPresentSentinelBands(formula.formula)
 
