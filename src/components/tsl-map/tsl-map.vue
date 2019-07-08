@@ -24,6 +24,7 @@
         :name="tileProvider.name"
         :visible="tileProvider.visible"
         :url="tileProvider.url"
+        :tile-layer-class="tileProvider.tileLayerClass"
         :attribution="tileProvider.attribution"
         layer-type="base"
       />
@@ -142,42 +143,48 @@ export default {
           name: 'B&W OpenStreetMap',
           visible: false,
           url: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-          attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          tileLayerClass: L.tileLayer
         },
         {
           slug:'OpenStreetMap',
           name: 'OpenStreetMap',
           visible: false,
           attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          tileLayerClass: L.tileLayer
         },
         {
           slug: 'NAIP_RGB',
           name: 'NAIP RGB',
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
-          url: 'https://tesselo.com/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255'
+          url: '/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255',
+          tileLayerClass: L.authenticatedTileLayer
         },
         {
           slug: 'NAIP_NDVI',
           name: 'NAIP NDVI',
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
-          url: 'https://tesselo.com/api/naip/{z}/{x}/{y}.png?formula=(B4-B1)/(B1%2BB4)&colormap=%7B"continuous":true,"range":[-0.9,0.9],"from":[165,0,38],"to":[0,104,55],"over":[249,247,174]%7D'
+          url: '/api/naip/{z}/{x}/{y}.png?formula=(B4-B1)/(B1%2BB4)&colormap=%7B"continuous":true,"range":[-0.9,0.9],"from":[165,0,38],"to":[0,104,55],"over":[249,247,174]%7D',
+          tileLayerClass: L.authenticatedTileLayer
         },
         {
           slug: 'World_Imagery',
           name: 'World Imagery',
           visible: false,
           attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
-          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          tileLayerClass: L.tileLayer
         },
         {
           slug: 'Terrain',
           name: 'Terrain',
           visible: false,
           attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
-          url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png'
+          url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png',
+          tileLayerClass: L.tileLayer
         }
       ],
       mapOptions: {
