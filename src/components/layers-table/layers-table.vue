@@ -11,22 +11,12 @@
       @current-change="selectLayer">
       <el-table-column
         prop="acronym"
-        width="200"
+        width="150"
         label="Name" />
       <el-table-column
-        prop="formula"
-        label="Formula"
+        prop="name"
+        label="Description"
         width="320" />
-      <el-table-column
-        class="number"
-        prop="minVal"
-        width="50"
-        label="Min" />
-      <el-table-column
-        class="number"
-        prop="maxVal"
-        width="50"
-        label="Max" />
     </el-table>
     <div
       v-if="loading"
