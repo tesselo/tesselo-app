@@ -1,4 +1,5 @@
 import { capitalizeFirstLetter } from '@/services/util'
+import moment from 'moment'
 
 export const formatError = (errors) => ({
   nonFieldErrors: errors['non_field_errors']
@@ -86,7 +87,7 @@ export const formatFormulaResult = (row) => {
   }
 }
 
-export const formatCompositesList = (rows, options) => {
+export const formatCompositesList = (rows) => {
   return rows.map((row, index)=> ({
     index,
     id: row.id,
@@ -101,13 +102,7 @@ export const formatCompositesList = (rows, options) => {
     interval: row.interval,
     type: row.interval,
     name: row.name,
-    nameToShow: capitalizeFirstLetter(
-      row.name
-        .toLowerCase()
-        .replace('week', '')
-        .replace('month', '')
-        .replace(options.yearToRemove, '')
-    ).substring(0, 3),
+    nameToShow: moment(row.min_date).format('MMM'),
   }))
 }
 
