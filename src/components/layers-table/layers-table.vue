@@ -11,12 +11,12 @@
       @current-change="selectLayer">
       <el-table-column
         prop="acronym"
-        width="150"
+        width="120"
         label="Name" />
       <el-table-column
         prop="name"
         label="Description"
-        width="320" />
+        width="420" />
     </el-table>
     <div
       v-if="loading"
