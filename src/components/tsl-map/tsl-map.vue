@@ -33,6 +33,7 @@
         :url="algebraUrl"
         :tile-layer-class="tileLayerClass"
         :z-index="9"
+        :attribution="tesseloAttribution"
         @add="setOpacitySlider" />
       <l-tile-layer
         :visible="showPredicted"
@@ -137,6 +138,7 @@ export default {
       urlLayer: null,
       algebraSlider: null,
       predictedSlider: null,
+      tesseloAttribution: ' &copy; Tesselo Visualization Layers, Contains modified Copernicus Sentinel data 2016 - 2019',
       tileProviders: [
         {
           slug:'BW_OpenStreetMap',
