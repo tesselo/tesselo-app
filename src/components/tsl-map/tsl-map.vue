@@ -165,6 +165,14 @@ export default {
           tileLayerClass: L.authenticatedTileLayer
         },
         {
+          slug: 'NAIP_GRAYSCALE',
+          name: 'NAIP Grayscale',
+          visible: false,
+          attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
+          url: '/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255&enhance_color=0',
+          tileLayerClass: L.authenticatedTileLayer
+        },
+        {
           slug: 'NAIP_NDVI',
           name: 'NAIP NDVI',
           visible: false,
