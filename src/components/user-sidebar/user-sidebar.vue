@@ -125,9 +125,9 @@
         <div class="help">
           <p class="text-uppercase">Need Help?</p>
           <p class="strong">Contact support</p>
-          <p>+351 962323544</p>
+          <p>+351 215 812 855</p>
           <p>
-            <a href="mailto:mail@tesselo.com">mail@tesselo.com</a>
+            <a href="mailto:support@tesselo.com">support@tesselo.com</a>
           </p>
         </div>
         <div
