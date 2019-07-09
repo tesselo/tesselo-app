@@ -647,12 +647,18 @@ export default {
   .selector-time-dimension-pannel {
     position: absolute;
     z-index: z('content');
-    bottom: 0;
+    bottom: 0px;
     left: 0;
 
     @media (min-width: 768px) {
       bottom: 40px;
-      left: 240px;
+      // Center horizontally
+      left:50%;
+      -webkit-transform: translateX(-50%);
+      -moz-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+      -o-transform: translateX(-50%);
+      transform: translateX(-50%);
     }
   }
 </style>
