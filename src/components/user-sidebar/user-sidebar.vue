@@ -34,26 +34,6 @@
           <h2>{{ username }}</h2>
         </div>
         <div class="separator"/>
-        <div class="report">
-          <a
-            href="javascript:void(0)"
-            class="d-flex flex-row justify-content-start align-items-center"
-          >
-            <svg
-              height="24"
-              width="24"
-              x="0px"
-              y="0px"
-              viewBox="0 0 100 125">
-              <path
-                fill="#aac343"
-                d="M63.328,5.5H20.5c-3.309,0-6,2.691-6,6v76c0,3.309,2.691,6,6,6h58c3.309,0,6-2.691,6-6V26.672L63.328,5.5z M62.5,10.328  L79.672,27.5H64.5c-1.104,0-2-0.896-2-2V10.328z M78.5,89.5h-58c-1.104,0-2-0.896-2-2v-76c0-1.104,0.896-2,2-2h38v16  c0,3.309,2.691,6,6,6h16v56C80.5,88.604,79.604,89.5,78.5,89.5z"
-              />
-            </svg>
-            <span>Report History</span>
-          </a>
-        </div>
-        <div class="separator"/>
         <el-tree
           :data="bookmarkFolder"
           :props="defaultProps"
