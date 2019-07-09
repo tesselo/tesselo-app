@@ -17,7 +17,7 @@
         :position="layersPosition" />
       <l-control-attribution
         :position="attributionPosition"
-        prefix="" />
+        prefix="Visualization Layers &copy; Tesselo " />
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
@@ -138,7 +138,7 @@ export default {
       urlLayer: null,
       algebraSlider: null,
       predictedSlider: null,
-      tesseloAttribution: ' &copy; Tesselo Visualization Layers, Contains modified Copernicus Sentinel data 2016 - 2019',
+      tesseloAttribution: 'Contains modified Copernicus Sentinel data 2016 - 2019',
       tileProviders: [
         {
           slug:'BW_OpenStreetMap',
