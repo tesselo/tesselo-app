@@ -172,14 +172,14 @@ export default {
           url: '/api/naip/{z}/{x}/{y}.png?formula=(B4-B1)/(B1%2BB4)&colormap=%7B"continuous":true,"range":[-0.9,0.9],"from":[165,0,38],"to":[0,104,55],"over":[249,247,174]%7D',
           tileLayerClass: L.authenticatedTileLayer
         },
-        {
-          slug: 'World_Imagery',
-          name: 'World Imagery',
-          visible: false,
-          attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
-          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          tileLayerClass: L.tileLayer
-        },
+        // {
+        //   slug: 'World_Imagery',
+        //   name: 'World Imagery',
+        //   visible: false,
+        //   attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
+        //   url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        //   tileLayerClass: L.tileLayer
+        // },
         {
           slug: 'Terrain',
           name: 'Terrain',
