@@ -85,8 +85,9 @@
       v-if="showPicker"
       class="picker">
       <div class="picker__top-row d-flex flex-row jjustify-content-center">
-        <div class="picker__year-select">
+        <div class="picker__year-select d-flex flex-row justify-content-center align-items-center">
           <scrollable-tab-menu
+            :show-navigation="false"
             :list="years"
             :start-at-index="yearsActiveIndex"
             @selected="setYear($event.label)"
@@ -345,8 +346,8 @@ export default {
 
     years() {
       const years = []
-      for (let i = 0; i <= ((new Date().getFullYear()) - 1988); i++) {
-        years.push({ label: 1988 + i})
+      for (let i = 0; i <= ((new Date().getFullYear()) - 2016); i++) {
+        years.push({ label: 2016 + i})
       }
       return years
     },

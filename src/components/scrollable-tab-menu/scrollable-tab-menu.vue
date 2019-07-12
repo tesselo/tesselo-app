@@ -311,7 +311,6 @@
 
   /* This wrapper was created to hide scrollbar on iOS Devices (together with bottom padding of .scrollable-tab-menu__list) */
   .scrollable-tab-menu-wrapper {
-    width: 100%;
     height: 50px;
     overflow: hidden;
   }
