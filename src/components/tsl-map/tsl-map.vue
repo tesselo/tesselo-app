@@ -281,7 +281,7 @@ export default {
     },
 
     allBasemapProviders () {
-      return this.wmtsProviders.concat(this.tileProviders)
+      return this.tileProviders.concat(this.wmtsProviders)
     },
 
     selectedFormulaLegend () {
