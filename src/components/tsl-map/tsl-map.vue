@@ -28,6 +28,15 @@
         :attribution="tileProvider.attribution"
         layer-type="base"
       />
+      <l-wms-tile-layer
+        v-for="wmts in wmtsProviders"
+        :key="wmts.key"
+        :name="wmts.name"
+        :visible="wmts.visible"
+        :base-url="wmts.base_url"
+        :layers="wmts.layers"
+        :attribution="wmts.attribution"
+        layer-type="base" />
       <l-tile-layer
         :visible="showSelected"
         :url="algebraUrl"
@@ -75,7 +84,7 @@ import { getColorsFromPallete } from '@/services/util.js'
 
 import L from 'leaflet'
 
-import { LMap, LTileLayer, LControlLayers, LControlZoom, LControlAttribution } from 'vue2-leaflet'
+import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControlZoom, LControlAttribution } from 'vue2-leaflet'
 
 // API
 import endpoints from '@/data/api/api.endpoints'
@@ -113,7 +122,8 @@ export default {
     LControlAttribution,
     VGeosearch,
     'v-protobuf': Vue2LeafletVectorGridProtobuf,
-    MapLegend
+    MapLegend,
+    'l-wms-tile-layer': LWMSTileLayer
   },
   props: {
     showControls:{
@@ -188,13 +198,47 @@ export default {
         //   url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         //   tileLayerClass: L.tileLayer
         // },
+        // {
+        //   slug: 'Terrain',
+        //   name: 'Terrain',
+        //   visible: false,
+        //   attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
+        //   url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png',
+        //   tileLayerClass: L.tileLayer
+        // },
+      ],
+      wmtsProviders: [
         {
-          slug: 'Terrain',
-          name: 'Terrain',
+          base_url: "https://basemap.nationalmap.gov/arcgis/services/USGSImageryOnly/MapServer/WMSServer",
+          slug:'USGS_Imagery',
+          name: 'USGS Imagery',
           visible: false,
-          attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
-          url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png',
-          tileLayerClass: L.tileLayer
+          layers: "0",
+          attribution: "USGS The National Map: Orthoimagery. Data refreshed April, 2019."
+        },
+        {
+          base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
+          slug:'Hillshade_Gray',
+          name: 'USGS Hillshade Gray',
+          visible: false,
+          layers: "3DEPElevation:Hillshade Gray",
+          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018."
+        },
+        {
+          base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
+          slug:'Hillshade_Multidirectional',
+          name: 'USGS Hillshade Multidirectional',
+          visible: false,
+          layers: "3DEPElevation:Hillshade Multidirectional",
+          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018."
+        },
+        {
+          base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
+          slug:'Hillshade_Tinted',
+          name: 'USGS Hillshade Tinted',
+          visible: false,
+          layers: "3DEPElevation:Hillshade Elevation Tinted",
+          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018."
         }
       ],
       mapOptions: {
@@ -225,6 +269,7 @@ export default {
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
+
     isTouch() {
       return this.$deviceInfo.isTouch;
     },
@@ -233,6 +278,10 @@ export default {
         this.selectedFormula.formula !== 'RGB' &&
         this.selectedFormulaLegend &&
         this.selectedFormulaLegend.length
+    },
+
+    allBasemapProviders () {
+      return this.wmtsProviders.concat(this.tileProviders)
     },
 
     selectedFormulaLegend () {
@@ -292,9 +341,9 @@ export default {
           this.zoom = parseInt(this.$route.query.zoom)
         }
         if(query.mapOption && this.firstLoad == true){
-          this.urlLayer = this.tileProviders.find(item => item.slug === query.mapOption).slug
+          this.urlLayer = this.allBasemapProviders.find(item => item.slug === query.mapOption).slug
         }else{
-          this.tileProviders[0].visible=true
+          this.allBasemapProviders[0].visible=true
         }
         if(query.lOpacity && this.firstLoad == true) {
           this.lOpacity = { isSet: true, value: query.lOpacity }
@@ -354,7 +403,7 @@ export default {
     this.$refs.map.mapObject.keyboard.disable();
     // If values are read from the URL center and
     if(this.centerBound) this.moveToCenter();
-    if(this.urlLayer) this.tileProviders.find(item => item.slug === this.urlLayer).visible=true
+    if(this.urlLayer) this.allBasemapProviders.find(item => item.slug === this.urlLayer).visible=true
   },
   methods:  {
     /**
@@ -375,7 +424,7 @@ export default {
      * Set selected option on URL based on index
      */
     setMapOption(event){
-      const selected = this.tileProviders.find(item => item.name === event.name);
+      const selected = this.allBasemapProviders.find(item => item.name === event.name);
       this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
     },
     setOpacitySlider(event) {
