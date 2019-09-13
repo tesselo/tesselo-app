@@ -18,6 +18,11 @@
       <l-control-attribution
         :position="attributionPosition"
         prefix="Visualization Layers &copy; Tesselo " />
+      <l-control
+        class="print-image-control leaflet-bar leaflet-control"
+        position="topright" >
+        <a @click="printImage">{{ exportStatus }}</a>
+      </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
@@ -26,7 +31,8 @@
         :url="tileProvider.url"
         :tile-layer-class="tileProvider.tileLayerClass"
         :attribution="tileProvider.attribution"
-        layer-type="base"
+        :layer-type="tileProvider.type"
+        :z-index="tileProvider.zIndex"
       />
       <l-wms-tile-layer
         v-for="wmts in wmtsProviders"
@@ -36,7 +42,9 @@
         :base-url="wmts.base_url"
         :layers="wmts.layers"
         :attribution="wmts.attribution"
-        layer-type="base" />
+        :layer-type="wmts.type"
+        :z-index="wmts.zIndex"
+      />
       <l-tile-layer
         :visible="showSelected"
         :url="algebraUrl"
@@ -84,7 +92,11 @@ import { getColorsFromPallete } from '@/services/util.js'
 
 import L from 'leaflet'
 
-import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControlZoom, LControlAttribution } from 'vue2-leaflet'
+import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControlZoom, LControlAttribution, LControl } from 'vue2-leaflet'
+
+// Leaflet print option.
+import leafletImage from 'leaflet-image'
+import jsPDF from 'jspdf'
 
 // API
 import endpoints from '@/data/api/api.endpoints'
@@ -111,12 +123,12 @@ import { polygonStyle } from './vector-style'
 
 import MapLegend from '@/components/map-legend/map-legend.vue'
 
-
 export default {
   name: 'TslMap',
   components: {
     LMap,
     LTileLayer,
+    LControl,
     LControlLayers,
     LControlZoom,
     LControlAttribution,
@@ -156,7 +168,9 @@ export default {
           visible: false,
           url: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
           attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          tileLayerClass: L.tileLayer
+          tileLayerClass: L.tileLayer,
+          type: "base",
+          zIndex: 1
         },
         {
           slug:'OpenStreetMap',
@@ -164,7 +178,29 @@ export default {
           visible: false,
           attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
           url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          tileLayerClass: L.tileLayer
+          tileLayerClass: L.tileLayer,
+          type: "base",
+          zIndex: 1
+        },
+        {
+          slug:'Lines',
+          name: 'LinesOverlay',
+          visible: false,
+          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+          url: 'http://{s}.tile.stamen.com/terrain-lines/{z}/{x}/{y}.png',
+          tileLayerClass: L.tileLayer,
+          type: "overlay",
+          zIndex: 11
+        },
+        {
+          slug:'Labels',
+          name: 'LabelsOverlay',
+          visible: false,
+          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+          url: 'http://{s}.tile.stamen.com/terrain-labels/{z}/{x}/{y}.png',
+          tileLayerClass: L.tileLayer,
+          type: "overlay",
+          zIndex: 12
         },
         {
           slug: 'NAIP_RGB',
@@ -172,7 +208,9 @@ export default {
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
           url: '/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255',
-          tileLayerClass: L.authenticatedTileLayer
+          tileLayerClass: L.authenticatedTileLayer,
+          type: "base",
+          zIndex: 1
         },
         {
           slug: 'NAIP_GRAYSCALE',
@@ -180,7 +218,9 @@ export default {
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
           url: '/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255&enhance_color=0',
-          tileLayerClass: L.authenticatedTileLayer
+          tileLayerClass: L.authenticatedTileLayer,
+          type: "base",
+          zIndex: 1
         },
         {
           slug: 'NAIP_NDVI',
@@ -188,7 +228,9 @@ export default {
           visible: false,
           attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
           url: '/api/naip/{z}/{x}/{y}.png?formula=(B4-B1)/(B1%2BB4)&colormap=%7B"continuous":true,"range":[-0.9,0.9],"from":[165,0,38],"to":[0,104,55],"over":[249,247,174]%7D',
-          tileLayerClass: L.authenticatedTileLayer
+          tileLayerClass: L.authenticatedTileLayer,
+          type: "base",
+          zIndex: 1
         },
         // {
         //   slug: 'World_Imagery',
@@ -196,7 +238,8 @@ export default {
         //   visible: false,
         //   attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
         //   url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        //   tileLayerClass: L.tileLayer
+        //   tileLayerClass: L.tileLayer,
+        //   type: "base"
         // },
         // {
         //   slug: 'Terrain',
@@ -205,6 +248,7 @@ export default {
         //   attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
         //   url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png',
         //   tileLayerClass: L.tileLayer
+        //   type: "base"
         // },
       ],
       wmtsProviders: [
@@ -214,7 +258,9 @@ export default {
           name: 'USGS Imagery',
           visible: false,
           layers: "0",
-          attribution: "USGS The National Map: Orthoimagery. Data refreshed April, 2019."
+          attribution: "USGS The National Map: Orthoimagery. Data refreshed April, 2019.",
+          type: "base",
+          zIndex: 1
         },
         {
           base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
@@ -222,7 +268,9 @@ export default {
           name: 'USGS Hillshade Gray',
           visible: false,
           layers: "3DEPElevation:Hillshade Gray",
-          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018."
+          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
+          type: "base",
+          zIndex: 1
         },
         {
           base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
@@ -230,7 +278,9 @@ export default {
           name: 'USGS Hillshade Multidirectional',
           visible: false,
           layers: "3DEPElevation:Hillshade Multidirectional",
-          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018."
+          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
+          type: "base",
+          zIndex: 1
         },
         {
           base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
@@ -238,15 +288,17 @@ export default {
           name: 'USGS Hillshade Tinted',
           visible: false,
           layers: "3DEPElevation:Hillshade Elevation Tinted",
-          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018."
+          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
+          type: "base",
+          zIndex: 1
         }
       ],
       mapOptions: {
         zoomControl: false,
-        attributionControl: false,
+        attributionControl: false
       },
       zoomPosition: 'topright',
-      layersPosition: 'bottomright',
+      layersPosition: 'topright',
       attributionPosition: 'bottomright',
       geosearchOptions: {
         provider: new OpenStreetMapProvider(),
@@ -255,7 +307,10 @@ export default {
         showMarker: false,
         autoClose: true,
       },
-      tileLayerClass: L.authenticatedTileLayer
+      tileLayerClass: L.authenticatedTileLayer,
+      exportImage: null,
+      exportMsg: null,
+      exportStatus: 'P'
     }
   },
   computed: {
@@ -280,7 +335,7 @@ export default {
         this.selectedFormulaLegend.length
     },
 
-    allBasemapProviders () {
+    allbasemapProviders () {
       return this.tileProviders.concat(this.wmtsProviders)
     },
 
@@ -341,9 +396,9 @@ export default {
           this.zoom = parseInt(this.$route.query.zoom)
         }
         if(query.mapOption && this.firstLoad == true){
-          this.urlLayer = this.allBasemapProviders.find(item => item.slug === query.mapOption).slug
+          this.urlLayer = this.allbasemapProviders.find(item => item.slug === query.mapOption).slug
         }else{
-          this.allBasemapProviders[0].visible=true
+          this.allbasemapProviders[0].visible=true
         }
         if(query.lOpacity && this.firstLoad == true) {
           this.lOpacity = { isSet: true, value: query.lOpacity }
@@ -403,7 +458,7 @@ export default {
     this.$refs.map.mapObject.keyboard.disable();
     // If values are read from the URL center and
     if(this.centerBound) this.moveToCenter();
-    if(this.urlLayer) this.allBasemapProviders.find(item => item.slug === this.urlLayer).visible=true
+    if(this.urlLayer) this.allbasemapProviders.find(item => item.slug === this.urlLayer).visible=true
   },
   methods:  {
     /**
@@ -424,7 +479,7 @@ export default {
      * Set selected option on URL based on index
      */
     setMapOption(event){
-      const selected = this.allBasemapProviders.find(item => item.name === event.name);
+      const selected = this.allbasemapProviders.find(item => item.name === event.name);
       this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
     },
     setOpacitySlider(event) {
@@ -480,6 +535,73 @@ export default {
       });
 
       this.$refs.map.mapObject.addControl(this.predictedSlider)
+    },
+
+    printImage(){
+      // If this is already computing, wait for it to finish.
+      if (this.exportStatus == '...') {
+        console.log('already processing, waiting')
+        return
+      }
+      var img = document.createElement('img');
+      var dimensions = this.$refs.map.mapObject.getSize();
+      var element = document.createElement('a');
+
+      console.log(img, dimensions, element);
+
+      var tat = this;
+      this.exportStatus = '...'
+      leafletImage(this.$refs.map.mapObject, function(err, canvas) {
+        // TODO: Remove console  logs - they are for development.
+        console.log('callback')
+        console.log(dimensions)
+        console.log(
+          tat.selectedLayer,
+          tat.selectedFormula,
+          tat.selectedMoment
+        )
+
+        // Get image text and image data.
+        var msg = ['TESSELO Export\n' + tat.selectedFormula.acronym, 'for', tat.selectedMoment.name]
+        var img = canvas.toDataURL()
+        var format = 'PNG'
+
+        if (tat.exportImage){
+          console.log('creating pdf using second image', tat.exportMsg, tat.exportImage)
+
+          // Instantiate pdf.
+          var doc = jsPDF({
+            orientation: 'portrait',
+            unit: 'px',
+            format: [dimensions.x, dimensions.y]
+          });
+
+          doc.setTextColor('#2F2D7E')
+          // doc.setFont('arial')
+
+          // Add first image on page one.
+          doc.addImage(tat.exportImage, format, 0, 0, dimensions.x, dimensions.y)
+          doc.text(tat.exportMsg, 10, 20, {maxWidth: dimensions.x})
+          // Ad second image as page two.
+          doc.addPage()
+          doc.addImage(img, format, 0, 0, dimensions.x, dimensions.y)
+          doc.text(msg, 10, 20, {maxWidth: dimensions.x})
+
+          // Offer download of pdf.
+          doc.save()
+
+          // Clear current image.
+          tat.exportImage = null
+          tat.exportMsg = null
+          tat.exportStatus = 'P'
+        } else {
+          // Store as current image.
+          tat.exportMsg = msg
+          tat.exportImage = img
+          console.log('Stored first image', msg)
+          tat.exportStatus = 'F'
+        }
+      });
     }
   }
 }
@@ -514,13 +636,13 @@ export default {
 
     .leaflet-range-control {
       position: absolute;
-      top: 132px;
+      top: 177px;
       right: 0;
       margin-left: 40px;
       z-index: 0;
 
       @media (min-width: 768px) {
-        top: 200px;
+        top: 245px;
       }
 
       &:nth-last-of-type(2) {
