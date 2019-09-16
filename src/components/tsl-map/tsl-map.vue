@@ -97,6 +97,7 @@ import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControlZoom, LControl
 // Leaflet print option.
 import leafletImage from 'leaflet-image'
 import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
 // API
 import endpoints from '@/data/api/api.endpoints'
@@ -308,8 +309,7 @@ export default {
         autoClose: true,
       },
       tileLayerClass: L.authenticatedTileLayer,
-      exportImage: null,
-      exportMsg: null,
+      exportData: [],
       exportStatus: 'P'
     }
   },
@@ -537,24 +537,105 @@ export default {
       this.$refs.map.mapObject.addControl(this.predictedSlider)
     },
 
+    dataCallback(id){
+      const dat = this.exportData[id]
+      const format = 'PNG'
+
+      console.log('callback', id, dat)
+      // Abort if not all data has been collected yet.
+      if (!('formula_legend' in  dat) || !('predicted_legend' in dat) || !('map_canvas' in dat)) {
+        return
+      }
+      console.log('continuing callback', id)
+
+      // Instantiate pdf.
+      if (!dat.doc) {
+        dat.doc = jsPDF({
+          orientation: dat.map_canvas.width > dat.map_canvas.height ? 'landscape': 'portrait',
+          unit: 'px',
+          format: [dat.map_canvas.width, dat.map_canvas.height]
+        });
+      }
+
+      // Font settings.
+      dat.doc.setTextColor('#2F2D7E')
+      // dat.doc.setFont('helvetica', '')
+      console.log('fonts available', dat.doc.getFontList())
+
+      // Add first image on page one.
+      console.log('Adding map image')
+      dat.doc.addImage(dat.map_canvas.toDataURL(), format, 0, 0, dat.map_canvas.width, dat.map_canvas.height)
+      dat.doc.text(dat.map_msg, 10, 20, {maxWidth: dat.map_canvas.width})
+
+      // Add predicted layer legend.
+      const legend_margin = 5
+      const legend_scale = 0.6
+      if (dat.predicted_legend) {
+        const predicted_legend_offset = dat.doc.internal.pageSize.height - legend_scale * dat.predicted_legend.height - legend_margin
+        dat.doc.addImage(
+          dat.predicted_legend.toDataURL(),
+          format,
+          legend_margin,
+          predicted_legend_offset,
+          legend_scale * dat.predicted_legend.width,
+          legend_scale * dat.predicted_legend.height
+        )
+      }
+
+      // Add formula legend.
+      if (dat.formula_legend) {
+        // const ratio = dat.formula_legend.width / dat.formula_legend.height
+        var pred_contrib = 0
+        if (dat.predicted_legend) {
+          pred_contrib = legend_scale * dat.predicted_legend.height
+        }
+        var formula_legend_offset = dat.doc.internal.pageSize.height - legend_scale * dat.formula_legend.height - pred_contrib - legend_margin
+
+        dat.doc.addImage(
+          dat.formula_legend.toDataURL(),
+          format,
+          legend_margin,
+          formula_legend_offset,
+          legend_scale * dat.formula_legend.width,
+          legend_scale * dat.formula_legend.height
+        )
+      }
+
+      dat.doc.save('tesselo_export.pdf')
+
+      // Ad second image as page two.
+      // dat.doc.addPage()
+      // dat.doc.addImage(img, format, 0, 0, dimensions.x, dimensions.y)
+      // dat.doc.text(msg, 10, 20, {maxWidth: dimensions.x})
+      this.exportStatus = 'P'
+    },
+
     printImage(){
       // If this is already computing, wait for it to finish.
       if (this.exportStatus == '...') {
         console.log('already processing, waiting')
         return
       }
-      var img = document.createElement('img');
-      var dimensions = this.$refs.map.mapObject.getSize();
-      var element = document.createElement('a');
-
-      console.log(img, dimensions, element);
-
-      var tat = this;
+      // Set export status to processing.
       this.exportStatus = '...'
+
+      // Track the pdf page number.
+      const id = this.exportData.length
+
+      // Push another data container.
+      this.exportData.push({})
+
+      var tat = this
+
+      // Fetch leaflet canvas.
+      // html2canvas(document.querySelector(".tsl-map")).then(canvas => {
+      //   console.log(canvas)
+      //   tat.exportData[id].map_msg = ['TESSELO Export\n' + tat.selectedFormula.acronym, 'for', tat.selectedMoment.name]
+      //   tat.exportData[id].map_canvas = canvas
+      //   // Callback for export.
+      //   tat.dataCallback(id)
+      // });
       leafletImage(this.$refs.map.mapObject, function(err, canvas) {
-        // TODO: Remove console  logs - they are for development.
-        console.log('callback')
-        console.log(dimensions)
         console.log(
           tat.selectedLayer,
           tat.selectedFormula,
@@ -562,46 +643,87 @@ export default {
         )
 
         // Get image text and image data.
-        var msg = ['TESSELO Export\n' + tat.selectedFormula.acronym, 'for', tat.selectedMoment.name]
-        var img = canvas.toDataURL()
-        var format = 'PNG'
+        tat.exportData[id].map_msg = ['TESSELO Export\n' + tat.selectedFormula.acronym, 'for', tat.selectedMoment.name]
+        tat.exportData[id].map_canvas = canvas
 
-        if (tat.exportImage){
-          console.log('creating pdf using second image', tat.exportMsg, tat.exportImage)
+        // Callback for export.
+        tat.dataCallback(id)
+      })
 
-          // Instantiate pdf.
-          var doc = jsPDF({
-            orientation: 'portrait',
-            unit: 'px',
-            format: [dimensions.x, dimensions.y]
-          });
+      // Capture formula legend.
+      if (this.selectedFormula) {
+        html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
+          tat.exportData[id].formula_legend = legend_canvas
+          // Callback for export.
+          tat.dataCallback(id)
+        });
+      } else {
+        this.exportData[id].formula_legend = null
+        // Callback for export.
+        tat.dataCallback(id)
+      }
 
-          doc.setTextColor('#2F2D7E')
-          // doc.setFont('arial')
+      // Capture predicted layer legend.
+      if (this.selectedPredictedLayer) {
+        html2canvas(document.querySelector(".predicted-legend")).then(legend_canvas => {
+          tat.exportData[id].predicted_legend = legend_canvas
+          // Callback for export.
+          tat.dataCallback(id)
+        });
+      } else {
+        this.exportData[id].predicted_legend = null
+        // Callback for export.
+        tat.dataCallback(id)
+      }
 
-          // Add first image on page one.
-          doc.addImage(tat.exportImage, format, 0, 0, dimensions.x, dimensions.y)
-          doc.text(tat.exportMsg, 10, 20, {maxWidth: dimensions.x})
-          // Ad second image as page two.
-          doc.addPage()
-          doc.addImage(img, format, 0, 0, dimensions.x, dimensions.y)
-          doc.text(msg, 10, 20, {maxWidth: dimensions.x})
-
-          // Offer download of pdf.
-          doc.save()
-
-          // Clear current image.
-          tat.exportImage = null
-          tat.exportMsg = null
-          tat.exportStatus = 'P'
-        } else {
-          // Store as current image.
-          tat.exportMsg = msg
-          tat.exportImage = img
-          console.log('Stored first image', msg)
-          tat.exportStatus = 'F'
-        }
-      });
+      //
+      //   var format = 'PNG'
+      //
+      //
+      //   if (tat.exportImage){
+      //     console.log('creating pdf using second image', tat.exportMsg, tat.exportImage)
+      //
+      //     // Instantiate pdf.
+      //     var doc = jsPDF({
+      //       orientation: 'portrait',
+      //       unit: 'px',
+      //       format: [dimensions.x, dimensions.y]
+      //     });
+      //
+      //     // Font settings.
+      //     doc.setTextColor('#2F2D7E')
+      //     // doc.setFont('arial')
+      //
+      //     // Add first image on page one.
+      //     doc.addImage(tat.exportImage, format, 0, 0, dimensions.x, dimensions.y)
+      //     doc.text(tat.exportMsg, 10, 20, {maxWidth: dimensions.x})
+      //
+      //     // Ad second image as page two.
+      //     doc.addPage()
+      //     doc.addImage(img, format, 0, 0, dimensions.x, dimensions.y)
+      //     doc.text(msg, 10, 20, {maxWidth: dimensions.x})
+      //
+      //     // Capture legend.
+      //     html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
+      //         document.body.appendChild(canvas)
+      //
+      //         doc.addImage(legend_canvas.toDataURL(), format, 100, 0, 140, 60)
+      //         // Offer download of pdf.
+      //         doc.save()
+      //
+      //         // Clear current image.
+      //         tat.exportImage = null
+      //         tat.exportMsg = null
+      //         tat.exportStatus = 'P'
+      //     });
+      //   } else {
+      //     // Store as current image.
+      //     tat.exportMsg = msg
+      //     tat.exportImage = img
+      //     console.log('Stored first image', msg)
+      //     tat.exportStatus = 'F'
+      //   }
+      // });
     }
   }
 }
