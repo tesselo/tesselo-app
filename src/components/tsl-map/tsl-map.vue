@@ -21,12 +21,17 @@
       <l-control
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
-        <a
-        v-if="exportStatus.length"
-        @click="addImage">{{ exportStatus }} </a>
-
-        <el-button type="primary" icon="el-icon-loading"
-        v-if="!exportStatus.length"</el-button>
+        <el-button
+          v-if="exportProcessing"
+          type="primary"
+          class="export-button"
+          icon="el-icon-loading" />
+        <el-button
+          v-else
+          type="primary"
+          class="export-button"
+          icon="el-icon-document"
+          @click="addImage" />
       </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
@@ -325,7 +330,7 @@ export default {
       },
       tileLayerClass: L.authenticatedTileLayer,
       exportData: [],
-      exportStatus: 'P',
+      exportProcessing: false,
       exportCounter: []
     }
   },
@@ -620,7 +625,7 @@ export default {
       }
 
       // Update export statuses.
-      this.exportStatus = 'P'
+      this.exportProcessing = false
       this.exportCounter.push(data.map_msg.join(' ').replace('\n', ' ').replace('TESSELO Export ', ''))// = this.exportData.length
       console.log(this.exportCounter)
     },
@@ -634,17 +639,17 @@ export default {
       this.doc = null
       this.exportCounter = []
       this.exportData = []
-      this.exportStatus = 'P'
+      this.exportProcessing = false
     },
 
     addImage(){
       // If this is already computing, wait for it to finish.
-      if (this.exportStatus == '...') {
+      if (this.exportProcessing) {
         console.log('already processing, waiting')
         return
       }
       // Set export status to processing.
-      this.exportStatus = '...'
+      this.exportProcessing = true
 
       // Track the pdf page number.
       const id = this.exportData.length
@@ -803,9 +808,16 @@ export default {
       }
     }
   }
-
+  // Exporting
+  .print-image-control {
+    background-color: white
+  }
   .export-list {
     top: 277px;
     left: 25px;
+  }
+  .export-button {
+    width: 30px;
+    height: 30px;
   }
 </style>

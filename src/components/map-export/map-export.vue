@@ -17,17 +17,13 @@
       </ul>
     </template>
     <el-button
-    <el-button type="primary" icon="el-icon-save"
-      @click="$emit('print-pdf')" >
-      Print
-    </el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="$emit('clear-exports')"></el-button>
-    <!-- <el-button
-      type="text"
-      size="mini"
-       >
-      Clear List
-    </el-button> -->
+      type="primary"
+      icon="el-icon-delete"
+      @click="$emit('clear-exports')" />
+    <el-button
+      type="primary"
+      icon="el-icon-printer"
+      @click="$emit('print-pdf')" />
   </div>
 </template>
 
