@@ -21,7 +21,12 @@
       <l-control
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
-        <a @click="addImage">{{ exportStatus }}</a>
+        <a
+        v-if="exportStatus.length"
+        @click="addImage">{{ exportStatus }} </a>
+
+        <el-button type="primary" icon="el-icon-loading"
+        v-if="!exportStatus.length"</el-button>
       </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"

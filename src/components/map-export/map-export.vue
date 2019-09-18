@@ -16,14 +16,18 @@
         </li>
       </ul>
     </template>
-    <button
+    <el-button
+    <el-button type="primary" icon="el-icon-save"
       @click="$emit('print-pdf')" >
       Print
-    </button>
-    <button
-      @click="$emit('clear-exports')" >
+    </el-button>
+    <el-button type="primary" icon="el-icon-delete" @click="$emit('clear-exports')"></el-button>
+    <!-- <el-button
+      type="text"
+      size="mini"
+       >
       Clear List
-    </button>
+    </el-button> -->
   </div>
 </template>
 
