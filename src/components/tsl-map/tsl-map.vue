@@ -23,12 +23,6 @@
         position="topright" >
         <a @click="addImage">{{ exportStatus }}</a>
       </l-control>
-      <l-control
-        v-if="exportCounter"
-        class="print-image-control leaflet-bar leaflet-control"
-        position="topright" >
-        <a @click="printImage">{{ exportCounter }}</a>
-      </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
@@ -77,7 +71,7 @@
       :min="selectedFormula.minVal"
       :max="selectedFormula.maxVal"
       :label="selectedFormula.acronym"
-      class="layer-legend"/>
+      class="layer-legend" />
 
     <map-legend
       v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length"
@@ -87,6 +81,13 @@
       format="list"
       class="predicted-legend"
       tip="Hover colors to see details."/>
+
+    <map-export
+      v-if="exportCounter.length"
+      :data="exportCounter"
+      class="export-list"
+      @print-pdf="printPdf"
+      @clear-exports="clearExports"/>
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -130,6 +131,8 @@ import { polygonStyle } from './vector-style'
 
 import MapLegend from '@/components/map-legend/map-legend.vue'
 
+import MapExport from '@/components/map-export/map-export.vue'
+
 export default {
   name: 'TslMap',
   components: {
@@ -142,6 +145,7 @@ export default {
     VGeosearch,
     'v-protobuf': Vue2LeafletVectorGridProtobuf,
     MapLegend,
+    MapExport,
     'l-wms-tile-layer': LWMSTileLayer
   },
   props: {
@@ -317,7 +321,7 @@ export default {
       tileLayerClass: L.authenticatedTileLayer,
       exportData: [],
       exportStatus: 'P',
-      exportCounter: 0
+      exportCounter: []
     }
   },
   computed: {
@@ -612,13 +616,18 @@ export default {
 
       // Update export statuses.
       this.exportStatus = 'P'
-      this.exportCounter = this.exportData.length
+      this.exportCounter.push(data.map_msg.join(' ').replace('\n', ' ').replace('TESSELO Export ', ''))// = this.exportData.length
+      console.log(this.exportCounter)
     },
 
-    printImage(){
+    printPdf(){
       this.doc.save('tesselo_export.pdf')
+      this.clearExports()
+    },
+
+    clearExports() {
       this.doc = null
-      this.exportCounter = 0
+      this.exportCounter = []
       this.exportData = []
       this.exportStatus = 'P'
     },
@@ -788,5 +797,10 @@ export default {
         background-color: $pale-grey;
       }
     }
+  }
+
+  .export-list {
+    top: 277px;
+    left: 25px;
   }
 </style>
