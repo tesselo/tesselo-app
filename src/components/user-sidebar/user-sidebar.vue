@@ -39,7 +39,6 @@
           :props="defaultProps"
           node-key="id"
           accordion
-          default-expand-all
         >
           <span
             slot-scope="{ node, data }"
@@ -64,8 +63,9 @@
               class="bookmark-tree-icon"
               alt="">
             <a
-              :href="data.url"
-              class="bookmark-name">{{ data.name }}</a>
+              href="javascript:void(0)"
+              class="bookmark-name"
+              @click="() => handleGoToClick(data)">{{ data.name }}</a>
             <img
               v-if=" node.expanded && data.isTitle"
               :src="triangleOpenIcon"
@@ -182,6 +182,25 @@ export default {
     handleOpenClick(data, typeModal) {
       this.$emit("showModal", typeModal, data);
     },
+
+    _getUrlParams(url) {
+        var params = {}
+        var search = decodeURIComponent( url.slice( url.indexOf( '?' ) + 1 ) )
+        var definitions = search.split( '&' )
+
+        definitions.forEach( function( val ) {
+            var parts = val.split( '=', 2 )
+            params[ parts[ 0 ] ] = parts[ 1 ]
+        })
+
+        return params
+    },
+
+    handleGoToClick(data){
+      if (data.url === undefined) return
+      const params = this._getUrlParams(data.url)
+      this.$router.push({query: params})
+    }
   }
 };
 </script>
@@ -373,6 +392,7 @@ export default {
     border-radius: 1.5px;
     padding-top: 15px;
     padding-top: 8px;
+    cursor: pointer;
 
     &-button {
       display: flex;

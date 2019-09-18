@@ -167,7 +167,7 @@ export default {
       zoom: 2,
       firstLoad: true,
       showExportPanel: false,
-      center: [0, 0],
+      center: {lat: 0, lng: 0},
       lOpacity: {
         isSet: false,
         value:0,
@@ -313,13 +313,10 @@ export default {
         autoClose: true,
       },
       tileLayerClass: L.authenticatedTileLayer,
-<<<<<<< HEAD
+      firstLoad: true,
       exportData: [],
       exportProcessing: false,
-      exportTable: []
-=======
-      firstLoad: true
->>>>>>> Fixed routing bugs on map vue.
+      exportTable: [],
     }
   },
   computed: {
@@ -413,7 +410,7 @@ export default {
 
         if(query.centerLat && query.centerLng) {
           if(query.centerLat != this.center.lat || query.centerLng != this.center.lng) {
-            this.center = [query.centerLat, query.centerLng]
+            this.center = {lat: query.centerLat, lng: query.centerLng}
           }
         }
 
@@ -438,8 +435,7 @@ export default {
       }
     },
     zoom(newValue) {
-      // Update route
-      this.$router.replace({query: {...this.$route.query,zoom: newValue}})
+      this.$router.replace({query: {...this.$route.query, zoom: newValue}})
     },
     center(newCenter) {
       this.$router.replace({query: {...this.$route.query, centerLat: newCenter.lat }})
@@ -524,7 +520,7 @@ export default {
 
       this.algebraSlider.on('input change', function(e) {
         event.target.setOpacity(e.value / 100)
-        $router.replace({query: {...$route.query,lOpacity: e.value / 100}})
+        $router.replace({query: {...$route.query, lOpacity: e.value / 100}})
       });
 
       this.$refs.map.mapObject.addControl(this.algebraSlider)

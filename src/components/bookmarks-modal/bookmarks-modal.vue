@@ -98,20 +98,6 @@
                 </el-select>
               </el-form-item>
             </div>
-            <div>
-              <el-form-item
-                v-if="newBookmark.isFolder==false || !newBookmark.isFolder"
-                prop="url">
-                <label class="modal-body-text">URL</label>
-                <el-input
-                  :model="newBookmark.url"
-                  :value="newBookmark.url"
-                  class="modal-body-input modal-body-input__url modal-body-input-margin"
-                  placeholder="URL"
-                  @change="value => newBookmark.url = value"
-                />
-              </el-form-item>
-            </div>
           </el-form>
           <div
             v-if="confirmDelete==true"
@@ -227,31 +213,6 @@ export default {
               }
             }
           }
-        ],
-        url: [{
-            required: true,
-            trigger: "submit",
-            message: "URL required or invalid",
-            validator: (rule, value, callback) => {
-              let valid = true;
-              if(!this.bookmark.isFolder){
-                var expression = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/g;
-                var regex = new RegExp(expression);
-                if(this.bookmark.url && regex.test(value)){
-                  valid = true
-                } else {
-                  valid = false
-                }
-              } else {
-                valid = false
-              }
-              if (!valid) {
-                callback(new Error("URL required or invalid"));
-              } else {
-                callback();
-              }
-            }
-          }
         ]
       }
     };
@@ -260,7 +221,7 @@ export default {
   computed: {
     isTouch() {
       return this.$deviceInfo.isTouch;
-    },
+    }
   },
   methods: {
     ...mapActions("bookmarkFolder", {
@@ -313,7 +274,7 @@ export default {
           let bookmarkData = {
             name: this.bookmark.name,
             description: "",
-            url: this.bookmark.url,
+            url: window.location.href,
             bookmarkfolder: exists ? exists.id : 0
           }
 
@@ -431,7 +392,7 @@ export default {
 
 .modal-container {
   width: 320px;
-  height: 445px;
+  height: 270px;
   margin: auto;
   padding: 30px 25px;
   background-color: #fff;
@@ -442,7 +403,7 @@ export default {
 
   @media (min-width: 768px) {
     width: 670px;
-    height: 369px;
+    height: 270px;
   }
 
   &__folder {
