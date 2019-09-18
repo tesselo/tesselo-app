@@ -2,10 +2,10 @@
   <div class="tsl-map">
     <l-map
       ref="map"
-      :zoom.sync="zoom"
       :max-zoom="18"
       :options="mapOptions"
-      @update:bounds="updateBounds"
+      :zoom.sync="zoom"
+      :center.sync="center"
       @baselayerchange="setMapOption">
       <l-control-zoom
         v-if="!isTouch"
@@ -167,6 +167,7 @@ export default {
       zoom: 2,
       firstLoad: true,
       showExportPanel: false,
+      center: [0, 0],
       lOpacity: {
         isSet: false,
         value:0,
@@ -175,7 +176,6 @@ export default {
         isSet: false,
         value:0,
       },
-      centerBound: null,
       urlLayer: null,
       algebraSlider: null,
       predictedSlider: null,
@@ -313,14 +313,18 @@ export default {
         autoClose: true,
       },
       tileLayerClass: L.authenticatedTileLayer,
+<<<<<<< HEAD
       exportData: [],
       exportProcessing: false,
       exportTable: []
+=======
+      firstLoad: true
+>>>>>>> Fixed routing bugs on map vue.
     }
   },
   computed: {
     ...mapState({
-      bounds: state => state.map.bounds,
+      mapBounds: state => state.map.bounds,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
@@ -333,6 +337,7 @@ export default {
     isTouch() {
       return this.$deviceInfo.isTouch;
     },
+
     showFormulaLegend () {
       return this.selectedFormula &&
         this.selectedFormula.formula !== 'RGB' &&
@@ -396,54 +401,78 @@ export default {
     '$route.query': {
       immediate: true,
       handler(){
+
         const query = this.$route.query
-        if (query.zoom && this.firstLoad == true) {
-          this.zoom = parseInt(this.$route.query.zoom)
-        }
-        if(query.mapOption && this.firstLoad == true){
-          this.urlLayer = this.allBasemapProviders.find(item => item.slug === query.mapOption).slug
-        }else{
-          this.allBasemapProviders[0].visible=true
-        }
-        if(query.lOpacity && this.firstLoad == true) {
-          this.lOpacity = { isSet: true, value: query.lOpacity }
-        }
-        if(query.pOpacity && this.firstLoad == true) {
-          this.pOpacity = { isSet: true, value: query.pOpacity }
-        }
-        if(query.centerLat && query.centerLng && this.firstLoad == true){
-          this.centerBound= {
-            lat: query.centerLat,
-            lng: query.centerLng
+
+        if (query.zoom ){
+          const new_zoom = parseInt(query.zoom)
+          if(this.zoom != new_zoom) {
+            this.zoom = new_zoom
           }
         }
-        this.firstLoad = false
-      },
-    },
-    zoom(newValue) {
-      this.$router.replace({query: {...this.$route.query,zoom: newValue}})
-    },
-    bounds: {
-      handler (newBounds) {
-        const query = this.$route.query
-        const bounds = L.bounds([newBounds.xmin, newBounds.ymin], [newBounds.xmax, newBounds.ymax])
-        if( (!query.centerLat && !query.centerLng) || (query.centerLat !== bounds.x && query.centerLng !== bounds.y)) {
-          this.moveToBounds([
-            [newBounds.xmin, newBounds.ymin],
-            [newBounds.xmax, newBounds.ymax]
-          ]);
+
+        if(query.centerLat && query.centerLng) {
+          if(query.centerLat != this.center.lat || query.centerLng != this.center.lng) {
+            this.center = [query.centerLat, query.centerLng]
+          }
         }
-        // Set the new default extent to the bounds of this area of interest.
-        if (this.defaultExtent) {
-          this.defaultExtent.setCenter(this.$refs.map.mapObject.getCenter())
-          this.defaultExtent.setZoom(this.$refs.map.mapObject.getZoom())
+
+        if(query.mapOption){
+          const new_mapopt = this.allBasemapProviders.find(item => item.slug === query.mapOption).slug
+          if (this.urlLayer != new_mapopt) {
+            this.urlLayer = new_mapopt
+          }
+        }
+
+        if(query.lOpacity) {
+          if (!this.lOpacity.isSet || this.lOpacity != query.lOpacity){
+            this.lOpacity = { isSet: true, value: query.lOpacity }
+          }
+        }
+
+        if(query.pOpacity) {
+          if (!this.pOpacity.isSet || this.pOpacity != query.pOpacity){
+            this.pOpacity = { isSet: true, value: query.pOpacity }
+          }
         }
       }
     },
+    zoom(newValue) {
+      // Update route
+      this.$router.replace({query: {...this.$route.query,zoom: newValue}})
+    },
+    center(newCenter) {
+      this.$router.replace({query: {...this.$route.query, centerLat: newCenter.lat }})
+      this.$router.replace({query: {...this.$route.query, centerLng: newCenter.lng }})
+    },
     'selectedPredictedLayer.id' (newValue) {
       if (!newValue && this.predictedSlider !== null) {
+        // Remove predicted layer slider.
         this.$refs.map.mapObject.removeControl(this.predictedSlider)
         this.predictedSlider = null
+        // Remove predicted layer from url.
+        this.$router.replace({query: {...this.$route.query, predictedlayer: undefined }})
+      }
+    },
+    mapBounds (newBounds) {
+      // Construct lat lon bounds.
+      const corner1 = L.latLng(newBounds.xmin, newBounds.ymin)
+      const corner2 = L.latLng(newBounds.xmax, newBounds.ymax)
+      const bounds = L.latLngBounds(corner1, corner2)
+      // Only move map if this is not the initial load. On initial load, use the
+      // url coordinates and ignore the first auto selection of the area.
+      if (!this.firstLoad || (!this.$route.query.centerLat && !this.$route.query.centerLng)) {
+        this.$refs.map.mapObject.fitBounds([
+          [newBounds.xmin, newBounds.ymin],
+          [newBounds.xmax, newBounds.ymax]
+        ])
+      }
+      // Unset first load flag.
+      this.firstLoad = false
+      // Set the new default extent to the bounds of this area of interest.
+      if (this.defaultExtent) {
+        this.defaultExtent.setCenter(bounds.getCenter())
+        this.defaultExtent.setZoom(this.$refs.map.mapObject.getBoundsZoom(bounds))
       }
     },
     showControls(newValue){
@@ -461,25 +490,14 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
-    // If values are read from the URL center and
-    if(this.centerBound) this.moveToCenter();
-    if(this.urlLayer) this.allBasemapProviders.find(item => item.slug === this.urlLayer).visible=true
+    // Mount first base layer.
+    if(this.urlLayer) {
+      this.allBasemapProviders.find(item => item.slug === this.urlLayer).visible = true
+    } else {
+      this.allBasemapProviders[0].visible = true
+    }
   },
   methods:  {
-    /**
-     * Set bounds on URL
-     */
-    updateBounds(){
-      this.$router.replace({query: {...this.$route.query,zoom: this.zoom}});
-      this.$router.replace({query: {...this.$route.query, centerLat: this.$refs.map.mapObject.getCenter().lat }});
-      this.$router.replace({query: {...this.$route.query, centerLng: this.$refs.map.mapObject.getCenter().lng }});
-    },
-    moveToBounds(bounds) {
-      this.$refs.map.mapObject.fitBounds(bounds)
-    },
-    moveToCenter() {
-      this.$refs.map.mapObject.panTo(this.centerBound)
-    },
     /**
      * Set selected option on URL based on index
      */
@@ -509,17 +527,7 @@ export default {
         $router.replace({query: {...$route.query,lOpacity: e.value / 100}})
       });
 
-      let predictedRemoved = false
-      if (this.predictedSlider !== null) {
-        predictedRemoved = true
-        this.$refs.map.mapObject.removeControl(this.predictedSlider)
-      }
-
       this.$refs.map.mapObject.addControl(this.algebraSlider)
-
-      if (predictedRemoved) {
-        this.$refs.map.mapObject.addControl(this.predictedSlider)
-      }
     },
 
     setOpacitySliderPredictedLayer (event) {
