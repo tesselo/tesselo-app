@@ -84,7 +84,7 @@
       class="layer-legend" />
 
     <map-legend
-      v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length"
+      v-if="selectedPredictedLayer && selectedPredictedLayer.legend && selectedPredictedLayer.legend.length && !isTouch"
       :data="selectedPredictedLayer.legend"
       :class="{'predicted-legend--layer-visible': showFormulaLegend}"
       :label="selectedPredictedLayer.classifierName"
@@ -93,10 +93,9 @@
       tip="Hover colors to see details."/>
 
     <map-export
-      v-if="exportTable.length"
+      v-if="exportTable.length || exportProcessing"
       :data="exportTable"
       :processing="exportProcessing"
-      class="export-list"
       @print-pdf="printPdf"
       @clear-exports="clearExports"/>
 
@@ -357,7 +356,7 @@ export default {
         this.selectedFormulaLegend.length
     },
 
-    allbasemapProviders () {
+    allBasemapProviders () {
       return this.tileProviders.concat(this.wmtsProviders)
     },
 
@@ -418,9 +417,9 @@ export default {
           this.zoom = parseInt(this.$route.query.zoom)
         }
         if(query.mapOption && this.firstLoad == true){
-          this.urlLayer = this.allbasemapProviders.find(item => item.slug === query.mapOption).slug
+          this.urlLayer = this.allBasemapProviders.find(item => item.slug === query.mapOption).slug
         }else{
-          this.allbasemapProviders[0].visible=true
+          this.allBasemapProviders[0].visible=true
         }
         if(query.lOpacity && this.firstLoad == true) {
           this.lOpacity = { isSet: true, value: query.lOpacity }
@@ -480,7 +479,7 @@ export default {
     this.$refs.map.mapObject.keyboard.disable();
     // If values are read from the URL center and
     if(this.centerBound) this.moveToCenter();
-    if(this.urlLayer) this.allbasemapProviders.find(item => item.slug === this.urlLayer).visible=true
+    if(this.urlLayer) this.allBasemapProviders.find(item => item.slug === this.urlLayer).visible=true
   },
   methods:  {
     /**
@@ -501,7 +500,7 @@ export default {
      * Set selected option on URL based on index
      */
     setMapOption(event){
-      const selected = this.allbasemapProviders.find(item => item.name === event.name);
+      const selected = this.allBasemapProviders.find(item => item.name === event.name);
       this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
     },
     setOpacitySlider(event) {
@@ -563,12 +562,10 @@ export default {
       var data = this.exportData[id]
       const format = 'PNG'
 
-      console.log('callback', id, data)
       // Abort if not all data has been collected yet.
       if (!('formula_legend' in  data) || !('predicted_legend' in data) || !('map_canvas' in data)) {
         return
       }
-      console.log('continuing callback', id)
 
       // Instantiate pdf or add new page.
       if (!this.doc) {
@@ -587,7 +584,6 @@ export default {
       this.doc.setTextColor('#2F2D7E')
 
       // Add first image on page one.
-      console.log('Adding map image')
       this.doc.addImage(data.map_canvas.toDataURL(), format, 0, 0, data.map_canvas.width, data.map_canvas.height)
       this.doc.text(data.map_msg, 10, 20, {maxWidth: data.map_canvas.width})
 
@@ -632,8 +628,7 @@ export default {
         id: count,
         moment: data.moment_name,
         layer: data.layer_name
-      })// = this.exportData.length
-      console.log(this.exportTable)
+      })
     },
 
     printPdf(){
@@ -651,7 +646,6 @@ export default {
     addImage(){
       // If this is already computing, wait for it to finish.
       if (this.exportProcessing) {
-        console.log('already processing, waiting')
         return
       }
       // Set export status to processing.
@@ -676,9 +670,11 @@ export default {
         tat.dataCallback(id)
       })
 
-      // Capture formula legend.
-      if (this.selectedFormula) {
+      // Capture formula legend, on touch the legends are not shown so skip this.
+      if (this.selectedFormula && !this.isTouch) {
         html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
+          console.log('mobile4')
+
           tat.exportData[id].formula_legend = legend_canvas
           tat.exportData[id].layer_name = this.selectedFormula.acronym
           // Callback for export.
@@ -690,11 +686,11 @@ export default {
         tat.dataCallback(id)
       }
 
-      // Capture predicted layer legend.
-      if (this.selectedPredictedLayer) {
+      // Capture predicted layer legend, on touch the legends are not shown so skip this.
+      if (this.selectedPredictedLayer && !this.isTouch) {
         html2canvas(document.querySelector(".predicted-legend")).then(legend_canvas => {
           tat.exportData[id].predicted_legend = legend_canvas
-          tat.exportData[id].layer_name = this.selectedPredictedLayer.name
+          tat.exportData[id].layer_name = this.selectedPredictedLayer.classifierName
           // Callback for export.
           tat.dataCallback(id)
         });
@@ -828,12 +824,6 @@ export default {
   // Exporting
   .print-image-control {
     background-color: white
-  }
-  .export-list {
-    top: 20px;
-    left: 50%;
-    margin-left: -180px;
-    width: 360px;
   }
   .export-button {
     width: 30px;

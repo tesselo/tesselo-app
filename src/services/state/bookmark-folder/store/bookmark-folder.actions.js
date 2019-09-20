@@ -8,7 +8,6 @@ export default {
    * @param {any} context
    */
   [actionTypes.BOOKMARK_FOLDER_GET](context) {
-    console.log('get')
     return APIAdapter.services.bookmarkFolder.get()
       .then((response) => {
         context.commit(mutationTypes.BOOKMARK_FOLDER_SET, response.results)

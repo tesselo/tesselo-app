@@ -1,7 +1,7 @@
 <template>
-  <div
-    class="map-export-wrapper">
-    <template v-if="data.length">
+  <div class="map-export-wrapper">
+    <template>
+      <div class="title">PDF Export</div>
       <el-table
         :data="data"
         size="mini">
@@ -22,14 +22,19 @@
       type="primary"
       icon="el-icon-delete"
       title="Clear export data"
-      class="export-clear"
+      class="export-button export-clear"
       @click="clear" />
     <el-button
-     :disabled="processing"
+      :disabled="processing"
       icon="el-icon-printer"
-      class="export-print"
+      class="export-button export-print"
       title="Print to PDF and clear list"
       @click="print" />
+    <el-button
+      v-if="processing"
+      type="primary"
+      class="export-button export-print"
+      icon="el-icon-loading" />
   </div>
 </template>
 
@@ -56,7 +61,6 @@ export default {
 }
 </script>
 
-
 <style lang="scss">
   .map-export-wrapper {
     position: fixed;
@@ -64,19 +68,39 @@ export default {
     background: white;
     padding: 10px;
     border-radius: 3px;
-  }
-  .el-table {
-    padding-bottom: 10px;
-  }
-  .el-button {
-    cursor: pointer;
-  }
-  .export-print {
-    padding-right: 10px;
-    float: right;
-  }
-  .export-clear {
-    padding-left: 10px;
-    float: left;
+    left: 50%;
+    margin-left: -180px;
+    width: 360px;
+    max-width: 100%;
+    @media (min-width: 768px) {
+      top: 54px;
+    }
+    @media (max-width: 767px) {
+      bottom: 90px;
+    }
+    .title {
+      font-size: 28px;
+      color: #5683a2;
+      font-weight: 300;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+    .el-button {
+      cursor: pointer;
+    }
+    .export-button {
+      margin-top: 15px;
+      font-size: 20px;
+      color: #5683a2;
+      &.export-print {
+        padding-right: 10px;
+        float: right;
+      }
+      &.export-clear {
+        padding-left: 10px;
+        float: left;
+      }
+    }
+
   }
 </style>
