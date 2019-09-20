@@ -1,29 +1,35 @@
 <template>
   <div
-    :class="['map-export-wrapper']">
-    <h4>Export Pages</h4>
+    class="map-export-wrapper">
     <template v-if="data.length">
-      <ul class="map-list">
-        <li
-          v-for="(exportPage, index) in data"
-          :key="index"
-          class="map-export__entry">
-          <label
-            :title="exportPage"
-            class="map-export__name" >
-            {{ index + 1 }}. {{ exportPage }}
-          </label>
-        </li>
-      </ul>
+      <el-table
+        :data="data"
+        size="mini">
+        <el-table-column
+          prop="id"
+          label="Page"
+          width="60" />
+        <el-table-column
+          prop="layer"
+          label="Layer" />
+        <el-table-column
+          prop="moment"
+          label="Time" />
+      </el-table>
     </template>
     <el-button
+      :disabled="processing"
       type="primary"
       icon="el-icon-delete"
-      @click="$emit('clear-exports')" />
+      title="Clear export data"
+      class="export-clear"
+      @click="clear" />
     <el-button
-      type="primary"
+     :disabled="processing"
       icon="el-icon-printer"
-      @click="$emit('print-pdf')" />
+      class="export-print"
+      title="Print to PDF and clear list"
+      @click="print" />
   </div>
 </template>
 
@@ -33,6 +39,18 @@ export default {
     data: {
       type: Array,
       required: true
+    },
+    processing: {
+      type: Boolean,
+      required: true
+    }
+  },
+  methods: {
+    print(){
+      if(!this.processing) this.$emit('print-pdf')
+    },
+    clear(){
+      if(!this.processing) this.$emit('clear-exports')
     }
   }
 }
@@ -43,88 +61,22 @@ export default {
   .map-export-wrapper {
     position: fixed;
     z-index: 1000;
-    width: 155px;
     background: white;
     padding: 10px;
     border-radius: 3px;
-
-    &__touch {
-      top: 38%;
-    }
-
-    label {
-      padding-bottom: 2px;
-      display: block;
-      font-size: 12px;
-      margin-bottom: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .map-legend {
-      width: 100%;
-      height: 20px;
-      display: flex;
-      justify-content: space-between;
-
-      &__partial {
-        height: 100%;
-
-        &--tooltip {
-          cursor: pointer;
-
-          &:hover {
-            border: 1px solid #303133;
-          }
-        }
-      }
-    }
-
-    .map-legend-limits {
-      display: flex;
-      padding-top: 2px;
-      font-size: 12px;
-
-      span:nth-child(1) {
-        flex: 1;
-        text-align: left;
-      }
-
-      span:nth-child(2) {
-        flex: 1;
-        text-align: right;
-      }
-    }
-
-    .map-legend-tip {
-      font-size: 10px;
-    }
-
-    .map-list {
-      max-height: 260px;
-      overflow: auto;
-
-      &__entry {
-        margin-top: 8px;
-        display: flex;
-      }
-
-      &__color {
-        width: 20px;
-        height: 20px;
-        flex: 0 0 20px;
-      }
-
-      &__name {
-        margin-left: 6px;
-        max-width: calc(100% - 30px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 20px;
-        font-size: 12px;
-      }
-    }
+  }
+  .el-table {
+    padding-bottom: 10px;
+  }
+  .el-button {
+    cursor: pointer;
+  }
+  .export-print {
+    padding-right: 10px;
+    float: right;
+  }
+  .export-clear {
+    padding-left: 10px;
+    float: left;
   }
 </style>

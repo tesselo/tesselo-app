@@ -93,8 +93,9 @@
       tip="Hover colors to see details."/>
 
     <map-export
-      v-if="exportCounter.length"
-      :data="exportCounter"
+      v-if="exportTable.length"
+      :data="exportTable"
+      :processing="exportProcessing"
       class="export-list"
       @print-pdf="printPdf"
       @clear-exports="clearExports"/>
@@ -331,7 +332,7 @@ export default {
       tileLayerClass: L.authenticatedTileLayer,
       exportData: [],
       exportProcessing: false,
-      exportCounter: []
+      exportTable: []
     }
   },
   computed: {
@@ -581,9 +582,9 @@ export default {
       }
 
       // Font settings.
+      this.doc.setFont('helvetica')
+      this.doc.setFontType('normal')
       this.doc.setTextColor('#2F2D7E')
-      // this.doc.setFont('helvetica', '')
-      console.log('fonts available', this.doc.getFontList())
 
       // Add first image on page one.
       console.log('Adding map image')
@@ -626,8 +627,13 @@ export default {
 
       // Update export statuses.
       this.exportProcessing = false
-      this.exportCounter.push(data.map_msg.join(' ').replace('\n', ' ').replace('TESSELO Export ', ''))// = this.exportData.length
-      console.log(this.exportCounter)
+      const count = this.exportTable.length
+      this.exportTable.push({
+        id: count,
+        moment: data.moment_name,
+        layer: data.layer_name
+      })// = this.exportData.length
+      console.log(this.exportTable)
     },
 
     printPdf(){
@@ -637,7 +643,7 @@ export default {
 
     clearExports() {
       this.doc = null
-      this.exportCounter = []
+      this.exportTable = []
       this.exportData = []
       this.exportProcessing = false
     },
@@ -664,6 +670,7 @@ export default {
         // Get image text and image data.
         tat.exportData[id].map_msg = ['TESSELO Export\n' + tat.selectedFormula.acronym, 'for', tat.selectedMoment.name]
         tat.exportData[id].map_canvas = canvas
+        tat.exportData[id].moment_name = tat.selectedMoment.name
 
         // Callback for export.
         tat.dataCallback(id)
@@ -673,6 +680,7 @@ export default {
       if (this.selectedFormula) {
         html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
           tat.exportData[id].formula_legend = legend_canvas
+          tat.exportData[id].layer_name = this.selectedFormula.acronym
           // Callback for export.
           tat.dataCallback(id)
         });
@@ -686,6 +694,7 @@ export default {
       if (this.selectedPredictedLayer) {
         html2canvas(document.querySelector(".predicted-legend")).then(legend_canvas => {
           tat.exportData[id].predicted_legend = legend_canvas
+          tat.exportData[id].layer_name = this.selectedPredictedLayer.name
           // Callback for export.
           tat.dataCallback(id)
         });
@@ -727,8 +736,10 @@ export default {
     }
 
     .leaflet-range-control {
+      border: 2px solid rgba(0,0,0,0.2);
       position: absolute;
       top: 177px;
+      width: 34px;
       right: 0;
       margin-left: 40px;
       z-index: 0;
@@ -771,10 +782,12 @@ export default {
     height: 208px;
     display: block;
     float: none;
-    top: 132px;
+    top: 135px;
     right: -90px;
     left: auto;
-
+    .leaflet-range-layer {
+      margin-left: 3px;
+    }
     .leaflet-range-icon {
       background-position: 1px;
     }
@@ -808,13 +821,19 @@ export default {
       }
     }
   }
+  .leaflet-control-layers-toggle {
+    width: 30px !important;
+    height: 30px !important;
+  }
   // Exporting
   .print-image-control {
     background-color: white
   }
   .export-list {
-    top: 277px;
-    left: 25px;
+    top: 20px;
+    left: 50%;
+    margin-left: -180px;
+    width: 360px;
   }
   .export-button {
     width: 30px;
