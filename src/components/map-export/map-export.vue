@@ -21,20 +21,28 @@
       :disabled="processing"
       type="primary"
       icon="el-icon-delete"
-      title="Clear export data"
+      title="Clear page list"
       class="export-button export-clear"
       @click="clear" />
     <el-button
+      v-if="!processing"
       :disabled="processing"
-      icon="el-icon-printer"
+      type="primary"
       class="export-button export-print"
-      title="Print to PDF and clear list"
-      @click="print" />
+      title="Add current view as Page"
+      icon="el-icon-plus"
+      @click="addPage" />
     <el-button
-      v-if="processing"
+      v-else
       type="primary"
       class="export-button export-print"
       icon="el-icon-loading" />
+    <el-button
+      :disabled="processing"
+      icon="el-icon-download"
+      class="export-button export-print"
+      title="Download PDF"
+      @click="print" />
   </div>
 </template>
 
@@ -56,6 +64,9 @@ export default {
     },
     clear(){
       if(!this.processing) this.$emit('clear-exports')
+    },
+    addPage(){
+      if(!this.processing) this.$emit('add-page')
     }
   }
 }

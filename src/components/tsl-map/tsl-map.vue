@@ -22,16 +22,10 @@
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
         <el-button
-          v-if="exportProcessing"
-          type="primary"
-          class="export-button"
-          icon="el-icon-loading" />
-        <el-button
-          v-else
           type="primary"
           class="export-button"
           icon="el-icon-document"
-          @click="addImage" />
+          @click="toggleExport" />
       </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
@@ -93,11 +87,12 @@
       tip="Hover colors to see details."/>
 
     <map-export
-      v-if="exportTable.length || exportProcessing"
+      v-if="showExportPanel"
       :data="exportTable"
       :processing="exportProcessing"
       @print-pdf="printPdf"
-      @clear-exports="clearExports"/>
+      @clear-exports="clearExports"
+      @add-page="addImage" />
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -169,6 +164,7 @@ export default {
     return {
       zoom: 2,
       firstLoad: true,
+      showExportPanel: false,
       lOpacity: {
         isSet: false,
         value:0,
@@ -649,6 +645,7 @@ export default {
 
     printPdf(){
       this.doc.save('tesselo_export.pdf')
+      this.toggleExport()
       this.clearExports()
     },
 
@@ -657,6 +654,10 @@ export default {
       this.exportTable = []
       this.exportData = []
       this.exportProcessing = false
+    },
+
+    toggleExport(){
+      this.showExportPanel = !this.showExportPanel
     },
 
     addImage(){
