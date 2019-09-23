@@ -1,11 +1,11 @@
 <template>
   <div class="fixed-container">
+    <img
+      :src="logoSimpleUrl"
+      alt="Tesselo Logo"
+      class="logo">
     <div
       v-if="isTouch">
-      <img
-        :src="logoSimpleUrl"
-        alt="Tesselo Logo"
-        class="logo">
       <div class="contol-menu">
         <p
           class ="control-menu-text"
@@ -198,7 +198,7 @@ export default {
       stdPanelVisible: false,
       activeYear: (new Date()).getFullYear(),
       isNewReport: false,
-      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/logo-simple.svg',
+      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/T1_logo.png',
       combinedShapeOn: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-on.svg',
       combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg'
     }
@@ -638,9 +638,13 @@ export default {
 
   .logo {
     position: absolute;
-    top: 20px;
-    right: 10px;
-    width: 100px;
+    top: 10px;
+    right: 0px;
+    width: 110px;
+    @media (min-width: 768px) {
+      top: 0px;
+      width: 160px;
+    }
     z-index: z('content');
   }
 

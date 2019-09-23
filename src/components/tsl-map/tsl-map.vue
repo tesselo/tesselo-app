@@ -187,11 +187,12 @@ export default {
           slug:'BW_OpenStreetMap',
           name: 'B&W OpenStreetMap',
           visible: false,
-          url: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-          attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          url: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
+          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
           tileLayerClass: L.tileLayer,
           type: "base",
           zIndex: 1
+
         },
         {
           slug:'OpenStreetMap',
@@ -571,25 +572,30 @@ export default {
       if (!this.doc) {
         this.doc = jsPDF({
           orientation: data.map_canvas.width > data.map_canvas.height ? 'landscape': 'portrait',
-          unit: 'px',
+          unit: 'pt',
           format: [data.map_canvas.width, data.map_canvas.height]
         });
       } else {
         this.doc.addPage()
       }
 
+      // Add captured map image.
+      this.doc.addImage(data.map_canvas.toDataURL(), format, 0, 0, data.map_canvas.width, data.map_canvas.height)
+
       // Font settings.
       this.doc.setFont('helvetica')
-      this.doc.setFontType('normal')
-      this.doc.setTextColor('#2F2D7E')
+      this.doc.setFontType('bold')
+      const font_size = this.doc.internal.pageSize.width > 768 ? 25 : 15
+      this.doc.setFontSize(font_size)
+      // this.doc.setTextColor('#2F2D7E')
+      this.doc.setTextColor('#000000')
 
-      // Add first image on page one.
-      this.doc.addImage(data.map_canvas.toDataURL(), format, 0, 0, data.map_canvas.width, data.map_canvas.height)
-      this.doc.text(data.map_msg, 10, 20, {maxWidth: data.map_canvas.width})
+      // Add moment name to track dates.
+      this.doc.text(data.moment_name, 15, font_size + 10)
 
       // Add predicted layer legend.
       const legend_margin = 5
-      const legend_scale = 0.6
+      const legend_scale = 0.8
       if (data.predicted_legend) {
         const predicted_legend_offset = this.doc.internal.pageSize.height - legend_scale * data.predicted_legend.height - legend_margin
         this.doc.addImage(
@@ -621,11 +627,21 @@ export default {
         )
       }
 
+      // Add logo.
+      this.doc.addImage(
+        document.querySelector("img.logo"),
+        format,
+        this.doc.internal.pageSize.width - 160 - 10,
+        this.doc.internal.pageSize.height - 55 - 10,
+        160,
+        55
+      )
+
       // Update export statuses.
       this.exportProcessing = false
       const count = this.exportTable.length
       this.exportTable.push({
-        id: count,
+        id: count + 1,
         moment: data.moment_name,
         layer: data.layer_name
       })
@@ -662,7 +678,6 @@ export default {
       // Fetch leaflet canvas.
       leafletImage(this.$refs.map.mapObject, function(err, canvas) {
         // Get image text and image data.
-        tat.exportData[id].map_msg = ['TESSELO Export\n' + tat.selectedFormula.acronym, 'for', tat.selectedMoment.name]
         tat.exportData[id].map_canvas = canvas
         tat.exportData[id].moment_name = tat.selectedMoment.name
 
@@ -673,8 +688,6 @@ export default {
       // Capture formula legend, on touch the legends are not shown so skip this.
       if (this.selectedFormula && !this.isTouch) {
         html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
-          console.log('mobile4')
-
           tat.exportData[id].formula_legend = legend_canvas
           tat.exportData[id].layer_name = this.selectedFormula.acronym
           // Callback for export.
