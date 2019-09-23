@@ -14,7 +14,8 @@
       <v-geosearch
         :options="geosearchOptions" />
       <l-control-layers
-        :position="layersPosition" />
+        :position="layersPosition"
+        :auto-z-index="layersAutoZIndex" />
       <l-control-attribution
         :position="attributionPosition"
         prefix="Visualization Layers &copy; Tesselo " />
@@ -178,6 +179,7 @@ export default {
       algebraSlider: null,
       predictedSlider: null,
       tesseloAttribution: 'Contains modified Copernicus Sentinel data 2016 - 2019',
+      layersAutoZIndex: false,
       tileProviders: [
         {
           slug:'BW_OpenStreetMap',
@@ -205,7 +207,7 @@ export default {
           name: 'LinesOverlay',
           visible: false,
           attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-          url: 'http://{s}.tile.stamen.com/terrain-lines/{z}/{x}/{y}.png',
+          url: 'http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png',
           tileLayerClass: L.tileLayer,
           type: "overlay",
           zIndex: 11
@@ -215,7 +217,7 @@ export default {
           name: 'LabelsOverlay',
           visible: false,
           attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-          url: 'http://{s}.tile.stamen.com/terrain-labels/{z}/{x}/{y}.png',
+          url: 'http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png',
           tileLayerClass: L.tileLayer,
           type: "overlay",
           zIndex: 12
@@ -249,25 +251,7 @@ export default {
           tileLayerClass: L.authenticatedTileLayer,
           type: "base",
           zIndex: 1
-        },
-        // {
-        //   slug: 'World_Imagery',
-        //   name: 'World Imagery',
-        //   visible: false,
-        //   attribution: '&copy; ESRI, DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
-        //   url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        //   tileLayerClass: L.tileLayer,
-        //   type: "base"
-        // },
-        // {
-        //   slug: 'Terrain',
-        //   name: 'Terrain',
-        //   visible: false,
-        //   attribution: '<a target="_blank" href="http://mapzen.com">Mapzen</a>',
-        //   url: 'https://elevation-tiles-prod.s3.amazonaws.com/normal/{z}/{x}/{y}.png',
-        //   tileLayerClass: L.tileLayer
-        //   type: "base"
-        // },
+        }
       ],
       wmtsProviders: [
         {
