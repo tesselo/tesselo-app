@@ -9,6 +9,7 @@
     "build:dev": "NODE_ENV=devstage node build/build.js",
     "build:staging": "NODE_ENV=staging node build/build.js",
     "build:production": "NODE_ENV=production node build/build.js",
+    "build:localhost": "NODE_ENV=dev:localhost node build/build.js",
     "start": "npm run dev",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "dev:localhost": "NODE_ENV=localhost webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
