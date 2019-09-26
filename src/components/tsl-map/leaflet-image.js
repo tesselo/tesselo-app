@@ -25,9 +25,24 @@ export default function leafletImage(map, callback) {
     dummyctx.fillStyle = 'rgba(0,0,0,0)'
     dummyctx.fillRect(0, 0, 1, 1)
 
+    // Order tilelayers by zIndex
+    var tileLayers = []
+    map.eachLayer(function(l) {
+      if (l instanceof L.TileLayer){
+         tileLayers.push(l)
+      }
+    })
+    var sorted = tileLayers.sort(function(a, b) {
+      return parseInt(a.options.zIndex) - parseInt(b.options.zIndex)
+    })
+    // Trigger rendering for each layer.
+    var i
+    for (i = 0; i < sorted.length; i++){
+      layerQueue.defer(handleTileLayer, sorted[i])
+    }
+
     // layers are drawn in the same order as they are composed in the DOM:
     // tiles, paths, and then markers
-    map.eachLayer(drawTileLayer)
     map.eachLayer(drawEsriDynamicLayer)
 
     if (map._pathRoot) {
@@ -38,11 +53,6 @@ export default function leafletImage(map, callback) {
     }
     map.eachLayer(drawMarkerLayer)
     layerQueue.awaitAll(layersDone)
-
-    function drawTileLayer(l) {
-        if (l instanceof L.TileLayer) layerQueue.defer(handleTileLayer, l)
-        else if (l._heat) layerQueue.defer(handlePathRoot, l._canvas)
-    }
 
     function drawMarkerLayer(l) {
         if (l instanceof L.Marker && l.options.icon instanceof L.Icon) {

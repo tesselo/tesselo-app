@@ -54,14 +54,14 @@
         :visible="showSelected"
         :url="algebraUrl"
         :tile-layer-class="tileLayerClass"
-        :z-index="9"
         :attribution="tesseloAttribution"
+        :z-index="algebraZIndex"
         @add="setOpacitySlider" />
       <l-tile-layer
         :visible="showPredicted"
         :url="predictedUrl"
         :tile-layer-class="tileLayerClass"
-        :z-index="10"
+        :z-index="predictedZIndex"
         @add="setOpacitySliderPredictedLayer" />
       <v-protobuf
         v-if="selectedLayer"
@@ -178,6 +178,8 @@ export default {
       urlLayer: null,
       algebraSlider: null,
       predictedSlider: null,
+      algebraZIndex: 9,
+      predictedZIndex: 10,
       tesseloAttribution: 'Contains modified Copernicus Sentinel data 2016 - 2019',
       layersAutoZIndex: false,
       tileProviders: [
