@@ -1,10 +1,11 @@
 import endpoints from '@/data/api/api.endpoints'
 import client from '@/data/api/api.client'
+import moment from 'moment'
 
 import { formatCompositesList, formatUniquesList } from '@/data/api/api.models'
 
 export default {
- 
+
   /**
    * Get Composites
    */
@@ -13,7 +14,8 @@ export default {
       params: {
         ...options,
         official: true,
-        active: true
+        active: true,
+        min_date_before: moment().format('YYYY-MM-DD')
       }
     })
     .then((response) => {
