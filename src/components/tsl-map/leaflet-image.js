@@ -151,7 +151,7 @@ export default function leafletImage(map, callback) {
         function loadTile(url, tilePos, tileSize, callback) {
           // Instantiate image dom element and set img callbacks.
           var tile = new Image()
-          // tile.crossOrigin = ''
+          tile.crossOrigin = 'Anonymous'
           tile.onload = function () {
               callback(null, {
                   img: this,
@@ -187,7 +187,6 @@ export default function leafletImage(map, callback) {
               tile.src = URL.createObjectURL(response.data)
             })
           } else {
-            tile.crossOrigin = ''
             tile.src = url
           }
         }
@@ -242,7 +241,7 @@ export default function leafletImage(map, callback) {
 
         canvas.width = dimensions.x
         canvas.height = dimensions.y
-        im.crossOrigin = ''
+        im.crossOrigin = 'Anonymous'
 
         im.onload = function () {
             ctx.drawImage(this, x, y, size[0], size[1])
@@ -264,7 +263,7 @@ export default function leafletImage(map, callback) {
         var ctx = canvas.getContext('2d')
 
         var im = new Image()
-        im.crossOrigin = ''
+        im.crossOrigin = 'Anonymous'
         im.src = addCacheString(dynamicLayer._currentImage._image.src)
 
         im.onload = function() {
