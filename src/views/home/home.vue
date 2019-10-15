@@ -293,10 +293,6 @@ export default {
       this.setZoom(to.query.zoom)
       this.setCenter({lat: to.query.centerLat, lng: to.query.centerLng})
     }
-    // Map baselayer.
-    if(to.query.mapOption && to.query.mapOption != from.query.mapOption && (!this.baselayer || this.baselayer != to.query.mapOption)){
-      this.setBaselayer(to.query.mapOption)
-    }
     // Aggregation layer.
     if(to.query.area && (to.query.area != from.query.area)) {
       this.getAggregationLayer({page:null, area: to.query.area, keepPred: true, zoomTo: !hasCustomBounds})

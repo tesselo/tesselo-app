@@ -355,12 +355,10 @@ export default {
       this.handleScenesData()
     },
     activeMonth (newVal) {
-      console.log('watchdog month', newVal)
       this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
       this.handleScenesData()
     },
     selectedMoment(newVal){
-      console.log('watchdog moment', newVal)
       if(newVal){
         this.selectMomentIdAction(newVal.id)
         this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
@@ -397,9 +395,7 @@ export default {
       this.setActiveYear(parseInt(this.selectedMoment.year))
       interval = this.selectedMoment.interval
       toSelect = null
-      console.log('found moment at mounted')
     }
-    console.log('mounted', interval, toSelect)
 
     this.getList(interval, toSelect)
 
@@ -618,11 +614,11 @@ export default {
 
     setYear(newYear, updateType) {
       this.setActiveYear(parseInt(newYear))
+      this.setYearsActiveIndex()
       this.update(updateType)
     },
 
     setActiveMonthByLabel (data) {
-      console.log('setting active month by label', data, MONTHS.findIndex(month => month.label === data.label))
       this.setActiveMonth(MONTHS.findIndex(month => month.label == data.label))
     },
 
@@ -679,13 +675,13 @@ export default {
     },
 
     setYearsActiveIndex() {
-      let currentIndex
+      console.log('setting active index')
       this.years.forEach((year, index) => {
         if (year.label == this.activeYear) {
+          console.log('setting active index', index)
           this.yearsActiveIndex = index
         }
       })
-      return currentIndex
     },
 
     handleKeyboardNavigation (e) {

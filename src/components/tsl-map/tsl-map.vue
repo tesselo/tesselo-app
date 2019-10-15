@@ -417,37 +417,6 @@ export default {
         this.defaultExtent.setZoom(this.$refs.map.mapObject.getBoundsZoom(bounds))
       }
     },
-    baselayer(newBaselayer) {
-      // Hide current baselayer.
-      const current_baselayer = this.allBasemapProviders.find(item => item.visible)
-      if (current_baselayer) current_baselayer.visible = false
-      // Show new baselayer.
-      let new_baselayer = null
-      if(!newBaselayer) {
-        new_baselayer = this.allBasemapProviders[0]
-      } else {
-        new_baselayer = this.allBasemapProviders.find(item => item.slug === newBaselayer)
-      }
-      new_baselayer.visible = true
-      // Update route if necessary.
-      if (this.$route.query.mapOption != newBaselayer) {
-        this.$router.replace({query: {...this.$route.query, mapOption: newBaselayer}})
-      }
-    },
-    // lOpacity (newVal) {
-    //   console.log('L')
-    //   const value = parseInt(newVal.value * 100)
-    //   if(this.algebraSlider && !isNaN(value) && this.algebraSlider._slider.value != value) {
-    //     this.algebraSlider.setValue(value)
-    //   }
-    // },
-    // pOpacity (newVal) {
-    //   console.log('P')
-    //   const value = parseInt(newVal.value * 100)
-    //   if(this.predictedSlider && !isNaN(value) && this.predictedSlider._slider.value != value) {
-    //     this.predictedSlider.setValue(value)
-    //   }
-    // },
     selectedPredictedLayer (newValue) {
       if (!newValue && this.predictedSlider !== null) {
         // Remove predicted layer slider.
@@ -472,6 +441,14 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
+    // Activate first baselayer.
+    let baselayer
+    if(this.baselayer) {
+      baselayer = this.allBasemapProviders.find(item => item.slug === this.baselayer)
+    } else {
+      baselayer = this.allBasemapProviders[0]
+    }
+    baselayer.visible = true
   },
   methods:  {
     ...mapActions('map', {
