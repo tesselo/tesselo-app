@@ -349,7 +349,6 @@ export default {
   },
   watch: {
     activeYear (newVal) {
-      console.log('watchdog year', newVal)
       this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
       this.setYearsActiveIndex()
       this.handleScenesData()
@@ -676,10 +675,8 @@ export default {
     },
 
     setYearsActiveIndex() {
-      console.log('setting active index')
       this.years.forEach((year, index) => {
         if (year.label == this.activeYear) {
-          console.log('setting active index', index)
           this.yearsActiveIndex = index
         }
       })
