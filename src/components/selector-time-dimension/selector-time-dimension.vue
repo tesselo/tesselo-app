@@ -374,6 +374,7 @@ export default {
     },
     momentsList () {
       this.handleScenesData()
+      this.setYearsActiveIndex()
       this.checkClosestMoment()
     },
     currentTimeType (newValue) {

@@ -432,6 +432,16 @@ export default {
       } else {
         this.$refs.map.mapObject._controlCorners.topright.hidden = true
       }
+    },
+    baselayer(newValue){
+      // Activate baselayer.
+      let baselayer
+      if(this.baselayer) {
+        baselayer = this.allBasemapProviders.find(item => item.slug == newValue)
+      } else {
+        baselayer = this.allBasemapProviders[0]
+      }
+      baselayer.visible = true
     }
   },
   mounted: function() {
@@ -441,14 +451,7 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
-    // Activate first baselayer.
-    let baselayer
-    if(this.baselayer) {
-      baselayer = this.allBasemapProviders.find(item => item.slug === this.baselayer)
-    } else {
-      baselayer = this.allBasemapProviders[0]
-    }
-    baselayer.visible = true
+
   },
   methods:  {
     ...mapActions('map', {
@@ -472,11 +475,9 @@ export default {
       this.$router.replace({query: {...this.$route.query, centerLng: center.lng }});
     },
     setOpacitySlider() {
-      const { $router, $route } = this
        if (this.algebraSlider !== null) {
         this.$refs.map.mapObject.removeControl(this.algebraSlider)
       }
-
       // Instantiate opacity control.
       this.algebraSlider = L.control.range({
         position: 'topright',
@@ -487,10 +488,12 @@ export default {
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
+      // Bind slider change route update function.
+      const tat = this
       const funk = this.mapSetLOpacity
       this.algebraSlider.on('input change', function(e) {
         funk(e.value / 100)
-        $router.replace({query: {...$route.query, lOpacity: e.value / 100}})
+        tat.$router.replace({query: {...tat.$route.query, lOpacity: e.value / 100}})
       })
 
       this.$refs.map.mapObject.addControl(this.algebraSlider)
