@@ -99,9 +99,6 @@ export default {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
       selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT
     }),
-    ...mapActions('map', {
-      setMapBounds: actionTypes.MAP_SET_BOUNDS
-    }),
 
     filterRows () {
       if (this.selectedYear) {

@@ -106,7 +106,7 @@
             :show-navigation="false"
             :list="months"
             :start-at-index="tabMenuActiveMonthIndex"
-            @selected="setMonth($event)"
+            @selected="setActiveMonthByLabel($event)"
           />
         </div>
       </div>
@@ -211,7 +211,7 @@
             :title="item.name"
             :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]"
             href="javascript:void(0)"
-            @click="selectMoment(item)"
+            @click="selectMomentAction(item)"
           >
             {{ item.nameToShow }}
           </a>
@@ -242,6 +242,7 @@ import { actionTypes } from '@/services/constants'
 import { Popover as ElPopover } from 'element-ui'
 import 'element-ui/lib/theme-chalk/popover.css'
 
+import MONTHS from '@/components/selector-time-dimension/selector-time-dimension-months'
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
 import SimpleToggle from '@/components/simple-toggle/simple-toggle'
 
@@ -256,11 +257,7 @@ export default {
     showPicker: {
       type: Boolean,
       required: true
-    },
-    activeYear: {
-      type: Number,
-      default: (new Date()).getFullYear()
-    },
+    }
   },
   data() {
     return {
@@ -270,59 +267,8 @@ export default {
       loading: false,
       yearsActiveIndex: 0,
       sceneSelectedValue: new Date(),
-      firstLoad: false,
-      months: [
-        {
-          label: 'Jan',
-          completed: 'January'
-        },
-        {
-          label: 'Feb',
-          completed: 'February'
-        },
-        {
-          label: 'Mar',
-          completed: 'March'
-        },
-        {
-          label: 'Apr',
-          completed: 'April'
-        },
-        {
-          label: 'May',
-          completed: 'May'
-        },
-        {
-          label: 'Jun',
-          completed: 'June'
-        },
-        {
-          label: 'Jul',
-          completed: 'July'
-        },
-        {
-          label: 'Aug',
-          completed: 'August'
-        },
-        {
-          label: 'Sep',
-          completed: 'September'
-        },
-        {
-          label: 'Oct',
-          completed: 'October'
-        },
-        {
-          label: 'Nov',
-          completed: 'November'
-        },
-        {
-          label: 'Dec',
-          completed: 'December'
-        },
-      ],
+      months: MONTHS,
       tabMenuActiveMonthIndex: 0,
-      activeMonth: 0,
       daysOfWeek: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
       detailedDaysOfMonth: [],
       detailedSceneActive: null,
@@ -334,7 +280,10 @@ export default {
     ...mapState({
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       momentsList: state => state.time.list,
-      selectedMoment: state => state.time.selectedMoment,
+      activeYear: state => state.time.activeYear,
+      activeMonth: state => state.time.activeMonth,
+      selectedMomentId: state => state.time.selectedMomentId,
+      selectedMoment: state => state.time.selectedMoment
     }),
     getSceneWeekDay () {
       if (!this.detailedSceneActive) return ''
@@ -399,32 +348,30 @@ export default {
     }
   },
   watch: {
-     '$route.query': {
-      immediate: true,
-      handler(){
-        const query = this.$route.query
-        if (query.selectedMonth) {
-          const month = this.months.findIndex(item => item.label == query.selectedMonth)
-          this.activeMonth= month
-
+    activeYear (newVal) {
+      console.log('watchdog year', newVal)
+      this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
+      this.setYearsActiveIndex()
+      this.handleScenesData()
+    },
+    activeMonth (newVal) {
+      console.log('watchdog month', newVal)
+      this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
+      this.handleScenesData()
+    },
+    selectedMoment(newVal){
+      console.log('watchdog moment', newVal)
+      if(newVal){
+        this.selectMomentIdAction(newVal.id)
+        this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
+        this.setActiveYear(parseInt(newVal.year))
+        if(this.currentTimeType == 'Monthly') {
+          this.setActiveMonthByLabel({label: newVal.nameToShow})
         }
-        this.firstLoad=false
-      },
-    },
-    activeYear: {
-      immediate: true,
-      handler(newVal) {
-        this.year = newVal
-        this.setYearsActiveIndex()
-        this.handleScenesData()
       }
-    },
-    activeMonth: {
-      immediate: true,
-      handler(newVal) {
-        this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
-        this.activeMonth = newVal
-        this.handleScenesData()
+      // Clear if moment was unselected.
+      if(!newVal && this.$route.query.selectedMoment){
+        this.$router.replace({query: {...this.$route.query, selectedMomentId: null, selectedYear: null, selectedMonth: null}})
       }
     },
     momentsList () {
@@ -437,21 +384,7 @@ export default {
       }
     },
     sceneMomentIndexSelected () {
-      this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
-    },
-    selectedMoment(newVal){
-      if(newVal){
-        this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
-        this.$router.replace({query: {...this.$route.query, selectedYear: newVal.year}})
-        if(this.currentTimeType == 'Monthly') {
-          this.$router.replace({query: {...this.$route.query, selectedMonth: newVal.nameToShow}})
-        }
-      }
-      if(!newVal && this.$route.query.selectedMoment){
-        this.$router.replace({query: {...this.$route.query, selectedMomentId: null }})
-        this.$router.replace({query: {...this.$route.query, selectedYear: null }})
-        this.$router.replace({query: {...this.$route.query, selectedMonth: null}})
-      }
+      this.selectMomentAction(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
     }
   },
 
@@ -461,10 +394,12 @@ export default {
     let toSelect = 'last'
 
     if (this.selectedMoment) {
-      this.year = this.selectedMoment.year
+      this.setActiveYear(parseInt(this.selectedMoment.year))
       interval = this.selectedMoment.interval
       toSelect = null
+      console.log('found moment at mounted')
     }
+    console.log('mounted', interval, toSelect)
 
     this.getList(interval, toSelect)
 
@@ -477,44 +412,25 @@ export default {
 
   methods: {
     checkClosestMoment () {
-      if (this.isMonthly) {
-        if(this.$route.query.selectedMomentId && this.$route.query.currentTimeType=='Monthly'){
-          if (this.momentsList && this.momentsList.length) {
-            const moment = this.momentsList.find(item=> item.id == parseInt(this.$route.query.selectedMomentId))
-            this.selectMoment(moment)
-          }
-        }
-        if (!this.selectedMoment) {
-          if (this.momentsList && this.momentsList.length) {
-            this.selectMomentAction(this.momentsList[0])
-          }
-          return
-        }
+      if (!this.isMonthly) {
+        return
+      }
 
-        // Check if in the current moments' list is the same month as the one from @selectedMoment
-        const momentIndex = this.momentsList.findIndex(moment => new Date(moment.minDate).getMonth() === new Date(this.selectedMoment.minDate).getMonth())
-
-        // If not exists, we need to check the closest one
-        if (momentIndex === -1) {
-          const selectedMomentMonth = new Date(this.selectedMoment.minDate).getMonth()
-
-          // Check if there is a month available that is bigger than the @selectedMoment
-          const selectedMoment = this.momentsList.some(moment => {
-            const auxiliarMonth = new Date(moment.minDate).getMonth()
-            if (auxiliarMonth > selectedMomentMonth) {
-              this.selectMomentAction(moment)
-              return true
-            }
-          })
-
-          // If there is not an available month bigger than the current @selectedMoment, let's set the last one of the list
-          if (!selectedMoment) {
-            this.selectMomentAction(this.momentsList[this.momentsList.length - 1])
-          }
-        } else {
-          // if same month exists on the list, just set it
-          this.selectMomentAction(this.momentsList[momentIndex])
-        }
+      // Choose moment by id if possible.
+      const moment = this.momentsList.find(item => item.id == parseInt(this.selectedMomentId))
+      if (moment) {
+        this.selectMomentAction(moment)
+      } else if (!this.selectedMoment) {
+        // If no previous moment was selected, select latest one in list.
+        this.selectMomentAction(this.momentsList[this.momentsList.length - 1])
+      } else {
+        // If the list is new but previous moment existed, look for closest one
+        // to previous one.
+        const selectedMomentDate = new Date(this.selectedMoment.minDate)
+        const deltas = this.momentsList.map(moment => Math.abs(new Date(moment.minDate) - selectedMomentDate))
+        const delta_min = Math.min(...deltas)
+        const momentIndex = deltas.findIndex(delta => delta == delta_min)
+        this.selectMomentAction(this.momentsList[momentIndex])
       }
     },
 
@@ -532,12 +448,11 @@ export default {
     setDetailedScene (data) {
       if (!data) {
         let data
-        const momentId = this.$route.query.selectedMomentId;
-        if(momentId && this.$route.query.currentTimeType=='Scenes' ){
+        if(this.selectedMomentId && this.$route.query.currentTimeType=='Scenes' ){
           const filteredData = cloneDeep(this.detailedDaysOfMonth)
             .filter(data => data.moments && data.moments.length)
-          data = filteredData.find(data => (data.moments && data.moments[0].id == momentId))
-        } else if (!momentId && this.loadLastMonthScene) {
+          data = filteredData.find(data => (data.moments && data.moments[0].id == this.selectedMomentId))
+        } else if (!this.selectedMomentId && this.loadLastMonthScene) {
           this.loadLastMonthScene = false
           data = cloneDeep(this.detailedDaysOfMonth)
             .reverse()
@@ -553,7 +468,7 @@ export default {
       if (this.sceneMomentIndexSelected !== 0) {
         this.sceneMomentIndexSelected = 0
       } else if (this.detailedSceneActive) {
-        this.selectMoment(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+        this.selectMomentAction(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
       }
     },
 
@@ -567,11 +482,11 @@ export default {
         this.setDetailedScene(leftArray[newIndex])
       } else {
         if (this.activeMonth === 0) { // Navigate for december of previous year
-          this.year--
+          this.setActiveYear(this.activeYear - 1)
           this.setYearsActiveIndex()
-          this.activeMonth = 11
+          this.setActiveMonth(11)
         } else { // Navigate for previous month
-          this.activeMonth--
+          this.setActiveMonth(this.activeMonth - 1)
         }
 
         this.tabMenuActiveMonthIndex = this.activeMonth
@@ -589,9 +504,9 @@ export default {
         this.setDetailedScene(rightArray[newIndex])
       } else {
         if (this.activeMonth === 11) { // Navigate for january of next year
-          this.year++
+          this.setActiveYear(this.activeYear + 1)
           this.setYearsActiveIndex()
-          this.activeMonth = 0
+          this.setActiveMonth(0)
         } else {
           this.activeMonth++ // Navigate for next month
         }
@@ -644,7 +559,10 @@ export default {
 
     ...mapActions('time', {
       getListAction: actionTypes.TIME_GET_LIST,
-      selectMomentAction: actionTypes.TIME_SELECT_MOMENT
+      selectMomentAction: actionTypes.TIME_SELECT_MOMENT,
+      selectMomentIdAction: actionTypes.TIME_SELECT_MOMENT_ID,
+      setActiveMonth: actionTypes.TIME_SET_ACTIVE_MONTH,
+      setActiveYear: actionTypes.TIME_SET_ACTIVE_YEAR
     }),
 
     debouncedGetList: debounce(function (interval, autoSelect) {
@@ -670,7 +588,7 @@ export default {
       if (this.currentTimeType === newType) {
         return
       }
-      this.activeMonth=0;
+      this.setActiveMonth(0)
       this.currentTimeType = newType
       this.update('last')
     },
@@ -699,13 +617,13 @@ export default {
     },
 
     setYear(newYear, updateType) {
-      this.year = newYear
+      this.setActiveYear(parseInt(newYear))
       this.update(updateType)
-      this.$emit('year-change', newYear)
     },
 
-    setMonth (data) {
-      this.activeMonth = this.months.findIndex(month => month.label === data.label)
+    setActiveMonthByLabel (data) {
+      console.log('setting active month by label', data, MONTHS.findIndex(month => month.label === data.label))
+      this.setActiveMonth(MONTHS.findIndex(month => month.label == data.label))
     },
 
     update(autoSelect) {
@@ -714,10 +632,6 @@ export default {
         this.$router.replace({query: {...this.$route.query, selectedDate: null }})
       }
       this.getList(this.currentTimeType, autoSelect)
-    },
-
-    selectMoment(moment) {
-      this.selectMomentAction(moment)
     },
     selectPreviousMoment() {
       if (!this.selectedMoment) return
@@ -731,12 +645,12 @@ export default {
 
       if (this.momentsList.length) {
         if (currentIndex === 0) {
-          this.setYear(this.year - 1, 'last')
+          this.setYear(this.activeYear - 1, 'last')
         } else {
-          this.selectMoment(this.momentsList[currentIndex - 1])
+          this.selectMomentAction(this.momentsList[currentIndex - 1])
         }
       } else {
-        this.setYear(this.year - 1, 'first')
+        this.setYear(this.activeYear - 1, 'first')
       }
     },
     selectNextMoment() {
@@ -748,18 +662,11 @@ export default {
       }
 
       const currentIndex = this.selectedMoment.index
-
-
-      if (this.momentsList.length) {
-        const isLast = currentIndex === this.momentsList.length - 1
-
-        if (isLast) {
-          this.setYear(this.year + 1, 'first')
-        } else {
-          this.selectMoment(this.momentsList[currentIndex + 1])
-        }
+      const isLast = currentIndex === this.momentsList.length - 1
+      if (!this.momentsList.length || isLast) {
+        this.setYear(this.activeYear + 1, 'first')
       } else {
-        this.setYear(this.year + 1, 'first')
+        this.selectMomentAction(this.momentsList[currentIndex + 1])
       }
     },
 
@@ -774,7 +681,7 @@ export default {
     setYearsActiveIndex() {
       let currentIndex
       this.years.forEach((year, index) => {
-        if (year.label == this.year) {
+        if (year.label == this.activeYear) {
           this.yearsActiveIndex = index
         }
       })

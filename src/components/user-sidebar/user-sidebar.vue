@@ -39,6 +39,7 @@
           :props="defaultProps"
           node-key="id"
           accordion
+          default-expand-all
         >
           <span
             slot-scope="{ node, data }"

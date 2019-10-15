@@ -32,14 +32,22 @@ export const FORMULA_SELECT = 'selectFormula'
 /* -------------------------------------
  * Map
  * ---------------------------------- */
-export const MAP_SET_BOUNDS = 'setMapBounds'
-
+export const MAP_RESET = 'resetMap'
+export const MAP_SET_BASELAYER = 'setBaseLayer'
+export const MAP_SET_L_OPACITY = 'setLOpacity'
+export const MAP_SET_P_OPACITY = 'setPOpacity'
+export const MAP_SET_ZOOM = 'setMapZoom'
+export const MAP_SET_CENTER = 'setMapCenter'
+export const MAP_SET_HOME_BOUNDS = 'setHomeBounds'
 
 /* -------------------------------------
  * TIME
  * ---------------------------------- */
 export const TIME_GET_LIST = 'getList'
 export const TIME_SELECT_MOMENT = 'selectMoment'
+export const TIME_SELECT_MOMENT_ID = 'selectMomentId'
+export const TIME_SET_ACTIVE_MONTH = 'setActiveMonth'
+export const TIME_SET_ACTIVE_YEAR = 'setActiveYear'
 
 /* -------------------------------------
  * Report

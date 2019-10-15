@@ -100,12 +100,11 @@
         :open="stdPanelVisible"
         @toggle="toggleSTDPanel">
         <selector-time-dimension
-          :show-picker="stdPanelVisible"
-          :active-year="activeYear"
-          @year-change="setActiveYear"/>
+          :show-picker="stdPanelVisible" />
       </collapsible-panel>
     </div>
     <tsl-map
+      ref="tslMap"
       :show-controls="showControls"/>
   </div>
 </template>
@@ -113,6 +112,8 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
+
+import L from 'leaflet'
 
 import TslMap from '@/components/tsl-map/tsl-map'
 import TslButton from '@/components/tsl-button/tsl-button'
@@ -122,6 +123,7 @@ import AreasTable from '@/components/areas-table/areas-table'
 import LayersTable from '@/components/layers-table/layers-table'
 import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
 import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
+import MONTHS from '@/components/selector-time-dimension/selector-time-dimension-months'
 import MultipleReport from '@/components/multiple-report/multiple-report'
 import ReportHistory from '@/components/report-history/report-history'
 import PredictedLayersTable from '@/components/predicted-layers-table/predicted-layers-table'
@@ -147,7 +149,6 @@ export default {
     return {
       loggingOut: false,
       showControls: true,
-      firstLoad:true,
       mainMenu: [
         {
           title: 'Areas',
@@ -196,7 +197,6 @@ export default {
       ],
       activePanel: '',
       stdPanelVisible: false,
-      activeYear: (new Date()).getFullYear(),
       isNewReport: false,
       logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/T1_logo.png',
       combinedShapeOn: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-on.svg',
@@ -216,7 +216,10 @@ export default {
       predictedLayerRows: state => state.predictedLayer,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
-      selectedPredictedLayer: state => state.predictedLayer.selectedLayer
+      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
+      baselayer: state => state.map.baselayer,
+      lOpacity: state => state.map.lOpacity,
+      pOpacity: state => state.map.pOpacity
     }),
     isPhone() {
       return this.$deviceInfo.isPhone;
@@ -226,32 +229,98 @@ export default {
     },
   },
 
-  watch: {
-    '$route.query': {
-      immediate: true,
-      handler(){
-        const query = this.$route.query
-        if(query.area && this.firstLoad == true){
-          this.getAggregationLayer({page:null, area: query.area})
-        } else if(this.firstLoad == true) {
-          this.getAggregationLayer({page: 1, area:null})
-        }
-        if(query.layer && this.firstLoad == true){
-          this.getFormulas({page: null, layer: query.layer})
-        } else if(this.firstLoad == true) {
-          this.getFormulas({page: 1, layer:null})
-        }
-        if(query.predictedlayer && this.firstLoad == true){
-         this.getPredictedLayers({page: null, layer:query.predictedlayer})
-        } else if(this.firstLoad == true) {
-          this.getPredictedLayers({ page: 1, layer:null})
-        }
-        if(query.selectedYear && this.firstLoad == true){
-          this.activeYear= parseInt(query.selectedYear)
-        }
-        this.firstLoad = false
-      },
-    },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      // Opacity sliders.
+      vm.setBaselayer(to.query.mapOption)
+      if(to.query.lOpacity) {
+        vm.setLOpacity({ isSet: true, value: to.query.lOpacity })
+      }
+      if(to.query.pOpacity) {
+        vm.setPOpacity({ isSet: true, value: to.query.pOpacity })
+      }
+      // Map bounds
+      const hasCustomBounds = to.query.centerLat && to.query.centerLng && typeof to.query.zoom !== 'undefined'
+      if(hasCustomBounds) {
+        vm.setZoom(to.query.zoom)
+        vm.setCenter({lat: to.query.centerLat, lng: to.query.centerLng})
+      }
+      // Aggregation layer.
+      if(to.query.area){
+        vm.getAggregationLayer({page:null, area: to.query.area, keepPred: true, zoomTo: !hasCustomBounds})
+      } else {
+        vm.getAggregationLayer({page: 1, area:null, keepPred: true, zoomTo: !hasCustomBounds})
+      }
+      // Formula.
+      if(to.query.layer){
+        vm.getFormulas({page: null, layer: to.query.layer})
+      } else {
+        vm.getFormulas({page: 1, layer:null})
+      }
+      // Predicted layer.
+      if(to.query.predictedlayer){
+        vm.getPredictedLayers({page: null, layer: to.query.predictedlayer})
+      } else {
+        vm.getPredictedLayers({ page: 1, layer: null})
+      }
+      // Selector Time dimension
+      if(to.query.selectedYear){
+        vm.setActiveYear(parseInt(to.query.selectedYear))
+      }
+      if (to.query.selectedMonth) {
+        vm.setActiveMonth(MONTHS.findIndex(item => item.label == to.query.selectedMonth))
+      }
+      if(to.query.selectedMomentId){
+        vm.setActiveMomentId(parseInt(to.query.selectedMomentId))
+      }
+    })
+  },
+
+  beforeRouteUpdate (to, from, next) {
+    // If the route update is from the state change, the state has already been
+    // adapted. If its a direct routing change, the states might require updating.
+
+    // Opacity sliders.
+    if(to.query.lOpacity && (this.lOpacity.value != to.query.lOpacity)) {
+      this.setLOpacity({ isSet: true, value: to.query.lOpacity })
+    }
+    if(to.query.pOpacity && (this.pOpacity.value != to.query.pOpacity)) {
+      this.setPOpacity({ isSet: true, value: to.query.pOpacity })
+    }
+    // Map bounds.
+    const hasCustomBounds = to.query.centerLat && to.query.centerLng && typeof to.query.zoom !== 'undefined'
+    if(hasCustomBounds) {
+      this.setZoom(to.query.zoom)
+      this.setCenter({lat: to.query.centerLat, lng: to.query.centerLng})
+    }
+    // Map baselayer.
+    if(to.query.mapOption && to.query.mapOption != from.query.mapOption && (!this.baselayer || this.baselayer != to.query.mapOption)){
+      this.setBaselayer(to.query.mapOption)
+    }
+    // Aggregation layer.
+    if(to.query.area && (to.query.area != from.query.area)) {
+      this.getAggregationLayer({page:null, area: to.query.area, keepPred: true, zoomTo: !hasCustomBounds})
+    }
+    // Formula.
+    if(to.query.layer && to.query.layer != from.query.layer && (!this.selectedFormula || this.selectedFormula.id != to.query.layer)){
+      this.getFormulas({page: null, layer: to.query.layer})
+    }
+    // Predicted layer.
+    if(to.query.predictedlayer && to.query.predictedlayer != from.query.predictedlayer && (!this.selectedPredictedLayer || this.selectedPredictedLayer.id != to.query.predictedlayer)){
+      this.getPredictedLayers({page: null, layer: to.query.predictedlayer})
+    }
+    // Selector Time dimension
+    if(to.query.selectedYear && to.query.selectedYear != from.query.selectedYear){
+      this.setActiveYear(parseInt(to.query.selectedYear))
+    }
+    if(to.query.selectedMonth && to.query.selectedMonth != from.query.selectedMonth) {
+      this.setActiveMonth(MONTHS.findIndex(item => item.label == to.query.selectedMonth))
+    }
+    if(to.query.selectedMomentId && to.query.selectedMomentId != from.query.selectedMomentId){
+      this.setActiveMomentId(parseInt(to.query.selectedMomentId))
+    }
+
+    next()
   },
 
   methods: {
@@ -275,7 +344,17 @@ export default {
       saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
     }),
     ...mapActions('map', {
-      setMapBounds: actionTypes.MAP_SET_BOUNDS
+      setMapHomeBounds: actionTypes.MAP_SET_HOME_BOUNDS,
+      setBaselayer: actionTypes.MAP_SET_BASELAYER,
+      setLOpacity: actionTypes.MAP_SET_L_OPACITY,
+      setPOpacity: actionTypes.MAP_SET_P_OPACITY,
+      setZoom: actionTypes.MAP_SET_ZOOM,
+      setCenter: actionTypes.MAP_SET_CENTER
+    }),
+    ...mapActions('time', {
+      setActiveMonth: actionTypes.TIME_SET_ACTIVE_MONTH,
+      setActiveYear: actionTypes.TIME_SET_ACTIVE_YEAR,
+      setActiveMomentId: actionTypes.TIME_SELECT_MOMENT_ID
     }),
 
     /**
@@ -287,12 +366,12 @@ export default {
       if(options.area){
         this.getAggregationLayerIDAction(options.area)
         .then(() => {
-          this.selectArea('urlId')
+          this.selectArea('urlId', options.zoomTo, options.keepPred)
         })
       }else if(options.page){
         this.getAggregationLayersAction(options)
         .then(() => {
-          this.selectArea('default')
+          this.selectArea('default', options.zoomTo, options.keepPred)
         })
       }
     },
@@ -301,7 +380,7 @@ export default {
      *
      * @param action
      */
-    selectArea(action) {
+    selectArea(action, zoomTo, keepPred) {
       let area = null
       action=='default'
         ? (area = this.aggregationLayer.rows[0])
@@ -309,8 +388,15 @@ export default {
 
       if(area){
         this.selectAggregationLayer(area)
-        this.setMapBounds(area.bounds)
-        this.areasTableSelect(area)
+        this.areasTableSelect(area, keepPred)
+        this.setMapHomeBounds(area.bounds)
+        if (zoomTo) {
+          // Construct lat lon bounds.
+          const corner1 = L.latLng(area.bounds.xmin, area.bounds.ymin)
+          const corner2 = L.latLng(area.bounds.xmax, area.bounds.ymax)
+          const bounds = L.latLngBounds(corner1, corner2)
+          this.$refs.tslMap.$refs.map.mapObject.fitBounds(bounds)
+        }
       }
     },
 
@@ -388,10 +474,11 @@ export default {
       this.stdPanelVisible = false
       this.activePanel = activePanel
     },
-    areasTableSelect(area) {
+    areasTableSelect(area, keepPred) {
       this.closeAllPanels()
-      this.resetPredictedLayer()
-
+      if (!keepPred) {
+        this.resetPredictedLayer()
+      }
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'areas') {
           item.selected = true
@@ -499,7 +586,7 @@ export default {
     selectReport(report) {
       this.isNewReport = false
 
-      this.activeYear = parseInt(report.moment.year, 10)
+      this.setActiveYear(parseInt(report.moment.year, 10))
 
       this.activePanel = 'multiple-report'
       this.mainMenu = this.mainMenu.map((item) => {
@@ -513,9 +600,6 @@ export default {
 
         return item
       })
-    },
-    setActiveYear(newVal) {
-      this.activeYear = parseInt(newVal, 10)
     }
   }
 }

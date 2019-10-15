@@ -38,15 +38,23 @@ export const FORMULA_RESET = 'resetFormula'
 /* -------------------------------------
  * MAP
  * ---------------------------------- */
-export const MAP_SET_BOUNDS = 'setMapBounds'
 export const MAP_RESET = 'resetMap'
+export const MAP_SET_BASELAYER = 'setBaseLayer'
+export const MAP_SET_L_OPACITY = 'setLOpacity'
+export const MAP_SET_P_OPACITY = 'setPOpacity'
+export const MAP_SET_ZOOM = 'setMapZoom'
+export const MAP_SET_CENTER = 'setMapCenter'
+export const MAP_SET_HOME_BOUNDS = 'setMapHomeBounds'
 
 /* -------------------------------------
  * TIME
  * ---------------------------------- */
- export const TIME_SET_LIST = 'setList'
- export const TIME_SET_SELECTED_MOMENT = 'setSelectedMoment'
- export const TIME_RESET = 'resetTime'
+export const TIME_SET_LIST = 'setList'
+export const TIME_SET_SELECTED_MOMENT = 'setSelectedMoment'
+export const TIME_SET_SELECTED_MOMENT_ID = 'setSelectedMomentId'
+export const TIME_RESET = 'resetTime'
+export const TIME_SET_ACTIVE_MONTH = 'setActiveMonth'
+export const TIME_SET_ACTIVE_YEAR = 'setActiveYear'
 
  /* -------------------------------------
  * Report

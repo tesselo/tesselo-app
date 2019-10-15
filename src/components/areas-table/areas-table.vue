@@ -81,7 +81,7 @@ export default {
       selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
     }),
     ...mapActions('map', {
-      setMapBounds: actionTypes.MAP_SET_BOUNDS
+      setMapHomeBounds: actionTypes.MAP_SET_HOME_BOUNDS
     }),
     getAggregationLayers(options) {
       this.loading = true
@@ -92,8 +92,8 @@ export default {
     },
     selectArea(area) {
       this.selectAggregationLayer(area)
-      this.setMapBounds(area.bounds)
-      this.$router.replace({query: {...this.$route.query,area: area.id}})
+      this.setMapHomeBounds(area.bounds)
+      this.$router.replace({query: {...this.$route.query, area: area.id, zoom: undefined, centerLat: undefined, centerLng: undefined}})
       this.$emit('select', area)
     },
     selectPage(page) {

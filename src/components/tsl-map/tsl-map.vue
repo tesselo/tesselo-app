@@ -4,8 +4,7 @@
       ref="map"
       :max-zoom="18"
       :options="mapOptions"
-      :zoom.sync="zoom"
-      :center.sync="center"
+      @update:bounds="updateBounds"
       @baselayerchange="setMapOption">
       <l-control-zoom
         v-if="!isTouch"
@@ -100,8 +99,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { getColorsFromPallete } from '@/services/util.js'
+import { actionTypes } from '@/services/constants'
 
 import L from 'leaflet'
 
@@ -321,7 +321,12 @@ export default {
   },
   computed: {
     ...mapState({
-      mapBounds: state => state.map.bounds,
+      zoom: state => state.map.zoom,
+      center: state => state.map.center,
+      homeBounds: state => state.map.homeBounds,
+      baselayer: state => state.map.baselayer,
+      lOpacity: state => state.map.lOpacity,
+      pOpacity: state => state.map.pOpacity,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedMoment: state => state.time.selectedMoment,
@@ -395,80 +400,61 @@ export default {
     }
   },
   watch: {
-    '$route.query': {
-      immediate: true,
-      handler(){
-
-        const query = this.$route.query
-
-        if (query.zoom ){
-          const new_zoom = parseInt(query.zoom)
-          if(this.zoom != new_zoom) {
-            this.zoom = new_zoom
-          }
-        }
-
-        if(query.centerLat && query.centerLng) {
-          if(query.centerLat != this.center.lat || query.centerLng != this.center.lng) {
-            this.center = {lat: query.centerLat, lng: query.centerLng}
-          }
-        }
-
-        if(query.mapOption){
-          const new_mapopt = this.allBasemapProviders.find(item => item.slug === query.mapOption).slug
-          if (this.urlLayer != new_mapopt) {
-            this.urlLayer = new_mapopt
-          }
-        }
-
-        if(query.lOpacity) {
-          if (!this.lOpacity.isSet || this.lOpacity != query.lOpacity){
-            this.lOpacity = { isSet: true, value: query.lOpacity }
-          }
-        }
-
-        if(query.pOpacity) {
-          if (!this.pOpacity.isSet || this.pOpacity != query.pOpacity){
-            this.pOpacity = { isSet: true, value: query.pOpacity }
-          }
-        }
+    zoom (newZoom) {
+      this.$refs.map.mapObject.setZoom(newZoom)
+    },
+    center (newCenter) {
+      this.$refs.map.mapObject.panTo(newCenter)
+    },
+    homeBounds (newBounds) {
+      // Construct lat lon bounds.
+      const corner1 = L.latLng(newBounds.xmin, newBounds.ymin)
+      const corner2 = L.latLng(newBounds.xmax, newBounds.ymax)
+      const bounds = L.latLngBounds(corner1, corner2)
+      // Set the new default extent to the bounds of this area of interest.
+      if (this.defaultExtent) {
+        this.defaultExtent.setCenter(bounds.getCenter())
+        this.defaultExtent.setZoom(this.$refs.map.mapObject.getBoundsZoom(bounds))
       }
     },
-    zoom(newValue) {
-      this.$router.replace({query: {...this.$route.query, zoom: newValue}})
+    baselayer(newBaselayer) {
+      // Hide current baselayer.
+      const current_baselayer = this.allBasemapProviders.find(item => item.visible)
+      if (current_baselayer) current_baselayer.visible = false
+      // Show new baselayer.
+      let new_baselayer = null
+      if(!newBaselayer) {
+        new_baselayer = this.allBasemapProviders[0]
+      } else {
+        new_baselayer = this.allBasemapProviders.find(item => item.slug === newBaselayer)
+      }
+      new_baselayer.visible = true
+      // Update route if necessary.
+      if (this.$route.query.mapOption != newBaselayer) {
+        this.$router.replace({query: {...this.$route.query, mapOption: newBaselayer}})
+      }
     },
-    center(newCenter) {
-      this.$router.replace({query: {...this.$route.query, centerLat: newCenter.lat }})
-      this.$router.replace({query: {...this.$route.query, centerLng: newCenter.lng }})
-    },
-    'selectedPredictedLayer.id' (newValue) {
+    // lOpacity (newVal) {
+    //   console.log('L')
+    //   const value = parseInt(newVal.value * 100)
+    //   if(this.algebraSlider && !isNaN(value) && this.algebraSlider._slider.value != value) {
+    //     this.algebraSlider.setValue(value)
+    //   }
+    // },
+    // pOpacity (newVal) {
+    //   console.log('P')
+    //   const value = parseInt(newVal.value * 100)
+    //   if(this.predictedSlider && !isNaN(value) && this.predictedSlider._slider.value != value) {
+    //     this.predictedSlider.setValue(value)
+    //   }
+    // },
+    selectedPredictedLayer (newValue) {
       if (!newValue && this.predictedSlider !== null) {
         // Remove predicted layer slider.
         this.$refs.map.mapObject.removeControl(this.predictedSlider)
         this.predictedSlider = null
         // Remove predicted layer from url.
         this.$router.replace({query: {...this.$route.query, predictedlayer: undefined }})
-      }
-    },
-    mapBounds (newBounds) {
-      // Construct lat lon bounds.
-      const corner1 = L.latLng(newBounds.xmin, newBounds.ymin)
-      const corner2 = L.latLng(newBounds.xmax, newBounds.ymax)
-      const bounds = L.latLngBounds(corner1, corner2)
-      // Only move map if this is not the initial load. On initial load, use the
-      // url coordinates and ignore the first auto selection of the area.
-      if (!this.firstLoad || (!this.$route.query.centerLat && !this.$route.query.centerLng)) {
-        this.$refs.map.mapObject.fitBounds([
-          [newBounds.xmin, newBounds.ymin],
-          [newBounds.xmax, newBounds.ymax]
-        ])
-      }
-      // Unset first load flag.
-      this.firstLoad = false
-      // Set the new default extent to the bounds of this area of interest.
-      if (this.defaultExtent) {
-        this.defaultExtent.setCenter(bounds.getCenter())
-        this.defaultExtent.setZoom(this.$refs.map.mapObject.getBoundsZoom(bounds))
       }
     },
     showControls(newValue){
@@ -486,14 +472,15 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
-    // Mount first base layer.
-    if(this.urlLayer) {
-      this.allBasemapProviders.find(item => item.slug === this.urlLayer).visible = true
-    } else {
-      this.allBasemapProviders[0].visible = true
-    }
   },
   methods:  {
+    ...mapActions('map', {
+      mapSetBounds: actionTypes.MAP_SET_BOUNDS,
+      mapSetBaselayer: actionTypes.MAP_SET_BASELAYER,
+      mapSetLOpacity: actionTypes.MAP_SET_L_OPACITY,
+      mapSetPOpacity: actionTypes.MAP_SET_P_OPACITY
+    }),
+
     /**
      * Set selected option on URL based on index
      */
@@ -501,7 +488,13 @@ export default {
       const selected = this.allBasemapProviders.find(item => item.name === event.name);
       this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
     },
-    setOpacitySlider(event) {
+    updateBounds(){
+      const center = this.$refs.map.mapObject.getCenter()
+      this.$router.replace({query: {...this.$route.query,zoom: this.$refs.map.mapObject.getZoom()}});
+      this.$router.replace({query: {...this.$route.query, centerLat: center.lat }});
+      this.$router.replace({query: {...this.$route.query, centerLng: center.lng }});
+    },
+    setOpacitySlider() {
       const { $router, $route } = this
        if (this.algebraSlider !== null) {
         this.$refs.map.mapObject.removeControl(this.algebraSlider)
@@ -517,16 +510,16 @@ export default {
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
-
+      const funk = this.mapSetLOpacity
       this.algebraSlider.on('input change', function(e) {
-        event.target.setOpacity(e.value / 100)
+        funk(e.value / 100)
         $router.replace({query: {...$route.query, lOpacity: e.value / 100}})
-      });
+      })
 
       this.$refs.map.mapObject.addControl(this.algebraSlider)
     },
 
-    setOpacitySliderPredictedLayer (event) {
+    setOpacitySliderPredictedLayer () {
       const { $router, $route } = this
       this.predictedSlider = L.control.range({
         position: 'topright',
@@ -537,9 +530,9 @@ export default {
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-predicted'
       })
-
+      const funk = this.mapSetPOpacity
       this.predictedSlider.on('input change', function(e) {
-        event.target.setOpacity(e.value / 100)
+        funk(e.value / 100)
         $router.replace({query: {...$route.query, pOpacity: e.value / 100}})
       });
 
