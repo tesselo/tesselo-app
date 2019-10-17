@@ -41,6 +41,7 @@
       />
       <l-wms-tile-layer
         v-for="wmts in wmtsProviders"
+        ref="wmtsProviders"
         :key="wmts.key"
         :name="wmts.name"
         :visible="wmts.visible"
