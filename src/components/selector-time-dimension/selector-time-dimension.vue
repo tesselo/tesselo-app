@@ -352,6 +352,7 @@ export default {
       this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
       this.setYearsActiveIndex()
       this.handleScenesData()
+      this.getList(this.currentTimeType, null)
     },
     activeMonth (newVal) {
       this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
@@ -366,9 +367,11 @@ export default {
           this.setActiveMonthByLabel({label: newVal.nameToShow})
         }
       }
-      // Clear if moment was unselected.
-      if(!newVal && this.$route.query.selectedMoment){
-        this.$router.replace({query: {...this.$route.query, selectedMomentId: null, selectedYear: null, selectedMonth: null}})
+    },
+    selectedMomentId(newVal){
+      const moment = this.momentsList.find(item => item.id == newVal)
+      if (moment) {
+        this.selectMomentAction(moment)
       }
     },
     momentsList () {
@@ -578,6 +581,9 @@ export default {
     getList(interval, autoSelect) {
       this.loading = true
       this.debouncedGetList(interval, autoSelect)
+      if(this.activeYear && this.$route.query.selectedYear != this.activeYear){
+        this.$router.replace({query: {...this.$route.query, selectedYear: this.activeYear}})
+      }
     },
 
     setTimeType(newType) {

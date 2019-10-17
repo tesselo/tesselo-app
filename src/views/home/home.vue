@@ -279,13 +279,15 @@ export default {
   beforeRouteUpdate (to, from, next) {
     // If the route update is from the state change, the state has already been
     // adapted. If its a direct routing change, the states might require updating.
-
+    if(to.query.mapOption && (this.baselayer != to.query.mapOption)) {
+      this.setBaselayer(to.query.mapOption)
+    }
     // Opacity sliders.
     if(to.query.lOpacity && (this.lOpacity.value != to.query.lOpacity)) {
-      this.setLOpacity({ isSet: true, value: to.query.lOpacity })
+      this.setLOpacity({isSet: true, value: to.query.lOpacity })
     }
     if(to.query.pOpacity && (this.pOpacity.value != to.query.pOpacity)) {
-      this.setPOpacity({ isSet: true, value: to.query.pOpacity })
+      this.setPOpacity({isSet: true, value: to.query.pOpacity })
     }
     // Map bounds.
     const hasCustomBounds = to.query.centerLat && to.query.centerLng && typeof to.query.zoom !== 'undefined'

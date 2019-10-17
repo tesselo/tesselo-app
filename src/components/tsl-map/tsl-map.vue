@@ -29,6 +29,7 @@
       </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
+        ref="tileProviders"
         :key="tileProvider.name"
         :name="tileProvider.name"
         :visible="tileProvider.visible"
@@ -434,14 +435,27 @@ export default {
       }
     },
     baselayer(newValue){
-      // Activate baselayer.
-      let baselayer
-      if(this.baselayer) {
-        baselayer = this.allBasemapProviders.find(item => item.slug == newValue)
+      if (!this.$refs.tileProviders){
+        this.allBasemapProviders[0].visible = true
       } else {
-        baselayer = this.allBasemapProviders[0]
+        // Select new baselayer.
+        const lmap = this.$refs.map.mapObject
+        const tat = this
+        // let baselayer
+        if(this.baselayer) {
+          this.allBasemapProviders.forEach(function(base){
+            var lyr = tat.$refs.tileProviders.find(item => item.name == base.name)
+            if(!lyr) {
+              lyr = tat.$refs.wmtsProviders.find(item => item.name == base.name)
+            }
+            if(base.slug == newValue) {
+              lmap.addLayer(lyr.mapObject)
+            } else if (lmap.hasLayer(lyr.mapObject)) {
+              lmap.removeLayer(lyr.mapObject)
+            }
+          })
+        }
       }
-      baselayer.visible = true
     }
   },
   mounted: function() {
