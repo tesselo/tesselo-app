@@ -275,6 +275,15 @@ export default function leafletImage(map, callback) {
     }
 
     function addCacheString(url) {
-        return url
+        // If it's a data URL we don't want to touch this.
+        if (isDataURL(url) || url.indexOf('mapbox.com/styles/v1') !== -1) {
+            return url;
+        }
+        return url + ((url.match(/\?/)) ? '&' : '?') + 'pdfcache=090c7adc359e437bb3a9'
+    }
+
+    function isDataURL(url) {
+        var dataURLRegex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
+        return !!url.match(dataURLRegex);
     }
 }
