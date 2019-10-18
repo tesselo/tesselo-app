@@ -4,5 +4,5 @@ export default {
   selectedMomentId: null,
   activeMonth: 0,
   activeYear: (new Date()).getFullYear(),
-  currentTimeType: null
+  currentTimeType: 'Monthly'
 }

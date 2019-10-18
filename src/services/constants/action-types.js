@@ -48,6 +48,7 @@ export const TIME_SELECT_MOMENT = 'selectMoment'
 export const TIME_SELECT_MOMENT_ID = 'selectMomentId'
 export const TIME_SET_ACTIVE_MONTH = 'setActiveMonth'
 export const TIME_SET_ACTIVE_YEAR = 'setActiveYear'
+export const TIME_SET_CURRENT_TIME_TYPE = 'setCurrentTimeType'
 
 /* -------------------------------------
  * Report

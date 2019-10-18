@@ -14,13 +14,6 @@ export default {
     return apiCall(options.params)
       .then((response) => {
         context.commit(mutationTypes.TIME_SET_LIST, response.results)
-        // if (response.results.length) {
-        //   if (options.autoSelect == 'first' && response.results[0]) {
-        //     context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[0])
-        //   } else if (options.autoSelect == 'last' && response.results[response.results.length - 1]) {
-        //     context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[response.results.length - 1])
-        //   }
-        // }
       })
   },
   [actionTypes.TIME_SELECT_MOMENT_ID] (context, moment) {
@@ -34,6 +27,9 @@ export default {
   },
   [actionTypes.TIME_SET_ACTIVE_YEAR] (context, year) {
     context.commit(mutationTypes.TIME_SET_ACTIVE_YEAR, year)
+  },
+  [actionTypes.TIME_SET_CURRENT_TIME_TYPE] (context, ttype) {
+    context.commit(mutationTypes.TIME_SET_CURRENT_TIME_TYPE, ttype)
   },
   [actionTypes.RESET] (context) {
     context.commit(mutationTypes.TIME_RESET)

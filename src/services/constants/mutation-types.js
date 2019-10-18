@@ -55,6 +55,7 @@ export const TIME_SET_SELECTED_MOMENT_ID = 'setSelectedMomentId'
 export const TIME_RESET = 'resetTime'
 export const TIME_SET_ACTIVE_MONTH = 'setActiveMonth'
 export const TIME_SET_ACTIVE_YEAR = 'setActiveYear'
+export const TIME_SET_CURRENT_TIME_TYPE = 'setCurrentTimeType'
 
  /* -------------------------------------
  * Report

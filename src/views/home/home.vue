@@ -264,6 +264,9 @@ export default {
         vm.getPredictedLayers({ page: 1, layer: null})
       }
       // Selector Time dimension
+      if(to.query.currentTimeType){
+        vm.setCurrentTimeType(to.query.currentTimeType)
+      }
       if(to.query.selectedYear){
         vm.setActiveYear(parseInt(to.query.selectedYear))
       }
@@ -307,7 +310,21 @@ export default {
     if(to.query.predictedlayer && to.query.predictedlayer != from.query.predictedlayer && (!this.selectedPredictedLayer || this.selectedPredictedLayer.id != to.query.predictedlayer)){
       this.getPredictedLayers({page: null, layer: to.query.predictedlayer})
     }
+    if(!to.query.predictedLayer) {
+      // Deactivate predicted layer if necessary.
+      this.selectPredictedLayer(null)
+      this.mainMenu = this.mainMenu.map((item) => {
+        if(item.key == 'predicted') {
+          item.selected = false
+          item.title = 'Predicted'
+        }
+        return item
+      })
+    }
     // Selector Time dimension
+    if(to.query.currentTimeType && to.query.currentTimeType != from.query.currentTimeType){
+      this.setCurrentTimeType(to.query.currentTimeType)
+    }
     if(to.query.selectedYear && to.query.selectedYear != from.query.selectedYear){
       this.setActiveYear(parseInt(to.query.selectedYear))
     }
@@ -352,7 +369,8 @@ export default {
     ...mapActions('time', {
       setActiveMonth: actionTypes.TIME_SET_ACTIVE_MONTH,
       setActiveYear: actionTypes.TIME_SET_ACTIVE_YEAR,
-      setActiveMomentId: actionTypes.TIME_SELECT_MOMENT_ID
+      setActiveMomentId: actionTypes.TIME_SELECT_MOMENT_ID,
+      setCurrentTimeType: actionTypes.TIME_SET_CURRENT_TIME_TYPE
     }),
 
     /**

@@ -17,6 +17,9 @@ export default {
   [mutationTypes.TIME_SET_ACTIVE_YEAR] (state, year) {
     state.activeYear = year
   },
+  [mutationTypes.TIME_SET_CURRENT_TIME_TYPE] (state, ttype) {
+    state.currentTimeType = ttype
+  },
   [mutationTypes.TIME_RESET] (state) { // eslint-disable-line
     state = defaultState
   }
