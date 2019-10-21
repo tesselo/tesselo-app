@@ -610,8 +610,11 @@ export default {
       }
 
       // Add logo.
+      var logo = new Image()
+      logo.crossOrigin = 'Anonymous'
+      logo.src = document.querySelector("img.logo").src + '?pdfcache=090c7adc359e437bb3a9'
       this.doc.addImage(
-        document.querySelector("img.logo"),
+        logo,
         format,
         this.doc.internal.pageSize.width - 160 - 10,
         this.doc.internal.pageSize.height - 55 - 10,
