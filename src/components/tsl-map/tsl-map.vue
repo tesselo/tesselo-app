@@ -166,10 +166,7 @@ export default {
   },
   data () {
     return {
-      zoom: 2,
-      firstLoad: true,
       showExportPanel: false,
-      center: {lat: 0, lng: 0},
       lOpacity: {
         isSet: false,
         value:0,
@@ -315,7 +312,6 @@ export default {
         autoClose: true,
       },
       tileLayerClass: L.authenticatedTileLayer,
-      firstLoad: true,
       exportData: [],
       exportProcessing: false,
       exportTable: [],
