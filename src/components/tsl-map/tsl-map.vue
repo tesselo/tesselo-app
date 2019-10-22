@@ -109,6 +109,7 @@ import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControlZoom, LControl
 
 // Leaflet print option.
 import leafletImage from './leaflet-image'
+import 'es6-promise/auto'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
