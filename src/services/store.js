@@ -5,6 +5,7 @@ import app from '@/services/state/app/store'
 import auth from '@/services/state/auth/store'
 import aggregationLayer from '@/services/state/aggregation-layer/store'
 import formula from '@/services/state/formula/store'
+import formulaReport from '@/services/state/formula-report/store'
 import map from '@/services/state/map/store'
 import time from '@/services/state/time/store'
 import report from '@/services/state/report/store'
@@ -20,6 +21,7 @@ import aggregationLayerState from '@/services/state/aggregation-layer/store/aggr
 import mapState from '@/services/state/map/store/map.state'
 import predictedLayerState from '@/services/state/predicted-layer/store/predicted-layer.state'
 import formulaState from '@/services/state/formula/store/formula.state'
+import formulaReportState from '@/services/state/formula-report/store/formula-report.state'
 import reportState from '@/services/state/report/store/report.state'
 import timeState from '@/services/state/time/store/time.state'
 import bookmarkFolderState from './state/bookmark-folder/store/bookmark-folder.state';
@@ -36,6 +38,7 @@ const initialState = {
   map: cloneDeep(mapState),
   predictedLayer: cloneDeep(predictedLayerState),
   formula: cloneDeep(formulaState),
+  formulaReport: cloneDeep(formulaReportState),
   report: cloneDeep(reportState),
   time: cloneDeep(timeState),
   bookmarkFolder: cloneDeep(bookmarkFolderState),
@@ -49,6 +52,7 @@ export const storeOptions = {
     aggregationLayer,
     map,
     formula,
+    formulaReport,
     time,
     report,
     predictedLayer,

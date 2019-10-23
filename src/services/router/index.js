@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Home from '@/views/home/home'
 import Login from '@/views/login/login'
 import Logout from '@/views/logout/logout'
+import Report from '@/views/report/report'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ const router = new Router({
       path: '/logout',
       name: 'Logout',
       component: Logout
+    },
+    {
+      path: '/report/:layer/:formula/:composite',
+      name: 'Report',
+      component: Report
     }
   ]
 })

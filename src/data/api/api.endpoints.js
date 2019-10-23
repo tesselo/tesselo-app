@@ -83,6 +83,12 @@ export default {
       method: 'post'
     }
   },
+  formulaReport: {
+    getFormulaReport: {
+      url: '/reportaggregation',
+      method: 'get'
+    }
+  },
   predictedLayer: {
     list: {
       url: '/predictedlayer',

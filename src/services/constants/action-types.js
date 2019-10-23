@@ -49,6 +49,7 @@ export const TIME_SELECT_MOMENT_ID = 'selectMomentId'
 export const TIME_SET_ACTIVE_MONTH = 'setActiveMonth'
 export const TIME_SET_ACTIVE_YEAR = 'setActiveYear'
 export const TIME_SET_CURRENT_TIME_TYPE = 'setCurrentTimeType'
+export const TIME_GET_COMPOSITE_MOMENT_BY_ID = 'getComposite'
 
 /* -------------------------------------
  * Report
@@ -56,6 +57,12 @@ export const TIME_SET_CURRENT_TIME_TYPE = 'setCurrentTimeType'
 export const REPORT_GET_MULTIPLE_REGION = 'getMultipleRegionReport'
 export const REPORT_SAVE_MULTIPLE_REGION = 'saveMultipleRegionReport'
 export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'
+
+/* -------------------------------------
+ * Formula Report
+ * ---------------------------------- */
+export const FORMULA_REPORT_GET = 'getFormulaReport'
+export const FORMULA_REPORT_SELECT = 'selectFormulaReport'
 
 /* -------------------------------------
  * Predicted Layer

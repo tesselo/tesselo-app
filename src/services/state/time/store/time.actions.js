@@ -19,6 +19,14 @@ export default {
   [actionTypes.TIME_SELECT_MOMENT_ID] (context, moment) {
     context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT_ID, moment)
   },
+  [actionTypes.TIME_GET_COMPOSITE_MOMENT_BY_ID] (context, id) {
+    return APIAdapter.services.time.getCompositeById(id).then((response) => {
+      context.commit(mutationTypes.TIME_SET_LIST, response.results)
+      if (response.results.length){
+        context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, response.results[0])
+      }
+    })
+  },
   [actionTypes.TIME_SELECT_MOMENT] (context, moment) {
     context.commit(mutationTypes.TIME_SET_SELECTED_MOMENT, moment)
   },

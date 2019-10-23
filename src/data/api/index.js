@@ -9,6 +9,7 @@ import report from '@/data/api/services/api.report.js'
 import predictedLayer from '@/data/api/services/api.predicted-layer.js'
 import bookmarkFolder from '@/data/api/services/api.bookmark-folder.js'
 import bookmark from '@/data/api/services/api.bookmark.js'
+import formulaReport from '@/data/api/services/api.formulareport.js'
 
 /**
  * Adapter between server API and client application
@@ -36,6 +37,7 @@ class APIAdapter {
     formula,
     time,
     report,
+    formulaReport,
     predictedLayer,
     bookmarkFolder,
     bookmark

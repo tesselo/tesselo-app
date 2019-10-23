@@ -66,6 +66,14 @@ export const REPORT_SAVE_SELECTED_MULTIPLE_REPORT = 'saveSelectedMultipleReport'
 export const REPORT_RESET = 'resetReport'
 
 /* -------------------------------------
+* Formula Report
+* ---------------------------------- */
+export const FORMULA_REPORT_SET = 'setFormulaReport'
+export const FORMULA_REPORT_SET_SELECTED = 'setSelectedFormulaReport'
+export const FORMULA_REPORT_SAVE_SELECTED = 'saveSelectedMultipleReport'
+export const FORMULA_REPORT_RESET = 'resetFormulaReport'
+
+/* -------------------------------------
  * Predicted Layer
  * ---------------------------------- */
 export const PREDICTED_LAYER_SET_LAYERS = 'setLayers'

@@ -34,7 +34,7 @@
         :items="mainMenu"
         @change="changeVisiblePanel" />
     </div>
-    <!-- <div
+    <div
       v-if="showControls"
       class="report-menu">
       <report-menu
@@ -45,7 +45,7 @@
         v-if="!isTouch"
         :items="reportMenu"
         @change="reportMenuClick" />
-    </div> -->
+    </div>
     <div
       v-if="activePanel"
       class="panels-wrapper">
@@ -170,24 +170,24 @@ export default {
       ],
       reportMenu: [
         {
-          title: 'Export to PDF',
-          icon: 'pdf',
-          key: 'export-pdf',
-          selected: false,
-          hide: true
-        }, {
-          title: 'Save Report',
-          icon: 'save',
-          key: 'save-report',
-          selected: false,
-          hide: true
-        }, {
-          title: 'Report History',
-          icon: 'report',
-          key: 'report-history',
-          selected: false,
-          hide: false
-        }, {
+        //   title: 'Export to PDF',
+        //   icon: 'pdf',
+        //   key: 'export-pdf',
+        //   selected: false,
+        //   hide: true
+        // }, {
+        //   title: 'Save Report',
+        //   icon: 'save',
+        //   key: 'save-report',
+        //   selected: false,
+        //   hide: true
+        // }, {
+        //   title: 'Report History',
+        //   icon: 'report',
+        //   key: 'report-history',
+        //   selected: false,
+        //   hide: false
+        // }, {
           title: 'Create Report',
           icon: 'report',
           key: 'create-report',
@@ -219,7 +219,8 @@ export default {
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       baselayer: state => state.map.baselayer,
       lOpacity: state => state.map.lOpacity,
-      pOpacity: state => state.map.pOpacity
+      pOpacity: state => state.map.pOpacity,
+      selectedMoment: state => state.time.selectedMoment
     }),
     isPhone() {
       return this.$deviceInfo.isPhone;
@@ -540,13 +541,17 @@ export default {
     reportMenuClick(key) {
       this.stdPanelVisible = false
       this.$refs.panelSelector.unsetActive()
-
       switch (key) {
         case 'create-report':
-          this.isNewReport = true
+          this.$router.push({name: 'Report', params: {
+            formula: this.selectedFormula.id,
+            composite: this.selectedMoment.id,
+            layer: this.selectedLayer.id
+          }})
 
-          this.activePanel = 'multiple-report'
-          this.showReportButtons()
+          // this.isNewReport = true
+          // this.activePanel = 'multiple-report'
+          // this.showReportButtons()
 
           break
         case 'save-report':

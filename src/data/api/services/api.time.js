@@ -26,6 +26,14 @@ export default {
       })
     })
   },
+  getCompositeById (id, axiosInstance = client) {
+    return axiosInstance[endpoints.time.listComposites.method](endpoints.time.listComposites.url + '/' + id)
+    .then((response) => {
+      return Promise.resolve({
+        results: formatCompositesList([response.data])
+      })
+    })
+  },
   getUniques (options, axiosInstance = client) {
     return axiosInstance[endpoints.time.listUniques.method](endpoints.time.listUniques.url, {
       params: {

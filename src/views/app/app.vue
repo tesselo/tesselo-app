@@ -94,6 +94,7 @@ export default {
  .main-container {
    height: 100%;
    width: 100%;
+   overflow-y: scroll;
  }
 
  .el-select-dropdown__item {

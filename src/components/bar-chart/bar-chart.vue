@@ -1,12 +1,12 @@
 <template>
   <horizontal-bar
     ref="horizontalBar"
-    :width="width"
-    :height="height"/>
+    :height="height"
+    :chart-data="chartData" />
 </template>
 
 <script>
-import { HorizontalBar } from 'vue-chartjs'
+import HorizontalBar from './reactive-bar-chart'
 
 export default {
   name: 'BarChart',
@@ -23,27 +23,37 @@ export default {
     datasets: {
       type: Array,
       required: true
+    },
+    options: {
+      type: Object,
+      required: false,
+      default () {
+        return {
+          responsive: false,
+          maintainAspectRatio: false
+        }
+      }
     }
   },
 
-  data () {
-    return {
-      width: 500,
+  computed: {
+    chartData() {
+      return {
+        labels: this.labels,
+        datasets: this.datasets
+      }
+    },
+    myStyles(){
+      return {
+        height: `${this.height}px`,
+        position: 'relative'
+      }
     }
   },
 
   created () {
     const BAR_LINE_HEIGHT = 40
     this.height = this.labels.length * BAR_LINE_HEIGHT
-  },
-
-  mounted () {
-    this.$refs.horizontalBar.renderChart({
-      labels: this.labels,
-      datasets: this.datasets
-    }, {
-      responsive: true
-    })
   }
 }
 </script>
