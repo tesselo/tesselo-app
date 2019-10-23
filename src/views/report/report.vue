@@ -1,62 +1,67 @@
 <template>
-  <div class="report">
-    <el-row>
-      <el-col :span="24">
-        <h2>
-          <span v-if="selectedFormula">{{ selectedFormula.name }}</span> |
-          <span v-if="selectedLayer">{{ selectedLayer.name }}</span> |
-          <span v-if="selectedMoment">{{ selectedMoment.name }}</span>
-        </h2>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-input
-        v-model="input"
-        placeholder="Search"
-        clearable
-        @keyup.enter="query" >
-        <el-button
-          slot="append"
-          icon="el-icon-search"
-          @click="query"/>
-      </el-input>
-    </el-row>
-    <el-row>
-      <el-radio
-        v-model="radio"
-        label="aggregationarea__name">
-        Name desc
-      </el-radio>
-      <el-radio
-        v-model="radio"
-        label="-aggregationarea__name">
-        Name asc
-      </el-radio>
-      <el-radio
-        v-model="radio"
-        label="valuecountresult__stats_avg">
-        Average desc
-      </el-radio>
-      <el-radio
-        v-model="radio"
-        label="-valuecountresult__stats_avg">
-        Average asc
-      </el-radio>
-    </el-row>
-    <el-row v-if="formulaReport">
-      <bar-chart
-        :labels="labels"
-        :datasets="datasets"
-        class="summary-chart" />
-    </el-row>
-    <el-row v-if="formulaReport">
-      <aoi-item
-        v-for="entry in formulaReport.results"
-        :key="entry.key"
-        :agg="entry" />
-    </el-row>
-    <div v-else><h2>No data</h2></div>
-  </div>
+  <el-row class="report-container">
+    <el-col
+      :sm="{span: 22, offset: 1}"
+      :md="{span: 16, offset: 4}"
+      :lg="{span: 12, offset: 6}">
+      <el-row>
+        <el-col :span="24">
+          <h2>
+            <span v-if="selectedFormula">{{ selectedFormula.name }}</span> |
+            <span v-if="selectedLayer">{{ selectedLayer.name }}</span> |
+            <span v-if="selectedMoment">{{ selectedMoment.name }}</span>
+          </h2>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-input
+          v-model="input"
+          placeholder="Search"
+          clearable
+          @keyup.enter="query" >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="query"/>
+        </el-input>
+      </el-row>
+      <el-row>
+        <el-radio
+          v-model="radio"
+          label="aggregationarea__name">
+          Name desc
+        </el-radio>
+        <el-radio
+          v-model="radio"
+          label="-aggregationarea__name">
+          Name asc
+        </el-radio>
+        <el-radio
+          v-model="radio"
+          label="valuecountresult__stats_avg">
+          Average desc
+        </el-radio>
+        <el-radio
+          v-model="radio"
+          label="-valuecountresult__stats_avg">
+          Average asc
+        </el-radio>
+      </el-row>
+      <el-row v-if="formulaReport">
+        <bar-chart
+          :labels="labels"
+          :datasets="datasets"
+          class="summary-chart" />
+      </el-row>
+      <el-row v-if="formulaReport">
+        <aoi-item
+          v-for="entry in formulaReport.results"
+          :key="entry.key"
+          :agg="entry" />
+      </el-row>
+      <div v-if="!formulaReport"><h2>No data</h2></div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -177,8 +182,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.report {
-  padding: 50px;
+.report-container {
+  padding-top: 30px;
 }
 .el-row {
   margin-bottom: 20px;
