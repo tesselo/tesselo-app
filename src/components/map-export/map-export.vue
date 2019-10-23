@@ -19,24 +19,16 @@
     </template>
     <el-button
       :disabled="processing"
-      type="primary"
       icon="el-icon-delete"
       title="Clear page list"
       class="export-button export-clear"
       @click="clear" />
     <el-button
-      v-if="!processing"
-      :disabled="processing"
-      type="primary"
+      :loading="processing"
       class="export-button export-print"
       title="Add current view as Page"
       icon="el-icon-plus"
       @click="addPage" />
-    <el-button
-      v-else
-      type="primary"
-      class="export-button export-print"
-      icon="el-icon-loading" />
     <el-button
       :disabled="processing"
       icon="el-icon-download"
@@ -97,19 +89,25 @@ export default {
       margin-bottom: 15px;
     }
     .el-button {
-      cursor: pointer;
     }
     .export-button {
       margin-top: 15px;
       font-size: 20px;
       color: #5683a2;
+      padding: 0px;
+      border: 0px;
       &.export-print {
-        padding-right: 10px;
+        margin-right: 10px;
         float: right;
       }
       &.export-clear {
-        padding-left: 10px;
+        margin-left: 10px;
         float: left;
+      }
+      &:hover{
+        background-color: #F1F1F1;
+        border-color: #F1F1F1;
+        color: #5683a2;
       }
     }
 

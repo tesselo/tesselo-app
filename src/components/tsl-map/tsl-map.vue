@@ -22,7 +22,6 @@
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
         <el-button
-          type="primary"
           class="export-button"
           icon="el-icon-document"
           @click="toggleExport" />
@@ -816,7 +815,13 @@ export default {
     background-color: white
   }
   .export-button {
+    padding: 0px;
     width: 30px;
     height: 30px;
+    &:hover{
+      background-color: #F1F1F1;
+      border-color: #F1F1F1;
+      color: #5683a2;
+    }
   }
 </style>
