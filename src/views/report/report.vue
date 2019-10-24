@@ -15,7 +15,7 @@
       </el-row>
       <el-row>
         <el-input
-          v-model="input"
+          v-model="input_search"
           placeholder="Search"
           clearable
           @keyup.enter="query" >
@@ -25,6 +25,21 @@
             @click="query"/>
         </el-input>
       </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-input
+            v-model="input_date_after"
+            placeholder="Date after"
+            suffix-icon="el-icon-date" />
+        </el-col>
+        <el-col :span="12">
+          <el-input
+            v-model="input_date_before"
+            placeholder="Date before"
+            suffix-icon="el-icon-date" />
+        </el-col>
+      </el-row>
+
       <el-row>
         <el-radio
           v-model="radio"
@@ -88,7 +103,9 @@ export default {
   data () {
     return {
       radio: 'aggregationarea__name',
-      input: ''
+      input_search: '',
+      input_date_after: '',
+      input_date_before: ''
     }
   },
   computed: {
@@ -125,7 +142,15 @@ export default {
     radio(){
       this.query()
     },
-    input(){
+    input_search(){
+      this.query()
+    },
+    input_date_after(){
+      console.log('changed date after', this.input_date_after)
+      this.query()
+    },
+    input_date_before(){
+      console.log('changed date before', this.input_date_before)
       this.query()
     }
   },
@@ -172,7 +197,9 @@ export default {
           formula: {id: this.$route.params.formula},
           moment: {id: this.$route.params.composite},
           ordering: this.radio,
-          search: this.input
+          search: this.input_search,
+          date_after: this.input_date_after,
+          date_before: this.input_date_before
         })
       },
       1000
