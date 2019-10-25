@@ -1,4 +1,4 @@
-<template>
+search<template>
   <el-row class="report-container">
     <el-col
       :sm="{span: 22, offset: 1}"
@@ -8,52 +8,29 @@
         <el-col :span="24">
           <h2>
             <span v-if="selectedFormula">{{ selectedFormula.name }}</span> |
-            <span v-if="selectedLayer">{{ selectedLayer.name }}</span> |
-            <span v-if="selectedMoment">{{ selectedMoment.name }}</span>
+            <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
           </h2>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="5">
+        <el-col :sm="12">
           <el-input
-            v-model="input_formula_id"
-            placeholder="Formula ID" />
+            v-model="search"
+            placeholder="Search"
+            clearable
+            @keyup.enter="query" >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="query"/>
+          </el-input>
         </el-col>
-        <el-col :span="5">
-          <el-input
-            v-model="input_layer_id"
-            placeholder="Layer ID" />
-        </el-col>
-        <el-col :span="5">
-          <el-input
-            v-model="input_composite_id"
-            placeholder="Composite ID" />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-input
-          v-model="input_search"
-          placeholder="Search"
-          clearable
-          @keyup.enter="query" >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="query"/>
-        </el-input>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-input
-            v-model="input_date_after"
-            placeholder="Date after"
-            suffix-icon="el-icon-date" />
-        </el-col>
-        <el-col :span="12">
-          <el-input
-            v-model="input_date_before"
-            placeholder="Date before"
-            suffix-icon="el-icon-date" />
+        <el-col :sm="12">
+          <el-date-picker
+            v-model="monthrange"
+            type="monthrange"
+            start-placeholder="Start month"
+            end-placeholder="End month" />
         </el-col>
       </el-row>
       <el-row>
@@ -102,6 +79,10 @@ import 'element-ui/lib/theme-chalk/radio.css'
 import 'element-ui/lib/theme-chalk/button.css'
 import 'element-ui/lib/theme-chalk/col.css'
 import 'element-ui/lib/theme-chalk/row.css'
+import 'element-ui/lib/theme-chalk/date-picker.css'
+import 'element-ui/lib/theme-chalk/time-picker.css'
+
+import moment from 'moment'
 
 import { mapState, mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
@@ -119,12 +100,31 @@ export default {
   data () {
     return {
       radio: 'aggregationarea__name',
-      input_search: '',
-      input_date_after: '',
-      input_date_before: '',
-      input_formula_id: '',
-      input_layer_id: '',
-      input_composite_id: ''
+      search: '',
+      monthrange: '',
+      pickerOptions: {
+          shortcuts: [{
+            text: 'This month',
+            onClick(picker) {
+              picker.$emit('pick', [new Date(), new Date()]);
+            }
+          }, {
+            text: 'This year',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date(new Date().getFullYear(), 0);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: 'Last 6 months',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 6);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        }
     }
   },
   computed: {
@@ -133,8 +133,7 @@ export default {
       selectedFormula: state => state.formula.selectedFormula,
       selectedFormulaRow: state => state.formula.row,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedLayerRow: state => state.aggregationLayer.row,
-      selectedMoment: state => state.time.selectedMoment
+      selectedLayerRow: state => state.aggregationLayer.row
     }),
     labels() {
       if (this.formulaReport) {
@@ -158,45 +157,19 @@ export default {
     }
   },
   watch: {
+    monthrange(){
+      this.query()
+    },
     radio(){
       this.query()
     },
-    input_search(){
-      this.query()
-    },
-    input_date_after(){
-      console.log('changed date after', this.input_date_after)
-      this.query()
-    },
-    input_date_before(){
-      console.log('changed date before', this.input_date_before)
-      this.query()
-    },
-    input_formula_id(dat){
-      this.getFormulaIDAction(dat)
-      .then(() => {
-        this.selectFormula(this.selectedFormulaRow)
-        this.query()
-      })
-    },
-    input_layer_id(dat){
-      this.getAggregationLayerIDAction(dat)
-      .then(() => {
-        this.selectAggregationLayer(this.selectedLayerRow)
-        this.query()
-      })
-    },
-    input_composite_id(dat){
-      this.getCompositeById(dat)
+    search(){
       this.query()
     }
   },
   mounted: function(){
     // Get aggregation data.
-    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}, moment: {id: this.$route.params.composite}})
-    this.input_layer_id = this.$route.params.layer
-    this.input_formula_id = this.$route.params.formula
-    this.input_composite_id = this.$route.params.composite
+    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}})
     // Get meta info for the
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
@@ -209,9 +182,6 @@ export default {
       .then(() => {
         this.selectFormula(this.selectedFormulaRow)
       })
-    }
-    if (!this.selectedMoment){
-      this.getCompositeById(this.$route.params.composite)
     }
   },
   methods: {
@@ -226,20 +196,16 @@ export default {
       getFormulaIDAction: actionTypes.FORMULA_GET_ID,
       selectFormula: actionTypes.FORMULA_SELECT
     }),
-    ...mapActions('time', {
-      getCompositeById: actionTypes.TIME_GET_COMPOSITE_MOMENT_BY_ID,
-      selectMoment: actionTypes.TIME_SELECT_MOMENT
-    }),
     query: debounce(
       function () {
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
           formula: {id: this.selectedFormula.id},
-          moment: {id: this.selectedMoment.id},
+          moment: '',
           ordering: this.radio,
-          search: this.input_search,
-          date_after: this.input_date_after,
-          date_before: this.input_date_before
+          search: this.search,
+          date_after: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
+          date_before: this.monthrange ? moment(this.monthrange[1]).format('YYYY-MM-DD') : ''
         })
       },
       1000

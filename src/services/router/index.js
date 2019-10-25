@@ -31,7 +31,7 @@ const router = new Router({
       component: Logout
     },
     {
-      path: '/report/:layer/:formula/:composite',
+      path: '/report/:layer/:formula',
       name: 'Report',
       component: Report
     }
