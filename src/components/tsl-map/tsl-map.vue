@@ -57,12 +57,14 @@
         :tile-layer-class="tileLayerClass"
         :attribution="tesseloAttribution"
         :z-index="algebraZIndex"
+        :opacity="lOpacity"
         @add="setOpacitySlider" />
       <l-tile-layer
         :visible="showPredicted"
         :url="predictedUrl"
         :tile-layer-class="tileLayerClass"
         :z-index="predictedZIndex"
+        :opacity="pOpacity"
         @add="setOpacitySliderPredictedLayer" />
       <v-protobuf
         v-if="selectedLayer"
@@ -167,14 +169,6 @@ export default {
   data () {
     return {
       showExportPanel: false,
-      lOpacity: {
-        isSet: false,
-        value:0,
-      },
-      pOpacity: {
-        isSet: false,
-        value:0,
-      },
       urlLayer: null,
       algebraSlider: null,
       predictedSlider: null,
@@ -493,9 +487,9 @@ export default {
       this.algebraSlider = L.control.range({
         position: 'topright',
         min: 0,
-        max: 100,
-        value: this.lOpacity.isSet ? parseFloat(this.lOpacity.value) * 100 : 100,
-        step: 1,
+        max: 1,
+        value: this.lOpacity,
+        step: 0.1,
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
@@ -503,28 +497,32 @@ export default {
       const tat = this
       const funk = this.mapSetLOpacity
       this.algebraSlider.on('input change', function(e) {
-        funk(e.value / 100)
-        tat.$router.replace({query: {...tat.$route.query, lOpacity: e.value / 100}})
+        funk(parseFloat(e.value))
+        tat.$router.replace({query: {...tat.$route.query, lOpacity: e.value}})
       })
 
       this.$refs.map.mapObject.addControl(this.algebraSlider)
     },
 
     setOpacitySliderPredictedLayer () {
-      const { $router, $route } = this
+      if (this.predictedSlider !== null) {
+        this.$refs.map.mapObject.removeControl(this.predictedSlider)
+      }
+      // Instantiate predicted layer opacity control.
       this.predictedSlider = L.control.range({
         position: 'topright',
         min: 0,
-        max: 100,
-        value: this.pOpacity.isSet ? parseFloat(this.pOpacity.value) * 100 : 100,
-        step: 1,
+        max: 1,
+        value: this.pOpacity,
+        step: 0.1,
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-predicted'
       })
+      const tat = this
       const funk = this.mapSetPOpacity
       this.predictedSlider.on('input change', function(e) {
-        funk(e.value / 100)
-        $router.replace({query: {...$route.query, pOpacity: e.value / 100}})
+        funk(parseFloat(e.value))
+        tat.$router.replace({query: {...tat.$route.query, pOpacity: e.value}})
       });
 
       this.$refs.map.mapObject.addControl(this.predictedSlider)

@@ -234,10 +234,10 @@ export default {
       // Opacity sliders.
       vm.setBaselayer(to.query.mapOption)
       if(to.query.lOpacity) {
-        vm.setLOpacity({ isSet: true, value: to.query.lOpacity })
+        vm.setLOpacity(parseFloat(to.query.lOpacity))
       }
       if(to.query.pOpacity) {
-        vm.setPOpacity({ isSet: true, value: to.query.pOpacity })
+        vm.setPOpacity(parseFloat(to.query.pOpacity))
       }
       // Map bounds
       const hasCustomBounds = to.query.centerLat && to.query.centerLng && typeof to.query.zoom !== 'undefined'
@@ -286,11 +286,11 @@ export default {
       this.setBaselayer(to.query.mapOption)
     }
     // Opacity sliders.
-    if(to.query.lOpacity && (this.lOpacity.value != to.query.lOpacity)) {
-      this.setLOpacity({isSet: true, value: to.query.lOpacity })
+    if(to.query.lOpacity && (this.lOpacity != to.query.lOpacity)) {
+      this.setLOpacity(parseFloat(to.query.lOpacity))
     }
-    if(to.query.pOpacity && (this.pOpacity.value != to.query.pOpacity)) {
-      this.setPOpacity({isSet: true, value: to.query.pOpacity })
+    if(to.query.pOpacity && (this.pOpacity != to.query.pOpacity)) {
+      this.setPOpacity(parseFloat(to.query.pOpacity))
     }
     // Map bounds.
     const hasCustomBounds = to.query.centerLat && to.query.centerLng && typeof to.query.zoom !== 'undefined'
@@ -310,7 +310,7 @@ export default {
     if(to.query.predictedlayer && to.query.predictedlayer != from.query.predictedlayer && (!this.selectedPredictedLayer || this.selectedPredictedLayer.id != to.query.predictedlayer)){
       this.getPredictedLayers({page: null, layer: to.query.predictedlayer})
     }
-    if(!to.query.predictedLayer) {
+    if(!to.query.predictedlayer) {
       // Deactivate predicted layer if necessary.
       this.selectPredictedLayer(null)
       this.mainMenu = this.mainMenu.map((item) => {
