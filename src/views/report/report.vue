@@ -13,6 +13,23 @@
           </h2>
         </el-col>
       </el-row>
+      <el-row :gutter="20">
+        <el-col :span="5">
+          <el-input
+            v-model="input_formula_id"
+            placeholder="Formula ID" />
+        </el-col>
+        <el-col :span="5">
+          <el-input
+            v-model="input_layer_id"
+            placeholder="Layer ID" />
+        </el-col>
+        <el-col :span="5">
+          <el-input
+            v-model="input_composite_id"
+            placeholder="Composite ID" />
+        </el-col>
+      </el-row>
       <el-row>
         <el-input
           v-model="input_search"
@@ -39,7 +56,6 @@
             suffix-icon="el-icon-date" />
         </el-col>
       </el-row>
-
       <el-row>
         <el-radio
           v-model="radio"
@@ -105,7 +121,10 @@ export default {
       radio: 'aggregationarea__name',
       input_search: '',
       input_date_after: '',
-      input_date_before: ''
+      input_date_before: '',
+      input_formula_id: '',
+      input_layer_id: '',
+      input_composite_id: ''
     }
   },
   computed: {
@@ -152,11 +171,32 @@ export default {
     input_date_before(){
       console.log('changed date before', this.input_date_before)
       this.query()
+    },
+    input_formula_id(dat){
+      this.getFormulaIDAction(dat)
+      .then(() => {
+        this.selectFormula(this.selectedFormulaRow)
+        this.query()
+      })
+    },
+    input_layer_id(dat){
+      this.getAggregationLayerIDAction(dat)
+      .then(() => {
+        this.selectAggregationLayer(this.selectedLayerRow)
+        this.query()
+      })
+    },
+    input_composite_id(dat){
+      this.getCompositeById(dat)
+      this.query()
     }
   },
   mounted: function(){
     // Get aggregation data.
     this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}, moment: {id: this.$route.params.composite}})
+    this.input_layer_id = this.$route.params.layer
+    this.input_formula_id = this.$route.params.formula
+    this.input_composite_id = this.$route.params.composite
     // Get meta info for the
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
@@ -193,9 +233,9 @@ export default {
     query: debounce(
       function () {
         this.getFormulaReport({
-          layer: {id: this.$route.params.layer},
-          formula: {id: this.$route.params.formula},
-          moment: {id: this.$route.params.composite},
+          layer: {id: this.selectedLayer.id},
+          formula: {id: this.selectedFormula.id},
+          moment: {id: this.selectedMoment.id},
           ordering: this.radio,
           search: this.input_search,
           date_after: this.input_date_after,
