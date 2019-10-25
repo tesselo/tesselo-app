@@ -34,7 +34,7 @@
         :items="mainMenu"
         @change="changeVisiblePanel" />
     </div>
-    <div
+    <!-- <div
       v-if="showControls"
       class="report-menu">
       <report-menu
@@ -45,7 +45,7 @@
         v-if="!isTouch"
         :items="reportMenu"
         @change="reportMenuClick" />
-    </div>
+    </div> -->
     <div
       v-if="activePanel"
       class="panels-wrapper">
