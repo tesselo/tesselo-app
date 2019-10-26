@@ -94,7 +94,7 @@ export default {
       margin-top: 15px;
       font-size: 20px;
       color: #5683a2;
-      padding: 0px;
+      padding: 0px !important;
       border: 0px;
       &.export-print {
         margin-right: 10px;

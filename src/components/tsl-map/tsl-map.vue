@@ -815,7 +815,7 @@ export default {
     background-color: white
   }
   .export-button {
-    padding: 0px;
+    padding: 0px !important;
     width: 30px;
     height: 30px;
     &:hover{
