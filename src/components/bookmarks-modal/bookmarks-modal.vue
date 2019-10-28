@@ -40,7 +40,7 @@
                 <label
                   class="modal-body-text">Bookmark Name</label>
                 <el-input
-                  :v-model="newBookmark.name"
+                  v-model="newBookmark.name"
                   :value="newBookmark.name"
                   :class="{'modal-body-input__folder' : bookmark.isFolder == true}"
                   class="modal-body-input modal-body-input-margin"
