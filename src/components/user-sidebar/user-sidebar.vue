@@ -126,13 +126,8 @@
 <script>
 import { mapState } from "vuex";
 
-import BookmarksModal from "@/components/bookmarks-modal/bookmarks-modal.vue";
-
 export default {
   name: "UserSidebar",
-  components: {
-    BookmarksModal
-  },
   data() {
     return {
       open: false,
