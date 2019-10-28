@@ -392,7 +392,6 @@ export default {
 
 .modal-container {
   width: 320px;
-  height: 270px;
   margin: auto;
   padding: 30px 25px;
   background-color: #fff;
@@ -403,7 +402,6 @@ export default {
 
   @media (min-width: 768px) {
     width: 670px;
-    height: 270px;
   }
 
   &__folder {
@@ -620,4 +618,7 @@ export default {
   }
 }
 
+button {
+  cursor: pointer;
+}
 </style>
