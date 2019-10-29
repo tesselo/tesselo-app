@@ -4,7 +4,7 @@
       :span="24"
       border="solid">
       <el-divider />
-      <h3>{{ agg.name }}</h3>
+      <h3><span>{{ agg.name }}</span><span class="aoi-item-date">{{ date }}</span></h3>
     </el-col>
     <el-col
       :sm="24"
@@ -12,7 +12,7 @@
       <el-table
         :data="tableData"
         :size="size"
-        style="width: 100%">
+        class="aoi-item-table">
         <el-table-column
           prop="name"
           label="Name" />
@@ -24,7 +24,7 @@
     <el-col
       :sm="24"
       :md="16"
-      class="aoi-map">
+      class="aoi-item-map">
       <l-map
         ref="map"
         :options="mapOptions">
@@ -46,6 +46,7 @@ import { LMap, LTileLayer, LPolygon } from 'vue2-leaflet'
 import 'leaflet/dist/leaflet.css'
 import '@/components/tsl-map/authenticated-tile-layer'
 import 'element-ui/lib/theme-chalk/divider.css'
+import moment from 'moment'
 
 export default {
   name: 'ReportAoiItem',
@@ -88,6 +89,9 @@ export default {
         {name: 'Min', value: this.agg.min.toFixed(2)},
         {name: 'Max', value: this.agg.max.toFixed(2)}
       ]
+    },
+    date(){
+      return moment(this.agg.min_date).format('MMMM YYYY')
     }
   },
   watch: {
@@ -105,8 +109,14 @@ export default {
 .aoi-item {
   padding-bottom: 20px;
 }
-.aoi-map {
+.aoi-item-map {
   height: 200px;
+}
+.aoi-item-date {
+  float: right;
+}
+.aoi-item-table {
+  width: 100%
 }
 .el-row {
   &:last-child {
