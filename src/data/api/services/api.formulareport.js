@@ -2,7 +2,7 @@ import endpoints from '@/data/api/api.endpoints'
 import client from '@/data/api/api.client'
 
 export default {
-  get({ layer, formula, moment, ordering, search, date_after, date_before }, axiosInstance = client) {
+  get({ layer, formula, moment, ordering, search, date_after, date_before, page }, axiosInstance = client) {
     return axiosInstance[endpoints.formulaReport.getFormulaReport.method](endpoints.formulaReport.getFormulaReport.url, {
       params: {
         formula: formula.id,
@@ -11,7 +11,8 @@ export default {
         search: search,
         ordering: ordering,
         date_after: date_after,
-        date_before: date_before
+        date_before: date_before,
+        page: page
       }
     })
       .then((response) => {

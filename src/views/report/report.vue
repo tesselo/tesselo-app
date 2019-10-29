@@ -1,19 +1,22 @@
-search<template>
+<template>
   <el-row class="report-container">
     <el-col
-      :sm="{span: 22, offset: 1}"
+      :xs="{span: 22, offset: 1}"
+      :sm="{span: 20, offset: 2}"
       :md="{span: 16, offset: 4}"
       :lg="{span: 12, offset: 6}">
       <el-row>
-        <el-col :span="24">
-          <h2>
-            <span v-if="selectedFormula">{{ selectedFormula.name }}</span> |
-            <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
-          </h2>
+        <el-col
+          :span="24"
+          class="header-row">
+          <h2 v-if="selectedLayer">{{ selectedLayer.name }}</h2>
+          <h2 v-if="selectedFormula">{{ selectedFormula.name }}</h2>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :sm="12">
+        <el-col
+          :sm="14"
+          class="header-row">
           <el-input
             v-model="search"
             placeholder="Search"
@@ -25,7 +28,9 @@ search<template>
               @click="query"/>
           </el-input>
         </el-col>
-        <el-col :sm="12">
+        <el-col
+          :sm="10"
+          class="header-row">
           <el-date-picker
             v-model="monthrange"
             type="monthrange"
@@ -55,19 +60,31 @@ search<template>
           Average asc
         </el-radio>
       </el-row>
-      <el-row v-if="formulaReport">
+      <el-row v-if="has_data">
+        <el-col>
+          <el-pagination
+            v-if="total"
+            :total="total"
+            :page-size="pageSize"
+            :current-page="currentPage"
+            style="float: right"
+            layout="prev, pager, next"
+            @current-change="selectPage" />
+        </el-col>
+      </el-row>
+      <el-divider />
+      <el-row v-if="has_data">
         <bar-chart
           :labels="labels"
-          :datasets="datasets"
-          class="summary-chart" />
+          :datasets="datasets" />
       </el-row>
-      <el-row v-if="formulaReport">
+      <el-row v-if="has_data">
         <aoi-item
-          v-for="entry in formulaReport.results"
+          v-for="entry in rows"
           :key="entry.key"
           :agg="entry" />
       </el-row>
-      <div v-if="!formulaReport"><h2>No data</h2></div>
+      <div v-if="!has_data"><h2>No data</h2></div>
     </el-col>
   </el-row>
 </template>
@@ -81,6 +98,8 @@ import 'element-ui/lib/theme-chalk/col.css'
 import 'element-ui/lib/theme-chalk/row.css'
 import 'element-ui/lib/theme-chalk/date-picker.css'
 import 'element-ui/lib/theme-chalk/time-picker.css'
+import 'element-ui/lib/theme-chalk/pagination.css'
+import 'element-ui/lib/theme-chalk/divider.css'
 
 import moment from 'moment'
 
@@ -102,51 +121,58 @@ export default {
       radio: 'aggregationarea__name',
       search: '',
       monthrange: '',
+      currentPage: 1,
       pickerOptions: {
-          shortcuts: [{
-            text: 'This month',
-            onClick(picker) {
-              picker.$emit('pick', [new Date(), new Date()]);
-            }
-          }, {
-            text: 'This year',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date(new Date().getFullYear(), 0);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: 'Last 6 months',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setMonth(start.getMonth() - 6);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        }
+        shortcuts: [{
+          text: 'This month',
+          onClick(picker) {
+            picker.$emit('pick', [new Date(), new Date()]);
+          }
+        }, {
+          text: 'This year',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date(new Date().getFullYear(), 0);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: 'Last 6 months',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setMonth(start.getMonth() - 6);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      }
     }
   },
   computed: {
     ...mapState({
-      formulaReport: state => state.formulaReport.formulaReport,
       selectedFormula: state => state.formula.selectedFormula,
       selectedFormulaRow: state => state.formula.row,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedLayerRow: state => state.aggregationLayer.row
+      selectedLayerRow: state => state.aggregationLayer.row,
+      formulaReport: state => state.formulaReport.rows,
+      total: state => state.formulaReport.total,
+      pageSize: state => state.formulaReport.pageSize,
+      rows: state => state.formulaReport.rows,
+      next: state => state.formulaReport.next,
+      previous: state => state.formulaReport.previous,
+      has_data: state => Boolean(state.formulaReport.rows.length)
     }),
     labels() {
-      if (this.formulaReport) {
-        return this.formulaReport.results.map((reportItem) => reportItem.name)
+      if (this.has_data) {
+        return this.rows.map((reportItem) => reportItem.name)
       } else {
         return null
       }
     },
     datasets() {
-      if (this.formulaReport) {
+      if (this.has_data) {
         return [
           {
-            data: this.formulaReport.results.map((reportItem) => reportItem.avg),
+            data: this.rows.map((reportItem) => reportItem.avg.toFixed(2)),
             label: 'Average',
             backgroundColor: '#aac343'
           }
@@ -169,7 +195,7 @@ export default {
   },
   mounted: function(){
     // Get aggregation data.
-    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}})
+    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}, page: this.currentPage})
     // Get meta info for the
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
@@ -205,11 +231,16 @@ export default {
           ordering: this.radio,
           search: this.search,
           date_after: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
-          date_before: this.monthrange ? moment(this.monthrange[1]).format('YYYY-MM-DD') : ''
+          date_before: this.monthrange ? moment(this.monthrange[1]).format('YYYY-MM-DD') : '',
+          page: this.currentPage
         })
       },
       1000
-    )
+    ),
+    selectPage(page){
+      this.currentPage = page
+      this.query()
+    }
   }
 }
 </script>
@@ -218,10 +249,10 @@ export default {
 .report-container {
   padding-top: 30px;
 }
-.el-row {
+.header-row{
   margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
+}
+.el-pagination {
+  margin-top: 10px;
 }
 </style>

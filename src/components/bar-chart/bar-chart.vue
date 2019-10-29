@@ -1,7 +1,8 @@
 <template>
   <horizontal-bar
-    ref="horizontalBar"
+    :options="options"
     :height="height"
+    :styles="myStyles"
     :chart-data="chartData" />
 </template>
 
@@ -23,19 +24,16 @@ export default {
     datasets: {
       type: Array,
       required: true
-    },
-    options: {
-      type: Object,
-      required: false,
-      default () {
-        return {
-          responsive: false,
-          maintainAspectRatio: false
-        }
+    }
+  },
+  data(){
+    return {
+      options: {
+        maintainAspectRatio: false,
+        legend: false
       }
     }
   },
-
   computed: {
     chartData() {
       return {
@@ -53,7 +51,9 @@ export default {
 
   created () {
     const BAR_LINE_HEIGHT = 40
-    this.height = this.labels.length * BAR_LINE_HEIGHT
+    const CHART_MAX_HEIGHT = 500
+    const height_computed = this.labels.length * BAR_LINE_HEIGHT
+    this.height = Math.min(CHART_MAX_HEIGHT, height_computed)
   }
 }
 </script>

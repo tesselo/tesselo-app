@@ -3,6 +3,18 @@ const { reactiveProp } = mixins
 
 export default {
   extends: HorizontalBar,
+  props: {
+    options: {
+      type: Object,
+      required: false,
+      default () {
+        return {
+          responsive: false,
+          maintainAspectRatio: false
+        }
+      }
+    }
+  },
   mixins: [reactiveProp],
   mounted () {
     // this.chartData is created in the mixin.

@@ -1,14 +1,16 @@
 <template>
   <el-row :gutter="20">
-    <el-col :span="24">
+    <el-col
+      :span="24"
+      border="solid">
+      <el-divider />
       <h3>{{ agg.name }}</h3>
     </el-col>
     <el-col
       :sm="24"
-      :md="12">
+      :md="8">
       <el-table
         :data="tableData"
-        :border="border"
         :size="size"
         style="width: 100%">
         <el-table-column
@@ -21,7 +23,7 @@
     </el-col>
     <el-col
       :sm="24"
-      :md="12"
+      :md="16"
       class="aoi-map">
       <l-map
         ref="map"
@@ -29,6 +31,7 @@
         <l-tile-layer
           url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
         <l-tile-layer
+          :tile-layer-class="tileLayerClass"
           :url="url" />
         <l-polygon
           :lat-lngs="latlngs" />
@@ -41,6 +44,8 @@
 import L from 'leaflet'
 import { LMap, LTileLayer, LPolygon } from 'vue2-leaflet'
 import 'leaflet/dist/leaflet.css'
+import '@/components/tsl-map/authenticated-tile-layer'
+import 'element-ui/lib/theme-chalk/divider.css'
 
 export default {
   name: 'ReportAoiItem',
@@ -62,8 +67,8 @@ export default {
         attributionControl: false,
       },
       polygonColor: 'red',
-      border: true,
-      size: "mini"
+      size: "mini",
+      tileLayerClass: L.authenticatedTileLayer
     }
   },
   computed: {
@@ -78,10 +83,10 @@ export default {
     },
     tableData(){
       return [
-        {name: 'Average', value: this.agg.avg},
-        {name: 'Std', value: this.agg.std},
-        {name: 'Min', value: this.agg.min},
-        {name: 'Max', value: this.agg.max}
+        {name: 'Average', value: this.agg.avg.toFixed(2)},
+        {name: 'Std', value: this.agg.std.toFixed(2)},
+        {name: 'Min', value: this.agg.min.toFixed(2)},
+        {name: 'Max', value: this.agg.max.toFixed(2)}
       ]
     }
   },
@@ -104,9 +109,8 @@ export default {
   height: 200px;
 }
 .el-row {
-  margin-bottom: 20px;
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 24px;
   }
 }
 h3 {
