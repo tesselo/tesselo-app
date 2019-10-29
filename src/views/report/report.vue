@@ -246,14 +246,19 @@ export default {
       this.query()
     },
     sort(item){
+      // Unselect the button siblings.
       this.sorts = this.sorts.map((dat) => {
         if (dat.name != item.name) {
           dat.selected = false
         }
         return dat
       })
-      item.descending = !item.descending
-      item.selected = true
+      // Change order direction if item is already selected.
+      if (item.selected) {
+        item.descending = !item.descending
+      } else {
+        item.selected = true
+      }
       this.query()
     }
   }
