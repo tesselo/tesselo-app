@@ -20,7 +20,7 @@
           </h2>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
+      <el-row :gutter="10">
         <el-col
           :sm="12"
           class="header-row">
@@ -46,14 +46,17 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :sm="12">
+        <el-col
+          :sm="10"
+          class="header-row">
           <el-button-group>
             <el-button
               v-for="item in sorts"
               :key="item.name"
               :label="item.name"
               :type="item.selected ? 'primary' : 'default'"
-              @click="sort(item)">
+              @click="sort(item)"
+              size="mini">
               {{ item.name }}
               <i
                 v-if="item.descending"
@@ -64,9 +67,16 @@
             </el-button>
           </el-button-group>
         </el-col>
+        <el-col :sm="6">
+          <el-radio-group v-model="radio" size="mini">
+            <el-radio-button label="12"></el-radio-button>
+            <el-radio-button label="24"></el-radio-button>
+            <el-radio-button label="36"></el-radio-button>
+          </el-radio-group>
+        </el-col>
         <el-col
           v-if="has_data"
-          :sm="12">
+          :sm="8">
           <el-pagination
             v-if="total"
             :total="total"
@@ -76,6 +86,7 @@
             layout="prev, pager, next"
             @current-change="selectPage" />
         </el-col>
+
       </el-row>
       <el-divider />
       <el-row v-if="has_data">
@@ -105,6 +116,9 @@ import 'element-ui/lib/theme-chalk/date-picker.css'
 import 'element-ui/lib/theme-chalk/time-picker.css'
 import 'element-ui/lib/theme-chalk/pagination.css'
 import 'element-ui/lib/theme-chalk/divider.css'
+import 'element-ui/lib/theme-chalk/radio.css'
+import 'element-ui/lib/theme-chalk/radio-button.css'
+import 'element-ui/lib/theme-chalk/radio-group.css'
 
 import moment from 'moment'
 
@@ -125,6 +139,7 @@ export default {
     return {
       search: '',
       monthrange: '',
+      radio: 12,
       currentPage: 1,
       pickerOptions: {
         shortcuts: [{
@@ -164,7 +179,6 @@ export default {
       selectedLayerRow: state => state.aggregationLayer.row,
       formulaReport: state => state.formulaReport.rows,
       total: state => state.formulaReport.total,
-      pageSize: state => state.formulaReport.pageSize,
       rows: state => state.formulaReport.rows,
       next: state => state.formulaReport.next,
       previous: state => state.formulaReport.previous,
@@ -203,6 +217,9 @@ export default {
         query += ',composite__min_date'
       }
       return query
+    },
+    pageSize(){
+      return parseInt(this.radio)
     }
   },
   watch: {
@@ -211,11 +228,14 @@ export default {
     },
     search(){
       this.query()
+    },
+    pageSize(){
+      this.query()
     }
   },
   mounted: function(){
     // Get aggregation data.
-    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}, page: this.currentPage})
+    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}, page: this.currentPage, pageSize: this.pageSize})
     // Get meta info for the
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
@@ -252,7 +272,8 @@ export default {
           search: this.search,
           date_after: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
           date_before: this.monthrange ? moment(this.monthrange[1]).format('YYYY-MM-DD') : '',
-          page: this.currentPage
+          page: this.currentPage,
+          pageSize: this.pageSize
         })
       },
       1000
@@ -286,10 +307,7 @@ export default {
   padding-top: 30px;
 }
 .header-row{
-  margin-bottom: 20px;
-}
-.el-pagination {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .formula-name-header {
   font-size: 14px;

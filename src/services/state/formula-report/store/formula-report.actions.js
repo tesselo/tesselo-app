@@ -6,8 +6,8 @@ export default {
    *
    * GET FORMULA REPORT
    */
-  [actionTypes.FORMULA_REPORT_GET](context, { layer, formula, moment, ordering, search, date_after, date_before, page }) {
-    return APIAdapter.services.formulaReport.get({layer, formula, moment, ordering, search, date_after, date_before, page})
+  [actionTypes.FORMULA_REPORT_GET](context, { layer, formula, moment, ordering, search, date_after, date_before, page, pageSize }) {
+    return APIAdapter.services.formulaReport.get({layer, formula, moment, ordering, search, date_after, date_before, page, pageSize})
       .then((response) => {
         context.commit(mutationTypes.FORMULA_REPORT_SET, {
           layer,

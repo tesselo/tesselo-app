@@ -7,6 +7,5 @@ export default {
   previous: null,
   next: null,
   rows: [],
-  currentPage: 1,
-  pageSize: 10
+  currentPage: 1
 }
