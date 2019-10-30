@@ -55,8 +55,8 @@
               :key="item.name"
               :label="item.name"
               :type="item.selected ? 'primary' : 'default'"
-              @click="sort(item)"
-              size="mini">
+              size="mini"
+              @click="sort(item)">
               {{ item.name }}
               <i
                 v-if="item.descending"
@@ -68,10 +68,12 @@
           </el-button-group>
         </el-col>
         <el-col :sm="6">
-          <el-radio-group v-model="radio" size="mini">
-            <el-radio-button label="12"></el-radio-button>
-            <el-radio-button label="24"></el-radio-button>
-            <el-radio-button label="36"></el-radio-button>
+          <el-radio-group
+            v-model="radio"
+            size="mini">
+            <el-radio-button label="12" />
+            <el-radio-button label="24" />
+            <el-radio-button label="36" />
           </el-radio-group>
         </el-col>
         <el-col
