@@ -12,7 +12,6 @@
       <el-table
         :data="tableData"
         :size="size"
-        :show-header="showHeader"
         class="aoi-item-table">
         <el-table-column
           prop="name"
@@ -84,8 +83,7 @@ export default {
       },
       polygonColor: 'red',
       size: "mini",
-      tileLayerClass: L.authenticatedTileLayer,
-      showHeader: false
+      tileLayerClass: L.authenticatedTileLayer
     }
   },
   computed: {
