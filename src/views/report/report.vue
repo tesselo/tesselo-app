@@ -9,13 +9,20 @@
         <el-col
           :span="24"
           class="header-row">
-          <h2 v-if="selectedLayer">{{ selectedLayer.name }}</h2>
-          <h2 v-if="selectedFormula">{{ selectedFormula.name }}</h2>
+          <h2>
+            <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
+            <span v-if="selectedFormula">| {{ selectedFormula.acronym }}</span>
+            <span
+              v-if="selectedFormula"
+              class="formula-name-header">
+              {{ selectedFormula.name }}
+            </span>
+          </h2>
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col
-          :sm="14"
+          :sm="12"
           class="header-row">
           <el-input
             v-model="search"
@@ -29,7 +36,7 @@
           </el-input>
         </el-col>
         <el-col
-          :sm="10"
+          :sm="12"
           class="header-row">
           <el-date-picker
             v-model="monthrange"
@@ -39,25 +46,27 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-button-group>
-          <el-button
-            v-for="item in sorts"
-            :key="item.name"
-            :label="item.name"
-            :type="item.selected ? 'primary' : 'default'"
-            @click="sort(item)">
-            {{ item.name }}
-            <i
-              v-if="item.descending"
-              class="el-icon-arrow-down"/>
-            <i
-              v-else
-              class="el-icon-arrow-up"/>
-          </el-button>
-        </el-button-group>
-      </el-row>
-      <el-row v-if="has_data">
-        <el-col>
+        <el-col :sm="12">
+          <el-button-group>
+            <el-button
+              v-for="item in sorts"
+              :key="item.name"
+              :label="item.name"
+              :type="item.selected ? 'primary' : 'default'"
+              @click="sort(item)">
+              {{ item.name }}
+              <i
+                v-if="item.descending"
+                class="el-icon-arrow-down"/>
+              <i
+                v-else
+                class="el-icon-arrow-up"/>
+            </el-button>
+          </el-button-group>
+        </el-col>
+        <el-col
+          v-if="has_data"
+          :sm="12">
           <el-pagination
             v-if="total"
             :total="total"
@@ -78,7 +87,8 @@
         <aoi-item
           v-for="entry in rows"
           :key="entry.key"
-          :agg="entry" />
+          :agg="entry"
+          :formula="selectedFormula" />
       </el-row>
       <div v-if="!has_data"><h2>No data</h2></div>
     </el-col>
@@ -192,6 +202,7 @@ export default {
       if (item.name == 'Name') {
         query += ',composite__min_date'
       }
+      return query
     }
   },
   watch: {
@@ -279,5 +290,8 @@ export default {
 }
 .el-pagination {
   margin-top: 10px;
+}
+.formula-name-header {
+  font-size: 14px;
 }
 </style>

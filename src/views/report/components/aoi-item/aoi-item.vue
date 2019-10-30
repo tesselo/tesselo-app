@@ -12,6 +12,7 @@
       <el-table
         :data="tableData"
         :size="size"
+        :show-header="showHeader"
         class="aoi-item-table">
         <el-table-column
           prop="name"
@@ -36,6 +37,11 @@
         <l-polygon
           :lat-lngs="latlngs" />
       </l-map>
+      <map-legend
+        v-if="formula"
+        :data="selectedFormulaLegend"
+        :min="formula.minVal"
+        :max="formula.maxVal" />
     </el-col>
   </el-row>
 </template>
@@ -47,18 +53,27 @@ import 'leaflet/dist/leaflet.css'
 import '@/components/tsl-map/authenticated-tile-layer'
 import 'element-ui/lib/theme-chalk/divider.css'
 import moment from 'moment'
+import MapLegend from '@/components/map-legend/map-legend'
+import { getColorsFromPallete } from '@/services/util'
+
 
 export default {
   name: 'ReportAoiItem',
   components: {
     LMap,
     LPolygon,
-    LTileLayer
+    LTileLayer,
+    MapLegend
   },
   props: {
     agg: {
       type: Object,
       required: true
+    },
+    formula: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   data() {
@@ -69,7 +84,8 @@ export default {
       },
       polygonColor: 'red',
       size: "mini",
-      tileLayerClass: L.authenticatedTileLayer
+      tileLayerClass: L.authenticatedTileLayer,
+      showHeader: false
     }
   },
   computed: {
@@ -92,6 +108,21 @@ export default {
     },
     date(){
       return moment(this.agg.min_date).format('MMMM YYYY')
+    },
+    selectedFormulaLegend () {
+      if (this.formula) {
+        const colors = getColorsFromPallete(this.formula)
+        const legend = []
+        colors.forEach(color => {
+          legend.push({
+            color
+          })
+        })
+
+        return legend
+      } else {
+        return []
+      }
     }
   },
   watch: {
@@ -126,4 +157,17 @@ export default {
 h3 {
   margin-bottom: 10px;
 }
+.map-legend-wrapper {
+  position: absolute;
+  right : 13px;
+  bottom: 3px;
+  padding: 3px;
+  width: 80px;
+  font-weight: 400;
+  color: rgb(96, 98, 102);
+  >.map-legend {
+    height: 15px !important;
+  }
+}
+
 </style>
