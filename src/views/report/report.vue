@@ -162,7 +162,7 @@ export default {
     }),
     labels() {
       if (this.has_data) {
-        return this.rows.map((reportItem) => reportItem.name)
+        return this.rows.map((reportItem) => `${reportItem.name} | ${moment(reportItem.min_date).format('MMMM YYYY')}`)
       } else {
         return null
       }
@@ -171,7 +171,7 @@ export default {
       if (this.has_data) {
         return [
           {
-            data: this.rows.map((reportItem) => reportItem.avg.toFixed(2)),
+            data: this.rows.map((reportItem) => reportItem.avg),
             label: 'Average',
             backgroundColor: '#aac343'
           }
@@ -181,11 +181,16 @@ export default {
       }
     },
     sortBy(){
-      var item = this.sorts.filter(item => item.selected)[0]
-      if (item.descending){
-        return item.query
-      } else {
-        return '-' + item.query
+      // Get sort item and query string.
+      const item = this.sorts.filter(item => item.selected)[0]
+      var query = item.query
+      // Invert sort direction if requested.
+      if (!item.descending){
+        query = '-' + item.query
+      }
+      // Add date sorting as default to name sorting.
+      if (item.name == 'Name') {
+        query += ',composite__min_date'
       }
     }
   },
