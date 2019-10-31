@@ -125,7 +125,9 @@ export default {
   },
   watch: {
     agg(){
-      this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.1))
+      if(this.$refs.map){
+        this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.1))
+      }
     }
   },
   mounted() {
