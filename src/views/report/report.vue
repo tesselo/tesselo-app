@@ -273,7 +273,7 @@ export default {
           ordering: this.sortBy,
           search: this.search,
           date_after: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
-          date_before: this.monthrange ? moment(this.monthrange[1]).format('YYYY-MM-DD') : '',
+          date_before: this.monthrange ? moment(this.monthrange[1]).endOf('month').format('YYYY-MM-DD') : '',
           page: this.currentPage,
           pageSize: this.pageSize
         })
