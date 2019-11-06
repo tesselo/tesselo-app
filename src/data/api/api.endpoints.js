@@ -1,5 +1,3 @@
-import { getColorMapParam, getPresentSentinelBands } from '@/services/util.js'
-
 export default {
   /* -------------------------------------
    * AUTH
