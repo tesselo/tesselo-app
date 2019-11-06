@@ -110,6 +110,7 @@ export const formatUniquesList = (rows) => {
   return rows.map((row, index)=> ({
     index,
     id: row.id,
+    sentineltile_id: row.sentineltile_id,
     active: row.active,
     date: row.date,
     rasterlayerLookup: row.rasterlayer_lookup,

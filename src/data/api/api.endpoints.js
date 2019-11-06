@@ -35,25 +35,9 @@ export default {
       if (!formula || !moment) {
         return ''
       }
-      // Catch RGB mode.
-      if (formula.acronym === 'RGB') {
-        const bandsParam = [
-          'r=' + moment.rasterlayerLookup['B04.jp2'],
-          'g=' + moment.rasterlayerLookup['B03.jp2'],
-          'b=' + moment.rasterlayerLookup['B02.jp2']
-        ].join(',')
-        return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&scale=0,1e4&alpha&enhance_brightness=3.0&enhance_sharpness=1.2&enhance_color=1.9&enhance_contrast=1.5`
-      } else {
-        const presentBands = getPresentSentinelBands(formula.formula)
-
-        const bandsParam = presentBands.map(band => band.search + '=' + moment.rasterlayerLookup[band.rasterlayerName]).join(',')
-
-        const formulaParam = encodeURIComponent(formula.formula.replace(/\s/g,''))
-
-        const colorMapParam = getColorMapParam(formula)
-
-        return `${process.env.API_URL}algebra/{z}/{x}/{y}.png?layers=${bandsParam}&formula=${formulaParam}&colormap=${colorMapParam}`
-      }
+      const moment_url_type = moment.type == 'unique' ? 'scene' : 'composite'
+      const pk = moment.type == 'unique' ? moment.sentineltile_id : moment.id
+      return `${process.env.API_URL}formula/${formula.id}/${moment_url_type}/${pk}/{z}/{x}/{y}.png`
     },
     predicted: (predictedLayer) => {
       if(!predictedLayer) {
