@@ -426,25 +426,31 @@ export default {
     },
     baselayer(newValue){
       if (!this.$refs.tileProviders){
-        this.allBasemapProviders[0].visible = true
-      } else {
+        let lyr
+        if (this.baselayer){
+          lyr = this.tileProviders.find(item => item.slug == newValue)
+          if(!lyr) {
+            lyr = this.wmtsProviders.find(item => item.slug == newValue)
+          }
+        } else {
+          lyr = this.allBasemapProviders[0]
+        }
+        lyr.visible = true
+      } else if(this.baselayer) {
         // Select new baselayer.
         const lmap = this.$refs.map.mapObject
         const tat = this
-        // let baselayer
-        if(this.baselayer) {
-          this.allBasemapProviders.forEach(function(base){
-            var lyr = tat.$refs.tileProviders.find(item => item.name == base.name)
-            if(!lyr) {
-              lyr = tat.$refs.wmtsProviders.find(item => item.name == base.name)
-            }
-            if(base.slug == newValue) {
-              lmap.addLayer(lyr.mapObject)
-            } else if (lmap.hasLayer(lyr.mapObject)) {
-              lmap.removeLayer(lyr.mapObject)
-            }
-          })
-        }
+        this.allBasemapProviders.forEach(function(base){
+          var lyr = tat.$refs.tileProviders.find(item => item.name == base.name)
+          if(!lyr) {
+            lyr = tat.$refs.wmtsProviders.find(item => item.name == base.name)
+          }
+          if(base.slug == newValue) {
+            lmap.addLayer(lyr.mapObject)
+          } else if (lmap.hasLayer(lyr.mapObject)) {
+            lmap.removeLayer(lyr.mapObject)
+          }
+        })
       }
     }
   },
@@ -455,7 +461,6 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
-
   },
   methods:  {
     ...mapActions('map', {

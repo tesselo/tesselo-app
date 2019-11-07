@@ -232,8 +232,13 @@ export default {
 
   beforeRouteEnter (to, from, next) {
     next(vm => {
+      // Baselayer.
+      if(to.query.mapOption){
+        vm.setBaselayer(to.query.mapOption)
+      } else {
+        vm.setBaselayer(vm.$refs.tslMap.allBasemapProviders[0].slug)
+      }
       // Opacity sliders.
-      vm.setBaselayer(to.query.mapOption)
       if(to.query.lOpacity) {
         vm.setLOpacity(parseFloat(to.query.lOpacity))
       }
