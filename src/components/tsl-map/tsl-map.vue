@@ -4,6 +4,7 @@
       ref="map"
       :max-zoom="18"
       :options="mapOptions"
+      :class="{ 'control-is-staff': isStaff }"
       @update:bounds="updateBounds"
       @baselayerchange="setMapOption">
       <l-control-zoom
@@ -23,8 +24,17 @@
         position="topright" >
         <el-button
           class="export-button"
-          icon="el-icon-document"
+          icon="el-icon-printer"
           @click="toggleExport" />
+      </l-control>
+      <l-control
+        v-if="isStaff"
+        class="print-image-control leaflet-bar leaflet-control"
+        position="topright" >
+        <el-button
+          class="export-button"
+          icon="el-icon-document"
+          @click="showReport" />
       </l-control>
       <l-tile-layer
         v-for="tileProvider in tileProviders"
@@ -324,7 +334,8 @@ export default {
       authenticated: state => state.auth.authenticated,
       showSelected: state => Boolean(state.formula.selectedFormula && state.time.selectedMoment),
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
-      showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
+      showPredicted: state => Boolean(state.predictedLayer.selectedLayer),
+      isStaff: state => state.auth.is_staff
     }),
 
     isTouch() {
@@ -640,6 +651,16 @@ export default {
       this.showExportPanel = !this.showExportPanel
     },
 
+    showReport(){
+      this.$router.push({
+        name: 'Report',
+        params: {
+          layer: this.selectedLayer.id,
+          formula: this.selectedFormula.id
+        }
+      })
+    },
+
     addImage(){
       // If this is already computing, wait for it to finish.
       if (this.exportProcessing) {
@@ -828,5 +849,8 @@ export default {
       border-color: #F1F1F1;
       color: #5683a2;
     }
+  }
+  .control-is-staff .leaflet-range-control {
+    top: 295px !important;
   }
 </style>

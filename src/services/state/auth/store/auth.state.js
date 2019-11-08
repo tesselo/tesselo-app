@@ -3,5 +3,5 @@ export default {
   token: null,
   expires: null,
   authenticated: false,
-  fetchUserInfo: false,
+  is_staff: false
 }
