@@ -92,7 +92,12 @@
       </el-row>
       <el-divider />
       <el-row v-if="has_data">
+        <line-chart
+          v-if="showTrend"
+          :labels="labels"
+          :datasets="datasets" />
         <bar-chart
+          v-else
           :labels="labels"
           :datasets="datasets" />
       </el-row>
@@ -127,6 +132,7 @@ import moment from 'moment'
 import { mapState, mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
 import BarChart from '@/components/bar-chart/bar-chart'
+import LineChart from '@/components/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
 import { debounce } from 'lodash'
 
@@ -135,6 +141,7 @@ export default {
   name: 'Report',
   components: {
     BarChart,
+    LineChart,
     AoiItem
   },
   data () {
@@ -188,22 +195,41 @@ export default {
     }),
     labels() {
       if (this.has_data) {
-        return this.rows.map((reportItem) => `${reportItem.name} | ${moment(reportItem.min_date).format('MMMM YYYY')}`)
-      } else {
-        return null
+        if (this.showTrend){
+          return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
+        } else {
+          return this.rows.map(reportItem => `${reportItem.name} | ${moment(reportItem.min_date).format('MMMM YYYY')}`)
+        }
+      }
+    },
+    showTrend() {
+      // Show trend if the area is unique and has at least two observations.
+      if (this.has_data) {
+        let unique = [...new Set(this.rows.map(item => item.aggregationarea))]
+        return unique.length == 1 && this.rows.length > 1
       }
     },
     datasets() {
       if (this.has_data) {
-        return [
-          {
-            data: this.rows.map((reportItem) => reportItem.avg),
-            label: 'Average',
-            backgroundColor: '#aac343'
-          }
-        ]
-      } else {
-        return null
+        if (this.showTrend) {
+          return [
+            {
+              data: this.rows.map(reportItem => reportItem.avg),
+              label: 'Average',
+              backgroundColor: '#aac343',
+              borderColor: '#aac343',
+              fill: false
+            }
+          ]
+        } else {
+          return [
+            {
+              data: this.rows.map(reportItem => reportItem.avg),
+              label: 'Average',
+              backgroundColor: '#aac343'
+            }
+          ]
+        }
       }
     },
     sortBy(){

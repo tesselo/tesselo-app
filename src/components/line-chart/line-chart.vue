@@ -1,5 +1,5 @@
 <template>
-  <horizontal-bar
+  <line-chart
     :options="options"
     :height="height"
     :styles="myStyles"
@@ -7,12 +7,12 @@
 </template>
 
 <script>
-import HorizontalBar from './reactive-bar-chart'
+import LineChart from './reactive-line-chart'
 
 export default {
 
   components: {
-    HorizontalBar
+    LineChart
   },
 
   props: {
@@ -42,17 +42,10 @@ export default {
     },
     myStyles(){
       return {
-        height: `${this.height}px`,
+        height: "200px",
         position: 'relative'
       }
     }
-  },
-
-  created () {
-    const BAR_LINE_HEIGHT = 40
-    const CHART_MAX_HEIGHT = 500
-    const height_computed = this.labels.length * BAR_LINE_HEIGHT
-    this.height = Math.min(CHART_MAX_HEIGHT, height_computed)
   }
 }
 </script>
