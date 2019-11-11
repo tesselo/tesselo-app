@@ -1,8 +1,8 @@
-import endpoints from '@/data/api/api.endpoints'
-import client from '@/data/api/api.client'
+import endpoints from '@/services/api/api.endpoints'
+import client from '@/services/api/api.client'
 import moment from 'moment'
 
-import { formatCompositesList, formatUniquesList } from '@/data/api/api.models'
+import { formatCompositesList, formatUniquesList } from '@/services/api/api.models'
 
 export default {
 

@@ -1,5 +1,5 @@
-import endpoints from '@/data/api/api.endpoints'
-import client from '@/data/api/api.client'
+import endpoints from '@/services/api/api.endpoints'
+import client from '@/services/api/api.client'
 
 export default {
   get({ layer, formula, moment, ordering, search, date_after, date_before, page, pageSize }, axiosInstance = client) {

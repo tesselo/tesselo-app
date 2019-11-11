@@ -1,5 +1,5 @@
 import { actionTypes, mutationTypes } from '@/services/constants'
-import APIAdapter from '@/data/api'
+import APIAdapter from '@/services/api'
 
 
 export default {

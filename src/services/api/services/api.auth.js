@@ -1,6 +1,6 @@
-import endpoints from '@/data/api/api.endpoints'
-import client from '@/data/api/api.client'
-import { formatError } from '@/data/api/api.models.js'
+import endpoints from '@/services/api/api.endpoints'
+import client from '@/services/api/api.client'
+import { formatError } from '@/services/api/api.models.js'
 
 export default {
   /**

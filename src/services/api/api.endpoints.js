@@ -13,7 +13,7 @@ export default {
     }
   },
   /* -------------------------------------
-   * AUTH
+   * Other
    * ---------------------------------- */
   aggregationLayer: {
     list: {
@@ -38,6 +38,20 @@ export default {
       url_tail: '/parse',
       method: 'post'
     }
+  },
+  aggregationArea: {
+    list: {
+      url: '/aggregationarea',
+      method: 'get'
+    },
+    edit: {
+      url: '/aggregationarea',
+      method: 'put'
+    },
+    save: {
+      url: '/aggregationarea',
+      method: 'post'
+    },
   },
   formula: {
     list: {

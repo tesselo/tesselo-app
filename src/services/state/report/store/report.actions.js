@@ -1,7 +1,7 @@
 import hash from 'object-hash'
 
 import { actionTypes, mutationTypes } from '@/services/constants'
-import APIAdapter from '@/data/api'
+import APIAdapter from '@/services/api'
 import { getPresentSentinelBands } from '@/services/util'
 
 export default {

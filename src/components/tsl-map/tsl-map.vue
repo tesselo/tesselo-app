@@ -127,7 +127,7 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
 // API
-import endpoints from '@/data/api/api.endpoints'
+import endpoints from '@/services/api/api.endpoints'
 
 // Tile layer class that has token auth requests built in.
 import './authenticated-tile-layer'

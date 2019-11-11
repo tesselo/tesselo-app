@@ -2,7 +2,7 @@ import { testAction } from '@/test-utils'
 
 import { actionTypes, mutationTypes } from '@/services/constants'
 import actions from './auth.actions'
-import APIAdapter from '@/data/api'
+import APIAdapter from '@/services/api'
 
 describe('auth actions', () => {
   it('should invoke auth mutation after login api response', done => {

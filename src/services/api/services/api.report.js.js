@@ -1,6 +1,6 @@
 import { all } from 'axios'
-import endpoints from '@/data/api/api.endpoints'
-import client from '@/data/api/api.client'
+import endpoints from '@/services/api/api.endpoints'
+import client from '@/services/api/api.client'
 
 
 export const createRegionReport = function(region, axiosInstance = client) {

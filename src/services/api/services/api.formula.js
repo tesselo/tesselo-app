@@ -1,6 +1,6 @@
-import endpoints from '@/data/api/api.endpoints'
-import client from '@/data/api/api.client'
-import { formatFormulaResults, formatFormulaResult } from '@/data/api/api.models'
+import endpoints from '@/services/api/api.endpoints'
+import client from '@/services/api/api.client'
+import { formatFormulaResults, formatFormulaResult } from '@/services/api/api.models'
 
 export default {
 
