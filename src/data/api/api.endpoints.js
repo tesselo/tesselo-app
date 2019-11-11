@@ -19,6 +19,24 @@ export default {
     list: {
       url: '/aggregationlayer',
       method: 'get'
+    },
+    edit: {
+      url: '/aggregationlayer',
+      method: 'put'
+    },
+    save: {
+      url: '/aggregationlayer',
+      method: 'post'
+    },
+    getUploadLink: {
+      url_base: '/aggregationlayer',
+      url_tail: '/upload',
+      method: 'post'
+    },
+    parseLayer: {
+      url_base: '/aggregationlayer',
+      url_tail: '/parse',
+      method: 'post'
     }
   },
   formula: {

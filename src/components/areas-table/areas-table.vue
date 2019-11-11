@@ -54,6 +54,13 @@ export default {
     ElTableColumn,
     ElPagination
   },
+  props: {
+    setRouterQueryParameters: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
+  },
   data() {
     return {
       loading: false
@@ -93,7 +100,9 @@ export default {
     selectArea(area) {
       this.selectAggregationLayer(area)
       this.setMapHomeBounds(area.bounds)
-      this.$router.replace({query: {...this.$route.query, area: area.id, zoom: undefined, centerLat: undefined, centerLng: undefined}})
+      if (this.setRouterQueryParameters){
+        this.$router.replace({query: {...this.$route.query, area: area.id, zoom: undefined, centerLat: undefined, centerLng: undefined}})        
+      }
       this.$emit('select', area)
     },
     selectPage(page) {

@@ -19,8 +19,12 @@ export const AUTH_LOGOUT = 'logout'
  * Aggregation Layer
  * ---------------------------------- */
 export const AGGREGATION_LAYER_GET = 'getAggregationLayers'
+export const AGGREGATION_LAYER_EDIT = 'editAggregationLayer'
+export const AGGREGATION_LAYER_SAVE = 'saveAggregationLayer'
 export const AGGREGATION_LAYER_GET_ID = 'getAggregationLayerID'
 export const AGGREGATION_LAYER_SELECT = 'selectAggregationLayer'
+export const AGGREGATION_LAYER_GET_UPLOAD_URL = 'getAggregationLayerUploadUrl'
+export const AGGREGATION_LAYER_PARSE_LAYER = 'parseAggregationLayer'
 
 /* -------------------------------------
  * FORMULA
