@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import app from '@/services/state/app/store'
 import auth from '@/services/state/auth/store'
 import aggregationLayer from '@/services/state/aggregation-layer/store'
+import aggregationArea from '@/services/state/aggregation-layer/store'
 import formula from '@/services/state/formula/store'
 import formulaReport from '@/services/state/formula-report/store'
 import map from '@/services/state/map/store'
@@ -18,6 +19,7 @@ import { cloneDeep } from 'lodash'
 import appState from '@/services/state/app/store/app.state'
 import authState from '@/services/state/auth/store/auth.state'
 import aggregationLayerState from '@/services/state/aggregation-layer/store/aggregation-layer.state'
+import aggregationAreaState from '@/services/state/aggregation-layer/store/aggregation-layer.state'
 import mapState from '@/services/state/map/store/map.state'
 import predictedLayerState from '@/services/state/predicted-layer/store/predicted-layer.state'
 import formulaState from '@/services/state/formula/store/formula.state'
@@ -35,6 +37,7 @@ const initialState = {
   app: cloneDeep(appState),
   auth: cloneDeep(authState),
   aggregationLayer: cloneDeep(aggregationLayerState),
+  aggregationArea: cloneDeep(aggregationAreaState),
   map: cloneDeep(mapState),
   predictedLayer: cloneDeep(predictedLayerState),
   formula: cloneDeep(formulaState),
@@ -50,6 +53,7 @@ export const storeOptions = {
     app,
     auth,
     aggregationLayer,
+    aggregationArea,
     map,
     formula,
     formulaReport,

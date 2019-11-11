@@ -27,6 +27,15 @@ export const AGGREGATION_LAYER_GET_UPLOAD_URL = 'getAggregationLayerUploadUrl'
 export const AGGREGATION_LAYER_PARSE_LAYER = 'parseAggregationLayer'
 
 /* -------------------------------------
+ * Aggregation Area
+ * ---------------------------------- */
+export const AGGREGATION_AREA_GET = 'getAggregationAreas'
+export const AGGREGATION_AREA_EDIT = 'editAggregationArea'
+export const AGGREGATION_AREA_SAVE = 'saveAggregationArea'
+export const AGGREGATION_AREA_GET_ID = 'getAggregationAreaID'
+export const AGGREGATION_AREA_SELECT = 'selectAggregationArea'
+
+/* -------------------------------------
  * FORMULA
  * ---------------------------------- */
 export const FORMULA_GET = 'getFormulas'

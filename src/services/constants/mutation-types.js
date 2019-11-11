@@ -28,6 +28,14 @@ export const AGGREGATION_LAYER_SELECT_LAYER = 'selectLayer'
 export const AGGREGATION_LAYER_RESET = 'resetAggregationLayer'
 
 /* -------------------------------------
+ * Aggregation Area
+ * ---------------------------------- */
+export const AGGREGATION_AREA_SET_AREAS = 'setAreas'
+export const AGGREGATION_AREA_SET_AREA_ID= 'setAreaId'
+export const AGGREGATION_AREA_SELECT_AREA = 'selectArea'
+export const AGGREGATION_AREA_RESET = 'resetAggregationArea'
+
+/* -------------------------------------
  * Formula
  * ---------------------------------- */
 export const FORMULA_SET_FORMULAS = 'setFormulas'
