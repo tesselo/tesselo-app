@@ -12,4 +12,4 @@ phases:
       - echo Building Tesselo Frontend Vue Application for stage $STAGE
       - npm run build:$STAGE
       - echo "Pushing new build to s3://$BUCKET"
-      - aws s3 sync --acl public-read dist/ s3://$BUCKET
+      - aws s3 sync --exclude *.js.map --acl public-read dist/ s3://$BUCKET
