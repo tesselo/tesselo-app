@@ -1,6 +1,6 @@
 import endpoints from '@/data/api/api.endpoints'
 import client from '@/data/api/api.client'
-import { formatAggregationAreaResults, formatAggregationAreaResult } from '@/data/api/api.models'
+import { formatAggregationLayerResults, formatAggregationLayerResult } from '@/data/api/api.models'
 
 export default {
 
@@ -18,7 +18,7 @@ export default {
       .then((response) => {
         return Promise.resolve({
           ...response.data,
-          results: formatAggregationAreaResults(response.data.results)
+          results: formatAggregationLayerResults(response.data.results)
         })
       })
   },
@@ -34,7 +34,7 @@ export default {
   getById (options, axiosInstance = client) {
     return axiosInstance[endpoints.aggregationLayer.list.method](endpoints.aggregationLayer.list.url + '/' + options)
       .then((response) => {
-        return Promise.resolve( formatAggregationAreaResult(response.data))
+        return Promise.resolve( formatAggregationLayerResult(response.data))
       })
   },
   edit(data, axiosInstance = client) {

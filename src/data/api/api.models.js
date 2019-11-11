@@ -5,7 +5,7 @@ export const formatError = (errors) => ({
   nonFieldErrors: errors['non_field_errors']
 })
 
-export const formatAggregationAreaResults = (rows) => {
+export const formatAggregationLayerResults = (rows) => {
   return rows.map(row => ({
     aggregationAreas: row.aggregationareas,
     description: row.description,
@@ -32,7 +32,7 @@ export const formatAggregationAreaResults = (rows) => {
  * Format aggregation area object
  * @param {*} row
  */
-export const formatAggregationAreaResult = (row) => {
+export const formatAggregationLayerResult = (row) => {
   return {
     aggregationAreas: row.aggregationareas,
     description: row.description,
