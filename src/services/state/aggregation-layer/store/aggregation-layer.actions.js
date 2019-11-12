@@ -26,7 +26,7 @@ export default {
   [actionTypes.AGGREGATION_LAYER_GET_ID] (context, options) {
     return APIAdapter.services.aggregationLayer.getById(options)
       .then((response) => {
-        context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYER_ID, response)
+        context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, response)
       })
   },
 
@@ -45,13 +45,14 @@ export default {
 
   [actionTypes.AGGREGATION_LAYER_SAVE](context, options) {
     return APIAdapter.services.aggregationLayer.save(options).then((response) => {
-      context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYER_ID, response)
+      context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, response)
+      return response
     })
   },
 
   [actionTypes.AGGREGATION_LAYER_EDIT](context, options) {
     return APIAdapter.services.aggregationLayer.edit(options).then((response) => {
-      context.commit(mutationTypes.AGGREGATION_LAYER_SET_LAYER_ID, response)
+      context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, response)
     })
   },
   [actionTypes.AGGREGATION_LAYER_GET_UPLOAD_URL](context, data) {

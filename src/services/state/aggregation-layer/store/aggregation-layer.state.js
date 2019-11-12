@@ -4,7 +4,6 @@ export default {
   previous: null,
   pageSize: 10,
   rows: [],
-  row: null,
   selectedLayer: null,
   currentPage: 1
 }

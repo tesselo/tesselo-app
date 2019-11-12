@@ -23,7 +23,6 @@ export const AUTH_REMOVE_AUTHENTICATION = 'removeAuthentication'
  * Aggregation Layer
  * ---------------------------------- */
 export const AGGREGATION_LAYER_SET_LAYERS = 'setLayers'
-export const AGGREGATION_LAYER_SET_LAYER_ID= 'setLayerId'
 export const AGGREGATION_LAYER_SELECT_LAYER = 'selectLayer'
 export const AGGREGATION_LAYER_RESET = 'resetAggregationLayer'
 

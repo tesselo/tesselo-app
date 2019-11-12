@@ -185,7 +185,6 @@ export default {
       selectedFormula: state => state.formula.selectedFormula,
       selectedFormulaRow: state => state.formula.row,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedLayerRow: state => state.aggregationLayer.row,
       formulaReport: state => state.formulaReport.rows,
       total: state => state.formulaReport.total,
       rows: state => state.formulaReport.rows,
@@ -267,9 +266,6 @@ export default {
     // Get meta info for the
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
-      .then(() => {
-        this.selectAggregationLayer(this.selectedLayerRow)
-      })
     }
     if (!this.selectedFormula){
       this.getFormulaIDAction(this.$route.params.formula)

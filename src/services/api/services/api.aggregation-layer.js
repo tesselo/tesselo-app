@@ -58,7 +58,6 @@ export default {
   },
   parseLayer(data, axiosInstance = client) {
     const url = `${endpoints.aggregationLayer.parseLayer.url_base}/${data.pk}${endpoints.aggregationLayer.parseLayer.url_tail}`
-    console.log('at api', url)
     return axiosInstance[endpoints.aggregationLayer.parseLayer.method](url, data)
       .then((response) => {
         return Promise.resolve(response.data)

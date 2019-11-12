@@ -12,10 +12,6 @@ export default {
     state.currentPage = page
   },
 
-  [mutationTypes.AGGREGATION_AREA_SET_LAYER_ID] (state, result) {
-    state.row = result
-  },
-
   [mutationTypes.AGGREGATION_AREA_SELECT_LAYER] (state, layer) {
     state.selectedAggregationArea = layer
   },

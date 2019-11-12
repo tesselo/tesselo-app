@@ -388,12 +388,12 @@ export default {
       if(options.area){
         this.getAggregationLayerIDAction(options.area)
         .then(() => {
-          this.selectArea('urlId', options.zoomTo, options.keepPred)
+          this.selectArea(options.zoomTo, options.keepPred)
         })
       }else if(options.page){
         this.getAggregationLayersAction(options)
         .then(() => {
-          this.selectArea('default', options.zoomTo, options.keepPred)
+          this.selectArea(options.zoomTo, options.keepPred)
         })
       }
     },
@@ -402,23 +402,19 @@ export default {
      *
      * @param action
      */
-    selectArea(action, zoomTo, keepPred) {
-      let area = null
-      action=='default'
-        ? (area = this.aggregationLayer.rows[0])
-        : (area = this.aggregationLayer.row)
-
-      if(area){
-        this.selectAggregationLayer(area)
-        this.areasTableSelect(area, keepPred)
-        this.setMapHomeBounds(area.bounds)
-        if (zoomTo) {
-          // Construct lat lon bounds.
-          const corner1 = L.latLng(area.bounds.xmin, area.bounds.ymin)
-          const corner2 = L.latLng(area.bounds.xmax, area.bounds.ymax)
-          const bounds = L.latLngBounds(corner1, corner2)
-          this.$refs.tslMap.$refs.map.mapObject.fitBounds(bounds)
-        }
+    selectArea(zoomTo, keepPred) {
+      // Select first layer from page if none was selected before.
+      if (!this.selectedLayer) {
+        this.selectAggregationLayer(this.aggregationLayer.rows[0])
+      }
+      this.areasTableSelect(this.selectedLayer, keepPred)
+      this.setMapHomeBounds(this.selectedLayer.bounds)
+      if (zoomTo) {
+        // Construct lat lon bounds.
+        const corner1 = L.latLng(this.selectedLayer.bounds.xmin, this.selectedLayer.bounds.ymin)
+        const corner2 = L.latLng(this.selectedLayer.bounds.xmax, this.selectedLayer.bounds.ymax)
+        const bounds = L.latLngBounds(corner1, corner2)
+        this.$refs.tslMap.$refs.map.mapObject.fitBounds(bounds)
       }
     },
 
