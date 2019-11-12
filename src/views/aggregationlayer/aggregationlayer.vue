@@ -19,7 +19,7 @@
           @select="areasTableSelect"/>
       </el-row>
       <el-row>
-        <h2 v-if="edit">Edit Aggregation Layer {{ selectedLayer.id }}</h2>
+        <h2 v-if="edit && selectedLayer">Edit Aggregation Layer {{ selectedLayer.id }}</h2>
         <h2 v-if="create">Create New Aggregation Layer</h2>
       </el-row>
       <el-row v-if="!list">
@@ -120,7 +120,6 @@ export default {
   },
   watch: {
     selectedLayer(dat){
-      console.log('new selected layer', dat)
       this.form.name = dat.name
       this.form.description = dat.description
       this.form.shapefile = dat.shapefile
@@ -180,7 +179,6 @@ export default {
         this.saveAggregationLayer({...this.form}).then(function(){
           if (tat.selectedFile && tat.form.shapefile) {
             console.log('uploading new file')
-            const is_new = true
             tat.updateWithFile()
           }
         })

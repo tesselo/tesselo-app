@@ -1,48 +1,44 @@
 <template>
   <form class="tsl-form">
-    <tsl-input
-      v-validate="'required'"
-      v-model="username"
-      name="username"
-      type="text"
-      value="'username'"
-      label="Username"
-      placeholder="Your username"
-    >
-      <span
-        v-if="usernameFlags.touched">
-        slot="error"
-        {{ errors.first('username') }}
-      </span>
-    </tsl-input>
-
-    <tsl-input
-      v-validate="'required|min:6'"
-      v-model="password"
-      name="password"
-      type="password"
-      value="'password'"
-      label="Password"
-      placeholder="Enter your password"
-    >
-      <span
-        v-if="passwordFlags.touched"
-        slot="error">
-        {{ errors.first('password') }}
-      </span>
-    </tsl-input>
-    <div class="row">
-      <div class="col-12 d-flex flex-row justify-content-end">
-        <tsl-button
-          :disabled="usernameFlags.invalid || passwordFlags.invalid"
-          :loading="loading"
-          type="button"
-          title="Login"
-          class="login-button"
-          @click="submitForm"
-        />
+    <ValidationObserver v-slot="{ valid }">
+      <ValidationProvider
+        v-slot="{ errors }"
+        name="username"
+        rules="required">
+        <tsl-input
+          v-model="username"
+          name="username"
+          type="text"
+          value="'username'"
+          label="Username"
+          placeholder="Your username"/>
+        <span class="tsl-form__control-error">{{ errors[0] }}</span>
+      </ValidationProvider>
+      <ValidationProvider
+        v-slot="{ errors }"
+        name="password"
+        rules="required|min:6">
+        <tsl-input
+          v-model="password"
+          name="password"
+          type="password"
+          value="'password'"
+          label="Password"
+          placeholder="Enter your password"/>
+        <span class="tsl-form__control-error">{{ errors[0] }}</span>
+      </ValidationProvider>
+      <div class="row">
+        <div class="col-12 d-flex flex-row justify-content-end">
+          <tsl-button
+            :disabled="!valid"
+            :loading="loading"
+            type="button"
+            title="Login"
+            class="login-button"
+            @click="submitForm"/>
+        </div>
       </div>
-    </div>
+    </ValidationObserver>
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end">
         <p
@@ -58,7 +54,6 @@
 </template>
 
 <script>
-import { mapFields } from 'vee-validate'
 import { mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
 
@@ -81,10 +76,7 @@ export default {
       }
     }
   },
-  computed: mapFields({
-    usernameFlags: 'username',
-    passwordFlags: 'password'
-  }),
+
   methods: {
     ...mapActions('auth', {
       login: actionTypes.AUTH_LOGIN
@@ -92,7 +84,7 @@ export default {
     submitForm: function() {
       this.loading = true
 
-      this.formErrors = { // todo create cleanFormErrors mixin for form components
+      this.formErrors = {
         nonFieldErrors: null
       }
 
@@ -104,7 +96,7 @@ export default {
         this.loading = false
         this.$router.push({ name: 'Home' })
       })
-      .catch((errors) => {
+      .catch(errors => {
         this.loading = false
         this.formErrors = errors
       })
@@ -119,4 +111,3 @@ export default {
     margin-bottom: 10px;
   }
 </style>
-

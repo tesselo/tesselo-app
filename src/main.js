@@ -10,8 +10,9 @@ import Router from 'vue-router'
 import vMediaQuery from 'v-media-query'
 import { sync } from 'vuex-router-sync'
 import VueHead from 'vue-head'
-import VeeValidate from 'vee-validate'
 import DeviceInfo from '@/plugins/device-info'
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
+import { required, min } from 'vee-validate/dist/rules'
 
 import '@/theme/main.scss'
 import App from '@/views/app/app'
@@ -46,7 +47,19 @@ Vue.use(vMediaQuery, {
 
 Vue.use(VueHead)
 
-Vue.use(VeeValidate)
+// Validation config.
+extend('required', {
+  ...required,
+  message: 'The {_field_} field is required.'
+})
+extend('min', {
+  ...min,
+  message: 'The input must be at least {length} characters long.'
+})
+
+Vue.component('ValidationProvider', ValidationProvider)
+Vue.component('ValidationObserver', ValidationObserver)
+
 
 new Vue({
   el: '#app',
