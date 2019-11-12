@@ -46,7 +46,6 @@ export default {
   [actionTypes.AGGREGATION_LAYER_SAVE](context, options) {
     return APIAdapter.services.aggregationLayer.save(options).then((response) => {
       context.commit(mutationTypes.AGGREGATION_LAYER_SELECT_LAYER, response)
-      return response
     })
   },
 

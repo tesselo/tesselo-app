@@ -106,8 +106,7 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedLayerRow: state => state.aggregationLayer.row
+      selectedLayer: state => state.aggregationLayer.selectedLayer
     }),
     list(){
       return this.$route.path == '/areas'
@@ -121,19 +120,17 @@ export default {
   },
   watch: {
     selectedLayer(dat){
+      console.log('new selected layer', dat)
       this.form.name = dat.name
       this.form.description = dat.description
       this.form.shapefile = dat.shapefile
-      this.form.name_column = dat.nameColumn
+      this.form.name_column = dat.name_column
     }
   },
   mounted() {
     console.log('mounted')
     if(this.edit){
       this.getAggregationLayerIDAction(this.$route.params.layer)
-      .then(() => {
-        this.selectAggregationLayer(this.selectedLayerRow)
-      })
     }
   },
   methods: {
@@ -181,16 +178,16 @@ export default {
         console.log('creating new')
         const tat = this
         this.saveAggregationLayer({...this.form}).then(function(){
-          console.log('created new', tat.selectedLayer)
-          // this.selectAggregationLayer(data)
           if (tat.selectedFile && tat.form.shapefile) {
             console.log('uploading new file')
+            const is_new = true
             tat.updateWithFile()
           }
         })
       }
     },
     updateWithFile(){
+      console.log('updating file for', this.selectedLayer)
       const tat = this
       this.getUploadLink({
         pk: this.selectedLayer.id,
@@ -218,6 +215,10 @@ export default {
             tat.form.shapefile = response.fields.key
             // Trigger parse task.
             tat.parseAggregationLayer({pk: tat.selectedLayer.id})
+            // Go to detail page if this is a new layer.
+            if (tat.create){
+              tat.$router.push({name: 'EditAggregationLayer', params: {layer: tat.selectedLayer.id}})
+            }
           })
         })
       })
