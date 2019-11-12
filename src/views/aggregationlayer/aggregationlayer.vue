@@ -162,7 +162,6 @@ export default {
     }
   },
   mounted() {
-    console.log('mounted')
     if(this.edit){
       this.getAggregationLayerIDAction(this.$route.params.layer)
     }
@@ -189,7 +188,6 @@ export default {
       this.$router.push({name: 'CreateAggregationLayer'})
     },
     handleFileChange(file){
-      console.log(file)
       this.selectedFile = file
       this.form.shapefile = file.name
     },
@@ -210,10 +208,8 @@ export default {
 
       if (this.selectedLayer && this.selectedFile && this.form.shapefile) {
         // Existing aggregationlayer, change in file - upload.
-        console.log('uploading file', this.selectedFile)
         this.updateWithFile()
       } else if (this.selectedLayer) {
-        console.log('updating agglayer without file change')
         // Existing aggregationlayer, no change in file - update json data.
         this.editAggregationLayer({id: this.selectedLayer.id, ...this.form})
         .catch(errors => {
@@ -222,12 +218,10 @@ export default {
         })
       } else {
         // New aggregationlayer.
-        console.log('creating new')
         const tat = this
         this.saveAggregationLayer({...this.form})
         .then(function(){
           if (tat.selectedFile && tat.form.shapefile) {
-            console.log('uploading new file')
             tat.updateWithFile()
           }
         })
@@ -238,14 +232,12 @@ export default {
       }
     },
     updateWithFile(){
-      console.log('updating file for', this.selectedLayer)
       const tat = this
       this.getUploadLink({
         pk: this.selectedLayer.id,
         filename: this.selectedFile.name,
       })
       .then((response) => {
-        console.log(response.fields)
         // Upload file (inspired by https://stackoverflow.com/questions/55877071/).
         var postData = new FormData()
         // Add fields to post data.
@@ -260,7 +252,6 @@ export default {
           url: response.url,
           data: postData,
         }).then(function(){
-          console.log('Finished upload, updating agglayer json and triggering parser.', response.fields.key)
           // Commit non-file fields.
           tat.editAggregationLayer({...tat.form, id: tat.selectedLayer.id, shapefile: response.fields.key}).then(function(){
             // Update form data with full S3 key.
