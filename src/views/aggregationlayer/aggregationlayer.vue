@@ -9,6 +9,7 @@
         <h2>
           Select Aggregation Layer
           <el-button
+            class="button-right"
             icon="el-icon-circle-plus-outline"
             title="Create new aggregationlayer"
             @click="createNew" />
@@ -19,51 +20,81 @@
           @select="areasTableSelect"/>
       </el-row>
       <el-row>
-        <h2 v-if="edit && selectedLayer">Edit Aggregation Layer {{ selectedLayer.id }}</h2>
-        <h2 v-if="create">Create New Aggregation Layer</h2>
+        <h2>
+          <span v-if="edit && selectedLayer">Edit Aggregation Layer {{ selectedLayer.id }}</span>
+          <span v-if="create">Create New Aggregation Layer</span>
+          <el-button
+            v-if="!list"
+            class="button-right"
+            icon="el-icon-back"
+            @click="goBack"/>
+        </h2>
       </el-row>
       <el-row v-if="!list">
         <el-form :model="form">
-          <el-form-item label="Name">
-            <el-input v-model="form.name" />
-          </el-form-item>
-          <el-form-item label="Description">
-            <el-input v-model="form.description" />
-          </el-form-item>
-          <el-form-item label="Zipped Shapefile">
-            <el-input
-              v-if="form.shapefile"
-              v-model="form.shapefile"
-              clearable />
-            <el-upload
-              ref="upload"
-              :accept="accept"
-              :auto-upload="autoUpload"
-              :multiple="multiple"
-              :show-file-list="showFileList"
-              :on-change="handleFileChange"
-              class="upload-demo"
-              action="">
+          <ValidationObserver v-slot="{ valid }">
+            <el-form-item label="Name">
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="name"
+                rules="required">
+                <el-input v-model="form.name" />
+                <span>{{ errors[0] }}</span>
+              </ValidationProvider>
+            </el-form-item>
+            <el-form-item label="Description">
+              <el-input v-model="form.description" />
+            </el-form-item>
+            <el-form-item label="Zipped Shapefile">
+              <el-upload
+                ref="upload"
+                :accept="accept"
+                :auto-upload="autoUpload"
+                :multiple="multiple"
+                :show-file-list="showFileList"
+                :on-change="handleFileChange"
+                class="input-upload"
+                action="">
+                <el-input
+                  v-model="form.shapefile"
+                  :readonly="true"
+                  class="input-upload"
+                  clearable>
+                  <el-button
+                    slot="append"
+                    icon="el-icon-upload2" />
+                </el-input>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="Name Column">
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="name column"
+                rules="required">
+                <el-input v-model="form.name_column" />
+                <span>{{ errors[0] }}</span>
+              </ValidationProvider>
+            </el-form-item>
+            <el-form-item>
               <el-button
-                slot="trigger"
-                size="small"
-                type="primary">
-                <span v-if="form.shapefile">Change File</span>
-                <span v-else>Select File</span>
+                :loading="loading"
+                :disabled="!valid"
+                type="primary"
+                class="button-right"
+                @click="onSubmit">
+                Save
               </el-button>
-            </el-upload>
-          </el-form-item>
-          <el-form-item label="Name Column">
-            <el-input v-model="form.name_column" />
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="onSubmit">
-              Save
-            </el-button>
-          </el-form-item>
+            </el-form-item>
+          </ValidationObserver>
         </el-form>
+      </el-row>
+      <el-row>
+        <span
+          v-for="error in formErrors.nonFieldErrors"
+          :key="error"
+          class="tsl-form__control-error text-right">
+          {{ error }}
+        </span>
       </el-row>
       <el-row v-if="selectedLayer">{{ selectedLayer.parse_log }}</el-row>
       <el-row v-if="selectedLayer">{{ selectedLayer.aggregationareas }}</el-row>
@@ -101,7 +132,11 @@ export default {
         shapefile: '',
         name_column: ''
       },
-      areaTableSetRoute: false
+      areaTableSetRoute: false,
+      loading: false,
+      formErrors: {
+        nonFieldErrors: null
+      }
     }
   },
   computed: {
@@ -142,6 +177,9 @@ export default {
       getUploadLink: actionTypes.AGGREGATION_LAYER_GET_UPLOAD_URL,
       parseAggregationLayer: actionTypes.AGGREGATION_LAYER_PARSE_LAYER,
     }),
+    goBack(){
+      this.$router.go(-1)
+    },
     areasTableSelect(area) {
       this.$router.push({name: 'EditAggregationLayer', params: {layer: area.id}})
     },
@@ -164,6 +202,12 @@ export default {
       }
     },
     onSubmit(){
+      this.loading = true
+
+      this.formErrors = {
+        nonFieldErrors: null
+      }
+
       if (this.selectedLayer && this.selectedFile && this.form.shapefile) {
         // Existing aggregationlayer, change in file - upload.
         console.log('uploading file', this.selectedFile)
@@ -172,15 +216,24 @@ export default {
         console.log('updating agglayer without file change')
         // Existing aggregationlayer, no change in file - update json data.
         this.editAggregationLayer({id: this.selectedLayer.id, ...this.form})
+        .catch(errors => {
+          this.loading = false
+          this.formErrors = errors
+        })
       } else {
         // New aggregationlayer.
         console.log('creating new')
         const tat = this
-        this.saveAggregationLayer({...this.form}).then(function(){
+        this.saveAggregationLayer({...this.form})
+        .then(function(){
           if (tat.selectedFile && tat.form.shapefile) {
             console.log('uploading new file')
             tat.updateWithFile()
           }
+        })
+        .catch(errors => {
+          this.loading = false
+          this.formErrors = errors
         })
       }
     },
@@ -190,7 +243,8 @@ export default {
       this.getUploadLink({
         pk: this.selectedLayer.id,
         filename: this.selectedFile.name,
-      }).then((response) => {
+      })
+      .then((response) => {
         console.log(response.fields)
         // Upload file (inspired by https://stackoverflow.com/questions/55877071/).
         var postData = new FormData()
@@ -213,12 +267,27 @@ export default {
             tat.form.shapefile = response.fields.key
             // Trigger parse task.
             tat.parseAggregationLayer({pk: tat.selectedLayer.id})
+            .then(() => {
+              this.loading = false
+            })
+            .catch(errors => {
+              this.loading = false
+              this.formErrors = errors
+            })
             // Go to detail page if this is a new layer.
             if (tat.create){
               tat.$router.push({name: 'EditAggregationLayer', params: {layer: tat.selectedLayer.id}})
             }
           })
         })
+        .catch(errors => {
+          this.loading = false
+          this.formErrors = errors
+        })
+      })
+      .catch(errors => {
+        this.loading = false
+        this.formErrors = errors
       })
     }
   }
@@ -229,7 +298,10 @@ export default {
 .upload-container {
   padding-top: 50px;
 }
-.el-button {
+.button-right {
   float: right;
+}
+.input-upload {
+  width: 100%;
 }
 </style>
