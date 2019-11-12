@@ -3,6 +3,7 @@ import client from '@/services/api/api.client'
 
 import auth from '@/services/api/services/api.auth.js'
 import aggregationLayer from '@/services/api/services/api.aggregation-layer.js'
+import aggregationArea from '@/services/api/services/api.aggregation-area.js'
 import formula from '@/services/api/services/api.formula.js'
 import time from '@/services/api/services/api.time.js'
 import report from '@/services/api/services/api.report.js'
@@ -34,6 +35,7 @@ class APIAdapter {
   services = {
     auth,
     aggregationLayer,
+    aggregationArea,
     formula,
     time,
     report,

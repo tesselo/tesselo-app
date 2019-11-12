@@ -6,6 +6,7 @@ import Login from '@/views/login/login'
 import Logout from '@/views/logout/logout'
 import Report from '@/views/report/report'
 import AggLayer from '@/views/aggregationlayer/aggregationlayer'
+import AggArea from '@/views/aggregationarea/aggregationarea'
 
 Vue.use(Router)
 
@@ -50,6 +51,16 @@ const router = new Router({
       path: '/areas/:layer',
       name: 'EditAggregationLayer',
       component: AggLayer
+    },
+    {
+      path: '/areas/:layer/area',
+      name: 'ListAggregationLayerAreas',
+      component: AggArea
+    },
+    {
+      path: '/areas/:layer/area/:area',
+      name: 'EditAggregationLayerAreas',
+      component: AggArea
     },
   ]
 })

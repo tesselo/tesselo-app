@@ -5,21 +5,18 @@ import client from '@/services/api/api.client'
 export default {
 
   get (options, axiosInstance = client) {
-    const url = `${endpoints.aggregationArea.list.url}?page=${options.page}&aggregationlayer=${options.aggregationlayer}`
+    const url = `${endpoints.aggregationArea.list.url}?page=${options.page}&aggregationlayer=${options.aggregationLayer}`
 
     return axiosInstance[endpoints.aggregationArea.list.method](url)
       .then((response) => {
-        return Promise.resolve({
-          ...response.data,
-          results: formatAggregationAreaResults(response.data.results)
-        })
+        return Promise.resolve(response.data)
       })
   },
 
   getById (pk, axiosInstance = client) {
     return axiosInstance[endpoints.aggregationArea.list.method](endpoints.aggregationArea.list.url + '/' + pk)
       .then((response) => {
-        return Promise.resolve( formatAggregationAreaResult(response.data))
+        return Promise.resolve(response.data)
       })
   },
 

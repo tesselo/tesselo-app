@@ -1,0 +1,131 @@
+<template>
+  <div class="areas-panel d-flex flex-column align-items-center justify-content-end">
+    <el-table
+      v-if="!loading"
+      :data="rows"
+      :row-class-name="tableRowClassName"
+      class="areas-table"
+      max-height="500"
+      size="small"
+      style="width: 100%"
+      @current-change="selectArea">
+      <el-table-column
+        prop="name"
+        label="Name"
+        width="300" />
+    </el-table>
+    <div
+      v-if="loading"
+      class="spinner-wrapper">
+      <div class="spinner twilight" />
+    </div>
+    <el-pagination
+      v-if="total"
+      :total="total"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      layout="prev, pager, next"
+      @current-change="selectPage" />
+  </div>
+</template>
+
+<script>
+import { mapActions, mapState } from 'vuex'
+import { actionTypes } from '@/services/constants'
+
+import 'element-ui/lib/theme-chalk/table.css'
+import 'element-ui/lib/theme-chalk/table-column.css'
+import 'element-ui/lib/theme-chalk/pagination.css'
+import 'element-ui/lib/theme-chalk/icon.css'
+
+import {
+  Table as ElTable,
+  TableColumn as ElTableColumn,
+  Pagination as ElPagination
+} from 'element-ui'
+
+export default {
+  name: 'AggregationAreasTable',
+  components: {
+    ElTable,
+    ElTableColumn,
+    ElPagination
+  },
+  props: {
+    aggregationLayer: {
+      type: Number,
+      required: true
+    }
+  },
+  data() {
+    return {
+      loading: false
+    }
+  },
+  computed: {
+    ...mapState({
+      total: state => state.aggregationArea.total,
+      pageSize: state => state.aggregationArea.pageSize,
+      rows: state => state.aggregationArea.rows,
+      next: state => state.aggregationArea.next,
+      previous: state => state.aggregationArea.previous,
+      selectedArea: state => state.aggregationArea.selectedArea,
+      currentPage: state => state.aggregationArea.currentPage
+    })
+  },
+  beforeMount() {
+    if (this.rows.length === 0 ){
+      this.getAggregationAreas({page: this.currentPage, aggregationLayer: this.aggregationLayer})
+    }
+  },
+  methods: {
+    ...mapActions('aggregationArea', {
+      getAggregationAreasAction: actionTypes.AGGREGATION_AREA_GET,
+      selectAggregationArea: actionTypes.AGGREGATION_AREA_SELECT
+    }),
+    getAggregationAreas(options) {
+      this.loading = true
+      this.getAggregationAreasAction(options)
+        .then(() => {
+          this.loading = false
+        })
+    },
+    selectArea(area) {
+      this.selectAggregationArea(area)
+      this.$emit('select', area)
+    },
+    selectPage(page) {
+      this.getAggregationAreas({ page })
+    },
+    tableRowClassName(data) {
+      if (this.selectedArea && data.row.id == this.selectedArea .id) {
+        return 'selected'
+      }
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+  .areas-panel {
+    position: relative;
+    min-height: 400px;
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  .areas-table {
+    margin: 20px 0 20px;
+    overflow: auto;
+  }
+
+  .spinner-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-30px);
+
+    width: 30px;
+    height: 30px;
+  }
+</style>
