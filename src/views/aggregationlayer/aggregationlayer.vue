@@ -53,17 +53,21 @@
                 :multiple="multiple"
                 :show-file-list="showFileList"
                 :on-change="handleFileChange"
-                class="input-upload"
                 action="">
-                <el-input
-                  v-model="form.shapefile"
-                  :readonly="true"
-                  class="input-upload"
-                  clearable>
-                  <el-button
-                    slot="append"
-                    icon="el-icon-upload2" />
-                </el-input>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="zipped shapefile"
+                  rules="required">
+                  <el-input
+                    v-model="form.shapefile"
+                    :readonly="true"
+                    clearable>
+                    <el-button
+                      slot="append"
+                      icon="el-icon-upload2" />
+                  </el-input>
+                  <span>{{ errors[0] }}</span>
+                </ValidationProvider>
               </el-upload>
             </el-form-item>
             <el-form-item label="Name Column">
@@ -291,8 +295,5 @@ export default {
 }
 .button-right {
   float: right;
-}
-.input-upload {
-  width: 100%;
 }
 </style>
