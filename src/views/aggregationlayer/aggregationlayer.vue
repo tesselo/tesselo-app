@@ -15,7 +15,6 @@
             @click="createNew" />
         </h2>
         <areas-table
-          ref="table"
           :set-router-query-parameters="areaTableSetRoute"
           @select="areasTableSelect"/>
       </el-row>
@@ -193,12 +192,12 @@ export default {
       this.$router.go(-1)
     },
     areasTableSelect(area) {
-      this.$router.push({name: 'EditAggregationLayer', params: {layer: area.id}})
+      this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: area.id}})
     },
     createNew(){
       this.resetAggregationLayer()
       this.clearForm()
-      this.$router.push({name: 'CreateAggregationLayer'})
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_CREATE})
     },
     handleFileChange(file){
       this.selectedFile = file
@@ -280,7 +279,7 @@ export default {
             })
             // Go to detail page if this is a new layer.
             if (tat.create){
-              tat.$router.push({name: 'EditAggregationLayer', params: {layer: tat.selectedLayer.id}})
+              tat.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: tat.selectedLayer.id}})
             }
           })
         })

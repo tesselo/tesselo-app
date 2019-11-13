@@ -36,6 +36,7 @@
     "html2canvas": "^1.0.0-rc.3",
     "jspdf": "^1.5.3",
     "leaflet": "1.5.1",
+    "leaflet-draw": "^1.0.4",
     "leaflet-geosearch": "2.6.0",
     "leaflet-range": "0.1.5",
     "leaflet.defaultextent": "0.0.3",
@@ -55,7 +56,8 @@
     "vue2-leaflet-vectorgrid": "1.0.4",
     "vuex": "3.0.1",
     "vuex-persistedstate": "2.5.2",
-    "vuex-router-sync": "5.0.0"
+    "vuex-router-sync": "5.0.0",
+    "wellknown": "^0.5.0"
   },
   "devDependencies": {
     "@vue/test-utils": "1.0.0-beta.10",
