@@ -8,6 +8,8 @@ import Report from '@/views/report/report'
 import AggLayer from '@/views/aggregationlayer/aggregationlayer'
 import AggArea from '@/views/aggregationarea/aggregationarea'
 
+import { routeTypes } from "@/services/constants"
+
 Vue.use(Router)
 
 const router = new Router({
@@ -16,7 +18,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: routeTypes.HOME,
       component: Home,
       meta: {
         requiresAuthentication: true
@@ -24,42 +26,47 @@ const router = new Router({
     },
     {
       path: '/login',
-      name: 'Login',
+      name: routeTypes.LOGIN,
       component: Login
     },
     {
       path: '/logout',
-      name: 'Logout',
+      name: routeTypes.LOGOUT,
       component: Logout
     },
     {
       path: '/report/:layer/:formula',
-      name: 'Report',
+      name: routeTypes.REPORT,
       component: Report
     },
     {
       path: '/areas',
-      name: 'ListAggregationLayer',
+      name: routeTypes.AGGREGATION_LAYER_LIST,
       component: AggLayer
     },
     {
       path: '/areas/new',
-      name: 'CreateAggregationLayer',
+      name: routeTypes.AGGREGATION_LAYER_CREATE,
       component: AggLayer
     },
     {
       path: '/areas/:layer',
-      name: 'EditAggregationLayer',
+      name: routeTypes.AGGREGATION_LAYER_EDIT,
       component: AggLayer
     },
     {
       path: '/areas/:layer/area',
-      name: 'ListAggregationLayerAreas',
+      name: routeTypes.AGGREGATION_AREA_LIST,
+      component: AggArea
+    },
+    {
+      path: '/areas/:layer/area/new',
+      name: routeTypes.AGGREGATION_AREA_CREATE,
       component: AggArea
     },
     {
       path: '/areas/:layer/area/:area',
-      name: 'EditAggregationLayerAreas',
+      name: routeTypes.AGGREGATION_AREA_EDIT,
       component: AggArea
     },
   ]

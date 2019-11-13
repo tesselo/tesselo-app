@@ -100,9 +100,18 @@
           {{ error }}
         </span>
       </el-row>
-      <el-row v-if="selectedLayer">{{ selectedLayer.parse_log }}</el-row>
-      <el-row v-if="selectedLayer">{{ selectedLayer.aggregationareas }}</el-row>
-      <el-row v-if="selectedLayer">{{ selectedLayer.extent }}</el-row>
+      <el-row v-if="selectedLayer && selectedLayer.parse_log && !list">
+        <h3>Log</h3>
+        <p>{{ selectedLayer.parse_log }}</p>
+      </el-row>
+      <el-row v-if="selectedLayer && selectedLayer.aggregationareas && !list">
+        <h3>Aggregation areas</h3>
+        <p>{{ selectedLayer.aggregationareas }}</p>
+      </el-row>
+      <el-row v-if="selectedLayer && selectedLayer.extent && !list">
+        <h3>Extent</h3>
+        <p>{{ selectedLayer.extent }}</p>
+      </el-row>
     </el-col>
   </el-row>
 </template>
@@ -113,7 +122,7 @@ import 'element-ui/lib/theme-chalk/button.css'
 import 'element-ui/lib/theme-chalk/upload.css'
 
 import { mapState, mapActions } from 'vuex'
-import { actionTypes } from '@/services/constants'
+import { actionTypes, routeTypes } from '@/services/constants'
 import axios from 'axios'
 import AreasTable from '@/components/areas-table/areas-table'
 
@@ -148,13 +157,13 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer
     }),
     list(){
-      return this.$route.path == '/areas'
+      return this.$route.name == routeTypes.AGGREGATION_LAYER_LIST
     },
     edit(){
-      return Boolean(this.$route.params.layer)
+      return this.$route.name == routeTypes.AGGREGATION_LAYER_EDIT
     },
     create(){
-      return this.$route.path == '/areas/new'
+      return this.$route.name == routeTypes.AGGREGATION_LAYER_CREATE
     }
   },
   watch: {
