@@ -24,7 +24,7 @@ export default {
     context.commit(mutationTypes.AGGREGATION_AREA_SELECT_AREA, area)
   },
 
-  [actionTypes.RESET] (context) {
+  [actionTypes.AGGREGATION_AREA_RESET] (context) {
     context.commit(mutationTypes.AGGREGATION_AREA_RESET)
   },
 

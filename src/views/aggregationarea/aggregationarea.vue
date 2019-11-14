@@ -7,7 +7,7 @@
       :lg="{span: 12, offset: 6}">
       <el-row v-if="list">
         <h2>
-          Select Aggregation Layer
+          Select Aggregation Area
           <el-button
             class="button-right"
             icon="el-icon-circle-plus-outline"
@@ -21,6 +21,7 @@
       <el-row>
         <h2>
           <span v-if="edit && selectedArea">Edit Aggregation Area {{ selectedArea.id }}</span>
+          <span v-if="edit && !selectedArea"><i class="el-icon-loading" /></span>
           <span v-if="create">Create New Aggregation Area</span>
           <el-button
             v-if="!list"
@@ -29,8 +30,17 @@
             @click="goBack"/>
         </h2>
       </el-row>
+      <el-row ref="alertsContainer">
+        <el-alert
+          v-for="msg in msgs"
+          :key="msg.key"
+          :title="msg.title"
+          :type="msg.type"
+          :center="true"/>
+      </el-row>
       <el-row v-if="!list">
-        <el-form :model="form">
+        <el-form
+          :model="form">
           <ValidationObserver v-slot="{ valid }">
             <el-form-item label="Name">
               <ValidationProvider
@@ -44,11 +54,13 @@
             <el-form-item label="Geometry">
               <l-map
                 ref="map"
-                class="lmap">
+                class="lmap"
+                @ready="mapReady">
                 <l-tile-layer :url="url" />
                 <l-geo-json
                   ref="geom"
-                  :geojson="geojson" />
+                  :geojson="geojson"
+                  @ready="geomLayerReady"/>
               </l-map>
               <ValidationProvider
                 v-slot="{ errors }"
@@ -59,7 +71,15 @@
               </ValidationProvider>
             </el-form-item>
             <el-form-item label="AggregationLayer">
-              <el-input v-model="form.aggregationlayer" />
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="name"
+                rules="required">
+                <el-input
+                  v-model="form.aggregationlayer"
+                  :readonly="true" />
+                <span>{{ errors[0] }}</span>
+              </ValidationProvider>
             </el-form-item>
             <el-form-item label="Attributes">
               <el-input v-model="form.attributes" />
@@ -84,9 +104,15 @@
 import L from 'leaflet'
 import { mapActions, mapState } from 'vuex'
 import { LMap, LTileLayer, LGeoJson, LFeatureGroup } from 'vue2-leaflet'
-import { stringify } from 'wellknown'
+import { parse, stringify } from 'wellknown'
+
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
+
+import 'element-ui/lib/theme-chalk/form.css'
+import 'element-ui/lib/theme-chalk/button.css'
+import 'element-ui/lib/theme-chalk/alert.css'
+
 
 import AggregationAreasTable from '@/components/aggregation-areas-table/aggregation-areas-table'
 import { actionTypes, routeTypes } from '@/services/constants'
@@ -105,13 +131,17 @@ export default {
       form: {
         name: '',
         geom: '',
-        aggregationlayer: '',
-        attibutes: {}
+        aggregationlayer: this.aggregationLayer,
+        attributes: '{}'
       },
       loading: false,
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       geojson: null,
-      drawControl: null
+      drawControl: null,
+      error: null,
+      success: false,
+      alertCenter: true,
+      msgs: []
     }
   },
   computed: {
@@ -137,33 +167,46 @@ export default {
     }
   },
   mounted() {
+    if (this.create) {
+      this.form.aggregationlayer = this.$route.params.layer
+    }
     if(this.edit){
-      console.log('getting area id', this.$route.params.area)
       this.getAggregationAreaIDAction(this.$route.params.area)
     }
-
-    // Hook map draw edit events into api.
-    if (!this.list) {
+  },
+  methods: {
+    ...mapActions('aggregationArea', {
+      getAggregationAreaIDAction: actionTypes.AGGREGATION_AREA_GET_ID,
+      editAggregationAreaAction: actionTypes.AGGREGATION_AREA_EDIT,
+      createAggregationAreaAction: actionTypes.AGGREGATION_AREA_SAVE,
+      resetAggregationAreaAction: actionTypes.AGGREGATION_AREA_RESET
+    }),
+    mapReady(){
+      // Fit map to bounds.
+      if (this.geojson) {
+        this.$refs.map.mapObject.fitBounds(L.geoJson(this.geojson).getBounds().pad(0.1))
+      }
+      // Hook map draw edit events into api.
       const tat = this
-      this.$refs.map.mapObject.on(L.Draw.Event.EDITED, function (e) {
-        var layers = e.layers
-        layers.eachLayer(function (layer) {
+      this.$refs.map.mapObject.on(L.Draw.Event.EDITED, (e) => {
+        e.layers.eachLayer(function (layer) {
           tat.geomUpdate(layer._latlngs)
         })
       })
-      this.$refs.map.mapObject.on(L.Draw.Event.CREATED, function (e) {
-        var layers = e.layers
-        layers.eachLayer(function (layer) {
-          tat.geomUpdate(layer._latlngs)
-        })
+      this.$refs.map.mapObject.on(L.Draw.Event.CREATED, (e) => {
+        tat.geomUpdate(e.layer._latlngs)
       })
-    }
-
-    // Create draw control here if this is a new feature.
-    if (this.create) {
+      this.$refs.map.mapObject.on(L.Draw.Event.DELETED, () => {
+        tat.form.geom = ''
+      })
+    },
+    geomLayerReady(){
+      // Make geom editable.
       this.drawControl = new L.Control.Draw({
         position: 'topright',
-        edit: false,
+        edit: {
+          featureGroup: this.$refs.geom.mapObject
+        },
         draw: {
           polygon: true,
           marker: false,
@@ -173,66 +216,112 @@ export default {
           rectangle: false
         }
       }).addTo(this.$refs.map.mapObject)
-    }
-  },
-  methods: {
-    ...mapActions('aggregationArea', {
-      getAggregationAreaIDAction: actionTypes.AGGREGATION_AREA_GET_ID,
-    }),
+    },
     goBack(){
       this.$router.go(-1)
     },
     createNew(){
-      console.log('creating new')
-    },
-    onSubmit(){
-      console.log('submitting form')
+      // Clear form.
+      this.form = {
+        name: '',
+        geom: '',
+        aggregationlayer: this.aggregationLayer,
+        attributes: '{}'
+      }
+      this.geojson = null
+      this.resetAggregationAreaAction()
+      this.$router.push({name: routeTypes.AGGREGATION_AREA_CREATE})
     },
     geomUpdate(latlngs){
       // Update geojson.
-      this.geojson.features = [L.polygon(latlngs).toGeoJSON()]
+      this.geojson = {
+        "type": "FeatureCollection",
+        "features": [L.polygon(latlngs).toGeoJSON()]
+      }
       // Update form.
-      this.form.geom = `SRID=4326;${stringify(this.geojson.features[0].geometry)}`
+      const reprojected_coords = this.geojson.features[0].geometry.coordinates[0].map(coords => {
+        var projected = L.Projection.SphericalMercator.project(L.latLng(coords[1], coords[0]))
+        return [projected.x, projected.y]
+      })
+      // Create wkt multipolygon from reprojected coordinates.
+      const reprojected_wkt = stringify({
+        "type": "MultiPolygon",
+        "coordinates": [[ reprojected_coords ]]
+      })
+      // Update form with geojson.
+      this.form.geom = `SRID=3857;${reprojected_wkt}`
     },
     areaSelect(dat){
-      // Deactivate current draw control if it exists.
-      if (this.drawControl) {
-        this.drawControl.removeFrom(this.$refs.geom.mapObject)
-      }
+      // Transform Web mercator WKT to WGS84. Only get first polygon from
+      // multipolygon.
+      const coordinates = parse(dat.geom).coordinates[0][0].map(coords => {
+        const projected = L.Projection.SphericalMercator.unproject(L.point(coords))
+        return [projected.lng, projected.lat]
+      })
 
       // Set geojson attribute.
       this.geojson = {
         "type": "FeatureCollection",
         "features": [{
           "type": "Feature",
-          "geometry": dat.geom
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [coordinates]
+          }
         }]
       }
 
       // Fit map to bounds.
-      this.$refs.map.mapObject.fitBounds(L.geoJson(this.geojson).getBounds())
+      if (this.$refs.map) {
+        this.$refs.map.mapObject.fitBounds(L.geoJson(this.geojson).getBounds().pad(0.1))
+      }
 
       // Set form data.
       this.form = {
         name: dat.name,
-        geom: `SRID=4326;${stringify(dat.geom)}`,
+        geom: dat.geom,
         aggregationlayer: dat.aggregationlayer,
         attributes: JSON.stringify(dat.attributes)
       }
-
-      // Make geom editable.
-      this.drawControl = new L.Control.Draw({
-        position: 'topright',
-        edit: {
-          featureGroup: this.$refs.geom.mapObject
-        },
-        draw: false
-      }).addTo(this.$refs.map.mapObject)
 
       // Push route if necessary.
       if (this.$route.name != routeTypes.AGGREGATION_AREA_EDIT) {
         this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: this.aggregationLayer, area: dat.id}})
       }
+    },
+    onSubmit(){
+      // Set loading state and clear form errors.
+      this.loading = true
+      this.error = null
+
+      // Prepare action function variable and call api.
+      let funk
+      if (this.selectedArea) {
+        // Update existing aggregationlayer.
+        funk = this.editAggregationAreaAction({id: this.selectedArea.id, ...this.form, attributes: JSON.parse(this.form.attributes)})
+      } else {
+        // Create new aggregationlayer.
+        funk = this.createAggregationAreaAction({...this.form, attributes: JSON.parse(this.form.attributes)})
+      }
+
+      // Add success and error hooks.
+      funk.then(() => {
+        this.loading = false
+        this.msgs.push({
+          title: "Saved area successfully.",
+          type: "success",
+          key: this.msgs.length + 1
+        })
+      })
+      .catch(() => {
+        this.loading = false
+        this.error = true
+        this.msgs.push({
+          title: "Failed saving area.",
+          type: "error",
+          key: this.msgs.length + 1
+        })
+      })
     }
   }
 }
@@ -248,5 +337,8 @@ export default {
 .lmap {
   height: 400px;
   margin-bottom: 10px;
+}
+.el-alert {
+  margin-top: 5px;
 }
 </style>

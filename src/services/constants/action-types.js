@@ -34,6 +34,7 @@ export const AGGREGATION_AREA_EDIT = 'editAggregationArea'
 export const AGGREGATION_AREA_SAVE = 'saveAggregationArea'
 export const AGGREGATION_AREA_GET_ID = 'getAggregationAreaID'
 export const AGGREGATION_AREA_SELECT = 'selectAggregationArea'
+export const AGGREGATION_AREA_RESET = 'resetAggregationArea'
 
 /* -------------------------------------
  * FORMULA
