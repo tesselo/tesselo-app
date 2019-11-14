@@ -5,32 +5,29 @@
       :sm="{span: 20, offset: 2}"
       :md="{span: 16, offset: 4}"
       :lg="{span: 12, offset: 6}">
-      <el-row v-if="list">
+      <el-row>
         <h2>
-          Select Aggregation Area
+          <span v-if="list">Select Aggregation Area</span>
+          <span v-if="edit && selectedArea">Edit Aggregation Area {{ selectedArea.id }}</span>
+          <span v-if="edit && !selectedArea"><i class="el-icon-loading" /></span>
+          <span v-if="create">Create New Aggregation Area</span>
           <el-button
+            class="button-right"
+            icon="el-icon-back"
+            @click="goBack"/>
+          <el-button
+            v-if="list"
             class="button-right"
             icon="el-icon-circle-plus-outline"
             title="Create new aggregationlayer"
             @click="createNew" />
         </h2>
         <AggregationAreasTable
+          v-if="list"
           :aggregation-layer="aggregationLayer"
           @select="areaSelect"/>
       </el-row>
-      <el-row>
-        <h2>
-          <span v-if="edit && selectedArea">Edit Aggregation Area {{ selectedArea.id }}</span>
-          <span v-if="edit && !selectedArea"><i class="el-icon-loading" /></span>
-          <span v-if="create">Create New Aggregation Area</span>
-          <el-button
-            v-if="!list"
-            class="button-right"
-            icon="el-icon-back"
-            @click="goBack"/>
-        </h2>
-      </el-row>
-      <el-row ref="alertsContainer">
+      <el-row v-if="!list">
         <el-alert
           v-for="msg in msgs"
           :key="msg.key"
@@ -218,7 +215,11 @@ export default {
       }).addTo(this.$refs.map.mapObject)
     },
     goBack(){
-      this.$router.go(-1)
+      if(this.list) {
+        this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: this.aggregationLayer}})
+      } else {
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.aggregationLayer}})
+      }
     },
     createNew(){
       // Clear form.

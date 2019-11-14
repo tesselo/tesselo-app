@@ -27,6 +27,11 @@
             class="button-right"
             icon="el-icon-back"
             @click="goBack"/>
+          <el-button
+            v-if="edit"
+            class="button-right"
+            icon="el-icon-s-tools"
+            @click="goAreaList"/>
         </h2>
       </el-row>
       <el-row v-if="!list">
@@ -189,10 +194,13 @@ export default {
       parseAggregationLayer: actionTypes.AGGREGATION_LAYER_PARSE_LAYER,
     }),
     goBack(){
-      this.$router.go(-1)
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST})
     },
-    areasTableSelect(area) {
-      this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: area.id}})
+    goAreaList(){
+      this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, prams: {layer: this.selectedLayer.id}})
+    },
+    areasTableSelect(layer) {
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: layer.id}})
     },
     createNew(){
       this.resetAggregationLayer()
