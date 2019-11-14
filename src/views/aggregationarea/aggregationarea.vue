@@ -14,12 +14,14 @@
           <el-button
             class="button-right"
             icon="el-icon-back"
+            size="small"
             @click="goBack"/>
           <el-button
             v-if="list"
             class="button-right"
             icon="el-icon-circle-plus-outline"
             title="Create new aggregationlayer"
+            size="small"
             @click="createNew" />
         </h2>
         <AggregationAreasTable
@@ -334,6 +336,7 @@ export default {
 }
 .button-right {
   float: right;
+  margin-left: 5px;
 }
 .lmap {
   height: 400px;

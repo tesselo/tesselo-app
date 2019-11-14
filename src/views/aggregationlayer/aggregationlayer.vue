@@ -12,6 +12,7 @@
             class="button-right"
             icon="el-icon-circle-plus-outline"
             title="Create new aggregationlayer"
+            size="small"
             @click="createNew" />
         </h2>
         <areas-table
@@ -26,11 +27,13 @@
             v-if="!list"
             class="button-right"
             icon="el-icon-back"
+            size="small"
             @click="goBack"/>
           <el-button
             v-if="edit"
             class="button-right"
             icon="el-icon-s-tools"
+            size="small"
             @click="goAreaList"/>
         </h2>
       </el-row>
@@ -311,5 +314,6 @@ export default {
 }
 .button-right {
   float: right;
+  margin-left: 5px;
 }
 </style>
