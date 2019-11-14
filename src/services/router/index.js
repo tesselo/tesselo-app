@@ -17,14 +17,6 @@ const router = new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
-      name: routeTypes.HOME,
-      component: Home,
-      meta: {
-        requiresAuthentication: true
-      }
-    },
-    {
       path: '/login',
       name: routeTypes.LOGIN,
       component: Login
@@ -35,64 +27,103 @@ const router = new Router({
       component: Logout
     },
     {
+      path: '/',
+      name: routeTypes.HOME,
+      component: Home,
+      meta: {
+        requiresAuthentication: true
+      }
+    },
+    {
       path: '/report/:layer/:formula',
       name: routeTypes.REPORT,
-      component: Report
+      component: Report,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
     {
       path: '/areas',
       name: routeTypes.AGGREGATION_LAYER_LIST,
-      component: AggLayer
+      component: AggLayer,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
     {
       path: '/areas/new',
       name: routeTypes.AGGREGATION_LAYER_CREATE,
-      component: AggLayer
+      component: AggLayer,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
     {
       path: '/areas/:layer',
       name: routeTypes.AGGREGATION_LAYER_EDIT,
-      component: AggLayer
+      component: AggLayer,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
     {
       path: '/areas/:layer/area',
       name: routeTypes.AGGREGATION_AREA_LIST,
-      component: AggArea
+      component: AggArea,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
     {
       path: '/areas/:layer/area/new',
       name: routeTypes.AGGREGATION_AREA_CREATE,
-      component: AggArea
+      component: AggArea,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
     {
       path: '/areas/:layer/area/:area',
       name: routeTypes.AGGREGATION_AREA_EDIT,
-      component: AggArea
+      component: AggArea,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: true
+      }
     },
   ]
 })
 
 router.beforeEach((to, from, next) => {
+  // Create auth variables.
   let auth
   let authenticated
+  let isStaff
 
+  // Get profile from local storage.
   if (localStorage.getItem('auth')) {
     auth = JSON.parse(localStorage.getItem('auth'))
     authenticated = auth.authenticated
+    isStaff = auth.is_staff
   } else {
     authenticated = false
+    isStaff = false
   }
 
-  if (to.meta.requiresAuthentication) {
-    if (authenticated) {
-      next()
-    } else {
-      next('/login')
-    }
+  // Fist check authentication, then staff status.
+  if (to.meta.requiresAuthentication && !authenticated) {
+    next('/login')
+  } else if (to.meta.requiresStaff && !isStaff) {
+    next('/')
   } else {
     next()
   }
-
 })
 
 export default router
