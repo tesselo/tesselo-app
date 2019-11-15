@@ -1,5 +1,5 @@
-import defaultState from './aggregation-layer.state'
 import { mutationTypes } from '@/services/constants'
+
 
 export default {
   /**
@@ -19,6 +19,12 @@ export default {
     state.selectedLayer = layer
   },
   [mutationTypes.AGGREGATION_LAYER_RESET] (state) { // eslint-disable-line
-    state = defaultState
+    state.total = 0
+    state.next = null
+    state.previous = null
+    state.pageSize = 10
+    state.rows = []
+    state.selectedLayer = null
+    state.currentPage = 1
   }
 }

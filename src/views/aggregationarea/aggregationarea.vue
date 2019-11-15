@@ -9,7 +9,7 @@
         <h2>
           <span v-if="list">Select Aggregation Area</span>
           <span v-if="edit && selectedArea">Edit Aggregation Area {{ selectedArea.id }}</span>
-          <span v-if="edit && !selectedArea"><i class="el-icon-loading" /></span>
+          <span v-if="!selectedLayer || (edit && !selectedArea)"><i class="el-icon-loading" /></span>
           <span v-if="create">Create New Aggregation Area</span>
           <el-button
             class="button-right"
@@ -25,9 +25,8 @@
             @click="createNew" />
         </h2>
         <AggregationAreasTable
-          v-if="list"
-          :aggregation-layer="aggregationLayer"
-          @select="areaSelect"/>
+          v-if="list && selectedLayer"
+          :aggregation-layer="aggregationLayer"/>
       </el-row>
       <el-row v-if="!list">
         <el-alert
@@ -35,7 +34,8 @@
           :key="msg.key"
           :title="msg.title"
           :type="msg.type"
-          :center="true"/>
+          :center="true"
+          @close="msgs = []"/>
       </el-row>
       <el-row v-if="!list">
         <el-form
@@ -66,17 +66,6 @@
                 name="name"
                 rules="required">
                 <el-input v-model="form.geom" />
-                <span>{{ errors[0] }}</span>
-              </ValidationProvider>
-            </el-form-item>
-            <el-form-item label="AggregationLayer">
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="name"
-                rules="required">
-                <el-input
-                  v-model="form.aggregationlayer"
-                  :readonly="true" />
                 <span>{{ errors[0] }}</span>
               </ValidationProvider>
             </el-form-item>
@@ -130,7 +119,6 @@ export default {
       form: {
         name: '',
         geom: '',
-        aggregationlayer: this.aggregationLayer,
         attributes: '{}'
       },
       loading: false,
@@ -145,6 +133,7 @@ export default {
   },
   computed: {
     ...mapState({
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedArea: state => state.aggregationArea.selectedAggregationArea
     }),
     aggregationLayer(){
@@ -161,19 +150,26 @@ export default {
     }
   },
   watch: {
-    selectedArea(dat){
-      this.areaSelect(dat)
+    selectedArea(){
+      if (this.selectedArea) {
+        this.areaSelect()        
+      }
     }
   },
   mounted() {
-    if (this.create) {
-      this.form.aggregationlayer = this.$route.params.layer
+    // Get selected layer if not set or not the right one.
+    if (!this.selectedLayer || this.selectedLayer.id != this.$route.params.layer) {
+      this.getAggregationLayerIDAction(this.$route.params.layer)
     }
+    // Get aggregation area data.
     if(this.edit){
       this.getAggregationAreaIDAction(this.$route.params.area)
     }
   },
   methods: {
+    ...mapActions('aggregationLayer', {
+      getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
+    }),
     ...mapActions('aggregationArea', {
       getAggregationAreaIDAction: actionTypes.AGGREGATION_AREA_GET_ID,
       editAggregationAreaAction: actionTypes.AGGREGATION_AREA_EDIT,
@@ -218,22 +214,25 @@ export default {
     },
     goBack(){
       if(this.list) {
-        this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: this.aggregationLayer}})
+        this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: this.selectedLayer.id}})
       } else {
-        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.aggregationLayer}})
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.selectedLayer.id}})
       }
+      // Clear messages.
+      this.msgs = []
     },
     createNew(){
       // Clear form.
       this.form = {
         name: '',
         geom: '',
-        aggregationlayer: this.aggregationLayer,
         attributes: '{}'
       }
       this.geojson = null
       this.resetAggregationAreaAction()
       this.$router.push({name: routeTypes.AGGREGATION_AREA_CREATE})
+      // Clear messages.
+      this.msgs = []
     },
     geomUpdate(latlngs){
       // Update geojson.
@@ -254,10 +253,10 @@ export default {
       // Update form with geojson.
       this.form.geom = `SRID=3857;${reprojected_wkt}`
     },
-    areaSelect(dat){
+    areaSelect(){
       // Transform Web mercator WKT to WGS84. Only get first polygon from
       // multipolygon.
-      const coordinates = parse(dat.geom).coordinates[0][0].map(coords => {
+      const coordinates = parse(this.selectedArea.geom).coordinates[0][0].map(coords => {
         const projected = L.Projection.SphericalMercator.unproject(L.point(coords))
         return [projected.lng, projected.lat]
       })
@@ -281,15 +280,14 @@ export default {
 
       // Set form data.
       this.form = {
-        name: dat.name,
-        geom: dat.geom,
-        aggregationlayer: dat.aggregationlayer,
-        attributes: JSON.stringify(dat.attributes)
+        name: this.selectedArea.name,
+        geom: this.selectedArea.geom,
+        attributes: JSON.stringify(this.selectedArea.attributes)
       }
 
       // Push route if necessary.
       if (this.$route.name != routeTypes.AGGREGATION_AREA_EDIT) {
-        this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: this.aggregationLayer, area: dat.id}})
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: this.selectedLayer.id, area: this.selectedArea.id}})
       }
     },
     onSubmit(){
@@ -301,20 +299,30 @@ export default {
       let funk
       if (this.selectedArea) {
         // Update existing aggregationlayer.
-        funk = this.editAggregationAreaAction({id: this.selectedArea.id, ...this.form, attributes: JSON.parse(this.form.attributes)})
+        funk = this.editAggregationAreaAction({
+          ...this.form,
+          id: this.selectedArea.id,
+          aggregationlayer: this.selectedLayer.id,
+          attributes: JSON.parse(this.form.attributes)
+        })
       } else {
+        console.log('creating new', this.form)
         // Create new aggregationlayer.
-        funk = this.createAggregationAreaAction({...this.form, attributes: JSON.parse(this.form.attributes)})
+        funk = this.createAggregationAreaAction({
+          ...this.form,
+          aggregationlayer: this.selectedLayer.id,
+          attributes: JSON.parse(this.form.attributes)
+        })
       }
 
       // Add success and error hooks.
       funk.then(() => {
         this.loading = false
-        this.msgs.push({
+        this.msgs = [{
           title: "Saved area successfully.",
           type: "success",
           key: this.msgs.length + 1
-        })
+        }]
       })
       .catch(() => {
         this.loading = false

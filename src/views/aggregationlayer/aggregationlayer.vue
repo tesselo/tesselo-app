@@ -174,16 +174,17 @@ export default {
     }
   },
   watch: {
-    selectedLayer(dat){
-      this.form.name = dat.name
-      this.form.description = dat.description
-      this.form.shapefile = dat.shapefile
-      this.form.name_column = dat.name_column
+    selectedLayer(){
+      this.setForm()
     }
   },
   mounted() {
     if(this.edit){
-      this.getAggregationLayerIDAction(this.$route.params.layer)
+      if (!this.selectedLayer || this.selectedLayer.id != this.$route.params.layer) {
+        this.getAggregationLayerIDAction(this.$route.params.layer)
+      } else {
+        this.setForm()
+      }
     }
   },
   methods: {
@@ -221,6 +222,12 @@ export default {
         shapefile: '',
         name_column: ''
       }
+    },
+    setForm() {
+      this.form.name = this.selectedLayer.name
+      this.form.description = this.selectedLayer.description
+      this.form.shapefile = this.selectedLayer.shapefile
+      this.form.name_column = this.selectedLayer.name_column
     },
     onSubmit(){
       this.loading = true

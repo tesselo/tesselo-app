@@ -1,6 +1,5 @@
-
-import defaultState from './aggregation-area.state'
 import { mutationTypes } from '@/services/constants'
+
 
 export default {
 
@@ -17,6 +16,13 @@ export default {
   },
 
   [mutationTypes.AGGREGATION_AREA_RESET] (state) { // eslint-disable-line
-    state = defaultState
+    state.total = 0
+    state.next = null
+    state.previous = null
+    state.pageSize = 10
+    state.rows = []
+    state.row = null
+    state.selectedAggregationArea = null
+    state.currentPage = 1
   }
 }

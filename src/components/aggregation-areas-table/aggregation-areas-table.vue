@@ -51,12 +51,6 @@ export default {
     ElTableColumn,
     ElPagination
   },
-  props: {
-    aggregationLayer: {
-      type: Number,
-      required: true
-    }
-  },
   data() {
     return {
       loading: false
@@ -64,6 +58,7 @@ export default {
   },
   computed: {
     ...mapState({
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
       total: state => state.aggregationArea.total,
       pageSize: state => state.aggregationArea.pageSize,
       rows: state => state.aggregationArea.rows,
@@ -73,9 +68,23 @@ export default {
       currentPage: state => state.aggregationArea.currentPage
     })
   },
-  beforeMount() {
-    if (this.rows.length === 0 ){
-      this.getAggregationAreas({page: this.currentPage, aggregationLayer: this.aggregationLayer})
+  watch: {
+    selectedLayer() {
+      this.getAggregationAreas({
+        aggregationLayer: this.selectedLayer.id,
+        page: this.currentPage
+      })
+    }
+  },
+  mounted() {
+    // Get selected layer if not set or not the right one.
+    if (!this.selectedLayer || this.selectedLayer.id != this.$route.params.layer) {
+      this.getAggregationLayerIDAction(this.$route.params.layer)
+    } else {
+      this.getAggregationAreas({
+        aggregationLayer: this.selectedLayer.id,
+        page: this.currentPage
+      })
     }
   },
   methods: {
