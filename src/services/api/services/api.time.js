@@ -40,7 +40,7 @@ export default {
         ...options,
         official: true,
         active: true,
-        page_size: 300
+        page_size: 600
       }
     })
     .then((response) => {
