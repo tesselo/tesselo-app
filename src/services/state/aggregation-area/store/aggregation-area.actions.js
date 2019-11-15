@@ -38,5 +38,11 @@ export default {
     return APIAdapter.services.aggregationArea.edit(options).then((response) => {
       context.commit(mutationTypes.AGGREGATION_AREA_SELECT_AREA, response)
     })
+  },
+
+  [actionTypes.AGGREGATION_AREA_DELETE](context, options) {
+    return APIAdapter.services.aggregationArea.delete(options).then(() => {
+      context.commit(mutationTypes.AGGREGATION_AREA_RESET)
+    })
   }
 }

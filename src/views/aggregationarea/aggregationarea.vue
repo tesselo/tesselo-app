@@ -26,6 +26,7 @@
         </h2>
         <AggregationAreasTable
           v-if="list && selectedLayer"
+          ref="listTable"
           :aggregation-layer="aggregationLayer"/>
       </el-row>
       <el-row v-if="!list">
@@ -74,6 +75,12 @@
             </el-form-item>
             <el-form-item>
               <el-button
+                v-if="edit"
+                type="danger"
+                @click="dialogVisible = true">
+                Delete
+              </el-button>
+              <el-button
                 :loading="loading"
                 :disabled="!valid"
                 type="primary"
@@ -81,6 +88,21 @@
                 @click="onSubmit">
                 Save
               </el-button>
+              <el-dialog
+                :visible="dialogVisible"
+                title="Confirm Delete">
+                <span>This will permanently delete the data.</span>
+                <span
+                  slot="footer"
+                  class="dialog-footer">
+                  <el-button @click="dialogVisible = false">Cancel</el-button>
+                  <el-button
+                    type="danger"
+                    @click="onDelete">
+                    Confirm
+                  </el-button>
+                </span>
+              </el-dialog>
             </el-form-item>
           </ValidationObserver>
         </el-form>
@@ -100,6 +122,7 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 import 'element-ui/lib/theme-chalk/form.css'
 import 'element-ui/lib/theme-chalk/button.css'
 import 'element-ui/lib/theme-chalk/alert.css'
+import 'element-ui/lib/theme-chalk/dialog.css'
 
 
 import AggregationAreasTable from '@/components/aggregation-areas-table/aggregation-areas-table'
@@ -128,12 +151,14 @@ export default {
       error: null,
       success: false,
       alertCenter: true,
-      msgs: []
+      msgs: [],
+      dialogVisible: false
     }
   },
   computed: {
     ...mapState({
       selectedLayer: state => state.aggregationLayer.selectedLayer,
+      layerPage: state => state.aggregationLayer.currentPage,
       selectedArea: state => state.aggregationArea.selectedAggregationArea
     }),
     aggregationLayer(){
@@ -152,7 +177,7 @@ export default {
   watch: {
     selectedArea(){
       if (this.selectedArea) {
-        this.areaSelect()        
+        this.areaSelect()
       }
     }
   },
@@ -169,12 +194,14 @@ export default {
   methods: {
     ...mapActions('aggregationLayer', {
       getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
+      getAggregationLayerAction: actionTypes.AGGREGATION_LAYER_GET,
     }),
     ...mapActions('aggregationArea', {
       getAggregationAreaIDAction: actionTypes.AGGREGATION_AREA_GET_ID,
       editAggregationAreaAction: actionTypes.AGGREGATION_AREA_EDIT,
       createAggregationAreaAction: actionTypes.AGGREGATION_AREA_SAVE,
-      resetAggregationAreaAction: actionTypes.AGGREGATION_AREA_RESET
+      resetAggregationAreaAction: actionTypes.AGGREGATION_AREA_RESET,
+      deleteAggregationAreaAction: actionTypes.AGGREGATION_AREA_DELETE
     }),
     mapReady(){
       // Fit map to bounds.
@@ -318,11 +345,14 @@ export default {
       // Add success and error hooks.
       funk.then(() => {
         this.loading = false
+        // Set message.
         this.msgs = [{
           title: "Saved area successfully.",
           type: "success",
           key: this.msgs.length + 1
         }]
+        // Reload layer list (to update geom count).
+        this.getAggregationLayerAction({page: this.layerPage})
       })
       .catch(() => {
         this.loading = false
@@ -332,6 +362,15 @@ export default {
           type: "error",
           key: this.msgs.length + 1
         })
+      })
+    },
+    onDelete () {
+      this.dialogVisible = false
+      this.deleteAggregationAreaAction(this.selectedArea).then(() => {
+        // Reload layer list (to update geom count).
+        this.getAggregationLayerAction({page: this.layerPage})
+        // Go back to aggregation area list.
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.selectedLayer.id}})
       })
     }
   }

@@ -28,6 +28,10 @@ export default {
       url: '/aggregationlayer',
       method: 'post'
     },
+    delete: {
+      url: '/aggregationlayer',
+      method: 'delete'
+    },
     getUploadLink: {
       url_base: '/aggregationlayer',
       url_tail: '/upload',
@@ -37,7 +41,7 @@ export default {
       url_base: '/aggregationlayer',
       url_tail: '/parse',
       method: 'post'
-    }
+    },
   },
   aggregationArea: {
     list: {
@@ -52,6 +56,10 @@ export default {
       url: '/aggregationarea',
       method: 'post'
     },
+    delete: {
+      url: '/aggregationarea',
+      method: 'delete'
+    }
   },
   formula: {
     list: {

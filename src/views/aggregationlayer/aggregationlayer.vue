@@ -16,6 +16,7 @@
             @click="createNew" />
         </h2>
         <areas-table
+          ref="listTable"
           :set-router-query-parameters="areaTableSetRoute"
           @select="areasTableSelect"/>
       </el-row>
@@ -61,32 +62,26 @@
                 :show-file-list="showFileList"
                 :on-change="handleFileChange"
                 action="">
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  name="zipped shapefile"
-                  rules="required">
-                  <el-input
-                    v-model="form.shapefile"
-                    :readonly="true"
-                    clearable>
-                    <el-button
-                      slot="append"
-                      icon="el-icon-upload2" />
-                  </el-input>
-                  <span>{{ errors[0] }}</span>
-                </ValidationProvider>
+                <el-input
+                  v-model="form.shapefile"
+                  :readonly="true"
+                  clearable>
+                  <el-button
+                    slot="append"
+                    icon="el-icon-upload2" />
+                </el-input>
               </el-upload>
             </el-form-item>
             <el-form-item label="Name Column">
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="name column"
-                rules="required">
-                <el-input v-model="form.name_column" />
-                <span>{{ errors[0] }}</span>
-              </ValidationProvider>
+              <el-input v-model="form.name_column" />
             </el-form-item>
             <el-form-item>
+              <el-button
+                v-if="edit"
+                type="danger"
+                @click="dialogVisible = true">
+                Delete
+              </el-button>
               <el-button
                 :loading="loading"
                 :disabled="!valid"
@@ -95,6 +90,21 @@
                 @click="onSubmit">
                 Save
               </el-button>
+              <el-dialog
+                :visible="dialogVisible"
+                title="Confirm Delete">
+                <p>This will permanently delete the aggregation layer and all its aggregation areas.</p>
+                <span
+                  slot="footer"
+                  class="dialog-footer">
+                  <el-button @click="dialogVisible = false">Cancel</el-button>
+                  <el-button
+                    type="danger"
+                    @click="onDelete">
+                    Confirm
+                  </el-button>
+                </span>
+              </el-dialog>
             </el-form-item>
           </ValidationObserver>
         </el-form>
@@ -127,6 +137,7 @@
 import 'element-ui/lib/theme-chalk/form.css'
 import 'element-ui/lib/theme-chalk/button.css'
 import 'element-ui/lib/theme-chalk/upload.css'
+import 'element-ui/lib/theme-chalk/dialog.css'
 
 import { mapState, mapActions } from 'vuex'
 import { actionTypes, routeTypes } from '@/services/constants'
@@ -156,12 +167,14 @@ export default {
       loading: false,
       formErrors: {
         nonFieldErrors: null
-      }
+      },
+      dialogVisible: false
     }
   },
   computed: {
     ...mapState({
-      selectedLayer: state => state.aggregationLayer.selectedLayer
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      layerPage: state => state.aggregationLayer.currentPage
     }),
     list(){
       return this.$route.name == routeTypes.AGGREGATION_LAYER_LIST
@@ -175,7 +188,9 @@ export default {
   },
   watch: {
     selectedLayer(){
-      this.setForm()
+      if (this.selectedLayer){
+        this.setForm()
+      }
     }
   },
   mounted() {
@@ -189,13 +204,15 @@ export default {
   },
   methods: {
     ...mapActions('aggregationLayer', {
+      getAggregationLayerAction: actionTypes.AGGREGATION_LAYER_GET,
       getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
       selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT,
       saveAggregationLayer: actionTypes.AGGREGATION_LAYER_SAVE,
       editAggregationLayer: actionTypes.AGGREGATION_LAYER_EDIT,
+      deleteAggregationLayer: actionTypes.AGGREGATION_LAYER_DELETE,
       resetAggregationLayer: actionTypes.RESET,
       getUploadLink: actionTypes.AGGREGATION_LAYER_GET_UPLOAD_URL,
-      parseAggregationLayer: actionTypes.AGGREGATION_LAYER_PARSE_LAYER,
+      parseAggregationLayer: actionTypes.AGGREGATION_LAYER_PARSE_LAYER
     }),
     goBack(){
       this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST})
@@ -242,6 +259,9 @@ export default {
       } else if (this.selectedLayer) {
         // Existing aggregationlayer, no change in file - update json data.
         this.editAggregationLayer({id: this.selectedLayer.id, ...this.form})
+        .then(() => {
+          this.loading = false
+        })
         .catch(errors => {
           this.loading = false
           this.formErrors = errors
@@ -253,6 +273,9 @@ export default {
         .then(function(){
           if (tat.selectedFile && tat.form.shapefile) {
             tat.updateWithFile()
+          } else {
+            // Reload layer list (to update geom count).
+            this.getAggregationLayerAction({page: this.layerPage})
           }
         })
         .catch(errors => {
@@ -290,6 +313,8 @@ export default {
             tat.parseAggregationLayer({pk: tat.selectedLayer.id})
             .then(() => {
               this.loading = false
+              // Reload layer list (to update geom count).
+              this.getAggregationLayerAction({page: this.layerPage})
             })
             .catch(errors => {
               this.loading = false
@@ -310,6 +335,18 @@ export default {
         this.loading = false
         this.formErrors = errors
       })
+    },
+    onDelete () {
+      // Close dialogue.
+      this.dialogVisible = false
+      // Delete area.
+      this.deleteAggregationLayer(this.selectedLayer)
+      .then(() => {
+        // Refresh list from DB.
+        this.$refs.listTable.getAggregationLayers({page: 1})
+      })
+      // Go back to list page.
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST})
     }
   }
 }

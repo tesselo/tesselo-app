@@ -32,5 +32,12 @@ export default {
       .then((response) => {
         return Promise.resolve(response.data)
       })
+  },
+
+  delete(data, axiosInstance = client) {
+    return axiosInstance[endpoints.aggregationArea.delete.method](endpoints.aggregationArea.delete.url + '/' + data.id, data)
+      .then((response) => {
+        return Promise.resolve(response.data)
+      })
   }
 }
