@@ -104,7 +104,10 @@ export default {
       this.$emit('select', area)
     },
     selectPage(page) {
-      this.getAggregationAreas({ page })
+      this.getAggregationAreas({
+        page: page,
+        aggregationLayer: this.selectedLayer.id
+      })
     },
     tableRowClassName(data) {
       if (this.selectedArea && data.row.id == this.selectedArea .id) {
