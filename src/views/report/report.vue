@@ -11,6 +11,7 @@
           class="header-row">
           <h2>
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
+            <span v-if="showTrend && rows">| {{ trendAreaName }}</span>
             <span v-if="selectedFormula">| {{ selectedFormula.acronym }}</span>
             <span
               v-if="selectedFormula"
@@ -106,7 +107,8 @@
           v-for="entry in rows"
           :key="entry.key"
           :agg="entry"
-          :formula="selectedFormula" />
+          :formula="selectedFormula"
+          :trend="showTrend" />
       </el-row>
       <div v-if="!has_data"><h2>No data</h2></div>
     </el-col>
@@ -208,6 +210,11 @@ export default {
         return unique.length == 1 && this.rows.length > 1
       }
     },
+    trendAreaName() {
+      if (this.showTrend) {
+        return this.rows[0].name
+      }
+    },
     datasets() {
       if (this.has_data) {
         if (this.showTrend) {
@@ -223,7 +230,7 @@ export default {
         } else {
           return [
             {
-              data: this.rows.map(reportItem => reportItem.avg),
+              data: this.rows.map(reportItem => reportItem.avg.toFixed(5)),
               label: 'Average',
               backgroundColor: '#aac343'
             }
