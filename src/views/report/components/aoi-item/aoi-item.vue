@@ -4,14 +4,18 @@
       :span="24"
       border="solid">
       <el-divider />
-      <h3><span>{{ agg.name }}</span><span class="aoi-item-date">{{ date }}</span></h3>
+      <h3>
+        <span v-if="!trend">{{ agg.name }}</span>
+        <span v-if="!trend" class="aoi-item-date">{{ date }}</span>
+        <span v-else>{{ date }}</span>
+      </h3>
     </el-col>
     <el-col
       :sm="24"
       :md="8">
       <el-table
         :data="tableData"
-        :size="size"
+        size="mini"
         class="aoi-item-table">
         <el-table-column
           prop="name"
@@ -34,7 +38,8 @@
           :tile-layer-class="tileLayerClass"
           :url="url" />
         <l-polygon
-          :lat-lngs="latlngs" />
+          :lat-lngs="latlngs"
+          :fill="false" />
       </l-map>
       <map-legend
         v-if="formula"
@@ -73,6 +78,11 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    trend: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {
@@ -81,8 +91,6 @@ export default {
         zoomControl: false,
         attributionControl: false,
       },
-      polygonColor: 'red',
-      size: "mini",
       tileLayerClass: L.authenticatedTileLayer
     }
   },
@@ -126,12 +134,12 @@ export default {
   watch: {
     agg(){
       if(this.$refs.map){
-        this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.1))
+        this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
       }
     }
   },
   mounted() {
-    this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.1))
+    this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
   },
 }
 </script>
