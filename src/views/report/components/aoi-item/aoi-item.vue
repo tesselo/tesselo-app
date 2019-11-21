@@ -12,22 +12,15 @@
     </el-col>
     <el-col
       :sm="24"
-      :md="8">
-      <el-table
-        :data="tableData"
-        size="mini"
-        class="aoi-item-table">
-        <el-table-column
-          prop="name"
-          label="Name" />
-        <el-table-column
-          prop="value"
-          label="Value" />
-      </el-table>
+      :md="6"
+      class="average-header">
+      <h2>{{ agg.avg.toFixed(2) }}<span class="plusmn-std"> &plusmn; {{ agg.std.toFixed(2) }}</span></h2>
+      <h4>Data Range</h4>
+      <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
     </el-col>
     <el-col
       :sm="24"
-      :md="16"
+      :md="18"
       class="aoi-item-map">
       <l-map
         ref="map"
@@ -104,14 +97,6 @@ export default {
     url(){
       return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
     },
-    tableData(){
-      return [
-        {name: 'Average', value: this.agg.avg.toFixed(2)},
-        {name: 'Std', value: this.agg.std.toFixed(2)},
-        {name: 'Min', value: this.agg.min.toFixed(2)},
-        {name: 'Max', value: this.agg.max.toFixed(2)}
-      ]
-    },
     date(){
       return moment(this.agg.min_date).format('MMMM YYYY')
     },
@@ -161,6 +146,12 @@ export default {
   &:last-child {
     margin-bottom: 24px;
   }
+}
+.average-header {
+  margin-top: 30px;
+}
+.plusmn-std {
+  font-size: 14px;
 }
 h3 {
   margin-bottom: 10px;
