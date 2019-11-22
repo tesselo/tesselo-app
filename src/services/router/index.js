@@ -40,7 +40,7 @@ const router = new Router({
       component: Report,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
+        requiresStaff: false
       }
     },
     {

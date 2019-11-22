@@ -4,7 +4,6 @@
       ref="map"
       :max-zoom="18"
       :options="mapOptions"
-      :class="{ 'control-is-staff': isStaff }"
       @update:bounds="updateBounds"
       @baselayerchange="setMapOption">
       <l-control-zoom
@@ -28,7 +27,6 @@
           @click="toggleExport" />
       </l-control>
       <l-control
-        v-if="isStaff"
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
         <el-button
@@ -334,8 +332,7 @@ export default {
       authenticated: state => state.auth.authenticated,
       showSelected: state => Boolean(state.formula.selectedFormula && state.time.selectedMoment),
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
-      showPredicted: state => Boolean(state.predictedLayer.selectedLayer),
-      isStaff: state => state.auth.is_staff
+      showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
 
     isTouch() {
@@ -749,14 +746,14 @@ export default {
     .leaflet-range-control {
       border: 2px solid rgba(0,0,0,0.2);
       position: absolute;
-      top: 177px;
+      top: 220px;
       width: 34px;
       right: 0;
       margin-left: 40px;
       z-index: 0;
 
       @media (min-width: 768px) {
-        top: 245px;
+        top: 295px;
       }
 
       &:nth-last-of-type(2) {
@@ -764,10 +761,6 @@ export default {
         margin-left: 0;
       }
     }
-  }
-
-  .tsl-map .leaflet-touch .leaflet-range-control {
-    top: 132px;
   }
 
   .leaflet-control-layers {
@@ -849,8 +842,5 @@ export default {
       border-color: #F1F1F1;
       color: #5683a2;
     }
-  }
-  .control-is-staff .leaflet-range-control {
-    top: 295px !important;
   }
 </style>
