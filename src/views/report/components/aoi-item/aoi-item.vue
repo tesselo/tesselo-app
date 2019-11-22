@@ -6,7 +6,11 @@
       <el-divider />
       <h3>
         <span v-if="!trend">{{ agg.name }}</span>
-        <span v-if="!trend" class="aoi-item-date">{{ date }}</span>
+        <span
+          v-if="!trend"
+          class="aoi-item-date">
+          {{ date }}
+        </span>
         <span v-else>{{ date }}</span>
       </h3>
     </el-col>
