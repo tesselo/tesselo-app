@@ -264,7 +264,7 @@ export default {
 }
 
 .top {
-  width: 80%;
+  width: 100%;
 
   .separator {
     margin-top: 15px;
@@ -411,10 +411,14 @@ export default {
 
 .username {
   display: block;
-  width: 80%;
+  width: 100%;
+  overflow: hidden;
 
-  font-size: 19px;
-  color: white;
+  h2 {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+  }
 }
 
 .report {
