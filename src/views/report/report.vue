@@ -175,6 +175,7 @@ export default {
           }
         }]
       },
+
       sorts: [
         {name: 'Name', descending: true, query: 'aggregationarea__name', selected: true},
         {name: 'Average', descending: true, query: 'valuecountresult__stats_avg', selected: false},
@@ -224,7 +225,8 @@ export default {
               label: 'Average',
               backgroundColor: '#aac343',
               borderColor: '#aac343',
-              fill: false
+              fill: false,
+              spanGaps: true
             }
           ]
         } else {
