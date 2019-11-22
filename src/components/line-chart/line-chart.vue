@@ -23,16 +23,19 @@ export default {
     datasets: {
       type: Array,
       required: true
-    }
-  },
-  data(){
-    return {
-      options: {
-        maintainAspectRatio: false,
-        legend: false
+    },
+    options: {
+      type: Object,
+      required: false,
+      default: () => {
+        return {
+          maintainAspectRatio: false,
+          legend: false
+        }
       }
     }
   },
+
   computed: {
     chartData() {
       return {
