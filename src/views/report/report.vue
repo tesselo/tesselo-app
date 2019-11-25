@@ -28,8 +28,7 @@
           <el-input
             v-model="search"
             placeholder="Search"
-            clearable
-            @keyup.enter="query" >
+            clearable>
             <el-button
               slot="append"
               icon="el-icon-search"
@@ -89,10 +88,11 @@
             layout="prev, pager, next"
             @current-change="selectPage" />
         </el-col>
-
       </el-row>
       <el-divider />
-      <el-row v-if="has_data">
+      <el-row
+        v-loading="loading"
+        v-if="has_data">
         <line-chart
           v-if="showTrend"
           :labels="labels"
@@ -102,7 +102,9 @@
           :labels="labels"
           :datasets="datasets" />
       </el-row>
-      <el-row v-if="has_data">
+      <el-row
+        v-loading="loading"
+        v-if="has_data">
         <aoi-item
           v-for="entry in rows"
           :key="entry.key"
@@ -110,7 +112,12 @@
           :formula="selectedFormula"
           :trend="showTrend" />
       </el-row>
-      <div v-if="!has_data"><h2>No data</h2></div>
+      <div
+        v-loading="loading"
+        v-if="!has_data">
+        <h2 v-if="loading">Loading</h2>
+        <h2 v-else>No Data</h2>
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -128,6 +135,7 @@ import 'element-ui/lib/theme-chalk/divider.css'
 import 'element-ui/lib/theme-chalk/radio.css'
 import 'element-ui/lib/theme-chalk/radio-button.css'
 import 'element-ui/lib/theme-chalk/radio-group.css'
+import 'element-ui/lib/theme-chalk/loading.css'
 
 import moment from 'moment'
 
@@ -175,12 +183,12 @@ export default {
           }
         }]
       },
-
       sorts: [
         {name: 'Name', descending: true, query: 'aggregationarea__name', selected: true},
         {name: 'Average', descending: true, query: 'valuecountresult__stats_avg', selected: false},
         {name: 'Date', descending: true, query: 'composite__min_date', selected: false},
-      ]
+      ],
+      loading: true
     }
   },
   computed: {
@@ -271,7 +279,18 @@ export default {
   },
   mounted: function(){
     // Get aggregation data.
-    this.getFormulaReport({layer: {id: this.$route.params.layer}, formula: {id: this.$route.params.formula}, page: this.currentPage, pageSize: this.pageSize})
+    this.getFormulaReport({
+      layer: {id: this.$route.params.layer},
+      formula: {id: this.$route.params.formula},
+      page: this.currentPage,
+      pageSize: this.pageSize
+    })
+    .then(() => {
+      this.loading = false
+    })
+    .catch(() => {
+      this.loading = false
+    })
     // Get meta info for the
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
@@ -297,6 +316,8 @@ export default {
     }),
     query: debounce(
       function () {
+        this.loading = true
+        const tat = this
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
           formula: {id: this.selectedFormula.id},
@@ -308,8 +329,14 @@ export default {
           page: this.currentPage,
           pageSize: this.pageSize
         })
+        .then(() => {
+          tat.loading = false
+        })
+        .catch(() => {
+          tat.loading = false
+        })
       },
-      1000
+      800
     ),
     selectPage(page){
       this.currentPage = page
