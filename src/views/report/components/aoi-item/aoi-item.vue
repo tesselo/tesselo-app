@@ -1,10 +1,12 @@
 <template>
-  <el-row :gutter="20">
+  <el-row
+    :gutter="20"
+    class="aoi-item">
     <el-col
       :span="24"
       border="solid">
       <el-divider />
-      <h3>
+      <h3 class="aoi-item-header">
         <span v-if="!trend">{{ agg.name }}</span>
         <span
           v-if="!trend"
@@ -17,7 +19,7 @@
     <el-col
       :sm="24"
       :md="6"
-      class="average-header">
+      class="average-table">
       <h2>{{ agg.avg.toFixed(2) }}<span class="plusmn-std"> &plusmn; {{ agg.std.toFixed(2) }}</span></h2>
       <h4>Data Range</h4>
       <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
@@ -48,13 +50,17 @@
 </template>
 
 <script>
+// Leaflet print option.
 import L from 'leaflet'
-import { LMap, LTileLayer, LPolygon } from 'vue2-leaflet'
 import 'leaflet/dist/leaflet.css'
-import '@/components/tsl-map/authenticated-tile-layer'
+import { LMap, LTileLayer, LPolygon } from 'vue2-leaflet'
+import leafletImage from '@/components/tsl-map/leaflet-image'
 import 'element-ui/lib/theme-chalk/divider.css'
 import moment from 'moment'
+import html2canvas from 'html2canvas'
+
 import MapLegend from '@/components/map-legend/map-legend'
+import '@/components/tsl-map/authenticated-tile-layer'
 import { getColorsFromPallete } from '@/services/util'
 
 
@@ -87,8 +93,10 @@ export default {
       mapOptions: {
         zoomControl: false,
         attributionControl: false,
+        preferCanvas: true,
       },
-      tileLayerClass: L.authenticatedTileLayer
+      tileLayerClass: L.authenticatedTileLayer,
+      canvasData: null
     }
   },
   computed: {
@@ -130,6 +138,29 @@ export default {
   mounted() {
     this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
   },
+  methods: {
+    getCanvas(){
+      const tat = this
+      html2canvas(document.querySelector('.average-table')).then(dataCanvas => {
+        html2canvas(document.querySelector('.aoi-item-header')).then(headerCanvas => {
+          leafletImage(this.$refs.map.mapObject, function(err, canvas) {
+            tat.canvasData = {
+              map: canvas,
+              table: dataCanvas,
+              header: headerCanvas,
+              name: tat.agg.name,
+              date: tat.date,
+              avg: tat.agg.avg.toFixed(2),
+              std: tat.agg.std.toFixed(2),
+              min: tat.agg.min.toFixed(2),
+              max: tat.agg.max.toFixed(2),
+            }
+            tat.$emit('printed')
+          })
+        })
+      })
+    }
+  }
 }
 </script>
 
@@ -151,7 +182,7 @@ export default {
     margin-bottom: 24px;
   }
 }
-.average-header {
+.average-table {
   margin-top: 30px;
 }
 .plusmn-std {
@@ -172,5 +203,9 @@ h3 {
     height: 15px !important;
   }
 }
-
+@media print {
+  .aoi-item {
+    page-break-before: always;
+  }
+}
 </style>

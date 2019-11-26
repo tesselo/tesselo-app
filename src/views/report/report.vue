@@ -66,6 +66,13 @@
                 class="el-icon-arrow-up"/>
             </el-button>
           </el-button-group>
+          <el-button
+            :loading="printing"
+            :disabled="printing"
+            class="export-button"
+            icon="el-icon-printer"
+            size="mini"
+            @click="print" />
         </el-col>
         <el-col :sm="6">
           <el-radio-group
@@ -92,7 +99,8 @@
       <el-divider />
       <el-row
         v-loading="loading"
-        v-if="has_data">
+        v-if="has_data"
+        class="header-chart">
         <line-chart
           v-if="showTrend"
           :labels="labels"
@@ -107,10 +115,12 @@
         v-if="has_data">
         <aoi-item
           v-for="entry in rows"
+          ref="aois"
           :key="entry.key"
           :agg="entry"
           :formula="selectedFormula"
-          :trend="showTrend" />
+          :trend="showTrend"
+          @printed="printCallback" />
       </el-row>
       <div
         v-loading="loading"
@@ -138,6 +148,9 @@ import 'element-ui/lib/theme-chalk/radio-group.css'
 import 'element-ui/lib/theme-chalk/loading.css'
 
 import moment from 'moment'
+import html2canvas from 'html2canvas'
+import 'es6-promise/auto'
+import jsPDF from 'jspdf'
 
 import { mapState, mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
@@ -188,7 +201,10 @@ export default {
         {name: 'Average', descending: true, query: 'valuecountresult__stats_avg', selected: false},
         {name: 'Date', descending: true, query: 'composite__min_date', selected: false},
       ],
-      loading: true
+      loading: true,
+      printing: false,
+      chartCanvas: null,
+      headerCanvas: null
     }
   },
   computed: {
@@ -357,6 +373,58 @@ export default {
         item.selected = true
       }
       this.query()
+    },
+    print() {
+      this.printing = true
+      html2canvas(document.querySelector(".header-chart")).then(chartCanvas => {
+        // Set chart canvas.
+        this.chartCanvas = chartCanvas
+        html2canvas(document.querySelector(".header-row")).then(headerCanvas => {
+          // Set header canvas.
+          this.headerCanvas = headerCanvas
+          // Trigger map canvas retrieval, this will trigger "print" events from
+          // each map item.
+          this.$refs.aois.forEach(aoi => aoi.getCanvas())
+        })
+      });
+    },
+    printCallback(){
+      const done = this.$refs.aois.filter(aoi => Boolean(aoi.canvasData))
+      if (done.length == this.$refs.aois.length) {
+        // Config variables.
+        const format = 'PNG'
+        const pdf_margin = 10
+
+        // Compute pdf height.
+        const height = Math.max(
+          this.headerCanvas.height + this.chartCanvas.height,
+          this.$refs.aois[0].canvasData.header.height + this.$refs.aois[0].canvasData.map.height
+        )
+
+        // Create pdf object.
+        var doc = jsPDF({
+          orientation: this.headerCanvas.width > this.headerCanvas.height ? 'landscape': 'portrait',
+          unit: 'pt',
+          format: [this.chartCanvas.width, height],
+        });
+
+        // Add title.
+        doc.addImage(this.headerCanvas.toDataURL(), format, pdf_margin, pdf_margin)
+
+        // Add chart.
+        doc.addImage(this.chartCanvas.toDataURL(), format, pdf_margin, pdf_margin + this.headerCanvas.height)
+
+        this.$refs.aois.forEach((aoi) => {
+          doc.addPage()
+          // Adding aoi header and numbers.
+          doc.addImage(aoi.canvasData.header.toDataURL(), format, pdf_margin, pdf_margin)
+          doc.addImage(aoi.canvasData.table.toDataURL(), format, pdf_margin, pdf_margin + aoi.canvasData.header.height)
+          // Add captured map image.
+          doc.addImage(aoi.canvasData.map.toDataURL(), format, pdf_margin + aoi.canvasData.table.width, pdf_margin + aoi.canvasData.header.height)
+        })
+        doc.save('tesselo_export.pdf')
+        this.printing = false
+      }
     }
   }
 }
