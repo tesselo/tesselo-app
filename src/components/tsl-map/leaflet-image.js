@@ -35,14 +35,10 @@ export default function leafletImage(map, callback) {
     var sorted = tileLayers.sort(function(a, b) {
       return parseInt(a.options.zIndex) - parseInt(b.options.zIndex)
     })
-    // Trigger rendering for each layer.
-    var i
-    for (i = 0; i < sorted.length; i++){
-      layerQueue.defer(handleTileLayer, sorted[i])
-    }
 
     // layers are drawn in the same order as they are composed in the DOM:
     // tiles, paths, and then markers
+    sorted.forEach(drawTileLayer)
     map.eachLayer(drawEsriDynamicLayer)
 
     if (map._pathRoot) {
@@ -53,6 +49,11 @@ export default function leafletImage(map, callback) {
     }
     map.eachLayer(drawMarkerLayer)
     layerQueue.awaitAll(layersDone)
+
+    function drawTileLayer(l) {
+        if (l instanceof L.TileLayer) layerQueue.defer(handleTileLayer, l)
+        else if (l._heat) layerQueue.defer(handlePathRoot, l._canvas)
+    }
 
     function drawMarkerLayer(l) {
         if (l instanceof L.Marker && l.options.icon instanceof L.Icon) {
@@ -277,13 +278,14 @@ export default function leafletImage(map, callback) {
     function addCacheString(url) {
         // If it's a data URL we don't want to touch this.
         if (isDataURL(url) || url.indexOf('mapbox.com/styles/v1') !== -1) {
-            return url;
+            return url
         }
         return url + ((url.match(/\?/)) ? '&' : '?') + 'pdfcache=090c7adc359e437bb3a9'
     }
 
     function isDataURL(url) {
-        var dataURLRegex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
-        return !!url.match(dataURLRegex);
+        var dataURLRegex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i
+        return !!url.match(dataURLRegex)
     }
+
 }
