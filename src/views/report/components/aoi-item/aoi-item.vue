@@ -17,16 +17,16 @@
       </h3>
     </el-col>
     <el-col
-      :sm="24"
-      :md="6"
+      :xs="24"
+      :sm="6"
       class="average-table">
       <h2>{{ agg.avg.toFixed(2) }}<span class="plusmn-std"> &plusmn; {{ agg.std.toFixed(2) }}</span></h2>
       <h4>Data Range</h4>
       <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
     </el-col>
     <el-col
-      :sm="24"
-      :md="18"
+      :xs="24"
+      :sm="18"
       class="aoi-item-map">
       <l-map
         ref="map"
@@ -136,7 +136,9 @@ export default {
     }
   },
   mounted() {
-    this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
+    if(this.$refs.map){
+      this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
+    }
   },
   methods: {
     getCanvas(){
@@ -165,9 +167,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.aoi-item {
-  padding-bottom: 20px;
-}
 .aoi-item-map {
   height: 200px;
 }
@@ -175,12 +174,7 @@ export default {
   float: right;
 }
 .aoi-item-table {
-  width: 100%
-}
-.el-row {
-  &:last-child {
-    margin-bottom: 24px;
-  }
+  width: 100%;
 }
 .average-table {
   margin-top: 30px;

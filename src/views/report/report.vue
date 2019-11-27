@@ -112,7 +112,8 @@
       </el-row>
       <el-row
         v-loading="loading"
-        v-if="has_data">
+        v-if="has_data"
+        class="aoi-item-list">
         <aoi-item
           v-for="entry in rows"
           ref="aois"
@@ -214,11 +215,14 @@ export default {
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       formulaReport: state => state.formulaReport.rows,
       total: state => state.formulaReport.total,
-      rows: state => state.formulaReport.rows,
+      original_rows: state => state.formulaReport.rows,
       next: state => state.formulaReport.next,
       previous: state => state.formulaReport.previous,
       has_data: state => Boolean(state.formulaReport.rows.length)
     }),
+    rows(){
+      return this.original_rows.filter(dat => !isNaN(parseFloat(dat.avg)))
+    },
     labels() {
       if (this.has_data) {
         if (this.showTrend){
@@ -439,5 +443,10 @@ export default {
 }
 .formula-name-header {
   font-size: 14px;
+}
+.aoi-item-list {
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 </style>
