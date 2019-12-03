@@ -436,7 +436,7 @@ export default {
 
         // Add chart.
         const chart_ratio = this.chartCanvas.width / this.chartCanvas.height
-        const chart_height = Math.min(height - font_size, this.chartCanvas.height)
+        const chart_height = Math.min(height - font_size - 2 * pdf_margin, this.chartCanvas.height)
         const chart_width = chart_height * chart_ratio
         doc.addImage(
           this.chartCanvas.toDataURL(),
