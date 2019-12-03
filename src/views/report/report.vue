@@ -68,7 +68,7 @@
           </el-button-group>
           <el-button
             :loading="printing"
-            :disabled="printing"
+            :disabled="printing || loading"
             class="export-button"
             icon="el-icon-printer"
             size="mini"
@@ -159,7 +159,7 @@ import BarChart from '@/components/bar-chart/bar-chart'
 import LineChart from '@/components/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
 import { debounce } from 'lodash'
-
+import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
 
 export default {
   name: 'Report',
@@ -203,9 +203,7 @@ export default {
         {name: 'Date', descending: true, query: 'composite__min_date', selected: false},
       ],
       loading: true,
-      printing: false,
-      chartCanvas: null,
-      headerCanvas: null
+      printing: false
     }
   },
   computed: {
@@ -383,13 +381,9 @@ export default {
       html2canvas(document.querySelector(".header-chart")).then(chartCanvas => {
         // Set chart canvas.
         this.chartCanvas = chartCanvas
-        html2canvas(document.querySelector(".header-row")).then(headerCanvas => {
-          // Set header canvas.
-          this.headerCanvas = headerCanvas
-          // Trigger map canvas retrieval, this will trigger "print" events from
-          // each map item.
-          this.$refs.aois.forEach(aoi => aoi.getCanvas())
-        })
+        // Trigger map canvas retrieval, this will trigger "print" events from
+        // each map item.
+        this.$refs.aois.forEach(aoi => aoi.getCanvas())
       });
     },
     printCallback(){
@@ -398,33 +392,121 @@ export default {
         // Config variables.
         const format = 'PNG'
         const pdf_margin = 10
+        const font_size = 20
+        const font_size_sm = 15
+        const font_size_lg = 25
 
-        // Compute pdf height.
-        const height = Math.max(
-          this.headerCanvas.height + this.chartCanvas.height,
-          this.$refs.aois[0].canvasData.header.height + this.$refs.aois[0].canvasData.map.height
-        )
+        // Compute pdf width and height.
+        const HEADER = font_size_lg + 3 * pdf_margin
+        const height = HEADER + this.$refs.aois[0].canvasData.map.height
+        const width = this.chartCanvas.width + 2 * pdf_margin
 
         // Create pdf object.
         var doc = jsPDF({
-          orientation: this.headerCanvas.width > this.headerCanvas.height ? 'landscape': 'portrait',
+          orientation: width > height ? 'landscape': 'portrait',
           unit: 'pt',
-          format: [this.chartCanvas.width, height],
+          format: [width, height],
         });
 
+        // Font settings.
+        doc.addFileToVFS('Open-Sans.ttf', OpenSans)
+        doc.addFont('Open-Sans.ttf', 'OpenSans', 'normal')
+        doc.setFont('OpenSans')
+        doc.setFontType('normal')
+        doc.setTextColor('#001a31')  // Navy
+
         // Add title.
-        doc.addImage(this.headerCanvas.toDataURL(), format, pdf_margin, pdf_margin)
+        const headA = `${this.selectedLayer.name} | ${this.selectedFormula.acronym}`
+        doc.setFontSize(font_size_lg)
+        const headAwidth = doc.getTextWidth(headA)
+        const spaceWidth = doc.getTextWidth(' ')
+        const headB = `${this.selectedFormula.name}`
+        doc.text(
+          headA,
+          pdf_margin,
+          pdf_margin + font_size
+        )
+        doc.setFontSize(font_size_sm)
+        doc.text(
+          headB,
+          pdf_margin + spaceWidth + headAwidth,
+          pdf_margin + font_size
+        )
+        doc.setFontSize(font_size)
 
         // Add chart.
-        doc.addImage(this.chartCanvas.toDataURL(), format, pdf_margin, pdf_margin + this.headerCanvas.height)
+        doc.addImage(
+          this.chartCanvas.toDataURL(),
+          format,
+          pdf_margin,
+          2 * pdf_margin + font_size,
+          this.chartCanvas.width,
+          this.chartCanvas.height
+        )
 
+        // Add aoi pages.
         this.$refs.aois.forEach((aoi) => {
           doc.addPage()
           // Adding aoi header and numbers.
-          doc.addImage(aoi.canvasData.header.toDataURL(), format, pdf_margin, pdf_margin)
-          doc.addImage(aoi.canvasData.table.toDataURL(), format, pdf_margin, pdf_margin + aoi.canvasData.header.height)
+          const headC = `${aoi.canvasData.name}`
+          doc.setFontSize(font_size)
+          doc.text(
+            headC,
+            pdf_margin,
+            pdf_margin + font_size
+          )
+          const headC1 = `${aoi.canvasData.date}`
+          const headC1widht = doc.getTextWidth(headC1)
+          doc.text(
+            headC1,
+            width - pdf_margin - headC1widht,
+            pdf_margin + font_size
+          )
+
+          const headD = `${aoi.canvasData.avg}`
+          doc.setFontSize(font_size_lg)
+          doc.text(
+            headD,
+            pdf_margin,
+            4 * pdf_margin + 2 * font_size
+          )
+
+          const headE = `± ${aoi.canvasData.std}`
+          const headDwidth = doc.getTextWidth(headD)
+          const spaceWidthLg = doc.getTextWidth(' ')
+          doc.setFontSize(font_size)
+          doc.text(
+            headE,
+            pdf_margin + headDwidth + spaceWidthLg,
+            4 * pdf_margin + 2 * font_size
+          )
+
+          const headF = `DataRange\n${aoi.canvasData.min} to ${aoi.canvasData.max}`
+          doc.setFontSize(font_size_sm)
+          doc.text(
+            headF,
+            pdf_margin,
+            5 * pdf_margin + 3 * font_size
+          )
+
           // Add captured map image.
-          doc.addImage(aoi.canvasData.map.toDataURL(), format, pdf_margin + aoi.canvasData.table.width, pdf_margin + aoi.canvasData.header.height)
+          doc.addImage(
+            aoi.canvasData.map.toDataURL(),
+            format,
+            width - aoi.canvasData.map.width - pdf_margin,
+            2 * pdf_margin + font_size,
+            aoi.canvasData.map.width,
+            aoi.canvasData.map.height,
+          )
+          // Add captured legend.
+          doc.addImage(
+            aoi.canvasData.legend.toDataURL(),
+            format,
+            width - 2 * pdf_margin - aoi.canvasData.legend.width,
+            height - 2 * pdf_margin - aoi.canvasData.legend.height,
+            aoi.canvasData.legend.width,
+            aoi.canvasData.legend.height,
+          )
         })
         doc.save('tesselo_export.pdf')
         this.printing = false

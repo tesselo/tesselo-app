@@ -44,7 +44,8 @@
         v-if="formula"
         :data="selectedFormulaLegend"
         :min="formula.minVal"
-        :max="formula.maxVal" />
+        :max="formula.maxVal"
+        class="aoi-item-legend" />
     </el-col>
   </el-row>
 </template>
@@ -143,22 +144,19 @@ export default {
   methods: {
     getCanvas(){
       const tat = this
-      html2canvas(document.querySelector('.average-table')).then(dataCanvas => {
-        html2canvas(document.querySelector('.aoi-item-header')).then(headerCanvas => {
-          leafletImage(this.$refs.map.mapObject, function(err, canvas) {
-            tat.canvasData = {
-              map: canvas,
-              table: dataCanvas,
-              header: headerCanvas,
-              name: tat.agg.name,
-              date: tat.date,
-              avg: tat.agg.avg.toFixed(2),
-              std: tat.agg.std.toFixed(2),
-              min: tat.agg.min.toFixed(2),
-              max: tat.agg.max.toFixed(2),
-            }
-            tat.$emit('printed')
-          })
+      html2canvas(document.querySelector('.aoi-item-legend')).then(legendCanvas => {
+        leafletImage(this.$refs.map.mapObject, function(err, canvas) {
+          tat.canvasData = {
+            map: canvas,
+            legend: legendCanvas,
+            name: tat.agg.name,
+            date: tat.date,
+            avg: tat.agg.avg.toFixed(2),
+            std: tat.agg.std.toFixed(2),
+            min: tat.agg.min.toFixed(2),
+            max: tat.agg.max.toFixed(2),
+          }
+          tat.$emit('printed')
         })
       })
     }
