@@ -413,11 +413,11 @@ export default {
         doc.addFont('Open-Sans.ttf', 'OpenSans', 'normal')
         doc.setFont('OpenSans')
         doc.setFontType('normal')
-        doc.setTextColor('#001a31')  // Navy
+        doc.setTextColor('#001A31')  // Navy
 
         // Add title.
         const headA = `${this.selectedLayer.name} | ${this.selectedFormula.acronym}`
-        doc.setFontSize(font_size_lg)
+        doc.setFontSize(font_size)
         const headAwidth = doc.getTextWidth(headA)
         const spaceWidth = doc.getTextWidth(' ')
         const headB = `${this.selectedFormula.name}`
@@ -435,13 +435,16 @@ export default {
         doc.setFontSize(font_size)
 
         // Add chart.
+        const chart_ratio = this.chartCanvas.width / this.chartCanvas.height
+        const chart_height = Math.min(height - font_size, this.chartCanvas.height)
+        const chart_width = chart_height * chart_ratio
         doc.addImage(
           this.chartCanvas.toDataURL(),
           format,
           pdf_margin,
           2 * pdf_margin + font_size,
-          this.chartCanvas.width,
-          this.chartCanvas.height
+          chart_width,
+          chart_height
         )
 
         // Add aoi pages.
