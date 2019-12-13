@@ -17,7 +17,7 @@
         :auto-z-index="layersAutoZIndex" />
       <l-control-attribution
         :position="attributionPosition"
-        prefix="Visualization Layers &copy; Tesselo " />
+        prefix="Visualization Layers &copy; <a href=https://tesselo.com>Tesselo</a> " />
       <l-control
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
