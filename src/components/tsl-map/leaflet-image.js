@@ -180,9 +180,7 @@ export default function leafletImage(map, callback) {
             axios({
               method: 'GET',
               url: url,
-              headers: {
-                authorization: 'Token ' + JSON.parse(localStorage.getItem('auth')).token
-              },
+              withCredentials: true,
               responseType: 'blob'
             }).then((response) => {
               tile.src = URL.createObjectURL(response.data)

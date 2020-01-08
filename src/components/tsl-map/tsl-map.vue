@@ -377,12 +377,9 @@ export default {
         zIndex: 10
       }
 
-      const token = JSON.parse(localStorage.getItem('auth')).token
       if (this.authenticated) {
         options.fetchOptions = {
-          headers: new Headers({
-            'authorization': 'Token ' + token
-          })
+          credentials: 'include'
         }
       }
 

@@ -19,15 +19,11 @@ L.AuthenticatedTileLayer = L.TileLayer.extend({
     if(!url) {
       return tile
     }
-    // Get auth token from local storage.
-    const token = JSON.parse(localStorage.getItem('auth')).token
     // Get tile data using axios and assign result to dom element asynchronously.
     axios({
       method: 'GET',
       url: url,
-      headers: {
-        'authorization': 'Token ' + token
-      },
+      withCredentials: true,
       responseType: 'blob'
     }).then((response) => {
       tile.src = URL.createObjectURL(response.data)
