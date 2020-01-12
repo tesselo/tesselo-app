@@ -1,7 +1,6 @@
 // import mutation types from file
 // - https://vuex.vuejs.org/en/mutations.html#using-constants-for-mutation-types
 import { mutationTypes } from '@/services/constants'
-import { COOKIE_AUTH_KEY } from '@/services/api/api.client'
 
 export default {
   /**
@@ -40,8 +39,5 @@ export default {
     state.authenticated = false
     state.is_staff = false
     localStorage.removeItem('auth')
-    // Clear auth cookie.
-    console.log('clearing cookie at mutation', COOKIE_AUTH_KEY, `${COOKIE_AUTH_KEY}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;`)
-    document.cookie = `${COOKIE_AUTH_KEY}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;`
   }
 }

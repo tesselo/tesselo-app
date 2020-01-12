@@ -333,7 +333,6 @@ export default {
           attributes: JSON.parse(this.form.attributes)
         })
       } else {
-        console.log('creating new', this.form)
         // Create new aggregationlayer.
         funk = this.createAggregationAreaAction({
           ...this.form,
