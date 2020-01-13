@@ -1,7 +1,7 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  API_URL: '"https://tesselo.com/api/"',
-  ROUTER_BASE: '"/app"',
-  ASSETS_PUBLIC_PATH: '"https://static.tesselo.com/"'
+  API_URL: '"https://api.tesselo.com/"',
+  ROUTER_BASE: '""',
+  ASSETS_PUBLIC_PATH: '""'
 }
