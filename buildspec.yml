@@ -3,8 +3,12 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "Upgrading npm to latest version 5.x"
-      - npm install -g npm@latest-5
+      - apt-get update
+      - echo "Upgrading node to version 6.x"
+      - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+      - apt-get install -y nodejs
+      - echo Installing casperjs for e2e testing...
+      - npm install -g phantomjs@2.1.1 casperjs@1.1.4
       - echo "Installing npm dependencies"
       - npm install
   build:
@@ -13,3 +17,4 @@ phases:
       - npm run build:$STAGE
       - echo "Pushing new build to s3://$BUCKET"
       - aws s3 sync --exclude *.js.map --acl public-read dist/ s3://$BUCKET
+      - casperjs test --stage=$STAGE --username=$TEST_USER --password=$TEST_PASSWORD test/casper/tests
