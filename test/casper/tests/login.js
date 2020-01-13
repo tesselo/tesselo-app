@@ -8,22 +8,19 @@ casper.test.begin('Tesselo login form works (currently mainly disabled)', 1, fun
 
     casper.start(setup.get_base_url(casper) + "login", function() {
 
-      // Skip these tests if creds are not available.
-      casper.thenBypassIf(function(){ return !has_creds }, 5);
-
       casper.then(function() {
         casper.fill('form', {
           'username': creds.username,
           'password': creds.password
         }, false);
 
-        console.log('username', this.evaluate(function() {
-          return document.querySelector('input[name="username"]').value
-        }));
+        // console.log('username', this.evaluate(function() {
+        //   return document.querySelector('input[name="username"]').value
+        // }));
+        // console.log('password', this.evaluate(function() {
+        //   return document.querySelector('input[name="password"]').value
+        // }));
 
-        console.log('password', this.evaluate(function() {
-          return document.querySelector('input[name="password"]').value
-        }));
         casper.click('.login-button');
         casper.sendKeys('.login-button', casper.page.event.key.Enter, {keepFocus: true});
       });
