@@ -123,7 +123,7 @@
       </el-row>
       <el-row v-if="selectedLayer && selectedLayer.aggregationareas && !list">
         <h3>Aggregation areas</h3>
-        <p>{{ selectedLayer.aggregationareas }}</p>
+        <p>{{ selectedLayer.nr_of_areas }}</p>
       </el-row>
       <el-row v-if="selectedLayer && selectedLayer.extent && !list">
         <h3>Extent</h3>
