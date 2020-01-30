@@ -10,6 +10,7 @@
           <h1>Login</h1>
           <h4>Login to Tesselo, enter your details below.</h4>
           <login-form class="login-form" />
+          <h4><a href="https://api.tesselo.com/accounts/password_reset/">Forgot password?</a></h4>
         </div>
       </div>
     </div>
@@ -51,6 +52,10 @@ export default {
       width: 100%;
       height: 100%;
       background-color: rgba($navy, 0.5);
+    }
+    a {
+      color: white;
+      text-decoration: none;
     }
   }
 
