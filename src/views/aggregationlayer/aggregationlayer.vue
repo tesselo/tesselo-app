@@ -146,7 +146,7 @@ import AreasTable from '@/components/areas-table/areas-table'
 
 
 export default {
-  name: 'Logout',
+  name: 'AggregationLayer',
   components: {
     AreasTable
   },
