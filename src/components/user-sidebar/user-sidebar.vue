@@ -118,6 +118,12 @@
           <a
             href="javascript:void(0)">Logout</a>
         </div>
+        <div
+          class="logout">
+          <div class="separator"/>
+          <a
+            href="https://api.tesselo.com/accounts/password_change/">Change Password</a>
+        </div>
       </div>
     </div>
   </div>
@@ -443,16 +449,17 @@ export default {
 }
 
 .bottom {
+  background-color: black;
+  position: absolute;
+  padding: 0px 20px 5px 20px;
+  bottom: 0px;
+  left: 0px;
   width: 100%;
 }
 
 .logout {
   width: 100%;
-  margin-bottom: 28px;
-
-  @media (min-width: 768px) {
-    margin-bottom: 0;
-  }
+  margin-bottom: 10px;
 
   .separator {
     margin-bottom: 7px;
