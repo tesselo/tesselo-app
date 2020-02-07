@@ -221,7 +221,7 @@
 
     <div
       v-if="showPicker && loading"
-      class="spinner-panel">
+      :class="['spinner-panel', { 'spinner-panel--scenes': isScenes }]">
       <div class="spinner-wrapper">
         <div class="spinner twilight" />
       </div>
@@ -229,7 +229,7 @@
 
     <div
       v-if="!loading && momentsList && momentsList.length === 0 && showPicker"
-      class="no-results-panel text-center d-flex flex-row justify-content-center align-items-center">
+      :class="['no-results-panel text-center d-flex flex-row justify-content-center align-items-center', {'no-results-panel--scenes': isScenes }]">
       <h1>No results to display.</h1>
     </div>
   </div>
@@ -821,9 +821,11 @@ export default {
   }
 
   .no-results-panel {
-    height: 220px;
+    height: 80px;
     width: 100%;
-
+    &--scenes {
+      height: 276px;
+    }
     h1 {
       font-size: 24px;
     }
@@ -831,7 +833,10 @@ export default {
 
   .spinner-panel {
     position: relative;
-    height: 220px;
+    height: 80px;
+    &--scenes {
+      height: 276px;
+    }
     width: 100%;
   }
 
