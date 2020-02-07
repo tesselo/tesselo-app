@@ -209,7 +209,7 @@
           <a
             slot="reference"
             :title="item.name"
-            :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': item.id === selectedMoment.id }]"
+            :class="['selector-time-dimension__item', { 'selector-time-dimension__item--active': selectedMoment && item.id === selectedMoment.id }]"
             href="javascript:void(0)"
             @click="selectMomentAction(item)"
           >
