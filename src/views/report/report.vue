@@ -199,7 +199,7 @@ export default {
       },
       sorts: [
         {name: 'Name', descending: true, query: 'aggregationarea__name', selected: true},
-        {name: 'Average', descending: true, query: 'valuecountresult__stats_avg', selected: false},
+        {name: 'Average', descending: true, query: 'stats_avg', selected: false},
         {name: 'Date', descending: true, query: 'min_date', selected: false},
       ],
       loading: true,
