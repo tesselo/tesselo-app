@@ -3,5 +3,6 @@ export default {
   token: null,
   expires: null,
   authenticated: false,
-  is_staff: false
+  is_staff: false,
+  profile: {},
 }

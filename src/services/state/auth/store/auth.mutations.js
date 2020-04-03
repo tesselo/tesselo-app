@@ -12,18 +12,20 @@ export default {
    * @param {String} user.token
    * @param {String} user.expires
    */
-  [mutationTypes.AUTH_SET_AUTHENTICATION] (state, { username, token, expires, is_staff }) {
+  [mutationTypes.AUTH_SET_AUTHENTICATION] (state, { username, token, expires, is_staff, profile }) {
     state.username = username
     state.token = token
     state.expires = expires
     state.authenticated = true
     state.is_staff = is_staff
+    state.profile = profile
 
     window.localStorage.setItem('auth', JSON.stringify({
       username,
       token,
       expires,
       is_staff,
+      profile,
       authenticated: true
     }))
   },
@@ -38,6 +40,7 @@ export default {
     state.expires = null
     state.authenticated = false
     state.is_staff = false
+    state.profile = {}
     localStorage.removeItem('auth')
   }
 }
