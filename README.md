@@ -12,6 +12,17 @@ This app is built on top of Pixelmatters Vue Boilerplate, which is an extension 
   * CSS Reset
   * Bootstrap 4
 
+## Available baselayer keys
+On the api user profile, it is possible to configure the baselayers shown to the
+user. The currently available baselayers can be found in
+`src/components/tsl-map/tile-providers.js`. Use the "slug" key in the api list,
+and separate values with commas.
+Example api config:
+```json
+{"baselayers": "OpenStreetMap,BW_OpenStreetMap"}
+```
+
+
 ## Environment variables
 Environment variables are set in `./config/[dev, mock, staging, prod, test].env.js`
 
