@@ -227,7 +227,6 @@ export default {
     basemapProviders() {
       if (this.profile && this.profile.baselayers) {
         const baselayers = this.profile.baselayers.split(',')
-        console.log('baselayers', baselayers)
         return basemapProviders.filter(item => { return baselayers.indexOf(item.slug) >= 0 })
       } else {
         return basemapProviders.map(item => { return item })
@@ -355,18 +354,14 @@ export default {
         if (this.baselayer){
           lyr = this.basemapProviders.find(item => item.slug == newValue)
         }
-        console.log('lyr a', lyr)
         if (!lyr) {
           lyr = this.basemapProviders[0]
         }
-        console.log('lyr b', lyr)
         lyr.visible = true
       } else if(this.baselayer) {
         // Select new baselayer based on new set value.
         const lmap = this.$refs.map.mapObject
-        console.log(this.basemapRefs)
         this.basemapRefs.forEach(function(ref){
-          console.log(ref)
           if(ref.$attrs.slug == newValue) {
             lmap.addLayer(ref.mapObject)
           } else if (lmap.hasLayer(ref.mapObject)) {
