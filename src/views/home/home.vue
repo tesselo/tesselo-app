@@ -236,7 +236,7 @@ export default {
       if(to.query.mapOption){
         vm.setBaselayer(to.query.mapOption)
       } else {
-        vm.setBaselayer(vm.$refs.tslMap.allBasemapProviders[0].slug)
+        vm.setBaselayer(vm.$refs.tslMap.basemapProviders[0].slug)
       }
       // Opacity sliders.
       if(to.query.lOpacity) {

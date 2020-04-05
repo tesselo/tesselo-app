@@ -37,7 +37,8 @@
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         ref="tileProviders"
-        :key="tileProvider.name"
+        :key="tileProvider.slug"
+        :slug="tileProvider.slug"
         :name="tileProvider.name"
         :visible="tileProvider.visible"
         :url="tileProvider.url"
@@ -47,16 +48,17 @@
         :z-index="tileProvider.zIndex"
       />
       <l-wms-tile-layer
-        v-for="wmts in wmtsProviders"
-        ref="wmtsProviders"
-        :key="wmts.key"
-        :name="wmts.name"
-        :visible="wmts.visible"
-        :base-url="wmts.base_url"
-        :layers="wmts.layers"
-        :attribution="wmts.attribution"
-        :layer-type="wmts.type"
-        :z-index="wmts.zIndex"
+        v-for="wms in wmsProviders"
+        ref="wmsProviders"
+        :key="wms.slug"
+        :slug="wms.slug"
+        :name="wms.name"
+        :visible="wms.visible"
+        :base-url="wms.base_url"
+        :layers="wms.layers"
+        :attribution="wms.attribution"
+        :layer-type="wms.type"
+        :z-index="wms.zIndex"
       />
       <l-tile-layer
         :visible="showSelected"
@@ -146,6 +148,7 @@ import 'leaflet-range/L.Control.Range.css'
 // Vector grids for vue.
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
 import { polygonStyle } from './vector-style'
+import { basemapProviders } from './tile-providers'
 
 import MapLegend from '@/components/map-legend/map-legend.vue'
 
@@ -183,121 +186,6 @@ export default {
       predictedZIndex: 10,
       tesseloAttribution: 'Contains modified Copernicus Sentinel data 2016 - 2019',
       layersAutoZIndex: false,
-      tileProviders: [
-        {
-          slug:'BW_OpenStreetMap',
-          name: 'B&W OpenStreetMap',
-          visible: false,
-          url: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
-          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-          tileLayerClass: L.tileLayer,
-          type: "base",
-          zIndex: 1
-
-        },
-        {
-          slug:'OpenStreetMap',
-          name: 'OpenStreetMap',
-          visible: false,
-          attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          tileLayerClass: L.tileLayer,
-          type: "base",
-          zIndex: 1
-        },
-        {
-          slug:'Lines',
-          name: 'LinesOverlay',
-          visible: false,
-          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-          url: 'http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png',
-          tileLayerClass: L.tileLayer,
-          type: "overlay",
-          zIndex: 11
-        },
-        {
-          slug:'Labels',
-          name: 'LabelsOverlay',
-          visible: false,
-          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-          url: 'http://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.png',
-          tileLayerClass: L.tileLayer,
-          type: "overlay",
-          zIndex: 12
-        },
-        {
-          slug: 'NAIP_RGB',
-          name: 'NAIP RGB',
-          visible: false,
-          attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
-          url: '/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255',
-          tileLayerClass: L.authenticatedTileLayer,
-          type: "base",
-          zIndex: 1
-        },
-        {
-          slug: 'NAIP_GRAYSCALE',
-          name: 'NAIP Grayscale',
-          visible: false,
-          attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
-          url: '/api/naip/{z}/{x}/{y}.png?alpha&scale=0,255&enhance_color=0',
-          tileLayerClass: L.authenticatedTileLayer,
-          type: "base",
-          zIndex: 1
-        },
-        {
-          slug: 'NAIP_NDVI',
-          name: 'NAIP NDVI',
-          visible: false,
-          attribution: '<a target="_blank" href="http://www.fsa.usda.gov/">USDA Farm Service Agency</a>',
-          url: '/api/naip/{z}/{x}/{y}.png?formula=(B4-B1)/(B1%2BB4)&colormap=%7B"continuous":true,"range":[-0.9,0.9],"from":[165,0,38],"to":[0,104,55],"over":[249,247,174]%7D',
-          tileLayerClass: L.authenticatedTileLayer,
-          type: "base",
-          zIndex: 1
-        }
-      ],
-      wmtsProviders: [
-        {
-          base_url: "https://basemap.nationalmap.gov/arcgis/services/USGSImageryOnly/MapServer/WMSServer",
-          slug:'USGS_Imagery',
-          name: 'USGS Imagery',
-          visible: false,
-          layers: "0",
-          attribution: "USGS The National Map: Orthoimagery. Data refreshed April, 2019.",
-          type: "base",
-          zIndex: 1
-        },
-        {
-          base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
-          slug:'Hillshade_Gray',
-          name: 'USGS Hillshade Gray',
-          visible: false,
-          layers: "3DEPElevation:Hillshade Gray",
-          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
-          type: "base",
-          zIndex: 1
-        },
-        {
-          base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
-          slug:'Hillshade_Multidirectional',
-          name: 'USGS Hillshade Multidirectional',
-          visible: false,
-          layers: "3DEPElevation:Hillshade Multidirectional",
-          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
-          type: "base",
-          zIndex: 1
-        },
-        {
-          base_url: "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer",
-          slug:'Hillshade_Tinted',
-          name: 'USGS Hillshade Tinted',
-          visible: false,
-          layers: "3DEPElevation:Hillshade Elevation Tinted",
-          attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
-          type: "base",
-          zIndex: 1
-        }
-      ],
       mapOptions: {
         zoomControl: false,
         attributionControl: false
@@ -320,6 +208,7 @@ export default {
   },
   computed: {
     ...mapState({
+      profile: state => state.auth.profile,
       zoom: state => state.map.zoom,
       center: state => state.map.center,
       homeBounds: state => state.map.homeBounds,
@@ -335,6 +224,40 @@ export default {
       showPredicted: state => Boolean(state.predictedLayer.selectedLayer)
     }),
 
+    basemapProviders() {
+      // const tat = this
+      if (this.profile.baselayers) {
+        const baselayers = this.profile.baselayers.split(',')
+        console.log('baselayers', baselayers)
+        return basemapProviders.filter(item => { return baselayers.indexOf(item.slug) >= 0 })
+      } else {
+        return basemapProviders.map(item => { return item })
+      }
+    },
+
+    wmsProviders() {
+      return this.basemapProviders.filter(provider => { return provider.isWms })
+    },
+
+    tileProviders() {
+      return this.basemapProviders.filter(provider => { return !provider.isWms })
+    },
+
+    basemapRefs() {
+      let result
+      if (this.$refs.tileProviders) {
+        result = this.$refs.tileProviders
+      }
+      if (this.$refs.wmsProviders) {
+        if (result) {
+          result.concat(this.$refs.wmsProviders)
+        } else {
+          result = this.$refs.wmsProviders
+        }
+      }
+      return result
+    },
+
     isTouch() {
       return this.$deviceInfo.isTouch;
     },
@@ -344,10 +267,6 @@ export default {
         this.selectedFormula.formula !== 'RGB' &&
         this.selectedFormulaLegend &&
         this.selectedFormulaLegend.length
-    },
-
-    allBasemapProviders () {
-      return this.tileProviders.concat(this.wmtsProviders)
     },
 
     selectedFormulaLegend () {
@@ -431,29 +350,28 @@ export default {
     },
     baselayer(newValue){
       if (!this.$refs.tileProviders){
+        // On first load, the reference is not yet active so use the basemap
+        // dictionary here.
         let lyr
         if (this.baselayer){
-          lyr = this.tileProviders.find(item => item.slug == newValue)
-          if(!lyr) {
-            lyr = this.wmtsProviders.find(item => item.slug == newValue)
-          }
-        } else {
-          lyr = this.allBasemapProviders[0]
+          lyr = this.basemapProviders.find(item => item.slug == newValue)
         }
+        console.log('lyr a', lyr)
+        if (!lyr) {
+          lyr = this.basemapProviders[0]
+        }
+        console.log('lyr b', lyr)
         lyr.visible = true
       } else if(this.baselayer) {
-        // Select new baselayer.
+        // Select new baselayer based on new set value.
         const lmap = this.$refs.map.mapObject
-        const tat = this
-        this.allBasemapProviders.forEach(function(base){
-          var lyr = tat.$refs.tileProviders.find(item => item.name == base.name)
-          if(!lyr) {
-            lyr = tat.$refs.wmtsProviders.find(item => item.name == base.name)
-          }
-          if(base.slug == newValue) {
-            lmap.addLayer(lyr.mapObject)
-          } else if (lmap.hasLayer(lyr.mapObject)) {
-            lmap.removeLayer(lyr.mapObject)
+        console.log(this.basemapRefs)
+        this.basemapRefs.forEach(function(ref){
+          console.log(ref)
+          if(ref.$attrs.slug == newValue) {
+            lmap.addLayer(ref.mapObject)
+          } else if (lmap.hasLayer(ref.mapObject)) {
+            lmap.removeLayer(ref.mapObject)
           }
         })
       }
@@ -479,7 +397,7 @@ export default {
      * Set selected option on URL based on index
      */
     setMapOption(event){
-      const selected = this.allBasemapProviders.find(item => item.name === event.name);
+      const selected = this.basemapProviders.find(item => item.name === event.name);
       this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
     },
     updateBounds(){
