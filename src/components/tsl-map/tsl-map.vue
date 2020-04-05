@@ -225,8 +225,7 @@ export default {
     }),
 
     basemapProviders() {
-      // const tat = this
-      if (this.profile.baselayers) {
+      if (this.profile && this.profile.baselayers) {
         const baselayers = this.profile.baselayers.split(',')
         console.log('baselayers', baselayers)
         return basemapProviders.filter(item => { return baselayers.indexOf(item.slug) >= 0 })
