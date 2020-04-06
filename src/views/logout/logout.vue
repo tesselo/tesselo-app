@@ -3,14 +3,14 @@
 </template>
 
 <script>
-import { actionTypes } from '@/services/constants'
+import { actionTypes, routeTypes } from '@/services/constants'
 import { mapActions } from 'vuex';
 
 export default {
   name: 'Logout',
   mounted() {
     this.logout()
-    this.$router.push({ name: 'Login' })
+    this.$router.push({ name: routeTypes.LOGIN })
   },
   methods: {
     ...mapActions('auth', {
