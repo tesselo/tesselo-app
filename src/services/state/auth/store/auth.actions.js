@@ -28,10 +28,12 @@ export default {
    * @param {Boolean} options.useApi - whether to make the api call or
    * not. API isn't used when the action is dispatched from the axios error interceptor.
    */
-  async [actionTypes.AUTH_LOGOUT] (context) {
-    await APIAdapter.services.auth.logout()
-    context.commit(mutationTypes.AUTH_REMOVE_AUTHENTICATION)
-    context.commit(mutationTypes.RESET_STORE, null, { root: true })
+  [actionTypes.AUTH_LOGOUT] (context) {
+    function resetAuth() {
+      context.commit(mutationTypes.AUTH_REMOVE_AUTHENTICATION)
+      context.commit(mutationTypes.RESET_STORE, null, { root: true })
+    }
+    APIAdapter.services.auth.logout().then(resetAuth, resetAuth)
   },
   [actionTypes.AUTH_START] (context) {
     const auth = JSON.parse(window.localStorage.getItem('auth'))
