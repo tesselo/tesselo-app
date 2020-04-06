@@ -19,12 +19,20 @@ const router = new Router({
     {
       path: '/login',
       name: routeTypes.LOGIN,
-      component: Login
+      component: Login,
+      meta: {
+        requiresAuthentication: false,
+        requiresStaff: false
+      }
     },
     {
       path: '/logout',
       name: routeTypes.LOGOUT,
-      component: Logout
+      component: Logout,
+      meta: {
+        requiresAuthentication: false,
+        requiresStaff: false
+      }
     },
     {
       path: '/',
