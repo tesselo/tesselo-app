@@ -1,5 +1,9 @@
 import axios from 'axios'
+
+import { routeTypes } from "@/services/constants"
 import { baseUrl } from '@/services/util'
+import router from '@/services/router'
+
 
 const axiosInstance = axios.create({
   baseURL: baseUrl(),
@@ -11,11 +15,8 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
-    if (error.response.status === 401) {
-      localStorage.removeItem('auth')
-      if (!window.location.href.includes('/login')) {
-        window.location.href = process.env.ROUTER_BASE + '/logout'
-      }
+    if (error.response.status === 401 && router.currentRoute.name != routeTypes.LOGIN) {
+      router.push({ name: "Logout" })
     }
     return Promise.reject(error.response)
   }
