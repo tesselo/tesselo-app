@@ -47,7 +47,7 @@
       </el-row>
       <el-row>
         <el-col
-          :sm="10"
+          :sm="12"
           class="header-row">
           <el-button-group>
             <el-button
@@ -74,7 +74,7 @@
             size="mini"
             @click="print" />
         </el-col>
-        <el-col :sm="6">
+        <el-col :sm="12">
           <el-radio-group
             v-model="radio"
             size="mini">
@@ -82,10 +82,14 @@
             <el-radio-button label="24" />
             <el-radio-button label="36" />
           </el-radio-group>
+          <el-input-number
+            v-model="minPercentageCovered"
+            step="10"
+            size="mini"
+            placeholder="%"/>
         </el-col>
         <el-col
-          v-if="has_data"
-          :sm="8">
+          v-if="has_data">
           <el-pagination
             v-if="total"
             :total="total"
@@ -147,6 +151,7 @@ import 'element-ui/lib/theme-chalk/radio.css'
 import 'element-ui/lib/theme-chalk/radio-button.css'
 import 'element-ui/lib/theme-chalk/radio-group.css'
 import 'element-ui/lib/theme-chalk/loading.css'
+import 'element-ui/lib/theme-chalk/input-number.css'
 
 import moment from 'moment'
 import html2canvas from 'html2canvas'
@@ -172,6 +177,7 @@ export default {
     return {
       search: '',
       monthrange: '',
+      minPercentageCovered: '',
       radio: 12,
       currentPage: 1,
       pickerOptions: {
@@ -293,6 +299,9 @@ export default {
     },
     pageSize(){
       this.query()
+    },
+    minPercentageCovered() {
+      this.query()
     }
   },
   mounted: function(){
@@ -301,7 +310,8 @@ export default {
       layer: {id: this.$route.params.layer},
       formula: {id: this.$route.params.formula},
       page: this.currentPage,
-      pageSize: this.pageSize
+      pageSize: this.pageSize,
+
     })
     .then(() => {
       this.loading = false
@@ -342,10 +352,11 @@ export default {
           moment: '',
           ordering: this.sortBy,
           search: this.search,
-          date_after: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
-          date_before: this.monthrange ? moment(this.monthrange[1]).endOf('month').format('YYYY-MM-DD') : '',
+          dateAfter: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
+          dateBefore: this.monthrange ? moment(this.monthrange[1]).endOf('month').format('YYYY-MM-DD') : '',
           page: this.currentPage,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          minPercentageCovered: this.minPercentageCovered > 0 ? this.minPercentageCovered / 100 : '',
         })
         .then(() => {
           tat.loading = false
