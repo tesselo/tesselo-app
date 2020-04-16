@@ -84,7 +84,7 @@
           </el-radio-group>
           <el-input-number
             v-model="minPercentageCovered"
-            step="10"
+            :step="10"
             size="mini"
             placeholder="%"/>
         </el-col>
