@@ -133,12 +133,14 @@ export default {
     agg(){
       if(this.$refs.map){
         this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
+        this.$refs.map.mapObject.setMaxBounds(this.bounds.pad(0.025))
       }
     }
   },
   mounted() {
     if(this.$refs.map){
       this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
+      this.$refs.map.mapObject.setMaxBounds(this.bounds.pad(0.025))
     }
   },
   methods: {
