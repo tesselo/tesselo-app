@@ -47,6 +47,24 @@
         :max="formula.maxVal"
         class="aoi-item-legend" />
     </el-col>
+    <el-col
+      :span="24">
+      <el-collapse>
+        <el-collapse-item title="Attributes">
+          <el-table
+            :data="tableData"
+            style="width: 100%">
+            <el-table-column
+              prop="category"
+              label="Category"
+              width="180"/>
+            <el-table-column
+              prop="area"
+              label="Area [ha]"/>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+    </el-col>
   </el-row>
 </template>
 
@@ -57,6 +75,7 @@ import 'leaflet/dist/leaflet.css'
 import { LMap, LTileLayer, LPolygon } from 'vue2-leaflet'
 import leafletImage from '@/components/tsl-map/leaflet-image'
 import 'element-ui/lib/theme-chalk/divider.css'
+import 'element-ui/lib/theme-chalk/collapse.css'
 import moment from 'moment'
 import html2canvas from 'html2canvas'
 
@@ -108,7 +127,11 @@ export default {
       return L.geoJson(this.agg.geom).getBounds()
     },
     url(){
-      return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
+      if(this.agg.predictedlayer) {
+        return `${process.env.API_URL}tile/${this.agg.predictedlayer_rasterlayer}/{z}/{x}/{y}.png`
+      } else {
+        return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
+      }
     },
     date(){
       return moment(this.agg.min_date).format('MMMM YYYY')
@@ -127,6 +150,12 @@ export default {
       } else {
         return []
       }
+    },
+    tableData() {
+      const ACRES_TO_HA = 0.404686
+      return Object.entries(this.agg.value).map((entry) => {
+        return {"category": entry[0], "area": (entry[1] * ACRES_TO_HA).toFixed(1)}
+      })
     }
   },
   watch: {

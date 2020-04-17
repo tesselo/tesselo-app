@@ -13,6 +13,7 @@
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
             <span v-if="showTrend && rows">| {{ trendAreaName }}</span>
             <span v-if="selectedFormula">| {{ selectedFormula.acronym }}</span>
+            <span v-if="selectedPredictedLayer">| {{ selectedPredictedLayer.nameToShow }}</span>
             <span
               v-if="selectedFormula"
               class="formula-name-header">
@@ -125,6 +126,7 @@
           :agg="entry"
           :formula="selectedFormula"
           :trend="showTrend"
+          :predicted-layer="predictedLayer"
           @printed="printCallback" />
       </el-row>
       <div
@@ -159,7 +161,7 @@ import 'es6-promise/auto'
 import jsPDF from 'jspdf'
 
 import { mapState, mapActions } from 'vuex'
-import { actionTypes } from '@/services/constants'
+import { actionTypes, routeTypes } from '@/services/constants'
 import BarChart from '@/components/bar-chart/bar-chart'
 import LineChart from '@/components/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
@@ -177,7 +179,7 @@ export default {
     return {
       search: '',
       monthrange: '',
-      minPercentageCovered: '',
+      minPercentageCovered: 0,
       radio: 12,
       currentPage: 1,
       pickerOptions: {
@@ -218,6 +220,9 @@ export default {
       selectedFormulaRow: state => state.formula.row,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       formulaReport: state => state.formulaReport.rows,
+      predictedLayer: state => state.predictedLayer,
+      selectedPredictedLayerRow: state => state.predictedLayer.row,
+      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       total: state => state.formulaReport.total,
       original_rows: state => state.formulaReport.rows,
       next: state => state.formulaReport.next,
@@ -288,6 +293,9 @@ export default {
     },
     pageSize(){
       return parseInt(this.radio)
+    },
+    discrete(){
+      return this.$route.name == routeTypes.REPORT_PREDICTED
     }
   },
   watch: {
@@ -305,29 +313,43 @@ export default {
     }
   },
   mounted: function(){
-    // Get aggregation data.
-    this.getFormulaReport({
+    // Set up aggregation data query parameters.
+    var query = {
       layer: {id: this.$route.params.layer},
-      formula: {id: this.$route.params.formula},
       page: this.currentPage,
       pageSize: this.pageSize,
-
-    })
+    }
+    if(this.discrete) {
+      query.predictedLayer = {id: this.$route.params.predictedLayer}
+    } else {
+      query.formula = {id: this.$route.params.formula}
+    }
+    // Get aggregation data.
+    this.getFormulaReport(query)
     .then(() => {
       this.loading = false
     })
     .catch(() => {
       this.loading = false
     })
-    // Get meta info for the
+    // Get the layer data.
+    if(this.discrete) {
+      if (!this.selectedPredictedLayer){
+        this.getPredictedLayersIDAction(this.$route.params.predictedLayer)
+        .then(() => {
+          this.selectPredictedLayer(this.selectedPredictedLayerRow)
+        })
+      }
+    } else {
+      if (!this.selectedFormula){
+        this.getFormulaIDAction(this.$route.params.formula)
+        .then(() => {
+          this.selectFormula(this.selectedFormulaRow)
+        })
+      }
+    }
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
-    }
-    if (!this.selectedFormula){
-      this.getFormulaIDAction(this.$route.params.formula)
-      .then(() => {
-        this.selectFormula(this.selectedFormulaRow)
-      })
     }
   },
   methods: {
@@ -342,13 +364,18 @@ export default {
       getFormulaIDAction: actionTypes.FORMULA_GET_ID,
       selectFormula: actionTypes.FORMULA_SELECT
     }),
+    ...mapActions('predictedLayer', {
+      getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
+      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT
+    }),
     query: debounce(
       function () {
         this.loading = true
         const tat = this
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
-          formula: {id: this.selectedFormula.id},
+          formula: this.selectedFormula ? {id: this.selectedFormula.id} : '',
+          predictedLayer: this.predictedLayer ? {id: this.predictedLayer.id} : '',
           moment: '',
           ordering: this.sortBy,
           search: this.search,

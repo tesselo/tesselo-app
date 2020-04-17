@@ -52,6 +52,15 @@ const router = new Router({
       }
     },
     {
+      path: '/report/predicted/:layer/:predictedLayer',
+      name: routeTypes.REPORT_PREDICTED,
+      component: Report,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: false
+      }
+    },
+    {
       path: '/areas',
       name: routeTypes.AGGREGATION_LAYER_LIST,
       component: AggLayer,
