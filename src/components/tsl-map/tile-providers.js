@@ -89,6 +89,7 @@ export const basemapProviders = [
     layers: "0",
     attribution: "USGS The National Map: Orthoimagery. Data refreshed April, 2019.",
     type: "base",
+    format: "image/jpeg",
     zIndex: 1,
     isWms: true
   },
@@ -100,6 +101,7 @@ export const basemapProviders = [
     layers: "3DEPElevation:Hillshade Gray",
     attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
     type: "base",
+    format: "image/jpeg",
     zIndex: 1,
     isWms: true
   },
@@ -111,6 +113,7 @@ export const basemapProviders = [
     layers: "3DEPElevation:Hillshade Multidirectional",
     attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
     type: "base",
+    format: "image/jpeg",
     zIndex: 1,
     isWms: true
   },
@@ -121,6 +124,19 @@ export const basemapProviders = [
     visible: false,
     layers: "3DEPElevation:Hillshade Elevation Tinted",
     attribution: "USGS National Map 3D Elevation Program (3DEP). Data refreshed July, 2018.",
+    type: "base",
+    format: "image/jpeg",
+    zIndex: 1,
+    isWms: true
+  },
+  {
+    base_url: "http://cartografia.dgterritorio.gov.pt/ortos2018/service?",
+    slug:'DGTOrtos2018',
+    name: 'DGT Ortofotos 2018',
+    visible: false,
+    layers: "Ortos2018-RGB",
+    attribution: "DGT Ortofotos 2018.",
+    format: "image/png",
     type: "base",
     zIndex: 1,
     isWms: true

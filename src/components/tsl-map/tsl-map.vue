@@ -56,6 +56,7 @@
         :visible="wms.visible"
         :base-url="wms.base_url"
         :layers="wms.layers"
+        :format="wms.format"
         :attribution="wms.attribution"
         :layer-type="wms.type"
         :z-index="wms.zIndex"
