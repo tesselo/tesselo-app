@@ -48,6 +48,7 @@
         class="aoi-item-legend" />
     </el-col>
     <el-col
+      v-if="discrete"
       :span="24">
       <el-collapse>
         <el-collapse-item title="Attributes">
@@ -150,6 +151,9 @@ export default {
       } else {
         return []
       }
+    },
+    discrete() {
+      return Boolean(this.agg.predictedlayer)
     },
     tableData() {
       const ACRES_TO_HA = 0.404686
