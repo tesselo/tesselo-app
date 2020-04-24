@@ -126,7 +126,7 @@
           :agg="entry"
           :formula="selectedFormula"
           :trend="showTrend"
-          :predicted-layer="predictedLayer"
+          :predicted-layer="selectedPredictedLayer"
           @printed="printCallback" />
       </el-row>
       <div
@@ -227,8 +227,15 @@ export default {
       original_rows: state => state.formulaReport.rows,
       next: state => state.formulaReport.next,
       previous: state => state.formulaReport.previous,
-      has_data: state => Boolean(state.formulaReport.rows.length)
     }),
+    has_data(){
+      const report_items_loaded = Boolean(this.formulaReport.length)
+      if(this.discrete) {
+        return report_items_loaded && Boolean(this.selectedPredictedLayer)
+      } else {
+        return report_items_loaded
+      }
+    },
     rows(){
       return this.original_rows.filter(dat => !isNaN(parseFloat(dat.avg)))
     },

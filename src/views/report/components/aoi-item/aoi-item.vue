@@ -56,12 +56,21 @@
             :data="tableData"
             style="width: 100%">
             <el-table-column
+              label="Color"
+              width="80">
+              <template slot-scope="scope">
+                <el-button :style="{backgroundColor: scope.row.color, borderColor: scope.row.color}"/>
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="category"
-              label="Category"
-              width="180"/>
+              label="Category"/>
             <el-table-column
               prop="area"
               label="Area [ha]"/>
+            <el-table-column
+              prop="percentage"
+              label="Percentage"/>
           </el-table>
         </el-collapse-item>
       </el-collapse>
@@ -107,6 +116,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    predictedLayer: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   data() {
@@ -128,8 +142,8 @@ export default {
       return L.geoJson(this.agg.geom).getBounds()
     },
     url(){
-      if(this.agg.predictedlayer) {
-        return `${process.env.API_URL}tile/${this.agg.predictedlayer_rasterlayer}/{z}/{x}/{y}.png`
+      if(this.discrete) {
+        return `${process.env.API_URL}tile/${this.predictedLayer.rasterlayer}/{z}/{x}/{y}.png`
       } else {
         return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
       }
@@ -157,8 +171,19 @@ export default {
     },
     tableData() {
       const ACRES_TO_HA = 0.404686
-      return Object.entries(this.agg.value).map((entry) => {
-        return {"category": entry[0], "area": (entry[1] * ACRES_TO_HA).toFixed(1)}
+      const tat = this
+      console.log(this.agg)
+      return this.predictedLayer.legend.map((entry) => {
+        // Get value for this legend entry.
+        const aggEntry = entry['expression'] in tat.agg.value ? tat.agg.value[entry['expression']] : 0
+        const aggEntryPercentage = entry['expression'] in tat.agg.value_percentage ? tat.agg.value_percentage[entry['expression']] : 0
+        // Create row data.
+        return {
+          'color': entry['color'],
+          'category': entry['name'],
+          'area': (aggEntry * ACRES_TO_HA).toFixed(1),
+          'percentage': (aggEntryPercentage * ACRES_TO_HA).toFixed(1),
+        }
       })
     }
   },
