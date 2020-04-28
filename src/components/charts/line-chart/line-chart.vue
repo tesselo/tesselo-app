@@ -24,19 +24,33 @@ export default {
       type: Array,
       required: true
     },
-    options: {
-      type: Object,
+    stacked: {
+      type: Boolean,
       required: false,
-      default: () => {
-        return {
-          maintainAspectRatio: false,
-          legend: false
-        }
-      }
+      default: false
     }
   },
 
   computed: {
+    options() {
+      const opt = {
+        maintainAspectRatio: false,
+        legend: false
+      }
+      // Add stacked options if required.
+      if (this.stacked) {
+        opt.scales = {
+          xAxes: [{
+            stacked: true
+          }],
+          yAxes: [{
+            stacked: true
+          }]
+        }
+        opt.fill = true
+      }
+      return opt
+    },
     chartData() {
       return {
         labels: this.labels,

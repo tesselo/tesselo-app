@@ -23,17 +23,32 @@ export default {
     datasets: {
       type: Array,
       required: true
-    }
-  },
-  data(){
-    return {
-      options: {
-        maintainAspectRatio: false,
-        legend: false
-      }
+    },
+    stacked: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   computed: {
+    options() {
+      const opt = {
+        maintainAspectRatio: false,
+        legend: false
+      }
+      // Add stacked options if required.
+      if (this.stacked) {
+        opt.scales = {
+          xAxes: [{
+            stacked: true
+          }],
+          yAxes: [{
+            stacked: true
+          }]
+        }
+      }
+      return opt
+    },
     chartData() {
       return {
         labels: this.labels,

@@ -109,11 +109,12 @@
         <line-chart
           v-if="showTrend"
           :labels="labels"
-          :datasets="datasets" />
-        <bar-chart
+          :datasets="datasets"/>
+        <horizontal-bar-chart
           v-else
           :labels="labels"
-          :datasets="datasets" />
+          :datasets="datasets"
+          :stacked="discrete"/>
       </el-row>
       <el-row
         v-loading="loading"
@@ -162,8 +163,8 @@ import jsPDF from 'jspdf'
 
 import { mapState, mapActions } from 'vuex'
 import { actionTypes, routeTypes } from '@/services/constants'
-import BarChart from '@/components/bar-chart/bar-chart'
-import LineChart from '@/components/line-chart/line-chart'
+import HorizontalBarChart from '@/components/charts/bar-chart/bar-chart'
+import LineChart from '@/components/charts/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
 import { debounce } from 'lodash'
 import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
@@ -171,7 +172,7 @@ import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
 export default {
   name: 'Report',
   components: {
-    BarChart,
+    HorizontalBarChart,
     LineChart,
     AoiItem
   },
@@ -241,7 +242,9 @@ export default {
     },
     labels() {
       if (this.has_data) {
-        if (this.showTrend){
+        if (this.discrete) {
+          return this.rows.map(reportItem => reportItem.name)
+        } else if (this.showTrend){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
         } else {
           return this.rows.map(reportItem => `${reportItem.name} | ${moment(reportItem.min_date).format('MMMM YYYY')}`)
@@ -262,7 +265,21 @@ export default {
     },
     datasets() {
       if (this.has_data) {
-        if (this.showTrend) {
+        if (this.discrete) {
+          return this.selectedPredictedLayerRow.legend.map((entry) => {
+            const data = this.rows.map(agg => {
+              return entry['expression'] in agg.value ? agg.value[entry['expression']] : 0
+            })
+            return {
+              data: data,
+              label: entry['name'],
+              backgroundColor: entry['color'],
+              borderColor: entry['color'],
+              fill: false,
+              spanGaps: true,
+            }
+          })
+        } else if (this.showTrend) {
           return [
             {
               data: this.rows.map(reportItem => reportItem.avg),
@@ -382,8 +399,8 @@ export default {
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
           formula: this.selectedFormula ? {id: this.selectedFormula.id} : '',
-          predictedLayer: this.predictedLayer ? {id: this.predictedLayer.id} : '',
           moment: '',
+          predictedLayer: this.selectedPredictedLayer ? {id: this.selectedPredictedLayer.id} : '',
           ordering: this.sortBy,
           search: this.search,
           dateAfter: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',

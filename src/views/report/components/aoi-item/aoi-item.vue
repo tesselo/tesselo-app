@@ -48,30 +48,19 @@
         class="aoi-item-legend" />
     </el-col>
     <el-col
-      v-if="discrete"
       :span="24">
       <el-collapse>
+        <el-collapse-item
+          v-if="discrete"
+          title="Statistics">
+          <statistics-table
+            :data="statisticsTableData"
+          />
+        </el-collapse-item>
         <el-collapse-item title="Attributes">
-          <el-table
-            :data="tableData"
-            style="width: 100%">
-            <el-table-column
-              label="Color"
-              width="80">
-              <template slot-scope="scope">
-                <el-button :style="{backgroundColor: scope.row.color, borderColor: scope.row.color}"/>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="category"
-              label="Category"/>
-            <el-table-column
-              prop="area"
-              label="Area [ha]"/>
-            <el-table-column
-              prop="percentage"
-              label="Percentage"/>
-          </el-table>
+          <attribute-table
+            :data="attributeTableData"
+          />
         </el-collapse-item>
       </el-collapse>
     </el-col>
@@ -93,6 +82,9 @@ import MapLegend from '@/components/map-legend/map-legend'
 import '@/components/tsl-map/authenticated-tile-layer'
 import { getColorsFromPallete } from '@/services/util'
 
+import StatisticsTable from './statistics-table'
+import AttributeTable from './attribute-table'
+
 
 export default {
   name: 'ReportAoiItem',
@@ -100,7 +92,9 @@ export default {
     LMap,
     LPolygon,
     LTileLayer,
-    MapLegend
+    MapLegend,
+    StatisticsTable,
+    AttributeTable
   },
   props: {
     agg: {
@@ -169,10 +163,9 @@ export default {
     discrete() {
       return Boolean(this.agg.predictedlayer)
     },
-    tableData() {
+    statisticsTableData() {
       const ACRES_TO_HA = 0.404686
       const tat = this
-      console.log(this.agg)
       return this.predictedLayer.legend.map((entry) => {
         // Get value for this legend entry.
         const aggEntry = entry['expression'] in tat.agg.value ? tat.agg.value[entry['expression']] : 0
@@ -182,9 +175,17 @@ export default {
           'color': entry['color'],
           'category': entry['name'],
           'area': (aggEntry * ACRES_TO_HA).toFixed(1),
-          'percentage': (aggEntryPercentage * ACRES_TO_HA).toFixed(1),
+          'percentage': parseInt(parseFloat(aggEntryPercentage) * 100),
         }
       })
+    },
+    attributeTableData() {
+      return Object.keys(this.agg.attributes).map((dat) => {
+        return {
+          attribute: dat[0],
+          value: dat[1]
+        }
+      });
     }
   },
   watch: {
@@ -244,13 +245,14 @@ h3 {
   margin-bottom: 10px;
 }
 .map-legend-wrapper {
-  position: absolute;
-  right : 13px;
-  bottom: 3px;
+  position: relative;
+  right : 3px;
+  top: -43px;
   padding: 3px;
   width: 80px;
   font-weight: 400;
   color: rgb(96, 98, 102);
+  float: right;
   >.map-legend {
     height: 15px !important;
   }
@@ -259,5 +261,8 @@ h3 {
   .aoi-item {
     page-break-before: always;
   }
+}
+.el-collapse {
+  margin-top: 10px;
 }
 </style>
