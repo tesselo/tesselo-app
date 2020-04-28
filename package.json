@@ -2,7 +2,7 @@
   "name": "tesselo-vue",
   "version": "1.0.0",
   "description": "Tesselo App",
-  "author": "Pixelmatters <dev@pixelmatters.com>",
+  "author": "Daniel Wiesmann <daniel@tesselo.com>",
   "private": true,
   "scripts": {
     "build": "node build/build.js",
