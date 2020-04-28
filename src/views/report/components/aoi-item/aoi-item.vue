@@ -20,9 +20,16 @@
       :xs="24"
       :sm="6"
       class="average-table">
-      <h2>{{ agg.avg.toFixed(2) }}<span class="plusmn-std"> &plusmn; {{ agg.std.toFixed(2) }}</span></h2>
-      <h4>Data Range</h4>
-      <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
+      <div v-if="discrete">
+        <h4>Main class</h4>
+        <h3>{{ mostCommonDiscrete.category }}</h3>
+        <h4>{{ mostCommonDiscrete.percentage }}% | {{ mostCommonDiscrete.area.toFixed(2) }} ha</h4>
+      </div>
+      <div v-else>
+        <h2>{{ agg.avg.toFixed(2) }}<span class="plusmn-std"> &plusmn; {{ agg.std.toFixed(2) }}</span></h2>
+        <h4>Data Range</h4>
+        <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
+      </div>
     </el-col>
     <el-col
       :xs="24"
@@ -85,6 +92,7 @@ import { getColorsFromPallete } from '@/services/util'
 import StatisticsTable from './statistics-table'
 import AttributeTable from './attribute-table'
 
+const ACRES_TO_HA = 0.404686
 
 export default {
   name: 'ReportAoiItem',
@@ -164,7 +172,7 @@ export default {
       return Boolean(this.agg.predictedlayer)
     },
     statisticsTableData() {
-      const ACRES_TO_HA = 0.404686
+
       const tat = this
       return this.predictedLayer.legend.map((entry) => {
         // Get value for this legend entry.
@@ -180,12 +188,27 @@ export default {
       })
     },
     attributeTableData() {
-      return Object.keys(this.agg.attributes).map((dat) => {
+      return Object.keys(this.agg.attributes).map(dat => {
         return {
           attribute: dat[0],
           value: dat[1]
         }
       });
+    },
+    mostCommonDiscrete(){
+      const tat = this
+      let result
+      this.predictedLayer.legend.forEach(dat => {
+        const candidate = {
+          category: dat['name'],
+          area: dat['expression'] in tat.agg.value ? tat.agg.value[dat['expression']] * ACRES_TO_HA : 0,
+          percentage: dat['expression'] in tat.agg.value_percentage ? parseInt(parseFloat(tat.agg.value_percentage[dat['expression']]) * 100) : 0,
+        }
+        if (!result || candidate.area > result.area) {
+          result = candidate
+        }
+      })
+      return result
     }
   },
   watch: {
