@@ -206,11 +206,6 @@ export default {
           }
         }]
       },
-      sorts: [
-        {name: 'Name', descending: true, query: 'aggregationarea__name', selected: true},
-        {name: 'Average', descending: true, query: 'stats_avg', selected: false},
-        {name: 'Date', descending: true, query: 'min_date', selected: false},
-      ],
       loading: true,
       printing: false
     }
@@ -235,6 +230,16 @@ export default {
         return report_items_loaded && Boolean(this.selectedPredictedLayer)
       } else {
         return report_items_loaded
+      }
+    },
+    sorts(){
+      const name = {name: 'Name', descending: true, query: 'aggregationarea__name', selected: true}
+      const avg = {name: 'Average', descending: true, query: 'stats_avg', selected: false}
+      const date = {name: 'Date', descending: true, query: 'min_date', selected: false}
+      if (this.discrete) {
+        return [name, date]
+      } else {
+        return [name, avg, date]
       }
     },
     rows(){
