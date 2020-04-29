@@ -85,25 +85,17 @@
             <el-button
               type="default"
               size="mini"
-              @click="ascDescToggle">
-              <i
-                v-if="ascDesc"
-                class="el-icon-arrow-up"/>
-              <i
-                v-else
-                class="el-icon-arrow-down"/>
-            </el-button>
+              :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+              @click="ascDescToggle"/>
             <el-button
               v-if="discrete"
               :type="percentageSort ? 'primary' : 'default'"
               size="mini"
-              @click="percentageSortToggle">
-              %
-            </el-button>
+              icon="el-icon-pie-chart"
+              @click="percentageSortToggle"/>
             <el-button
               :loading="printing"
               :disabled="printing || loading"
-              class="export-button"
               icon="el-icon-printer"
               size="mini"
               @click="print" />
