@@ -108,10 +108,9 @@
             size="mini"
             placeholder="%"/>
         </el-col>
-        <el-col
-          v-if="has_data">
+        <el-col>
           <el-pagination
-            v-if="total"
+            v-if="has_data && total"
             :total="total"
             :page-size="pageSize"
             :current-page="currentPage"
