@@ -74,6 +74,25 @@
             icon="el-icon-printer"
             size="mini"
             @click="print" />
+          <el-select
+            v-if="discrete && selectedPredictedLayer"
+            v-model="classSortValue"
+            placeholder="Sort by class"
+            size="mini"
+            clearable>
+            <!-- The created class below is a hack due to global form css override from bookmarks in app.vue -->
+            <el-option
+              v-for="item in selectedPredictedLayerRow.legend"
+              :value="item.expression"
+              :key="item.expression"
+              :label="item.name"
+              class="created">
+              <span
+                :style="{backgroundColor: item.color, borderColor: item.color}"
+                class="class-sort-marker"/>
+              <span class="class-sort-label">{{ item.name }}</span>
+            </el-option>
+          </el-select>
         </el-col>
         <el-col :sm="12">
           <el-radio-group
@@ -183,6 +202,7 @@ export default {
       minPercentageCovered: 0,
       radio: 12,
       currentPage: 1,
+      classSortValue: '',
       pickerOptions: {
         shortcuts: [{
           text: 'This month',
@@ -307,16 +327,22 @@ export default {
       }
     },
     sortBy(){
-      // Get sort item and query string.
-      const item = this.sorts.filter(item => item.selected)[0]
-      var query = item.query
-      // Invert sort direction if requested.
-      if (!item.descending){
-        query = '-' + item.query
-      }
-      // Add date sorting as default to name sorting.
-      if (item.name == 'Name') {
-        query += ',composite__min_date'
+      let query
+      if (this.classSortValue) {
+        query = `-value__${this.classSortValue}`
+        console.log('query', query)
+      } else {
+        // Get sort item and query string.
+        const item = this.sorts.filter(item => item.selected)[0]
+        query = item.query
+        // Invert sort direction if requested.
+        if (!item.descending){
+          query = '-' + item.query
+        }
+        // Add date sorting as default to name sorting.
+        if (item.name == 'Name') {
+          query += ',composite__min_date'
+        }
       }
       return query
     },
@@ -338,6 +364,9 @@ export default {
       this.query()
     },
     minPercentageCovered() {
+      this.query()
+    },
+    classSortValue() {
       this.query()
     }
   },
@@ -600,5 +629,15 @@ export default {
   &:last-child {
     margin-bottom: 20px;
   }
+}
+.class-sort-label {
+  padding-left: 10px;
+}
+.class-sort-marker {
+  width: 30px;
+  margin-top: 7px;
+  height: 20px;
+  border-radius: 5px;
+  float: left;
 }
 </style>
