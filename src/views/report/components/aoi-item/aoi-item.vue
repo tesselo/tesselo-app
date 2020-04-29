@@ -188,7 +188,7 @@ export default {
       })
     },
     attributeTableData() {
-      return Object.keys(this.agg.attributes).map(dat => {
+      return Object.entries(this.agg.attributes).map(dat => {
         return {
           attribute: dat[0],
           value: dat[1]
