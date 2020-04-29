@@ -24,7 +24,7 @@
       </el-row>
       <el-row :gutter="10">
         <el-col
-          :sm="12"
+          :sm="13"
           class="header-row">
           <el-input
             v-model="search"
@@ -37,7 +37,7 @@
           </el-input>
         </el-col>
         <el-col
-          :sm="12"
+          :sm="11"
           class="header-row">
           <el-date-picker
             v-model="monthrange"
@@ -46,10 +46,8 @@
             end-placeholder="End month" />
         </el-col>
       </el-row>
-      <el-row>
-        <el-col
-          :sm="12"
-          class="header-row">
+      <el-row gutter="10">
+        <el-col :sm="discrete ? 6: 10">
           <el-button-group>
             <el-button
               v-for="item in sorts"
@@ -67,13 +65,8 @@
                 class="el-icon-arrow-up"/>
             </el-button>
           </el-button-group>
-          <el-button
-            :loading="printing"
-            :disabled="printing || loading"
-            class="export-button"
-            icon="el-icon-printer"
-            size="mini"
-            @click="print" />
+        </el-col>
+        <el-col :sm="6">
           <el-select
             v-if="discrete && selectedPredictedLayer"
             v-model="classSortValue"
@@ -94,7 +87,7 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :sm="12">
+        <el-col :sm="6">
           <el-radio-group
             v-model="radio"
             size="mini">
@@ -102,6 +95,17 @@
             <el-radio-button label="24" />
             <el-radio-button label="36" />
           </el-radio-group>
+        </el-col>
+        <el-col :sm="2">
+          <el-button
+            :loading="printing"
+            :disabled="printing || loading"
+            class="export-button"
+            icon="el-icon-printer"
+            size="mini"
+            @click="print" />
+        </el-col>
+        <el-col :sm="3">
           <el-input-number
             v-model="minPercentageCovered"
             :step="10"
@@ -638,5 +642,8 @@ export default {
   height: 20px;
   border-radius: 5px;
   float: left;
+}
+.el-input-number {
+  width: 90px;
 }
 </style>
