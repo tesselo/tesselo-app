@@ -46,7 +46,7 @@
             end-placeholder="End month" />
         </el-col>
       </el-row>
-      <el-row gutter="10">
+      <el-row :gutter="10">
         <el-col :sm="discrete ? 6: 10">
           <el-button-group>
             <el-button
@@ -333,7 +333,6 @@ export default {
       let query
       if (this.classSortValue) {
         query = `-value__${this.classSortValue}`
-        console.log('query', query)
       } else {
         // Get sort item and query string.
         const item = this.sorts.filter(item => item.selected)[0]
