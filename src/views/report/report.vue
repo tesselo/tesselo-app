@@ -83,9 +83,9 @@
         <el-col :sm="5">
           <el-button-group>
             <el-button
+              :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
               type="default"
               size="mini"
-              :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
               @click="ascDescToggle"/>
             <el-button
               v-if="discrete"
