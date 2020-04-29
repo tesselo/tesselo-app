@@ -352,7 +352,6 @@ export default {
           query += ',min_date'
         }
       }
-      console.log(query)
       return query
     },
     pageSize(){
