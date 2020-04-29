@@ -47,28 +47,21 @@
         </el-col>
       </el-row>
       <el-row :gutter="10">
-        <el-col :sm="discrete ? 6: 10">
-          <el-button-group>
-            <el-button
+        <el-col :sm="discrete ? 5: 8">
+          <el-radio-group
+            v-model="currentSort"
+            size="mini">
+            <el-radio-button
               v-for="item in sorts"
               :key="item.name"
-              :label="item.name"
-              :type="item.selected ? 'primary' : 'default'"
-              size="mini"
-              @click="sort(item)">
-              {{ item.name }}
-              <i
-                v-if="item.descending"
-                class="el-icon-arrow-down"/>
-              <i
-                v-else
-                class="el-icon-arrow-up"/>
-            </el-button>
-          </el-button-group>
+              :label="item.name"/>
+          </el-radio-group>
         </el-col>
-        <el-col :sm="6">
+        <el-col
+          v-if="discrete"
+          :sm="4">
           <el-select
-            v-if="discrete && selectedPredictedLayer"
+            v-if="selectedPredictedLayer"
             v-model="classSortValue"
             placeholder="Sort by class"
             size="mini"
@@ -87,6 +80,42 @@
             </el-option>
           </el-select>
         </el-col>
+        <el-col :sm="5">
+          <el-button-group>
+            <el-button
+              type="default"
+              size="mini"
+              @click="ascDescToggle">
+              <i
+                v-if="ascDesc"
+                class="el-icon-arrow-up"/>
+              <i
+                v-else
+                class="el-icon-arrow-down"/>
+            </el-button>
+            <el-button
+              v-if="discrete"
+              :type="percentageSort ? 'primary' : 'default'"
+              size="mini"
+              @click="percentageSortToggle">
+              %
+            </el-button>
+            <el-button
+              :loading="printing"
+              :disabled="printing || loading"
+              class="export-button"
+              icon="el-icon-printer"
+              size="mini"
+              @click="print" />
+          </el-button-group>
+        </el-col>
+        <el-col :sm="4">
+          <el-input-number
+            v-model="minPercentageCovered"
+            :step="10"
+            size="mini"
+            placeholder="%"/>
+        </el-col>
         <el-col :sm="6">
           <el-radio-group
             v-model="radio"
@@ -95,22 +124,6 @@
             <el-radio-button label="24" />
             <el-radio-button label="36" />
           </el-radio-group>
-        </el-col>
-        <el-col :sm="2">
-          <el-button
-            :loading="printing"
-            :disabled="printing || loading"
-            class="export-button"
-            icon="el-icon-printer"
-            size="mini"
-            @click="print" />
-        </el-col>
-        <el-col :sm="3">
-          <el-input-number
-            v-model="minPercentageCovered"
-            :step="10"
-            size="mini"
-            placeholder="%"/>
         </el-col>
         <el-col>
           <el-pagination
@@ -177,6 +190,7 @@ import 'element-ui/lib/theme-chalk/radio-button.css'
 import 'element-ui/lib/theme-chalk/radio-group.css'
 import 'element-ui/lib/theme-chalk/loading.css'
 import 'element-ui/lib/theme-chalk/input-number.css'
+import 'element-ui/lib/theme-chalk/switch.css'
 
 import moment from 'moment'
 import html2canvas from 'html2canvas'
@@ -206,6 +220,9 @@ export default {
       radio: 12,
       currentPage: 1,
       classSortValue: '',
+      currentSort: 'Name',
+      ascDesc: false,
+      percentageSort: false,
       pickerOptions: {
         shortcuts: [{
           text: 'This month',
@@ -256,9 +273,9 @@ export default {
       }
     },
     sorts(){
-      const name = {name: 'Name', descending: true, query: 'aggregationarea__name', selected: true}
-      const avg = {name: 'Average', descending: true, query: 'stats_avg', selected: false}
-      const date = {name: 'Date', descending: true, query: 'min_date', selected: false}
+      const name = {name: 'Name', query: 'aggregationarea__name'}
+      const avg = {name: 'Average', query: 'stats_avg'}
+      const date = {name: 'Date', query: 'min_date'}
       if (this.discrete) {
         return [name, date]
       } else {
@@ -332,20 +349,18 @@ export default {
     sortBy(){
       let query
       if (this.classSortValue) {
-        query = `-value__${this.classSortValue}`
+        const query_base = this.percentageSort ? 'value_percentage' : 'value'
+        query = `${this.ascDesc ? '-' : ''}${query_base}__${this.classSortValue}`
       } else {
         // Get sort item and query string.
-        const item = this.sorts.filter(item => item.selected)[0]
-        query = item.query
-        // Invert sort direction if requested.
-        if (!item.descending){
-          query = '-' + item.query
-        }
+        const item = this.sorts.filter(item => item.name == this.currentSort)[0]
+        query = `${this.ascDesc ? '-' : ''}${item.query}`
         // Add date sorting as default to name sorting.
         if (item.name == 'Name') {
-          query += ',composite__min_date'
+          query += ',min_date'
         }
       }
+      console.log(query)
       return query
     },
     pageSize(){
@@ -368,7 +383,16 @@ export default {
     minPercentageCovered() {
       this.query()
     },
+    currentSort() {
+      this.query()
+    },
     classSortValue() {
+      this.query()
+    },
+    ascDesc() {
+      this.query()
+    },
+    percentageSort() {
       this.query()
     }
   },
@@ -458,21 +482,11 @@ export default {
       this.currentPage = page
       this.query()
     },
-    sort(item){
-      // Unselect the button siblings.
-      this.sorts = this.sorts.map((dat) => {
-        if (dat.name != item.name) {
-          dat.selected = false
-        }
-        return dat
-      })
-      // Change order direction if item is already selected.
-      if (item.selected) {
-        item.descending = !item.descending
-      } else {
-        item.selected = true
-      }
-      this.query()
+    ascDescToggle() {
+      this.ascDesc = !this.ascDesc
+    },
+    percentageSortToggle() {
+      this.percentageSort = !this.percentageSort
     },
     print() {
       this.printing = true
