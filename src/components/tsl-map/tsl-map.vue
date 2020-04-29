@@ -79,7 +79,8 @@
       <v-protobuf
         v-if="selectedLayer"
         :url="vectorUrl"
-        :options="protobufOptions" />
+        :options="protobufOptions"
+        @click="showVectorDetails" />
     </l-map>
 
     <map-legend
@@ -145,6 +146,9 @@ import 'leaflet.defaultextent/dist/leaflet.defaultextent.css'
 // Opacity slider.
 import 'leaflet-range'
 import 'leaflet-range/L.Control.Range.css'
+
+// Element-ui styles.
+import 'element-ui/lib/theme-chalk/notification.css'
 
 // Vector grids for vue.
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
@@ -292,7 +296,8 @@ export default {
       const options = {
         rendererFactory: L.canvas.tile,
         vectorTileLayerStyles: layerStyle,
-        zIndex: 10
+        zIndex: 10,
+        interactive: true
       }
 
       if (this.authenticated) {
@@ -387,7 +392,6 @@ export default {
       mapSetLOpacity: actionTypes.MAP_SET_L_OPACITY,
       mapSetPOpacity: actionTypes.MAP_SET_P_OPACITY
     }),
-
     /**
      * Set selected option on URL based on index
      */
@@ -448,6 +452,16 @@ export default {
       });
 
       this.$refs.map.mapObject.addControl(this.predictedSlider)
+    },
+
+    showVectorDetails(e){
+      this.$notify({
+        title: e.layer.properties.name,
+        message: `Feature ID ${e.layer.properties.id}`,
+        position: 'bottom-right',
+        type: 'info',
+        offset: 100
+      })
     },
 
     dataCallback(id){
