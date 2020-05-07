@@ -13,7 +13,6 @@ export default {
     return axiosInstance[endpoints.time.listComposites.method](endpoints.time.listComposites.url, {
       params: {
         ...options,
-        official: true,
         active: true,
         min_date_before: moment().format('YYYY-MM-DD')
       }
@@ -38,7 +37,6 @@ export default {
     return axiosInstance[endpoints.time.listUniques.method](endpoints.time.listUniques.url, {
       params: {
         ...options,
-        official: true,
         active: true,
         page_size: 600
       }

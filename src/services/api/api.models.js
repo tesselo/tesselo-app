@@ -93,7 +93,6 @@ export const formatCompositesList = (rows) => {
     id: row.id,
     allZones: row.allZones,
     active: row.active,
-    official: row.official,
     rasterlayerLookup: row.rasterlayer_lookup,
     startWeek: row.startWeek,
     maxDate: row.max_date,
