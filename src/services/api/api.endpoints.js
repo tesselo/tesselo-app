@@ -81,8 +81,7 @@ export default {
       if(!predictedLayer) {
         return ''
       }
-      const rasterlayer_id = predictedLayer.rasterlayer
-      return `${process.env.API_URL}tile/${rasterlayer_id}/{z}/{x}/{y}.png`
+      return `${process.env.API_URL}predictedlayer/${predictedLayer.id}/{z}/{x}/{y}.png`
     }
   },
   time: {

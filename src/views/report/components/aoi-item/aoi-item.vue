@@ -145,7 +145,7 @@ export default {
     },
     url(){
       if(this.discrete) {
-        return `${process.env.API_URL}tile/${this.predictedLayer.rasterlayer}/{z}/{x}/{y}.png`
+        return `${process.env.API_URL}predictedlayer/${this.predictedLayer.id}/{z}/{x}/{y}.png`
       } else {
         return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
       }
