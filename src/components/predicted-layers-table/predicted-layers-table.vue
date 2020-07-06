@@ -101,19 +101,20 @@ export default {
     }),
 
     filterRows () {
-      if (this.selectedYear) {
-        // Filter predirected layers based on selected Year
-        this.filteredRows = this.rows.filter(
-          entry => {
-            return entry.sourceName.includes(this.selectedYear) &&
-            entry.aggregationLayerName === this.areaSelectedLayer.name
-          }
-        )
-      } else {
-        if(!this.areaSelectedLayer){
-          this.filteredRows = this.rows;
-        }
-      }
+      // if (this.selectedYear) {
+      //   // Filter predirected layers based on selected Year
+      //   this.filteredRows = this.rows.filter(
+      //     entry => {
+      //       return entry.sourceName.includes(this.selectedYear) &&
+      //       entry.aggregationLayerName === this.areaSelectedLayer.name
+      //     }
+      //   )
+      // } else {
+      //   if(!this.areaSelectedLayer){
+      //     this.filteredRows = this.rows;
+      //   }
+      // }
+      this.filteredRows = this.rows
     },
 
     getPredictedLayers(options) {
