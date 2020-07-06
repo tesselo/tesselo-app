@@ -15,9 +15,9 @@ export default {
   get (options, axiosInstance = client) {
     let url = endpoints.predictedLayer.list.url + '?page=' + options.page
 
-    if (options.year) {
-      url += `&year=${options.year}`
-    }
+    // if (options.year) {
+    //   url += `&year=${options.year}`
+    // }
 
     // if (options.areaId) {
     //   url += `&aggregationlayer=${options.areaId}`
