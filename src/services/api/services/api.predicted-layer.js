@@ -19,9 +19,9 @@ export default {
       url += `&year=${options.year}`
     }
 
-    if (options.areaId) {
-      url += `&aggregationlayer=${options.areaId}`
-    }
+    // if (options.areaId) {
+    //   url += `&aggregationlayer=${options.areaId}`
+    // }
 
     return axiosInstance[endpoints.predictedLayer.list.method](encodeURI(url))
       .then((response) => {
