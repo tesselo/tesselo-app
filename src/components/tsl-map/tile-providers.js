@@ -27,6 +27,16 @@ export const basemapProviders = [
     isWms: false
   },
   {
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png",
+    slug:'ESRIWorldImagery',
+    name: 'ESRI World Imagery',
+    visible: false,
+    attribution: "ESRI",
+    type: "base",
+    zIndex: 1,
+    isWms: false
+  },
+  {
     slug:'Lines',
     name: 'LinesOverlay',
     visible: false,
