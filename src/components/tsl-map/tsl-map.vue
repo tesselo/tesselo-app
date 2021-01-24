@@ -119,6 +119,7 @@ import { getColorsFromPallete } from '@/services/util.js'
 import { actionTypes } from '@/services/constants'
 
 import L from 'leaflet'
+import 'mapbox-gl-leaflet/leaflet-mapbox-gl'
 
 import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControlZoom, LControlAttribution, LControl } from 'vue2-leaflet'
 
@@ -384,6 +385,9 @@ export default {
     // Instantiate home button.
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
+    // Activate mblayers.
+    console.log('A')
+    this.addMbLayers()
   },
   methods:  {
     ...mapActions('map', {
@@ -463,7 +467,53 @@ export default {
         offset: 100
       })
     },
+    addMbLayers(){
+      if (this.profile && this.profile.baselayers) {
+        const lmap = this.$refs.map.mapObject
+        lmap.createPane('mapbox');
+        lmap.getPane('mapbox').style.zIndex = 650;
+        const mblayers = this.profile.baselayers.split(',').filter(lyr => { return lyr.startsWith('mapbox://')})
+        mblayers.forEach(function(lyr){
+          const mbdata = lyr.split('|')
+          L.mapboxGL({
+              id: 'mbone',
+              style: mbdata[0],
+              accessToken: mbdata[1],
+              pane: 'mapbox'
+          }).addTo(lmap);
 
+          // When a click event occurs on a feature in the places layer, open a popup at the
+          // location of the feature, with description HTML from its properties.
+          // map.on('click', 'mbone', function (e) {
+          // var coordinates = e.features[0].geometry.coordinates.slice();
+          // var description = e.features[0].properties.description;
+          //
+          // // Ensure that if the map is zoomed out such that multiple
+          // // copies of the feature are visible, the popup appears
+          // // over the copy being pointed to.
+          // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          // coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          // }
+          //
+          // new mapboxgl.Popup()
+          // .setLngLat(coordinates)
+          // .setHTML(description)
+          // .addTo(map);
+          // });
+          // Change the cursor to a pointer when the mouse is over the places layer.
+          // map.on('mouseenter', 'places', function () {
+          // map.getCanvas().style.cursor = 'pointer';
+          // });
+          //
+          // // Change it back to a pointer when it leaves.
+          // map.on('mouseleave', 'places', function () {
+          // map.getCanvas().style.cursor = '';
+          // });
+
+
+        })
+      }
+    },
     dataCallback(id){
       var data = this.exportData[id]
       const format = 'PNG'
