@@ -35,7 +35,7 @@ describe("login", () => {
           }),
         ]);
         expect(await page.$('.menu')).toBeTruthy();
-    }, 10000);
+    }, 25000);
 
     it("should display error notification if login detail is invalid", async () => {
         await page.type('input[name="username"]', 'lucille');
