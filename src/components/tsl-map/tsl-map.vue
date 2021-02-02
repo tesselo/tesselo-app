@@ -386,7 +386,6 @@ export default {
     this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
     // Activate mblayers.
-    console.log('A')
     this.addMbLayers()
   },
   methods:  {
