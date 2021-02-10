@@ -160,6 +160,8 @@ import MapLegend from '@/components/map-legend/map-legend.vue'
 
 import MapExport from '@/components/map-export/map-export.vue'
 
+import { routeTypes } from '@/services/constants'
+
 export default {
   name: 'TslMap',
   components: {
@@ -622,13 +624,27 @@ export default {
     },
 
     showReport(){
-      this.$router.push({
-        name: 'Report',
-        params: {
-          layer: this.selectedLayer.id,
-          formula: this.selectedFormula.id
+      if(this.selectedPredictedLayer){
+        this.$router.push({
+          name: routeTypes.REPORT_PREDICTED,
+          params: {
+            layer: this.selectedLayer.id,
+            predictedLayer: this.selectedPredictedLayer.id
+          }
+        })
+      } else {
+        if (this.selectedFormula && this.selectedFormula.formula == 'RGB') {
+          alert('Reports are not available for RGB layer. Please select a different formula.')
+          return
         }
-      })
+        this.$router.push({
+          name: routeTypes.REPORT,
+          params: {
+            layer: this.selectedLayer.id,
+            formula: this.selectedFormula.id
+          }
+        })
+      }
     },
 
     addImage(){
