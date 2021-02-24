@@ -10,20 +10,10 @@
       style="width: 100%"
       @current-change="selectLayer">
       <el-table-column
-        prop="classifierName"
-        label="Classifier"
+        prop="nameToShow"
+        label="Name"
         min-width="350"
         show-overflow-tooltip />
-      <el-table-column
-        prop="classifierType"
-        label="Classifier Type"
-        min-width="250"
-        show-overflow-tooltip/>
-      <el-table-column
-        prop="sourceName"
-        label="Date"
-        min-width="140"
-        show-overflow-tooltip/>
     </el-table>
     <div
       v-if="loading"
