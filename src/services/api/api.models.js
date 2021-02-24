@@ -166,7 +166,7 @@ export const predictedLayerResults = (rows) => {
     classifierType: row.classifier_type,
     sourceName: row.source_name,
     sourceType: row.composite ? 'Composite over ' + row.source_name : 'Scene from ' + row.source_name,
-    nameToShow: capitalizeFirstLetter(row.classifier_name + ' over ' + row.source_name),
+    nameToShow: capitalizeFirstLetter(row.name ? row.name : row.classifier_name),
     legend: row.legend
   }))
 }
