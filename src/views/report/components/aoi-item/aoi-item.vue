@@ -182,8 +182,8 @@ export default {
         return {
           'color': entry['color'],
           'category': entry['name'],
-          'area': (aggEntry * ACRES_TO_HA).toFixed(1),
-          'percentage': parseInt(parseFloat(aggEntryPercentage) * 100),
+          'area': (aggEntry).toFixed(1),
+          'percentage': (parseFloat(aggEntryPercentage) * 100).toFixed(1),
         }
       })
     },
