@@ -13,6 +13,7 @@
     "start": "npm run dev",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "dev:localhost": "NODE_ENV=localhost webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev:staging": "API_ENV=staging NODE_ENV=localhost webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "dev:mock": "NODE_ENV=mock webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "test": "npm run unit && npm run e2e",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
