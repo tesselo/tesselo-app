@@ -47,14 +47,21 @@
         </el-col>
       </el-row>
       <el-row :gutter="10">
-        <el-col :sm="discrete ? 5: 8">
+        <el-col :sm="discrete ? 5 : 8">
           <el-radio-group
             v-model="currentSort"
             size="mini">
-            <el-radio-button
+            <el-tooltip
               v-for="item in sorts"
-              :key="item.name"
-              :label="item.name"/>
+              :key="item.tooltip"
+              :content="item.hoverContent"
+              :visible-arrow="true"
+              effect="dark"
+              placement="bottom">
+              <el-radio-button
+                :key="item.name"
+                :label="item.name"/>
+            </el-tooltip>
           </el-radio-group>
         </el-col>
         <el-col
@@ -63,7 +70,7 @@
           <el-select
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
-            placeholder="Sort by class"
+            :placeholder="tooltipHoverInfo.srtByclass"
             size="mini"
             clearable>
             <!-- The created class below is a hack due to global form css override from bookmarks in app.vue -->
@@ -82,40 +89,70 @@
         </el-col>
         <el-col :sm="5">
           <el-button-group>
-            <el-button
-              :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
-              type="default"
-              size="mini"
-              @click="ascDescToggle"/>
-            <el-button
-              v-if="discrete"
-              :type="percentageSort ? 'primary' : 'default'"
-              size="mini"
-              icon="el-icon-pie-chart"
-              @click="percentageSortToggle"/>
-            <el-button
-              :loading="printing"
-              :disabled="printing || loading"
-              icon="el-icon-printer"
-              size="mini"
-              @click="print" />
+            <el-tooltip
+              :content="ascDesc ? tooltipHoverInfo.srtAsc : tooltipHoverInfo.srtDsc"
+              :visible-arrow="true"
+              effect="dark"
+              placement="bottom">
+              <el-button
+                :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+                type="default"
+                size="mini"
+                @click="ascDescToggle"/>
+            </el-tooltip>
+            <el-tooltip
+              :content="percentageSort ? tooltipHoverInfo.srtByAvgVal : tooltipHoverInfo.srtByPct"
+              :visible-arrow="true"
+              effect="dark"
+              placement="bottom">
+              <el-button
+                v-if="discrete"
+                :type="percentageSort ? 'primary' : 'default'"
+                size="mini"
+                icon="el-icon-pie-chart"
+                @click="percentageSortToggle"/>
+            </el-tooltip>    
+            <el-tooltip
+              :content="tooltipHoverInfo.prtRep"
+              :visible-arrow="false"
+              effect="dark"
+              placement="bottom">
+              <el-button
+                :loading="printing"
+                :disabled="printing || loading"
+                icon="el-icon-printer"
+                size="mini"
+                @click="print" />
+            </el-tooltip>
           </el-button-group>
-        </el-col>
+        </el-col> 
         <el-col :sm="4">
-          <el-input-number
-            v-model="minPercentageCovered"
-            :step="10"
-            size="mini"
-            placeholder="%"/>
+          <el-tooltip
+            :content="tooltipHoverInfo.fltrByPctCov"
+            :visible-arrow="true"
+            effect="dark"
+            placement="bottom">
+            <el-input-number
+              v-model="minPercentageCovered"
+              :step="10"
+              size="mini"
+              placeholder="%"/>
+          </el-tooltip>
         </el-col>
         <el-col :sm="6">
-          <el-radio-group
-            v-model="radio"
-            size="mini">
-            <el-radio-button label="12" />
-            <el-radio-button label="24" />
-            <el-radio-button label="36" />
-          </el-radio-group>
+          <el-tooltip
+            :content="tooltipHoverInfo.itmsPerPg"
+            :visible-arrow="true"
+            effect="dark"
+            placement="bottom">
+            <el-radio-group
+              v-model="radio"
+              size="mini">
+              <el-radio-button label="12" />
+              <el-radio-button label="24" />
+              <el-radio-button label="36" />
+            </el-radio-group>
+          </el-tooltip>
         </el-col>
         <el-col>
           <el-pagination
@@ -196,13 +233,16 @@ import LineChart from '@/components/charts/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
 import { debounce } from 'lodash'
 import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
+import { Tooltip } from 'element-ui'
+
 
 export default {
   name: 'Report',
   components: {
     HorizontalBarChart,
     LineChart,
-    AoiItem
+    AoiItem,
+    Tooltip
   },
   data () {
     return {
@@ -215,6 +255,19 @@ export default {
       currentSort: 'Name',
       ascDesc: false,
       percentageSort: false,
+      tooltipHoverInfo: {
+        srtByclass: "Sort by class",
+        srtAsc: "Sort Ascending",
+        srtDsc: "Sort Descending",
+        srtByAvgVal: "Sort by Absolute Value",
+        srtByPct: "Sort by Percentage",
+        prtRep: "Print Report",
+        fltrByPctCov: "Filter by Percentage Covered",
+        itmsPerPg: "Items per Page",
+        srtByName: "Sort by Name",
+        srtByAvg: "Sort by Average",
+        srtByDate: "Sort by Date"
+      },
       pickerOptions: {
         shortcuts: [{
           text: 'This month',
@@ -265,9 +318,10 @@ export default {
       }
     },
     sorts(){
-      const name = {name: 'Name', query: 'aggregationarea__name'}
-      const avg = {name: 'Average', query: 'stats_avg'}
-      const date = {name: 'Date', query: 'min_date'}
+      const name = {name: 'Name', query: 'aggregationarea__name', tooltip: "tooltip_name", hoverContent: this.tooltipHoverInfo.srtByName}
+      const avg = {name: 'Average', query: 'stats_avg', tooltip: "tooltip_average", hoverContent: this.tooltipHoverInfo.srtByAvg}
+      const date = {name: 'Date', query: 'min_date', tooltip: "tooltip_date", hoverContent: this.tooltipHoverInfo.srtByDate}
+      
       if (this.discrete) {
         return [name, date]
       } else {
@@ -393,6 +447,7 @@ export default {
       layer: {id: this.$route.params.layer},
       page: this.currentPage,
       pageSize: this.pageSize,
+      aggregationArea: this.$route.params.area
     }
     if(this.discrete) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
@@ -449,6 +504,7 @@ export default {
         const tat = this
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
+          aggregationArea: this.$route.params.area,
           formula: this.selectedFormula ? {id: this.selectedFormula.id} : '',
           moment: '',
           predictedLayer: this.selectedPredictedLayer ? {id: this.selectedPredictedLayer.id} : '',
