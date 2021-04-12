@@ -150,6 +150,7 @@ import 'leaflet-range/L.Control.Range.css'
 
 // Element-ui styles.
 import 'element-ui/lib/theme-chalk/notification.css'
+import 'element-ui/lib/theme-chalk/index.css';
 
 // Vector grids for vue.
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
@@ -633,8 +634,11 @@ export default {
           }
         })
       } else {
-        if (this.selectedFormula && this.selectedFormula.formula == 'RGB') {
-          alert('Reports are not available for RGB layer. Please select a different formula.')
+        if (this.selectedFormula && this.selectedFormula.acronym == 'RGB') {
+          this.$alert('Reports are not available for RGB layer. Please select a different formula.', 'Report Information:', {
+            confirmButtonText: 'OK',
+            showClose: false
+          });
           return
         }
         this.$router.push({
