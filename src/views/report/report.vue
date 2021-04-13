@@ -28,7 +28,7 @@
           class="header-row">
           <el-input
             v-model="search"
-            placeholder="Search"
+            :placeholder="pageExtraInfo.placeHolders.search"
             clearable>
             <el-button
               slot="append"
@@ -41,9 +41,9 @@
           class="header-row">
           <el-date-picker
             v-model="monthrange"
-            type="monthrange"
-            start-placeholder="Start month"
-            end-placeholder="End month" />
+            :start-placeholder="pageExtraInfo.placeHolders.startMonth"
+            :end-placeholder="pageExtraInfo.placeHolders.endMonth" 
+            type="monthrange"/>
         </el-col>
       </el-row>
       <el-row :gutter="10">
@@ -53,7 +53,7 @@
             size="mini">
             <el-tooltip
               v-for="item in sorts"
-              :key="item.tooltip"
+              :key="item.hoverContent"
               :content="item.hoverContent"
               :visible-arrow="true"
               effect="dark"
@@ -70,7 +70,7 @@
           <el-select
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
-            :placeholder="tooltipHoverInfo.srtByclass"
+            :placeholder="pageExtraInfo.placeHolders.sortByclass"
             size="mini"
             clearable>
             <!-- The created class below is a hack due to global form css override from bookmarks in app.vue -->
@@ -90,7 +90,7 @@
         <el-col :sm="5">
           <el-button-group>
             <el-tooltip
-              :content="ascDesc ? tooltipHoverInfo.srtAsc : tooltipHoverInfo.srtDsc"
+              :content="ascDesc ? pageExtraInfo.tooltips.sortAscending : pageExtraInfo.tooltips.sortDescending"
               :visible-arrow="true"
               effect="dark"
               placement="bottom">
@@ -101,7 +101,7 @@
                 @click="ascDescToggle"/>
             </el-tooltip>
             <el-tooltip
-              :content="percentageSort ? tooltipHoverInfo.srtByAvgVal : tooltipHoverInfo.srtByPct"
+              :content="percentageSort ? pageExtraInfo.tooltips.sortByAbsoluteValue : pageExtraInfo.tooltips.sortByPercentage"
               :visible-arrow="true"
               effect="dark"
               placement="bottom">
@@ -113,7 +113,7 @@
                 @click="percentageSortToggle"/>
             </el-tooltip>    
             <el-tooltip
-              :content="tooltipHoverInfo.prtRep"
+              :content="pageExtraInfo.tooltips.printReport"
               :visible-arrow="false"
               effect="dark"
               placement="bottom">
@@ -128,20 +128,22 @@
         </el-col> 
         <el-col :sm="4">
           <el-tooltip
-            :content="tooltipHoverInfo.fltrByPctCov"
+            :content="pageExtraInfo.tooltips.maxPercentageCloudCover"
             :visible-arrow="true"
             effect="dark"
             placement="bottom">
             <el-input-number
               v-model="minPercentageCovered"
               :step="10"
+              :min="0"
+              :max="100"
               size="mini"
               placeholder="%"/>
           </el-tooltip>
         </el-col>
         <el-col :sm="6">
           <el-tooltip
-            :content="tooltipHoverInfo.itmsPerPg"
+            :content="pageExtraInfo.tooltips.itemsPerPage"
             :visible-arrow="true"
             effect="dark"
             placement="bottom">
@@ -235,7 +237,6 @@ import { debounce } from 'lodash'
 import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
 import { Tooltip } from 'element-ui'
 
-
 export default {
   name: 'Report',
   components: {
@@ -248,25 +249,32 @@ export default {
     return {
       search: '',
       monthrange: '',
-      minPercentageCovered: 0,
+      minPercentageCovered: 80,
       radio: 12,
       currentPage: 1,
       classSortValue: '',
       currentSort: 'Name',
       ascDesc: false,
       percentageSort: false,
-      tooltipHoverInfo: {
-        srtByclass: "Sort by class",
-        srtAsc: "Sort Ascending",
-        srtDsc: "Sort Descending",
-        srtByAvgVal: "Sort by Absolute Value",
-        srtByPct: "Sort by Percentage",
-        prtRep: "Print Report",
-        fltrByPctCov: "Filter by Percentage Covered",
-        itmsPerPg: "Items per Page",
-        srtByName: "Sort by Name",
-        srtByAvg: "Sort by Average",
-        srtByDate: "Sort by Date"
+      pageExtraInfo: {
+        placeHolders: {
+          sortByclass: 'Sort by Class',
+          startMonth: 'Start month',
+          endMonth: 'End month',
+          search: 'Search'
+        },
+        tooltips: {
+          sortAscending: 'Sort Ascending',
+          sortDescending: 'Sort Descending',
+          sortByAbsoluteValue: 'Sort by Absolute Value',
+          sortByPercentage: 'Sort by Percentage',
+          printReport: 'Print Report',
+          maxPercentageCloudCover: 'Max. Percentage Cloud Cover',
+          itemsPerPage: 'Items per Page',
+          sortByName: 'Sort by Name',
+          sortByAverage: 'Sort by Average',
+          sortByDate: 'Sort by Date'
+        }
       },
       pickerOptions: {
         shortcuts: [{
@@ -318,9 +326,9 @@ export default {
       }
     },
     sorts(){
-      const name = {name: 'Name', query: 'aggregationarea__name', tooltip: "tooltip_name", hoverContent: this.tooltipHoverInfo.srtByName}
-      const avg = {name: 'Average', query: 'stats_avg', tooltip: "tooltip_average", hoverContent: this.tooltipHoverInfo.srtByAvg}
-      const date = {name: 'Date', query: 'min_date', tooltip: "tooltip_date", hoverContent: this.tooltipHoverInfo.srtByDate}
+      const name = {name: 'Name', query: 'aggregationarea__name', hoverContent: this.pageExtraInfo.tooltips.sortByName}
+      const avg = {name: 'Average', query: 'stats_avg', hoverContent: this.pageExtraInfo.tooltips.sortByAverage}
+      const date = {name: 'Date', query: 'min_date', hoverContent: this.pageExtraInfo.tooltips.sortByDate}
       
       if (this.discrete) {
         return [name, date]
@@ -514,7 +522,7 @@ export default {
           dateBefore: this.monthrange ? moment(this.monthrange[1]).endOf('month').format('YYYY-MM-DD') : '',
           page: this.currentPage,
           pageSize: this.pageSize,
-          minPercentageCovered: this.minPercentageCovered > 0 ? this.minPercentageCovered / 100 : '',
+          minPercentageCovered: this.minPercentageCovered > 0 ? (100 - this.minPercentageCovered) / 100 : '',
         })
         .then(() => {
           tat.loading = false
@@ -704,6 +712,6 @@ export default {
   float: left;
 }
 .el-input-number {
-  width: 90px;
+  width: 94px;
 }
 </style>
