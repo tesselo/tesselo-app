@@ -133,7 +133,7 @@
             effect="dark"
             placement="bottom">
             <el-input-number
-              v-model="minPercentageCovered"
+              v-model="maxCloudCoverPercentage"
               :step="10"
               :min="0"
               :max="100"
@@ -249,7 +249,7 @@ export default {
     return {
       search: '',
       monthrange: '',
-      minPercentageCovered: 80,
+      maxCloudCoverPercentage: 80,
       radio: 12,
       currentPage: 1,
       classSortValue: '',
@@ -259,8 +259,8 @@ export default {
       pageData: {
         placeHolders: {
           sortByclass: 'Sort by Class',
-          startMonth: 'Start month',
-          endMonth: 'End month',
+          startMonth: 'Start Month',
+          endMonth: 'End Month',
           search: 'Search'
         },
         hoverInfo: {
@@ -433,7 +433,7 @@ export default {
     pageSize(){
       this.query()
     },
-    minPercentageCovered() {
+    maxCloudCoverPercentage() {
       this.query()
     },
     currentSort() {
@@ -522,7 +522,7 @@ export default {
           dateBefore: this.monthrange ? moment(this.monthrange[1]).endOf('month').format('YYYY-MM-DD') : '',
           page: this.currentPage,
           pageSize: this.pageSize,
-          minPercentageCovered: this.minPercentageCovered > 0 ? (100 - this.minPercentageCovered) / 100 : '',
+          minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : '',
         })
         .then(() => {
           tat.loading = false
