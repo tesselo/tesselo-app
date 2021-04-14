@@ -1,146 +1,155 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-import Home from '@/views/home/home'
-import Login from '@/views/login/login'
-import Logout from '@/views/logout/logout'
-import Report from '@/views/report/report'
-import AggLayer from '@/views/aggregationlayer/aggregationlayer'
-import AggArea from '@/views/aggregationarea/aggregationarea'
+import Home from "@/views/home/home";
+import Login from "@/views/login/login";
+import Logout from "@/views/logout/logout";
+import Report from "@/views/report/report";
+import AggLayer from "@/views/aggregationlayer/aggregationlayer";
+import AggArea from "@/views/aggregationarea/aggregationarea";
 
-import { routeTypes } from "@/services/constants"
+import { routeTypes } from "@/services/constants";
 
-Vue.use(Router)
+Vue.use(Router);
 
 const router = new Router({
   base: process.env.ROUTER_BASE,
-  mode: 'history',
+  mode: "history",
   routes: [
     {
-      path: '/login',
+      path: "/login",
       name: routeTypes.LOGIN,
       component: Login,
       meta: {
         requiresAuthentication: false,
-        requiresStaff: false
-      }
+        requiresStaff: false,
+      },
     },
     {
-      path: '/logout',
+      path: "/logout",
       name: routeTypes.LOGOUT,
       component: Logout,
       meta: {
         requiresAuthentication: false,
-        requiresStaff: false
-      }
+        requiresStaff: false,
+      },
     },
     {
-      path: '/',
+      path: "/",
       name: routeTypes.HOME,
       component: Home,
       meta: {
-        requiresAuthentication: true
-      }
+        requiresAuthentication: true,
+      },
     },
     {
-      path: '/report/:layer/:formula',
+      path: "/report/:layer/:formula",
       name: routeTypes.REPORT,
       component: Report,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: false
-      }
+        requiresStaff: false,
+      },
     },
     {
-      path: '/report/predicted/:layer/:predictedLayer',
+      path: "/report/predicted/:layer/:predictedLayer",
       name: routeTypes.REPORT_PREDICTED,
       component: Report,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: false
-      }
+        requiresStaff: false,
+      },
     },
     {
-      path: '/areas',
+      path: "/report/:layer/:formula/:area",
+      name: routeTypes.REPORT_AREA,
+      component: Report,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: false,
+      },
+    },
+    {
+      path: "/areas",
       name: routeTypes.AGGREGATION_LAYER_LIST,
       component: AggLayer,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
-      }
+        requiresStaff: true,
+      },
     },
     {
-      path: '/areas/new',
+      path: "/areas/new",
       name: routeTypes.AGGREGATION_LAYER_CREATE,
       component: AggLayer,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
-      }
+        requiresStaff: true,
+      },
     },
     {
-      path: '/areas/:layer',
+      path: "/areas/:layer",
       name: routeTypes.AGGREGATION_LAYER_EDIT,
       component: AggLayer,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
-      }
+        requiresStaff: true,
+      },
     },
     {
-      path: '/areas/:layer/area',
+      path: "/areas/:layer/area",
       name: routeTypes.AGGREGATION_AREA_LIST,
       component: AggArea,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
-      }
+        requiresStaff: true,
+      },
     },
     {
-      path: '/areas/:layer/area/new',
+      path: "/areas/:layer/area/new",
       name: routeTypes.AGGREGATION_AREA_CREATE,
       component: AggArea,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
-      }
+        requiresStaff: true,
+      },
     },
     {
-      path: '/areas/:layer/area/:area',
+      path: "/areas/:layer/area/:area",
       name: routeTypes.AGGREGATION_AREA_EDIT,
       component: AggArea,
       meta: {
         requiresAuthentication: true,
-        requiresStaff: true
-      }
+        requiresStaff: true,
+      },
     },
-  ]
-})
+  ],
+});
 
 router.beforeEach((to, from, next) => {
   // Create auth variables.
-  let auth
-  let authenticated
-  let isStaff
+  let auth;
+  let authenticated;
+  let isStaff;
 
   // Get profile from local storage.
-  if (localStorage.getItem('auth')) {
-    auth = JSON.parse(localStorage.getItem('auth'))
-    authenticated = auth.authenticated
-    isStaff = auth.is_staff
+  if (localStorage.getItem("auth")) {
+    auth = JSON.parse(localStorage.getItem("auth"));
+    authenticated = auth.authenticated;
+    isStaff = auth.is_staff;
   } else {
-    authenticated = false
-    isStaff = false
+    authenticated = false;
+    isStaff = false;
   }
 
   // Fist check authentication, then staff status.
   if (to.meta.requiresAuthentication && !authenticated) {
-    next('/login')
+    next("/login");
   } else if (to.meta.requiresStaff && !isStaff) {
-    next('/')
+    next("/");
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;
