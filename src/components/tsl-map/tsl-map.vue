@@ -635,7 +635,7 @@ export default {
         })
       } else {
         if (this.selectedFormula && this.selectedFormula.acronym == 'RGB') {
-          this.$alert('Reports are not available for RGB layer. Please select a different formula.', 'Report Information:', {
+          this.$alert('Reports are not available for RGB layer. Please select a different layer.', 'Report Information:', {
             confirmButtonText: 'OK',
             showClose: false
           });
