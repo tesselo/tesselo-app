@@ -28,7 +28,7 @@
           class="header-row">
           <el-input
             v-model="search"
-            :placeholder="pageExtraInfo.placeHolders.search"
+            :placeholder="pageData.placeHolders.search"
             clearable>
             <el-button
               slot="append"
@@ -41,8 +41,8 @@
           class="header-row">
           <el-date-picker
             v-model="monthrange"
-            :start-placeholder="pageExtraInfo.placeHolders.startMonth"
-            :end-placeholder="pageExtraInfo.placeHolders.endMonth" 
+            :start-placeholder="pageData.placeHolders.startMonth"
+            :end-placeholder="pageData.placeHolders.endMonth" 
             type="monthrange"/>
         </el-col>
       </el-row>
@@ -70,7 +70,7 @@
           <el-select
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
-            :placeholder="pageExtraInfo.placeHolders.sortByclass"
+            :placeholder="pageData.placeHolders.sortByclass"
             size="mini"
             clearable>
             <!-- The created class below is a hack due to global form css override from bookmarks in app.vue -->
@@ -90,7 +90,7 @@
         <el-col :sm="5">
           <el-button-group>
             <el-tooltip
-              :content="ascDesc ? pageExtraInfo.tooltips.sortAscending : pageExtraInfo.tooltips.sortDescending"
+              :content="ascDesc ? pageData.hoverInfo.sortAscending : pageData.hoverInfo.sortDescending"
               :visible-arrow="true"
               effect="dark"
               placement="bottom">
@@ -101,7 +101,7 @@
                 @click="ascDescToggle"/>
             </el-tooltip>
             <el-tooltip
-              :content="percentageSort ? pageExtraInfo.tooltips.sortByAbsoluteValue : pageExtraInfo.tooltips.sortByPercentage"
+              :content="percentageSort ? pageData.hoverInfo.sortByAbsoluteValue : pageData.hoverInfo.sortByPercentage"
               :visible-arrow="true"
               effect="dark"
               placement="bottom">
@@ -113,7 +113,7 @@
                 @click="percentageSortToggle"/>
             </el-tooltip>    
             <el-tooltip
-              :content="pageExtraInfo.tooltips.printReport"
+              :content="pageData.hoverInfo.printReport"
               :visible-arrow="false"
               effect="dark"
               placement="bottom">
@@ -128,7 +128,7 @@
         </el-col> 
         <el-col :sm="4">
           <el-tooltip
-            :content="pageExtraInfo.tooltips.maxPercentageCloudCover"
+            :content="pageData.hoverInfo.maxPercentageCloudCover"
             :visible-arrow="true"
             effect="dark"
             placement="bottom">
@@ -143,7 +143,7 @@
         </el-col>
         <el-col :sm="6">
           <el-tooltip
-            :content="pageExtraInfo.tooltips.itemsPerPage"
+            :content="pageData.hoverInfo.itemsPerPage"
             :visible-arrow="true"
             effect="dark"
             placement="bottom">
@@ -256,14 +256,14 @@ export default {
       currentSort: 'Name',
       ascDesc: false,
       percentageSort: false,
-      pageExtraInfo: {
+      pageData: {
         placeHolders: {
           sortByclass: 'Sort by Class',
           startMonth: 'Start month',
           endMonth: 'End month',
           search: 'Search'
         },
-        tooltips: {
+        hoverInfo: {
           sortAscending: 'Sort Ascending',
           sortDescending: 'Sort Descending',
           sortByAbsoluteValue: 'Sort by Absolute Value',
@@ -326,9 +326,9 @@ export default {
       }
     },
     sorts(){
-      const name = {name: 'Name', query: 'aggregationarea__name', hoverContent: this.pageExtraInfo.tooltips.sortByName}
-      const avg = {name: 'Average', query: 'stats_avg', hoverContent: this.pageExtraInfo.tooltips.sortByAverage}
-      const date = {name: 'Date', query: 'min_date', hoverContent: this.pageExtraInfo.tooltips.sortByDate}
+      const name = {name: 'Name', query: 'aggregationarea__name', hoverContent: this.pageData.hoverInfo.sortByName}
+      const avg = {name: 'Average', query: 'stats_avg', hoverContent: this.pageData.hoverInfo.sortByAverage}
+      const date = {name: 'Date', query: 'min_date', hoverContent: this.pageData.hoverInfo.sortByDate}
       
       if (this.discrete) {
         return [name, date]
