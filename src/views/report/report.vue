@@ -114,7 +114,7 @@
             </el-tooltip>    
             <el-tooltip
               :content="pageData.hoverInfo.printReport"
-              :visible-arrow="false"
+              :visible-arrow="true"
               effect="dark"
               placement="bottom">
               <el-button
