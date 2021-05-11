@@ -1,41 +1,50 @@
 <template>
-  <div class="map-export-wrapper">
-    <template>
-      <div class="title">PDF Export</div>
-      <el-table
-        :data="data"
-        size="mini">
-        <el-table-column
-          prop="id"
-          label="Page"
-          width="60" />
-        <el-table-column
-          prop="layer"
-          label="Layer" />
-        <el-table-column
-          prop="moment"
-          label="Time" />
-      </el-table>
-    </template>
-    <el-button
-      :disabled="processing"
-      icon="el-icon-delete"
-      title="Clear page list"
-      class="export-button export-clear"
-      @click="clear" />
-    <el-button
-      :loading="processing"
-      class="export-button export-print"
-      title="Add current view as Page"
-      icon="el-icon-plus"
-      @click="addPage" />
-    <el-button
-      :disabled="processing"
-      icon="el-icon-download"
-      class="export-button export-print"
-      title="Download PDF"
-      @click="print" />
-  </div>
+  <transition 
+    name="fade" 
+    appear>
+    <div class="map-export-wrapper">
+      <template>
+        <div class="title">PDF Export
+          <el-button
+            icon="el-icon-close"
+            class="export-button export-close"
+            @click="close" />
+        </div>
+        <el-table
+          :data="data"
+          size="mini">
+          <el-table-column
+            prop="id"
+            label="Page"
+            width="60" />
+          <el-table-column
+            prop="layer"
+            label="Layer" />
+          <el-table-column
+            prop="moment"
+            label="Time" />
+        </el-table>
+      </template>
+      <el-button
+        :disabled="processing"
+        icon="el-icon-delete"
+        title="Clear page list"
+        class="export-button"
+        @click="clear" />
+      <el-button
+        :loading="processing"
+        class="export-button export-print"
+        title="Add current view as Page"
+        icon="el-icon-plus"
+        @click="addPage" />
+      <el-button
+        :disabled="processing"
+        icon="el-icon-download"
+        class="export-button export-print"
+        title="Download PDF"
+        @click="print" />
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -59,6 +68,9 @@ export default {
     },
     addPage(){
       if(!this.processing) this.$emit('add-page')
+    },
+    close(){
+      this.$emit('close') 
     }
   }
 }
@@ -71,6 +83,7 @@ export default {
     background: white;
     padding: 10px;
     border-radius: 3px;
+    border: 2px solid rgba(0,0,0,0.2);
     left: 50%;
     margin-left: -180px;
     width: 360px;
@@ -88,8 +101,6 @@ export default {
       text-transform: uppercase;
       margin-bottom: 15px;
     }
-    .el-button {
-    }
     .export-button {
       margin-top: 15px;
       font-size: 20px;
@@ -97,12 +108,16 @@ export default {
       padding: 0px !important;
       border: 0px;
       &.export-print {
-        margin-right: 10px;
+        margin-left: 15px;
         float: right;
       }
       &.export-clear {
         margin-left: 10px;
         float: left;
+      }
+      &.export-close {
+        float: right;
+        margin-top: 0px; 
       }
       &:hover{
         background-color: #F1F1F1;
@@ -110,6 +125,14 @@ export default {
         color: #5683a2;
       }
     }
-
   }
+  
+  .fade-enter, .fade-leave-active {
+    opacity: 0;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .4s ease-in-out;
+  }
+
 </style>
