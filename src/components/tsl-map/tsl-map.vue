@@ -109,7 +109,8 @@
       :processing="exportProcessing"
       @print-pdf="printPdf"
       @clear-exports="clearExports"
-      @add-page="addImage" />
+      @add-page="addImage" 
+      @close="toggleExport"/>
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -733,6 +734,11 @@ export default {
     }
   }
 
+  .el-button {
+    border: 0px solid #DCDFE6;
+    color: #606266;
+  }
+
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
     height: 100%;
@@ -747,15 +753,11 @@ export default {
     .leaflet-range-control {
       border: 2px solid rgba(0,0,0,0.2);
       position: absolute;
-      top: 220px;
+      top: 295px;
       width: 34px;
       right: 0;
       margin-left: 40px;
       z-index: 0;
-
-      @media (min-width: 768px) {
-        top: 295px;
-      }
 
       &:nth-last-of-type(2) {
         right: 40px;
