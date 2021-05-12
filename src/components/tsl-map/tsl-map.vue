@@ -12,6 +12,9 @@
         :position="zoomPosition" />
       <v-geosearch
         :options="geosearchOptions" />
+      <l-control-layers
+        :position="layersPosition"
+        :auto-z-index="layersAutoZIndex" />
       <l-control-attribution
         :position="attributionPosition"
         prefix="Visualization Layers &copy; <a href=https://tesselo.com>Tesselo</a> " />
@@ -19,7 +22,6 @@
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
         <el-button
-          :title="hoverInfo.printReport"
           class="export-button"
           icon="el-icon-printer"
           @click="toggleExport" />
@@ -28,14 +30,10 @@
         class="print-image-control leaflet-bar leaflet-control"
         position="topright" >
         <el-button
-          :title="hoverInfo.report"
           class="export-button"
           icon="el-icon-document"
           @click="showReport" />
       </l-control>
-      <l-control-layers
-        :position="layersPosition"
-        :auto-z-index="layersAutoZIndex" />
       <l-tile-layer
         v-for="tileProvider in tileProviders"
         ref="tileProviders"
@@ -109,8 +107,7 @@
       :processing="exportProcessing"
       @print-pdf="printPdf"
       @clear-exports="clearExports"
-      @add-page="addImage" 
-      @close="toggleExport"/>
+      @add-page="addImage" />
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -212,17 +209,11 @@ export default {
         position: 'topright',
         showMarker: false,
         autoClose: true,
-        searchLabel: 'Search by Address'
       },
       tileLayerClass: L.authenticatedTileLayer,
       exportData: [],
       exportProcessing: false,
       exportTable: [],
-      hoverInfo: {
-        report: 'Report',
-        defaultZoom: 'Default Zoom',
-        printReport: 'Print Report',
-      },
     }
   },
   computed: {
@@ -396,7 +387,7 @@ export default {
     const searchLayer = L.layerGroup().addTo(this.$refs.map.mapObject)
     this.$refs.map.mapObject.addControl(searchLayer)
     // Instantiate home button.
-    this.defaultExtent = L.control.defaultExtent({position: 'topright', title: this.hoverInfo.defaultZoom}).addTo(this.$refs.map.mapObject);
+    this.defaultExtent = L.control.defaultExtent({position: 'topright'}).addTo(this.$refs.map.mapObject);
     this.$refs.map.mapObject.keyboard.disable();
     // Activate mblayers.
     this.addMbLayers()
@@ -774,11 +765,6 @@ export default {
     }
   }
 
-  .el-button {
-    border: 0px solid #DCDFE6;
-    color: #606266;
-  }
-
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
     height: 100%;
@@ -798,6 +784,10 @@ export default {
       right: 0;
       margin-left: 40px;
       z-index: 0;
+
+      @media (min-width: 768px) {
+        top: 295px;
+      }
 
       &:nth-last-of-type(2) {
         right: 40px;
