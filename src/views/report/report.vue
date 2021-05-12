@@ -520,7 +520,8 @@ export default {
       layer: {id: this.$route.params.layer},
       page: this.currentPage,
       pageSize: this.pageSize,
-      aggregationArea: this.$route.params.area
+      aggregationArea: this.$route.params.area,
+      minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : ''
     }
     if(this.discrete) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
