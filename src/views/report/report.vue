@@ -12,12 +12,12 @@
           <h2>
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
             <span v-if="showTrend && rows">| {{ trendAreaName }}</span>
-            <span v-if="selectedFormula">| {{ selectedFormula.acronym }}</span>
+            <span v-if="selectedFormula && !discrete">| {{ header.name }}</span>
             <span v-if="selectedPredictedLayer">| {{ selectedPredictedLayer.nameToShow }}</span>
             <span
-              v-if="selectedFormula"
+              v-if="selectedFormula && !discrete"
               class="formula-name-header">
-              {{ selectedFormula.name }}
+              {{ header.description }}
             </span>
           </h2>
         </el-col>
@@ -46,8 +46,11 @@
             type="monthrange"/>
         </el-col>
       </el-row>
-      <el-row :gutter="10">
-        <el-col :sm="discrete ? 5 : 8">
+      <el-row>
+        <el-col
+          :sm="8"
+          :lg="discrete ? 8 : 10"
+          :xl="discrete ? 4 : 7">
           <el-radio-group
             v-model="currentSort"
             size="mini">
@@ -56,6 +59,7 @@
               :key="item.hoverContent"
               :content="item.hoverContent"
               :visible-arrow="true"
+              :open-delay="pageData.openDelay"
               effect="dark"
               placement="bottom">
               <el-radio-button
@@ -65,8 +69,34 @@
           </el-radio-group>
         </el-col>
         <el-col
+          v-if="!discrete"
+          :sm="4"
+          :lg="5"
+          :xl="3">
+          <el-select
+            v-model="layerFilterValue"
+            :loading="selectLoading"
+            size="mini">
+            <el-tooltip
+              v-for="item in selectformulaRows"
+              :key="item.id"
+              :visible-arrow="false"
+              :content="item.name"
+              :open-delay="pageData.openDelay"
+              effect="dark"
+              placement="right">
+              <el-option
+                :value="item.id"
+                :label="item.acronym"
+                class="created" />
+            </el-tooltip>
+          </el-select>
+        </el-col>
+        <el-col
           v-if="discrete"
-          :sm="4">
+          :sm="5"
+          :lg="5"
+          :xm="4">
           <el-select
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
@@ -87,11 +117,15 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :sm="5">
+        <el-col
+          :sm="discrete ? 7 : 4"
+          :lg="discrete ? 8 : 5"
+          :xl="discrete ? 5 : 4">
           <el-button-group>
             <el-tooltip
               :content="ascDesc ? pageData.hoverInfo.sortAscending : pageData.hoverInfo.sortDescending"
               :visible-arrow="true"
+              :open-delay="pageData.openDelay"
               effect="dark"
               placement="bottom">
               <el-button
@@ -103,6 +137,7 @@
             <el-tooltip
               :content="percentageSort ? pageData.hoverInfo.sortByAbsoluteValue : pageData.hoverInfo.sortByPercentage"
               :visible-arrow="true"
+              :open-delay="pageData.openDelay"
               effect="dark"
               placement="bottom">
               <el-button
@@ -115,6 +150,7 @@
             <el-tooltip
               :content="pageData.hoverInfo.printReport"
               :visible-arrow="true"
+              :open-delay="pageData.openDelay"
               effect="dark"
               placement="bottom">
               <el-button
@@ -126,10 +162,13 @@
             </el-tooltip>
           </el-button-group>
         </el-col> 
-        <el-col :sm="4">
+        <el-col
+          :sm="discrete ? 3 : 4"
+          :xl="4">
           <el-tooltip
             :content="pageData.hoverInfo.maxPercentageCloudCover"
             :visible-arrow="true"
+            :open-delay="pageData.openDelay"
             effect="dark"
             placement="bottom">
             <el-input-number
@@ -141,10 +180,13 @@
               placeholder="%"/>
           </el-tooltip>
         </el-col>
-        <el-col :sm="6">
+        <el-col 
+          :sm="6"
+          :xl="discrete ? 4 : 5">
           <el-tooltip
             :content="pageData.hoverInfo.itemsPerPage"
             :visible-arrow="true"
+            :open-delay="pageData.openDelay"
             effect="dark"
             placement="bottom">
             <el-radio-group
@@ -253,9 +295,15 @@ export default {
       radio: 12,
       currentPage: 1,
       classSortValue: '',
+      layerFilterValue: '',
       currentSort: 'Name',
       ascDesc: false,
       percentageSort: false,
+      isFirstCall: true,
+      header: { 
+        name: '',
+        description: ''
+      },
       pageData: {
         placeHolders: {
           sortByclass: 'Sort by Class',
@@ -274,7 +322,8 @@ export default {
           sortByName: 'Sort by Name',
           sortByAverage: 'Sort by Average',
           sortByDate: 'Sort by Date'
-        }
+        },
+        openDelay: 750
       },
       pickerOptions: {
         shortcuts: [{
@@ -300,6 +349,7 @@ export default {
         }]
       },
       loading: true,
+      selectLoading: true,
       printing: false
     }
   },
@@ -316,7 +366,11 @@ export default {
       original_rows: state => state.formulaReport.rows,
       next: state => state.formulaReport.next,
       previous: state => state.formulaReport.previous,
+      formulaRows: state => state.formula.rows,
     }),
+    selectformulaRows(){
+      return this.formulaRows.filter(item => item.acronym != "RGB")
+    },
     has_data(){
       const report_items_loaded = Boolean(this.formulaReport.length)
       if(this.discrete) {
@@ -416,6 +470,12 @@ export default {
       }
       return query
     },
+    // Function to get id formula selected to query
+    selectedFormulaValue() {
+      this.defineHeader()
+      return this.layerFilterValue ? {id: this.layerFilterValue} 
+        : (this.selectedFormula ? {id: this.selectedFormula.id} : '')
+    },
     pageSize(){
       return parseInt(this.radio)
     },
@@ -447,6 +507,11 @@ export default {
     },
     percentageSort() {
       this.query()
+    },
+    layerFilterValue(){
+      if (!this.isFirstCall) {
+         this.query();
+      }
     }
   },
   mounted: function(){
@@ -455,21 +520,36 @@ export default {
       layer: {id: this.$route.params.layer},
       page: this.currentPage,
       pageSize: this.pageSize,
-      aggregationArea: this.$route.params.area
+      aggregationArea: this.$route.params.area,
+      minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : ''
     }
     if(this.discrete) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
     } else {
       query.formula = {id: this.$route.params.formula}
     }
+
+    // Get available formulas list to create dropdown to search by formula
+    this.getFormulasAction({page: 1, layer:null})
+    .then(() => {
+      this.selectLoading = false
+      this.fillSelect()
+    })
+    .then(() => {
+      this.defineHeader()
+    }) 
+
     // Get aggregation data.
     this.getFormulaReport(query)
     .then(() => {
       this.loading = false
+      this.isFirstCall = false
     })
     .catch(() => {
       this.loading = false
+      this.isFirstCall = false
     })
+    
     // Get the layer data.
     if(this.discrete) {
       if (!this.selectedPredictedLayer){
@@ -486,6 +566,7 @@ export default {
         })
       }
     }
+
     if (!this.selectedLayer){
       this.getAggregationLayerIDAction(this.$route.params.layer)
     }
@@ -499,6 +580,7 @@ export default {
       selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
     }),
     ...mapActions('formula', {
+      getFormulasAction: actionTypes.FORMULA_GET,
       getFormulaIDAction: actionTypes.FORMULA_GET_ID,
       selectFormula: actionTypes.FORMULA_SELECT
     }),
@@ -513,7 +595,7 @@ export default {
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
           aggregationArea: this.$route.params.area,
-          formula: this.selectedFormula ? {id: this.selectedFormula.id} : '',
+          formula: !this.discrete ? this.selectedFormulaValue : '', 
           moment: '',
           predictedLayer: this.selectedPredictedLayer ? {id: this.selectedPredictedLayer.id} : '',
           ordering: this.sortBy,
@@ -533,6 +615,19 @@ export default {
       },
       800
     ),
+    // Initialize header info with selected formula
+    defineHeader(){
+      const formulaInfo = this.formulaRows.filter((item) => { 
+        return item.id == this.layerFilterValue
+      })[0]
+
+      this.header.name = formulaInfo.acronym 
+      this.header.description = formulaInfo.name
+    },
+    // Fill dropdown select with choosed formula in map
+    fillSelect () {
+      this.layerFilterValue = this.selectedFormula ? this.selectedFormula.id : parseInt(this.$route.params.formula)
+    },
     selectPage(page){
       this.currentPage = page
       this.query()
@@ -583,11 +678,11 @@ export default {
         doc.setTextColor('#001A31')  // Navy
 
         // Add title.
-        const headA = `${this.selectedLayer.name} | ${this.selectedFormula.acronym}`
+        const headA = `${this.selectedLayer.name} | ${this.header.name}`
         doc.setFontSize(font_size)
         const headAwidth = doc.getTextWidth(headA)
         const spaceWidth = doc.getTextWidth(' ')
-        const headB = `${this.selectedFormula.name}`
+        const headB = `${this.header.description}`
         doc.text(
           headA,
           pdf_margin,
@@ -689,9 +784,13 @@ export default {
 <style lang="scss" scoped>
 .report-container {
   padding-top: 30px;
+  height: inherit;
+}
+.el-button {
+  border: 1px solid #DCDFE6;
 }
 .header-row{
-  margin-bottom: 10px;
+  overflow-wrap: break-word;
 }
 .formula-name-header {
   font-size: 14px;
@@ -713,5 +812,8 @@ export default {
 }
 .el-input-number {
   width: 94px;
+}
+.el-col.el-col-24 {
+  padding-bottom: 10px;
 }
 </style>
