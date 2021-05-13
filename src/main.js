@@ -13,6 +13,8 @@ import VueHead from 'vue-head'
 import DeviceInfo from '@/plugins/device-info'
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 import { required, min } from 'vee-validate/dist/rules'
+import Sentry from '@sentry/vue'
+import { Integrations } from '@sentry/tracing'
 
 import '@/theme/main.scss'
 import App from '@/views/app/app'
@@ -60,6 +62,14 @@ extend('min', {
 Vue.component('ValidationProvider', ValidationProvider)
 Vue.component('ValidationObserver', ValidationObserver)
 
+Sentry.init({
+  Vue,
+  dsn: process.env.SENTRY_DSN,
+  integrations: [new Integrations.BrowserTracing()],
+
+  // Capture 100% of transactions for performance monitoring.
+  tracesSampleRate: 1.0,
+})
 
 new Vue({
   el: '#app',
