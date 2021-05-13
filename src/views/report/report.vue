@@ -322,8 +322,10 @@ export default {
           sortByName: 'Sort by Name',
           sortByAverage: 'Sort by Average',
           sortByDate: 'Sort by Date'
+
         },
         openDelay: 750
+       }
       },
       pickerOptions: {
         shortcuts: [{
