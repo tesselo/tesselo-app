@@ -7,5 +7,5 @@ module.exports = merge(prodEnv, {
   API_URL: '"https://tesselo.com/api/"',
   ROUTER_BASE: '"/"',
   ASSETS_PUBLIC_PATH: '"/"',
-  SENTRY_DSN: ''
+  SENTRY_DSN: '""'
 })
