@@ -24,6 +24,8 @@
     "server:mock": "json-server --watch mock/db.json"
   },
   "dependencies": {
+    "@sentry/tracing": "^6.3.6",
+    "@sentry/vue": "^6.3.6",
     "@tweenjs/tween.js": "16.11.0",
     "available-versions": "0.13.3",
     "axios": "0.17.1",
