@@ -13,7 +13,7 @@ import VueHead from 'vue-head'
 import DeviceInfo from '@/plugins/device-info'
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 import { required, min } from 'vee-validate/dist/rules'
-import Sentry from '@sentry/vue'
+import * as Sentry from '@sentry/vue'
 import { Integrations } from '@sentry/tracing'
 
 import '@/theme/main.scss'
