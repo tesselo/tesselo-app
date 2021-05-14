@@ -52,6 +52,15 @@ const router = new Router({
       }
     },
     {
+      path: '/report/:layer/:formula/:area',
+      name: routeTypes.REPORT_AREA,
+      component: Report,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: false
+      }
+    },
+    {
       path: '/report/predicted/:layer/:predictedLayer',
       name: routeTypes.REPORT_PREDICTED,
       component: Report,
@@ -59,6 +68,15 @@ const router = new Router({
         requiresAuthentication: true,
         requiresStaff: false
       }
+    },
+    {
+      path: '/report/predicted/:layer/:predictedLayer/:area',
+      name: routeTypes.REPORT_PREDICTED_AREA,
+      component: Report,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: false,
+      },
     },
     {
       path: '/areas',

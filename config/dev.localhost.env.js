@@ -20,4 +20,5 @@ switch (process.env.API_ENV) {
 
 module.exports = merge(prodEnv, {
   API_URL: api,
+  SENTRY_DSN: '""'
 })

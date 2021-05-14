@@ -109,7 +109,8 @@
       :processing="exportProcessing"
       @print-pdf="printPdf"
       @clear-exports="clearExports"
-      @add-page="addImage" />
+      @add-page="addImage" 
+      @close="toggleExport"/>
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -151,7 +152,6 @@ import 'leaflet-range'
 import 'leaflet-range/L.Control.Range.css'
 
 // Element-ui styles.
-import 'element-ui/lib/theme-chalk/notification.css'
 import 'element-ui/lib/theme-chalk/index.css';
 
 // Vector grids for vue.
@@ -164,6 +164,8 @@ import MapLegend from '@/components/map-legend/map-legend.vue'
 import MapExport from '@/components/map-export/map-export.vue'
 
 import { routeTypes } from '@/services/constants'
+
+import notifications from '../notification'
 
 export default {
   name: 'TslMap',
@@ -469,14 +471,53 @@ export default {
     },
 
     showVectorDetails(e){
-      this.$notify({
-        title: e.layer.properties.name,
-        message: `Feature ID ${e.layer.properties.id}`,
-        position: 'bottom-right',
-        type: 'info',
-        offset: 100
+      const rgbValidation = this.selectedFormula.acronym == 'RGB' && !this.selectedPredictedLayer
+      
+      notifications.closeAll()
+      notifications({
+        title: `${e.layer.properties.name}`,
+        buttonName: rgbValidation ? '' : 'Area Report',
+        table: rgbValidation ? false : true,
+        position: 'bottom',
+        offset: 100,
+        onClick: rgbValidation ? '' : this.showReportFromPopup.bind(this, e),
+        tableData: this.attributeTableData(e.layer.properties),
+        haveAttributes: Object.entries(e.layer.properties).length >= 3 ? true : false
       })
     },
+    // Create attributes for notification
+    attributeTableData(e) {
+      return Object.entries(e).filter(dat => dat[0] != 'name' && dat[0] != 'id').map(dat => {
+        return {
+            attribute: dat[0],
+            value: dat[1]
+          }
+      })
+    },
+
+    showReportFromPopup(e) {
+      if(this.selectedPredictedLayer) {
+        this.$router.push({ 
+          name: routeTypes.REPORT_PREDICTED_AREA,
+          params: {
+            layer: this.selectedLayer.id,
+            predictedLayer: this.selectedPredictedLayer.id,
+            area: e.layer.properties.id
+          }
+        })
+      } else {
+        this.$router.push({ 
+          name: routeTypes.REPORT_AREA,
+          params: {
+            layer: this.selectedLayer.id,
+            formula: this.selectedFormula.id,
+            area: e.layer.properties.id
+          }
+        })
+      }
+      notifications.closeAll()
+    },
+
     addMbLayers(){
       if (this.profile && this.profile.baselayers) {
         const lmap = this.$refs.map.mapObject
@@ -733,6 +774,10 @@ export default {
     }
   }
 
+  .el-button {
+    border: 0px solid #DCDFE6;
+  }
+
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
     height: 100%;
@@ -747,15 +792,11 @@ export default {
     .leaflet-range-control {
       border: 2px solid rgba(0,0,0,0.2);
       position: absolute;
-      top: 220px;
+      top: 295px;
       width: 34px;
       right: 0;
       margin-left: 40px;
       z-index: 0;
-
-      @media (min-width: 768px) {
-        top: 295px;
-      }
 
       &:nth-last-of-type(2) {
         right: 40px;
@@ -843,5 +884,10 @@ export default {
       border-color: #F1F1F1;
       color: #5683a2;
     }
+  }
+
+  // Alert message box
+  .el-message-box__title {
+    font-size: 20px;
   }
 </style>

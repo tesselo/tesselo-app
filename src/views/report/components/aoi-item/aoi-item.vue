@@ -48,7 +48,7 @@
           :fill="false" />
       </l-map>
       <map-legend
-        v-if="formula"
+        v-if="!discrete"
         :data="selectedFormulaLegend"
         :min="formula.minVal"
         :max="formula.maxVal"
@@ -151,7 +151,8 @@ export default {
       }
     },
     date(){
-      return moment(this.agg.min_date).format('MMMM YYYY')
+      const date = this.agg.min_date ? moment(this.agg.min_date).format('MMMM YYYY') : ''
+      return date
     },
     selectedFormulaLegend () {
       if (this.formula) {
