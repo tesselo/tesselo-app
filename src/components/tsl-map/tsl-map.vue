@@ -471,7 +471,7 @@ export default {
     },
 
     showVectorDetails(e){
-      const rgbValidation = this.selectedFormula.acronym == 'RGB'
+      const rgbValidation = this.selectedFormula.acronym == 'RGB' && !this.selectedPredictedLayer
       
       notifications.closeAll()
       notifications({
@@ -776,7 +776,6 @@ export default {
 
   .el-button {
     border: 0px solid #DCDFE6;
-    color: #606266;
   }
 
   .tsl-map .leaflet-top.leaflet-right {
