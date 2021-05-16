@@ -675,6 +675,7 @@ export default {
 
     showReport(){
       if(this.selectedPredictedLayer){
+        notifications.closeAll()
         this.$router.push({
           name: routeTypes.REPORT_PREDICTED,
           params: {
@@ -690,6 +691,7 @@ export default {
           });
           return
         }
+        notifications.closeAll()
         this.$router.push({
           name: routeTypes.REPORT,
           params: {
@@ -775,7 +777,7 @@ export default {
   }
 
   .el-button {
-    border: 0px solid #DCDFE6;
+    border: 0px solid #DCDFE6 !important;
   }
 
   .tsl-map .leaflet-top.leaflet-right {
