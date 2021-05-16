@@ -471,7 +471,7 @@ export default {
     },
 
     showVectorDetails(e){
-      const rgbValidation = this.selectedFormula.acronym == 'RGB' && !this.selectedPredictedLayer
+      const rgbValidation = this.selectedFormula.acronym == 'RGB'
       
       notifications.closeAll()
       notifications({
