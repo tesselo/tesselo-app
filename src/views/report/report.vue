@@ -11,10 +11,10 @@
           class="header-row">
           <h2>
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
-            <span v-if="showTrend && rows">| {{ trendAreaName }}</span>
+            <span v-if="showTrend && rows && !discreteArea">| {{ trendAreaName }}</span>
             <span v-if="selectedFormula && !discrete && !discreteArea">| {{ header.name }}</span>
             <span v-if="selectedPredictedLayer">| {{ selectedPredictedLayer.nameToShow }}</span>
-            <span v-if="discreteArea">| {{ formulaReport[0].name }}</span>
+            <span v-if="discreteArea">{{ discreteAreaName }}</span>
             <span
               v-if="selectedFormula && !discrete && !discreteArea"
               class="formula-name-header">
@@ -223,10 +223,11 @@
           :labels="labels"
           :datasets="datasets"/>
         <horizontal-bar-chart
-          v-else
+          v-if="!showTrend && !loading"
           :labels="labels"
           :datasets="datasets"
-          :stacked="discrete || discreteArea"/>
+          :stacked="discrete || discreteArea"
+          :discrete-area="discreteArea"/>
       </el-row>
       <el-row
         v-loading="loading"
@@ -354,7 +355,8 @@ export default {
       },
       loading: true,
       selectLoading: true,
-      printing: false
+      printing: false,
+      discreteAreaName: ''
     }
   },
   computed: {
@@ -550,6 +552,9 @@ export default {
     .then(() => {
       this.loading = false
       this.isFirstCall = false
+      if(this.discreteArea) {
+        this.defineHeader()
+      }
     })
     .catch(() => {
       this.loading = false
@@ -579,7 +584,7 @@ export default {
   },
   methods: {
     ...mapActions('formulaReport', {
-        getFormulaReport: actionTypes.FORMULA_REPORT_GET
+      getFormulaReport: actionTypes.FORMULA_REPORT_GET,
     }),
     ...mapActions('aggregationLayer', {
       getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
@@ -630,6 +635,8 @@ export default {
 
         this.header.name = formulaInfo.acronym 
         this.header.description = formulaInfo.name
+      } else if (this.discreteArea) {
+        this.discreteAreaName = this.formulaReport.length > 0 ? `| ${this.formulaReport[0].name}` : '';
       }
     },
     // Fill dropdown select with choosed formula in map
