@@ -311,7 +311,8 @@ export default {
         rendererFactory: L.canvas.tile,
         vectorTileLayerStyles: layerStyle,
         zIndex: 10,
-        interactive: true
+        interactive: true,
+        minZoom: 7
       }
 
       if (this.authenticated) {
