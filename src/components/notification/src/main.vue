@@ -36,7 +36,7 @@
               <el-table
                 :data="tableData"
                 stripe
-                height="400"
+                height="350"
                 style="width: 99%">
                 <el-table-column
                   prop="attribute"
@@ -168,10 +168,10 @@
     overflow-wrap: break-word;
   }
 
-  @media screen and (max-width: 768px), (max-height: 715px) {
+  @media screen and (max-width: 768px), (max-height: 650px) {
     .el-notification {
         width: 100%;
-        height: 100vh;
+        height: 100%;
         right: 0px;
         bottom: 0px !important;
     }

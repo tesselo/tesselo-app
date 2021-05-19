@@ -33,9 +33,8 @@ const Notification = function(options) {
   instance.dom.style.zIndex = PopupManager.nextZIndex();
 
   let verticalOffset = options.offset || 0;
-   verticalOffset += 16;
-   instance.verticalOffset = verticalOffset;
-   instances.push(instance);
+  instance.verticalOffset = verticalOffset;
+  instances.push(instance);
   return instance;
 };
 
