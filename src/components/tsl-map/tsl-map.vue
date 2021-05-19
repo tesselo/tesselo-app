@@ -479,7 +479,7 @@ export default {
         buttonName: rgbValidation ? '' : 'Area Report',
         table: rgbValidation ? false : true,
         position: 'bottom',
-        offset: 100,
+        offset: 105,
         onClick: rgbValidation ? '' : this.showReportFromPopup.bind(this, e),
         tableData: this.attributeTableData(e.layer.properties),
         haveAttributes: Object.entries(e.layer.properties).length >= 3 ? true : false
