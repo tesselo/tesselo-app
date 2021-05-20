@@ -401,9 +401,14 @@ export default {
     labels() {
       if (this.has_data) {
         if (this.discrete) {
-          return this.rows.map(reportItem => reportItem.name)
+          const ola = this.rows.map(reportItem => reportItem.name)
+
+          return ola
         } else if (this.showTrend){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
+        } else if (this.discreteArea) {
+          const teste = this.selectedPredictedLayerRow.legend.map(entry => entry.name)
+          return teste
         } else {
           return this.rows.map(reportItem => `${reportItem.name} ${reportItem.min_date ? `| ${moment(reportItem.min_date).format('MMMM YYYY')}` : ''}`)
         }
@@ -423,11 +428,9 @@ export default {
     },
     datasets() {
       if (this.has_data) {
-        if (this.discrete || this.discreteArea) {
+        if (this.discrete) {
           return this.selectedPredictedLayerRow.legend.map((entry) => {
-            const data = this.rows.map(agg => {
-              return entry['expression'] in agg.value ? agg.value[entry['expression']] : 0
-            })
+            const data = this.rows.map(agg => entry['expression'] in agg.value ? agg.value[entry['expression']] : 0)
             return {
               data: data,
               label: entry['name'],
@@ -448,6 +451,30 @@ export default {
               spanGaps: true
             }
           ]
+        } else if (this.discreteArea) {
+            const size = this.selectedPredictedLayerRow.legend.length
+            const oi = this.selectedPredictedLayerRow.legend.map((entry, idx) => {
+            const data = []
+            this.rows.map(agg => {
+              for (let i = 0; i < size; i++) {
+                if (idx === i) {
+                  data.push(entry['expression'] in agg.value ? (parseFloat(agg.value_percentage[entry['expression']]) * 100).toFixed(1) : 0)
+                  
+                } else {
+                  data.push(0)
+                }
+              }
+            })
+            return {
+              data: data,
+              label: entry['name'],
+              backgroundColor: entry['color'],
+              borderColor: entry['color'],
+              fill: false,
+              spanGaps: true
+            }
+          })
+         return oi
         } else {
           return [
             {
