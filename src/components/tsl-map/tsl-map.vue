@@ -882,8 +882,8 @@ export default {
     height: 30px;
     color: #606266 !important;
     &:hover{
-      background-color: #F1F1F1;
-      border-color: #F1F1F1;
+      background-color: #f4f4f4 !important;
+      border-color: #f4f4f4 !important; 
       color: #606266 !important;
     }
   }
