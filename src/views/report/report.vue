@@ -801,9 +801,6 @@ export default {
   padding-top: 30px;
   height: inherit;
 }
-.el-button {
-  border: 1px solid #DCDFE6 !important;
-}
 .header-row{
   overflow-wrap: break-word;
 }
