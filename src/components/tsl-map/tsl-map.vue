@@ -20,6 +20,7 @@
         position="topright" >
         <el-button
           :title="hoverInfo.printReport"
+          type="text"
           class="export-button"
           icon="el-icon-printer"
           @click="toggleExport" />
@@ -29,6 +30,7 @@
         position="topright" >
         <el-button
           :title="hoverInfo.report"
+          type="text"
           class="export-button"
           icon="el-icon-document"
           @click="showReport" />
@@ -777,10 +779,6 @@ export default {
     }
   }
 
-  .el-button {
-    border: 0px solid #DCDFE6 !important;
-  }
-
   .tsl-map .leaflet-top.leaflet-right {
     margin-top: 50px;
     height: 100%;
@@ -882,10 +880,11 @@ export default {
     padding: 0px !important;
     width: 30px;
     height: 30px;
+    color: #606266;
     &:hover{
       background-color: #F1F1F1;
       border-color: #F1F1F1;
-      color: #5683a2;
+      color: #606266;
     }
   }
 
