@@ -880,11 +880,11 @@ export default {
     padding: 0px !important;
     width: 30px;
     height: 30px;
-    color: #606266;
+    color: #606266 !important;
     &:hover{
       background-color: #F1F1F1;
       border-color: #F1F1F1;
-      color: #606266;
+      color: #606266 !important;
     }
   }
 
