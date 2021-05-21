@@ -28,6 +28,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    discreteArea: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   computed: {
@@ -35,6 +40,14 @@ export default {
       const opt = {
         maintainAspectRatio: false,
         legend: false
+      }
+      if (this.discreteArea) {
+        opt.tooltips = {
+          enabled: false
+        }
+        opt.hover = {
+          mode: null
+        }
       }
       // Add stacked options if required.
       if (this.stacked) {
@@ -63,8 +76,8 @@ export default {
     }
   },
 
-  created () {
-    const BAR_LINE_HEIGHT = 40
+  created() {
+    const BAR_LINE_HEIGHT = this.discreteArea ? 80 : 40
     const CHART_MAX_HEIGHT = 500
     const height_computed = this.labels.length * BAR_LINE_HEIGHT
     this.height = Math.min(CHART_MAX_HEIGHT, height_computed)

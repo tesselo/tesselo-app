@@ -311,7 +311,8 @@ export default {
         rendererFactory: L.canvas.tile,
         vectorTileLayerStyles: layerStyle,
         zIndex: 10,
-        interactive: true
+        interactive: true,
+        minZoom: 7
       }
 
       if (this.authenticated) {
@@ -479,7 +480,7 @@ export default {
         buttonName: rgbValidation ? '' : 'Area Report',
         table: rgbValidation ? false : true,
         position: 'bottom',
-        offset: 100,
+        offset: 105,
         onClick: rgbValidation ? '' : this.showReportFromPopup.bind(this, e),
         tableData: this.attributeTableData(e.layer.properties),
         haveAttributes: Object.entries(e.layer.properties).length >= 3 ? true : false
@@ -675,6 +676,7 @@ export default {
 
     showReport(){
       if(this.selectedPredictedLayer){
+        notifications.closeAll()
         this.$router.push({
           name: routeTypes.REPORT_PREDICTED,
           params: {
@@ -690,6 +692,7 @@ export default {
           });
           return
         }
+        notifications.closeAll()
         this.$router.push({
           name: routeTypes.REPORT,
           params: {
@@ -775,7 +778,7 @@ export default {
   }
 
   .el-button {
-    border: 0px solid #DCDFE6;
+    border: 0px solid #DCDFE6 !important;
   }
 
   .tsl-map .leaflet-top.leaflet-right {

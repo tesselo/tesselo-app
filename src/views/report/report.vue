@@ -11,18 +11,21 @@
           class="header-row">
           <h2>
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
-            <span v-if="showTrend && rows">| {{ trendAreaName }}</span>
-            <span v-if="selectedFormula && !discrete">| {{ header.name }}</span>
+            <span v-if="showTrend && rows && !discreteArea">| {{ trendAreaName }}</span>
+            <span v-if="selectedFormula && !discrete && !discreteArea">| {{ header.name }}</span>
             <span v-if="selectedPredictedLayer">| {{ selectedPredictedLayer.nameToShow }}</span>
+            <span v-if="discreteArea">{{ discreteAreaName }}</span>
             <span
-              v-if="selectedFormula && !discrete"
+              v-if="selectedFormula && !discrete && !discreteArea"
               class="formula-name-header">
               {{ header.description }}
             </span>
           </h2>
         </el-col>
       </el-row>
-      <el-row :gutter="10">
+      <el-row
+        v-if="!discreteArea"
+        :gutter="10">
         <el-col
           :sm="13"
           class="header-row">
@@ -46,7 +49,7 @@
             type="monthrange"/>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row v-if="!discreteArea">
         <el-col
           :sm="8"
           :lg="discrete ? 8 : 10"
@@ -69,7 +72,7 @@
           </el-radio-group>
         </el-col>
         <el-col
-          v-if="!discrete"
+          v-if="!discrete && !discreteArea"
           :sm="4"
           :lg="5"
           :xl="3">
@@ -142,6 +145,7 @@
               placement="bottom">
               <el-button
                 v-if="discrete"
+                :disabled="classSortValue === ''"
                 :type="percentageSort ? 'primary' : 'default'"
                 size="mini"
                 icon="el-icon-pie-chart"
@@ -219,10 +223,11 @@
           :labels="labels"
           :datasets="datasets"/>
         <horizontal-bar-chart
-          v-else
+          v-if="!showTrend && !loading"
           :labels="labels"
           :datasets="datasets"
-          :stacked="discrete"/>
+          :stacked="discrete || discreteArea"
+          :discrete-area="discreteArea"/>
       </el-row>
       <el-row
         v-loading="loading"
@@ -350,7 +355,8 @@ export default {
       },
       loading: true,
       selectLoading: true,
-      printing: false
+      printing: false,
+      discreteAreaName: ''
     }
   },
   computed: {
@@ -363,7 +369,6 @@ export default {
       selectedPredictedLayerRow: state => state.predictedLayer.row,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
       total: state => state.formulaReport.total,
-      original_rows: state => state.formulaReport.rows,
       next: state => state.formulaReport.next,
       previous: state => state.formulaReport.previous,
       formulaRows: state => state.formula.rows,
@@ -373,7 +378,7 @@ export default {
     },
     has_data(){
       const report_items_loaded = Boolean(this.formulaReport.length)
-      if(this.discrete) {
+      if(this.discrete || this.discreteArea) {
         return report_items_loaded && Boolean(this.selectedPredictedLayer)
       } else {
         return report_items_loaded
@@ -384,14 +389,14 @@ export default {
       const avg = {name: 'Average', query: 'stats_avg', hoverContent: this.pageData.hoverInfo.sortByAverage}
       const date = {name: 'Date', query: 'min_date', hoverContent: this.pageData.hoverInfo.sortByDate}
       
-      if (this.discrete) {
+      if (this.discrete || this.discreteArea) {
         return [name, date]
       } else {
         return [name, avg, date]
       }
     },
     rows(){
-      return this.original_rows.filter(dat => !isNaN(parseFloat(dat.avg)))
+      return this.formulaReport.filter(dat => !isNaN(parseFloat(dat.avg)))
     },
     labels() {
       if (this.has_data) {
@@ -400,7 +405,7 @@ export default {
         } else if (this.showTrend){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
         } else {
-          return this.rows.map(reportItem => `${reportItem.name} | ${moment(reportItem.min_date).format('MMMM YYYY')}`)
+          return this.rows.map(reportItem => `${reportItem.name} ${reportItem.min_date ? `| ${moment(reportItem.min_date).format('MMMM YYYY')}` : ''}`)
         }
       }
     },
@@ -418,7 +423,7 @@ export default {
     },
     datasets() {
       if (this.has_data) {
-        if (this.discrete) {
+        if (this.discrete || this.discreteArea) {
           return this.selectedPredictedLayerRow.legend.map((entry) => {
             const data = this.rows.map(agg => {
               return entry['expression'] in agg.value ? agg.value[entry['expression']] : 0
@@ -481,6 +486,9 @@ export default {
     },
     discrete(){
       return this.$route.name == routeTypes.REPORT_PREDICTED
+    },
+    discreteArea(){
+      return this.$route.name == routeTypes.REPORT_PREDICTED_AREA
     }
   },
   watch: {
@@ -523,27 +531,30 @@ export default {
       aggregationArea: this.$route.params.area,
       minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : ''
     }
-    if(this.discrete) {
+    if(this.discrete || this.discreteArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
     } else {
       query.formula = {id: this.$route.params.formula}
     }
 
     // Get available formulas list to create dropdown to search by formula
-    this.getFormulasAction({page: 1, layer:null})
-    .then(() => {
-      this.selectLoading = false
-      this.fillSelect()
-    })
-    .then(() => {
-      this.defineHeader()
-    }) 
+    if(!this.discrete && !this.discreteArea) {
+      this.getFormulasAction({page: 1, layer:null})
+      .then(() => {
+        this.selectLoading = false
+        this.fillSelect()
+        this.defineHeader()
+      })
+    }
 
     // Get aggregation data.
     this.getFormulaReport(query)
     .then(() => {
       this.loading = false
       this.isFirstCall = false
+      if(this.discreteArea) {
+        this.defineHeader()
+      }
     })
     .catch(() => {
       this.loading = false
@@ -551,7 +562,7 @@ export default {
     })
     
     // Get the layer data.
-    if(this.discrete) {
+    if(this.discrete || this.discreteArea) {
       if (!this.selectedPredictedLayer){
         this.getPredictedLayersIDAction(this.$route.params.predictedLayer)
         .then(() => {
@@ -573,7 +584,7 @@ export default {
   },
   methods: {
     ...mapActions('formulaReport', {
-        getFormulaReport: actionTypes.FORMULA_REPORT_GET
+      getFormulaReport: actionTypes.FORMULA_REPORT_GET,
     }),
     ...mapActions('aggregationLayer', {
       getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
@@ -595,7 +606,7 @@ export default {
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
           aggregationArea: this.$route.params.area,
-          formula: !this.discrete ? this.selectedFormulaValue : '', 
+          formula: !this.discrete && !this.discreteArea ? this.selectedFormulaValue : '', 
           moment: '',
           predictedLayer: this.selectedPredictedLayer ? {id: this.selectedPredictedLayer.id} : '',
           ordering: this.sortBy,
@@ -617,12 +628,16 @@ export default {
     ),
     // Initialize header info with selected formula
     defineHeader(){
-      const formulaInfo = this.formulaRows.filter((item) => { 
-        return item.id == this.layerFilterValue
-      })[0]
+      if(!this.discrete && !this.discreteArea) {
+        const formulaInfo = this.formulaRows.filter((item) => { 
+          return item.id == this.layerFilterValue
+        })[0]
 
-      this.header.name = formulaInfo.acronym 
-      this.header.description = formulaInfo.name
+        this.header.name = formulaInfo.acronym 
+        this.header.description = formulaInfo.name
+      } else if (this.discreteArea) {
+        this.discreteAreaName = this.formulaReport.length > 0 ? `| ${this.formulaReport[0].name}` : '';
+      }
     },
     // Fill dropdown select with choosed formula in map
     fillSelect () {
@@ -787,7 +802,7 @@ export default {
   height: inherit;
 }
 .el-button {
-  border: 1px solid #DCDFE6;
+  border: 1px solid #DCDFE6 !important;
 }
 .header-row{
   overflow-wrap: break-word;
