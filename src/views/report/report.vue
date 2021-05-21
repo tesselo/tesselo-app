@@ -452,13 +452,12 @@ export default {
             }
           ]
         } else if (this.discreteArea) {
-            const size = this.selectedPredictedLayerRow.legend.length
-            const oi = this.selectedPredictedLayerRow.legend.map((entry, idx) => {
+          return this.selectedPredictedLayerRow.legend.map((entry, idx, arr) => {
             const data = []
             this.rows.map(agg => {
-              for (let i = 0; i < size; i++) {
+              for (let i = 0; i < arr.length; i++) {
                 if (idx === i) {
-                  data.push(entry['expression'] in agg.value ? (parseFloat(agg.value_percentage[entry['expression']]) * 100).toFixed(1) : 0)
+                  data.push(entry['expression'] in agg.value ? agg.value[entry['expression']] : 0)
                   
                 } else {
                   data.push(0)
@@ -474,7 +473,6 @@ export default {
               spanGaps: true
             }
           })
-         return oi
         } else {
           return [
             {
