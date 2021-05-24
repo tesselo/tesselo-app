@@ -35,26 +35,47 @@ export default {
     options() {
       const opt = {
         maintainAspectRatio: false,
-        legend: false
+        legend: false,
+        layout: {
+          padding: {
+              top: 2 // half border width
+          },
+        },
+        tooltips: {
+          mode: 'index',
+          axis: 'x',
+          intersect: false,
+        }
+        // interaction: {
+        //   mode: 'index',
+        //   intersect: false,
+        // }
       }
       // Add stacked options if required.
-      if (this.stacked) {
+      if (false /*this.stacked*/) {
         opt.scales = {
           xAxes: [{
             stacked: true
           }],
           yAxes: [{
-            stacked: true
+            stacked: true,
           }]
         }
         opt.fill = true
+        
       }
       return opt
     },
     chartData() {
       return {
-        labels: this.labels,
-        datasets: this.datasets
+        labels: [ "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" ],
+        datasets: [{backgroundColor: "#aac343", borderColor: "#aac343", data: 
+        [0.4,0.6,0.7,NaN,0.7,0.7,0.7,0.6,0.5,NaN,0.3,0.3],
+        fill: false,label: "2020 - Average",spanGaps: false},
+        {backgroundColor: "red", borderColor: "red", data: 
+        [0.7,0.5,0.5,0.1,0.4,0.9,0.8,0.3,0.2,0.7,0.4,0.5],
+        fill: false,label: "2021 - Average",spanGaps: false}
+        ]
       }
     },
     myStyles(){

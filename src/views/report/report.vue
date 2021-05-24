@@ -544,9 +544,9 @@ export default {
     var query = {
       layer: {id: this.$route.params.layer},
       page: this.currentPage,
-      pageSize: this.pageSize,
+      pageSize: 500, //this.pageSize,
       aggregationArea: this.$route.params.area,
-      minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : ''
+      //minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : ''
     }
     if(this.discrete || this.discreteArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
