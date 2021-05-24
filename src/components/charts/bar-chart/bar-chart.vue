@@ -41,7 +41,7 @@ export default {
         maintainAspectRatio: false,
         legend: false     
       }
-      
+      // Remove tooltips and hover if discrete area.
       if (this.discreteArea) {
         opt.tooltips = {
           enabled: false
@@ -50,7 +50,7 @@ export default {
           mode: null
         }  
       }
-      
+      // Add stacked options if required.
       if (this.stacked) {
         opt.scales = {
           xAxes: [{
