@@ -401,14 +401,11 @@ export default {
     labels() {
       if (this.has_data) {
         if (this.discrete) {
-          const ola = this.rows.map(reportItem => reportItem.name)
-
-          return ola
+          return this.rows.map(reportItem => reportItem.name)
         } else if (this.showTrend){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
         } else if (this.discreteArea) {
-          const teste = this.selectedPredictedLayerRow.legend.map(entry => entry.name)
-          return teste
+          return this.selectedPredictedLayerRow.legend.map(entry => entry.name)
         } else {
           return this.rows.map(reportItem => `${reportItem.name} ${reportItem.min_date ? `| ${moment(reportItem.min_date).format('MMMM YYYY')}` : ''}`)
         }
