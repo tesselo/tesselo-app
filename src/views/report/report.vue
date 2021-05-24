@@ -455,14 +455,9 @@ export default {
           return this.selectedPredictedLayerRow.legend.map((entry, idx, arr) => {
             const data = []
             this.rows.map(agg => {
-              for (let i = 0; i < arr.length; i++) {
-                if (idx === i) {
-                  data.push(entry['expression'] in agg.value ? agg.value[entry['expression']] : 0)
-                  
-                } else {
-                  data.push(0)
-                }
-              }
+              arr.forEach((val, arrIdx) => {
+                idx === arrIdx ? data.push(entry['expression'] in agg.value ? Math.round(agg.value[entry['expression']]) : 0) : data.push(0)
+              })           
             })
             return {
               data: data,
