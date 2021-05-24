@@ -29,7 +29,7 @@ export default {
       required: false,
       default: false
     },
-    discreteArea: {
+    byClass: {
       type: Boolean,
       required: false,
       default: false
@@ -39,16 +39,16 @@ export default {
     options() {
       const opt = {
         maintainAspectRatio: false,
-        legend: false     
+        legend: false,
       }
       // Remove tooltips and hover if discrete area.
-      if (this.discreteArea) {
+      if (this.byClass) {
         opt.tooltips = {
-          enabled: false
+          enabled: false,
         }
         opt.hover = {
-          mode: null
-        }  
+          mode: null,
+        }
       }
       // Add stacked options if required.
       if (this.stacked) {
