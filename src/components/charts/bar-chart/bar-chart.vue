@@ -51,33 +51,10 @@ export default {
         }  
       }
       
-      const max = Math.max.apply(null, this.datasets.map(item => {
-        return Math.max.apply(null, item.data);
-      }))
-      // Add stacked options if required.
       if (this.stacked) {
-        
         opt.scales = {
           xAxes: [{
             stacked: true,
-            // type: 'logarithmic',
-            // ticks: {
-            //   min: 0, //minimum tick
-            //   max: Math.ceil(max / 1000) * 1000, //maximum tick
-            //   callback: function(value) {
-            //       return Number(value.toString()) //pass tick values as a string into Number function
-            //   }
-            // },
-            // afterBuildTicks: function(chartObj) { //Build ticks labelling as per your need
-            //   chartObj.ticks = []
-            //   chartObj.ticks.push(0)
-            //   chartObj.ticks.push(10)
-            //   chartObj.ticks.push(100)
-            //   chartObj.ticks.push(1000)
-            //   chartObj.ticks.push(10000)
-            //   chartObj.ticks.push(100000)
-            //   chartObj.ticks.push(1000000)
-            // },
             scaleLabel: {
               display: true,
               labelString: 'Area [ha]',
@@ -105,7 +82,7 @@ export default {
   },
 
   created() {
-    const BAR_LINE_HEIGHT = /*this.discreteArea ? 80 :*/ 40
+    const BAR_LINE_HEIGHT = 40
     const CHART_MAX_HEIGHT = 500
     const height_computed = this.labels.length * BAR_LINE_HEIGHT
     this.height = Math.min(CHART_MAX_HEIGHT, height_computed)
