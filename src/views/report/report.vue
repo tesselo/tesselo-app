@@ -404,6 +404,8 @@ export default {
           return this.rows.map(reportItem => reportItem.name)
         } else if (this.showTrend){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
+        } else if (this.discreteArea) {
+          return this.selectedPredictedLayerRow.legend.map(entry => entry.name)
         } else {
           return this.rows.map(reportItem => `${reportItem.name} ${reportItem.min_date ? `| ${moment(reportItem.min_date).format('MMMM YYYY')}` : ''}`)
         }
@@ -423,11 +425,9 @@ export default {
     },
     datasets() {
       if (this.has_data) {
-        if (this.discrete || this.discreteArea) {
+        if (this.discrete) {
           return this.selectedPredictedLayerRow.legend.map((entry) => {
-            const data = this.rows.map(agg => {
-              return entry['expression'] in agg.value ? agg.value[entry['expression']] : 0
-            })
+            const data = this.rows.map(agg => entry['expression'] in agg.value ? agg.value[entry['expression']] : 0)
             return {
               data: data,
               label: entry['name'],
@@ -448,6 +448,23 @@ export default {
               spanGaps: true
             }
           ]
+        } else if (this.discreteArea) {
+          return this.selectedPredictedLayerRow.legend.map((entry, idx, arr) => {
+            const data = []
+            this.rows.map(agg => {
+              arr.forEach((val, arrIdx) => {
+                idx === arrIdx ? data.push(entry['expression'] in agg.value ? Math.round(agg.value[entry['expression']]) : 0) : data.push(0)
+              })           
+            })
+            return {
+              data: data,
+              label: entry['name'],
+              backgroundColor: entry['color'],
+              borderColor: entry['color'],
+              fill: false,
+              spanGaps: true
+            }
+          })
         } else {
           return [
             {
