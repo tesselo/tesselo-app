@@ -227,7 +227,7 @@
           :labels="labels"
           :datasets="datasets"
           :stacked="discrete || discreteArea"
-          :discrete-area="discreteArea"/>
+          :by-class="horizontalBarByclass"/>
       </el-row>
       <el-row
         v-loading="loading"
@@ -356,7 +356,8 @@ export default {
       loading: true,
       selectLoading: true,
       printing: false,
-      discreteAreaName: ''
+      discreteAreaName: '',
+      horizontalBarByclass: false,
     }
   },
   computed: {
@@ -400,10 +401,12 @@ export default {
     },
     labels() {
       if (this.has_data) {
-        if (this.discrete) {
+        if (this.discrete && this.rows.length > 1 ) {
           return this.rows.map(reportItem => reportItem.name)
         } else if (this.showTrend){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
+        } else if (this.discreteArea || this.rows.length === 1) {
+          return this.selectedPredictedLayerRow.legend.map(entry => entry.name)
         } else {
           return this.rows.map(reportItem => `${reportItem.name} ${reportItem.min_date ? `| ${moment(reportItem.min_date).format('MMMM YYYY')}` : ''}`)
         }
@@ -423,11 +426,11 @@ export default {
     },
     datasets() {
       if (this.has_data) {
-        if (this.discrete || this.discreteArea) {
+        if (this.discrete && this.rows.length > 1 ) {
+          this.setHorizontalBarByClass(this.rows.length)
+          // Create data for horizontal chart bar by area
           return this.selectedPredictedLayerRow.legend.map((entry) => {
-            const data = this.rows.map(agg => {
-              return entry['expression'] in agg.value ? agg.value[entry['expression']] : 0
-            })
+            const data = this.rows.map(agg => entry['expression'] in agg.value ? agg.value[entry['expression']] : 0)
             return {
               data: data,
               label: entry['name'],
@@ -445,15 +448,34 @@ export default {
               backgroundColor: '#aac343',
               borderColor: '#aac343',
               fill: false,
-              spanGaps: true
+              spanGaps: true,
             }
           ]
+        } else if (this.discreteArea || this.rows.length === 1) {
+          this.setHorizontalBarByClass(this.rows.length)
+          // Create data for horizontal chart bar by class
+          return this.selectedPredictedLayerRow.legend.map((entry, idx, arr) => {
+            const data = []
+            this.rows.map(agg => {
+              arr.forEach((val, arrIdx) => {
+                idx === arrIdx ? data.push(entry['expression'] in agg.value ? Math.round(agg.value[entry['expression']]) : 0) : data.push(0)
+              })           
+            })
+            return {
+              data: data,
+              label: entry['name'],
+              backgroundColor: entry['color'],
+              borderColor: entry['color'],
+              fill: false,
+              spanGaps: true,
+            }
+          })
         } else {
           return [
             {
               data: this.rows.map(reportItem => reportItem.avg.toFixed(5)),
               label: 'Average',
-              backgroundColor: '#aac343'
+              backgroundColor: '#aac343',
             }
           ]
         }
@@ -626,6 +648,10 @@ export default {
       },
       800
     ),
+    // Define if is horizontal chart bar by class or by area
+    setHorizontalBarByClass(size){
+      this.horizontalBarByclass = size === 1 ? true : false
+    },
     // Initialize header info with selected formula
     defineHeader(){
       if(!this.discrete && !this.discreteArea) {
