@@ -45,7 +45,7 @@
           <el-date-picker
             v-model="monthrange"
             :start-placeholder="pageData.placeHolders.startMonth"
-            :end-placeholder="pageData.placeHolders.endMonth" 
+            :end-placeholder="pageData.placeHolders.endMonth"
             type="monthrange"/>
         </el-col>
       </el-row>
@@ -150,7 +150,7 @@
                 size="mini"
                 icon="el-icon-pie-chart"
                 @click="percentageSortToggle"/>
-            </el-tooltip>    
+            </el-tooltip>
             <el-tooltip
               :content="pageData.hoverInfo.printReport"
               :visible-arrow="true"
@@ -158,6 +158,7 @@
               effect="dark"
               placement="bottom">
               <el-button
+                v-if="!discrete"
                 :loading="printing"
                 :disabled="printing || loading"
                 icon="el-icon-printer"
@@ -165,7 +166,7 @@
                 @click="print" />
             </el-tooltip>
           </el-button-group>
-        </el-col> 
+        </el-col>
         <el-col
           :sm="discrete ? 3 : 4"
           :xl="4">
@@ -184,7 +185,7 @@
               placeholder="%"/>
           </el-tooltip>
         </el-col>
-        <el-col 
+        <el-col
           :sm="6"
           :xl="discrete ? 4 : 5">
           <el-tooltip
@@ -305,7 +306,7 @@ export default {
       ascDesc: false,
       percentageSort: false,
       isFirstCall: true,
-      header: { 
+      header: {
         name: '',
         description: ''
       },
@@ -389,7 +390,7 @@ export default {
       const name = {name: 'Name', query: 'aggregationarea__name', hoverContent: this.pageData.hoverInfo.sortByName}
       const avg = {name: 'Average', query: 'stats_avg', hoverContent: this.pageData.hoverInfo.sortByAverage}
       const date = {name: 'Date', query: 'min_date', hoverContent: this.pageData.hoverInfo.sortByDate}
-      
+
       if (this.discrete || this.discreteArea) {
         return [name, date]
       } else {
@@ -459,7 +460,7 @@ export default {
             this.rows.map(agg => {
               arr.forEach((val, arrIdx) => {
                 idx === arrIdx ? data.push(entry['expression'] in agg.value ? Math.round(agg.value[entry['expression']]) : 0) : data.push(0)
-              })           
+              })
             })
             return {
               data: data,
@@ -500,7 +501,7 @@ export default {
     // Function to get id formula selected to query
     selectedFormulaValue() {
       this.defineHeader()
-      return this.layerFilterValue ? {id: this.layerFilterValue} 
+      return this.layerFilterValue ? {id: this.layerFilterValue}
         : (this.selectedFormula ? {id: this.selectedFormula.id} : '')
     },
     pageSize(){
@@ -582,7 +583,7 @@ export default {
       this.loading = false
       this.isFirstCall = false
     })
-    
+
     // Get the layer data.
     if(this.discrete || this.discreteArea) {
       if (!this.selectedPredictedLayer){
@@ -628,7 +629,7 @@ export default {
         this.getFormulaReport({
           layer: {id: this.selectedLayer.id},
           aggregationArea: this.$route.params.area,
-          formula: !this.discrete && !this.discreteArea ? this.selectedFormulaValue : '', 
+          formula: !this.discrete && !this.discreteArea ? this.selectedFormulaValue : '',
           moment: '',
           predictedLayer: this.selectedPredictedLayer ? {id: this.selectedPredictedLayer.id} : '',
           ordering: this.sortBy,
@@ -655,11 +656,11 @@ export default {
     // Initialize header info with selected formula
     defineHeader(){
       if(!this.discrete && !this.discreteArea) {
-        const formulaInfo = this.formulaRows.filter((item) => { 
+        const formulaInfo = this.formulaRows.filter((item) => {
           return item.id == this.layerFilterValue
         })[0]
 
-        this.header.name = formulaInfo.acronym 
+        this.header.name = formulaInfo.acronym
         this.header.description = formulaInfo.name
       } else if (this.discreteArea) {
         this.discreteAreaName = this.formulaReport.length > 0 ? `| ${this.formulaReport[0].name}` : '';
