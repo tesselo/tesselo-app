@@ -111,7 +111,7 @@
       :processing="exportProcessing"
       @print-pdf="printPdf"
       @clear-exports="clearExports"
-      @add-page="addImage" 
+      @add-page="addImage"
       @close="toggleExport"/>
 
     <h1> {{ selectedFormulaLegend }} </h1>
@@ -310,7 +310,7 @@ export default {
       }
 
       const options = {
-        rendererFactory: L.canvas.tile,
+        rendererFactory: L.svg.tile,
         vectorTileLayerStyles: layerStyle,
         zIndex: 10,
         interactive: true,
@@ -420,7 +420,7 @@ export default {
     },
     updateBounds(){
       const center = this.$refs.map.mapObject.getCenter()
-      this.$router.replace({query: {...this.$route.query,zoom: this.$refs.map.mapObject.getZoom()}});
+      this.$router.replace({query: {...this.$route.query, zoom: this.$refs.map.mapObject.getZoom()}});
       this.$router.replace({query: {...this.$route.query, centerLat: center.lat }});
       this.$router.replace({query: {...this.$route.query, centerLng: center.lng }});
     },
@@ -475,7 +475,7 @@ export default {
 
     showVectorDetails(e){
       const rgbValidation = this.selectedFormula.acronym == 'RGB' && !this.selectedPredictedLayer
-      
+
       notifications.closeAll()
       notifications({
         title: `${e.layer.properties.name}`,
@@ -500,7 +500,7 @@ export default {
 
     showReportFromPopup(e) {
       if(this.selectedPredictedLayer) {
-        this.$router.push({ 
+        this.$router.push({
           name: routeTypes.REPORT_PREDICTED_AREA,
           params: {
             layer: this.selectedLayer.id,
@@ -509,7 +509,7 @@ export default {
           }
         })
       } else {
-        this.$router.push({ 
+        this.$router.push({
           name: routeTypes.REPORT_AREA,
           params: {
             layer: this.selectedLayer.id,
@@ -883,7 +883,7 @@ export default {
     color: #606266 !important;
     &:hover{
       background-color: #f4f4f4 !important;
-      border-color: #f4f4f4 !important; 
+      border-color: #f4f4f4 !important;
       color: #606266 !important;
     }
   }
