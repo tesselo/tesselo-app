@@ -33,3 +33,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .el-table >>> .cell{
+    text-overflow: initial;
+  }
+</style>
