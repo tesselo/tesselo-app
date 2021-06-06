@@ -1,7 +1,6 @@
 <template>
   <line-chart
     :options="options"
-    :height="height"
     :styles="myStyles"
     :chart-data="chartData" />
 </template>
@@ -12,7 +11,7 @@ import LineChart from './reactive-line-chart'
 export default {
 
   components: {
-    LineChart
+    LineChart,
   },
 
   props: {
@@ -24,63 +23,54 @@ export default {
       type: Array,
       required: true
     },
-    stacked: {
+    reportArea: {
       type: Boolean,
       required: false,
       default: false
-    }
+    },
   },
 
   computed: {
     options() {
       const opt = {
         maintainAspectRatio: false,
-        legend: false,
-        layout: {
-          padding: {
-              top: 2 // half border width
-          },
+        responsive: true,
+        legend: {
+          display: this.reportArea ? true : false,
+          position: 'bottom'
         },
-        tooltips: {
+      }
+      // Add intersection mode to get all data in tooltip legend
+      if (this.reportArea) {
+        // Allow to aggregate data by month
+        opt.tooltips= {
           mode: 'index',
           axis: 'x',
-          intersect: false,
-        }
-        // interaction: {
-        //   mode: 'index',
-        //   intersect: false,
-        // }
-      }
-      // Add stacked options if required.
-      if (false /*this.stacked*/) {
+        },
         opt.scales = {
           xAxes: [{
-            stacked: true
+            stacked: false,
           }],
           yAxes: [{
-            stacked: true,
+            stacked: false,
+            ticks: {
+              stepSize: 0.2,
+            },
           }]
         }
-        opt.fill = true
-        
       }
+
       return opt
     },
     chartData() {
       return {
-        labels: [ "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" ],
-        datasets: [{backgroundColor: "#aac343", borderColor: "#aac343", data: 
-        [0.4,0.6,0.7,NaN,0.7,0.7,0.7,0.6,0.5,NaN,0.3,0.3],
-        fill: false,label: "2020 - Average",spanGaps: false},
-        {backgroundColor: "red", borderColor: "red", data: 
-        [0.7,0.5,0.5,0.1,0.4,0.9,0.8,0.3,0.2,0.7,0.4,0.5],
-        fill: false,label: "2021 - Average",spanGaps: false}
-        ]
+        labels: this.labels,
+        datasets: this.datasets
       }
     },
     myStyles(){
       return {
-        height: "200px",
+        height: this.reportArea ? '250px' : '200px',
         position: 'relative'
       }
     }
