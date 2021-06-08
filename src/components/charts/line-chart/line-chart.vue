@@ -1,7 +1,6 @@
 <template>
   <line-chart
     :options="options"
-    :height="height"
     :styles="myStyles"
     :chart-data="chartData" />
 </template>
@@ -12,7 +11,7 @@ import LineChart from './reactive-line-chart'
 export default {
 
   components: {
-    LineChart
+    LineChart,
   },
 
   props: {
@@ -24,31 +23,39 @@ export default {
       type: Array,
       required: true
     },
-    stacked: {
+    reportType: {
       type: Boolean,
       required: false,
       default: false
-    }
+    },
   },
 
   computed: {
     options() {
       const opt = {
         maintainAspectRatio: false,
-        legend: false
+        responsive: true,
+        legend: {
+          display: this.reportType ? true : false,
+          position: 'bottom'
+        },
       }
-      // Add stacked options if required.
-      if (this.stacked) {
+      // Add intersection mode to get all data in tooltip legend
+      if (this.reportType) {
+        // Allow to aggregate data by month
+        opt.tooltips= {
+          mode: 'index',
+          axis: 'x',
+        },
         opt.scales = {
-          xAxes: [{
-            stacked: true
-          }],
           yAxes: [{
-            stacked: true
+            ticks: {
+              stepSize: 0.2,
+            },
           }]
         }
-        opt.fill = true
       }
+
       return opt
     },
     chartData() {
@@ -59,7 +66,7 @@ export default {
     },
     myStyles(){
       return {
-        height: "200px",
+        height: this.reportType ? '250px' : '200px',
         position: 'relative'
       }
     }
