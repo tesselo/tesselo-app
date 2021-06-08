@@ -12,19 +12,19 @@
           <h2>
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
             <span v-if="showTrend && rows && !discreteArea">| {{ trendAreaName }}</span>
-            <span v-if="selectedFormula && !discrete && !discreteArea">| {{ header.name }}</span>
+            <span v-if="selectedFormula && !discrete && !discreteArea">| {{ selectedFormula.acronym }}</span>
             <span v-if="selectedPredictedLayer">| {{ selectedPredictedLayer.nameToShow }}</span>
-            <span v-if="discreteArea">{{ discreteAreaName }}</span>
+            <span v-if="discreteArea">{{ defineDiscreteAreaName }}</span>
             <span
               v-if="selectedFormula && !discrete && !discreteArea"
               class="formula-name-header">
-              {{ header.description }}
+              {{ selectedFormula.name }}
             </span>
           </h2>
         </el-col>
       </el-row>
       <el-row
-        v-if="!discreteArea"
+        v-if="!reportArea && !discreteArea"
         :gutter="10">
         <el-col
           :sm="13"
@@ -48,6 +48,9 @@
             :end-placeholder="pageData.placeHolders.endMonth"
             type="monthrange"/>
         </el-col>
+      </el-row>
+      <el-row v-else-if="reportArea">
+        <el-divider />
       </el-row>
       <el-row v-if="!discreteArea">
         <el-col
@@ -220,9 +223,14 @@
         v-if="has_data"
         class="header-chart">
         <line-chart
-          v-if="showTrend"
+          v-if="showTrend && !reportArea"
           :labels="labels"
           :datasets="datasets"/>
+        <line-chart
+          v-else-if="reportArea"
+          :labels="chartMonths"
+          :datasets="chartData"
+          :report-type="reportArea"/>
         <horizontal-bar-chart
           v-if="!showTrend && !loading"
           :labels="labels"
@@ -281,9 +289,12 @@ import { actionTypes, routeTypes } from '@/services/constants'
 import HorizontalBarChart from '@/components/charts/bar-chart/bar-chart'
 import LineChart from '@/components/charts/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
-import { debounce } from 'lodash'
+import _ from 'lodash'
 import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
 import { Tooltip } from 'element-ui'
+import months from '@/assets/utils/months'
+import chartColors from '@/assets/utils/chart-colors'
+import * as Sentry from "@sentry/vue"
 
 export default {
   name: 'Report',
@@ -302,7 +313,7 @@ export default {
       currentPage: 1,
       classSortValue: '',
       layerFilterValue: '',
-      currentSort: 'Name',
+      currentSort: '',
       ascDesc: false,
       percentageSort: false,
       isFirstCall: true,
@@ -357,8 +368,14 @@ export default {
       loading: true,
       selectLoading: true,
       printing: false,
-      discreteAreaName: '',
       horizontalBarByclass: false,
+      months: months,
+      chartData: [],
+      chartColors: {
+        colors: chartColors,
+        defaultColor: 'red'
+      },
+      updateReportAreaChart: false,
     }
   },
   computed: {
@@ -374,7 +391,12 @@ export default {
       next: state => state.formulaReport.next,
       previous: state => state.formulaReport.previous,
       formulaRows: state => state.formula.rows,
+      reportChartData: state => state.formulaReport.chartData,
+      reportChartYears: state => state.formulaReport.chartYears,
     }),
+    chartMonths() {
+      return this.months.map(item => item.completed)
+    },
     selectformulaRows(){
       return this.formulaRows.filter(item => item.acronym != "RGB")
     },
@@ -393,6 +415,8 @@ export default {
 
       if (this.discrete || this.discreteArea) {
         return [name, date]
+      } else if (this.reportArea) {
+        return [avg, date]
       } else {
         return [name, avg, date]
       }
@@ -401,11 +425,15 @@ export default {
       return this.formulaReport.filter(dat => !isNaN(parseFloat(dat.avg)))
     },
     labels() {
+      // Generate labels for bar and line graph
       if (this.has_data) {
+        // When discrete (Predicted Report) and have more than 1 info block
         if (this.discrete && this.rows.length > 1 ) {
           return this.rows.map(reportItem => reportItem.name)
-        } else if (this.showTrend){
+        // When have more than 1 info block and isn't report area
+        } else if (this.showTrend && !this.reportArea){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
+        // When is discrete area (Predicted Area Report) or just have 1 info block
         } else if (this.discreteArea || this.rows.length === 1) {
           return this.selectedPredictedLayerRow.legend.map(entry => entry.name)
         } else {
@@ -426,6 +454,7 @@ export default {
       }
     },
     datasets() {
+      // Generate data for bar and line graph
       if (this.has_data) {
         if (this.discrete && this.rows.length > 1 ) {
           this.setHorizontalBarByClass(this.rows.length)
@@ -441,7 +470,7 @@ export default {
               spanGaps: true,
             }
           })
-        } else if (this.showTrend) {
+        } else if (this.showTrend && !this.reportArea) {
           return [
             {
               data: this.rows.map(reportItem => reportItem.avg),
@@ -477,6 +506,7 @@ export default {
               data: this.rows.map(reportItem => reportItem.avg.toFixed(5)),
               label: 'Average',
               backgroundColor: '#aac343',
+              fill: false,
             }
           ]
         }
@@ -500,9 +530,7 @@ export default {
     },
     // Function to get id formula selected to query
     selectedFormulaValue() {
-      this.defineHeader()
-      return this.layerFilterValue ? {id: this.layerFilterValue}
-        : (this.selectedFormula ? {id: this.selectedFormula.id} : '')
+      return this.layerFilterValue ? {id: this.layerFilterValue} : (this.selectedFormula ? {id: this.selectedFormula.id} : '')
     },
     pageSize(){
       return parseInt(this.radio)
@@ -512,7 +540,14 @@ export default {
     },
     discreteArea(){
       return this.$route.name == routeTypes.REPORT_PREDICTED_AREA
-    }
+    },
+    reportArea(){
+      return this.$route.name == routeTypes.REPORT_AREA
+    },
+    // Define name in header when discrete (predicted) area
+    defineDiscreteAreaName(){
+      return this.formulaReport.length > 0 ? `| ${this.formulaReport[0].name}` : '';
+    },
   },
   watch: {
     monthrange(){
@@ -525,10 +560,13 @@ export default {
       this.query()
     },
     maxCloudCoverPercentage() {
+      this.updateReportAreaChart = true
       this.query()
     },
     currentSort() {
-      this.query()
+      if (!this.isFirstCall) {
+        this.query()
+      }
     },
     classSortValue() {
       this.query()
@@ -541,7 +579,8 @@ export default {
     },
     layerFilterValue(){
       if (!this.isFirstCall) {
-         this.query();
+        this.updateReportAreaChart = true
+        this.query()
       }
     }
   },
@@ -560,13 +599,15 @@ export default {
       query.formula = {id: this.$route.params.formula}
     }
 
+    // Initialize current sort radio group button
+    this.currentSort = this.reportArea ? 'Date' : 'Name'
+
     // Get available formulas list to create dropdown to search by formula
     if(!this.discrete && !this.discreteArea) {
       this.getFormulasAction({page: 1, layer:null})
       .then(() => {
         this.selectLoading = false
         this.fillSelect()
-        this.defineHeader()
       })
     }
 
@@ -575,14 +616,20 @@ export default {
     .then(() => {
       this.loading = false
       this.isFirstCall = false
-      if(this.discreteArea) {
-        this.defineHeader()
-      }
     })
     .catch(() => {
       this.loading = false
       this.isFirstCall = false
     })
+
+    // Call to create report area graph with time series by year of the area
+    if (this.reportArea) {
+      query.pageSize = 100;
+      this.getFormulaReportChartData(query)
+      .then(() => {
+        this.createReportAreaReport()
+      })
+    }
 
     // Get the layer data.
     if(this.discrete || this.discreteArea) {
@@ -608,25 +655,26 @@ export default {
   methods: {
     ...mapActions('formulaReport', {
       getFormulaReport: actionTypes.FORMULA_REPORT_GET,
+      getFormulaReportChartData: actionTypes.FORMULA_REPORT_CHART_GET,
     }),
     ...mapActions('aggregationLayer', {
       getAggregationLayerIDAction: actionTypes.AGGREGATION_LAYER_GET_ID,
-      selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT
+      selectAggregationLayer: actionTypes.AGGREGATION_LAYER_SELECT,
     }),
     ...mapActions('formula', {
       getFormulasAction: actionTypes.FORMULA_GET,
       getFormulaIDAction: actionTypes.FORMULA_GET_ID,
-      selectFormula: actionTypes.FORMULA_SELECT
+      selectFormula: actionTypes.FORMULA_SELECT,
     }),
     ...mapActions('predictedLayer', {
       getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
-      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT
+      selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
     }),
-    query: debounce(
+    query: _.debounce(
       function () {
         this.loading = true
         const tat = this
-        this.getFormulaReport({
+        const query = {
           layer: {id: this.selectedLayer.id},
           aggregationArea: this.$route.params.area,
           formula: !this.discrete && !this.discreteArea ? this.selectedFormulaValue : '',
@@ -636,35 +684,76 @@ export default {
           search: this.search,
           dateAfter: this.monthrange ? moment(this.monthrange[0]).format('YYYY-MM-DD') : '',
           dateBefore: this.monthrange ? moment(this.monthrange[1]).endOf('month').format('YYYY-MM-DD') : '',
-          page: this.currentPage,
+          page: this.definePageForQuery(),
           pageSize: this.pageSize,
           minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : '',
-        })
+        }
+        // Call to update report data
+        this.getFormulaReport(query)
         .then(() => {
+          tat.defineSelectedFormula()
           tat.loading = false
         })
         .catch(() => {
           tat.loading = false
         })
+
+        // Call to update report area graph with time series by year of the area
+        // Validates if is report area and if formula in report was changed
+        if (this.reportArea && this.updateReportAreaChart) {
+          query.page = 1
+          query.pageSize = 100
+
+          this.getFormulaReportChartData(query)
+          .then(() => {
+            this.createReportAreaReport()
+            this.updateReportAreaChart = false
+          })
+        }
       },
       800
     ),
+    // This allows to decide which page we request in a wacth event change
+    definePageForQuery(){
+      // This validates if the selected formula is the same as the new selected formula
+      // If is a new one, we request from the first page, otherwise the next page selected
+      return this.currentPage = this.selectedFormula.id === this.selectedFormulaValue.id ? this.currentPage : 1
+    },
+    // Update selected formula (ex: NDVI, SLIM, etc) when changed in dropdown select. This allow map legend update in mini-maps
+    defineSelectedFormula() {
+      const formulaInfo = this.formulaRows.filter(item => {
+        return item.id == this.layerFilterValue
+      })[0]
+
+      this.selectFormula(formulaInfo)
+    },
+    // Create time series data by year for chart when in report area
+    createReportAreaReport() {
+      // Map for available years in specific area
+      this.chartData = this.reportChartYears.map((year, idx) => {
+        const that = this
+        const color = _.get(this.chartColors.colors, idx, this.chartColors.defaultColor)
+        // If default color is used means that color array hasn't enough colors and this warns sentry
+        if (color === 'red') Sentry.captureMessage('We used all provisioned colors for area report chart');
+        return {
+          label: `${year} - Average`,
+          // Go throught all year months
+          data: this.months.map((month) => {
+                  // Go throught all available area data and verify for each month and year if has average value
+                  const area = that.reportChartData.find(entry => entry.month === month['completed'] && entry.year === year)
+                  return area ? area.avg : null
+                }),
+          backgroundColor: color,
+          borderColor: color,
+          fill: false,
+          spanGaps: true,
+          pointRadius: 4,
+        }
+      })
+    },
     // Define if is horizontal chart bar by class or by area
     setHorizontalBarByClass(size){
       this.horizontalBarByclass = size === 1 ? true : false
-    },
-    // Initialize header info with selected formula
-    defineHeader(){
-      if(!this.discrete && !this.discreteArea) {
-        const formulaInfo = this.formulaRows.filter((item) => {
-          return item.id == this.layerFilterValue
-        })[0]
-
-        this.header.name = formulaInfo.acronym
-        this.header.description = formulaInfo.name
-      } else if (this.discreteArea) {
-        this.discreteAreaName = this.formulaReport.length > 0 ? `| ${this.formulaReport[0].name}` : '';
-      }
     },
     // Fill dropdown select with choosed formula in map
     fillSelect () {
