@@ -12,7 +12,6 @@ export const RESET_STORE = 'resetStore'
 export const SET_DEVICE_TOUCH = 'setDeviceTouch'
 export const SET_LOADING_VISIBILITY = 'setLoadingVisibility'
 
-
 /* -------------------------------------
  * Auth
  * ---------------------------------- */
@@ -64,7 +63,7 @@ export const TIME_SET_ACTIVE_MONTH = 'setActiveMonth'
 export const TIME_SET_ACTIVE_YEAR = 'setActiveYear'
 export const TIME_SET_CURRENT_TIME_TYPE = 'setCurrentTimeType'
 
- /* -------------------------------------
+/* -------------------------------------
  * Report
  * ---------------------------------- */
 export const REPORT_SET_MULTIPLE_REGION = 'setMultipleRegionReport'
@@ -76,6 +75,7 @@ export const REPORT_RESET = 'resetReport'
 * Formula Report
 * ---------------------------------- */
 export const FORMULA_REPORT_SET = 'setFormulaReport'
+export const FORMULA_REPORT_CHART_SET = 'setFormulaReportChartData'
 export const FORMULA_REPORT_SET_SELECTED = 'setSelectedFormulaReport'
 export const FORMULA_REPORT_SAVE_SELECTED = 'saveSelectedMultipleReport'
 export const FORMULA_REPORT_RESET = 'resetFormulaReport'
