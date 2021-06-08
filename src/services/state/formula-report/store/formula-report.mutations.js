@@ -14,5 +14,10 @@ export default {
     state.next = next
     state.rows = results
     state.currentPage = page
+  },
+
+  [mutationTypes.FORMULA_REPORT_CHART_SET] (state, results ) {
+    state.chartData = results.chartData
+    state.chartYears = results.chartYears
   }
 }
