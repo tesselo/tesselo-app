@@ -8,5 +8,7 @@ export default {
   previous: null,
   next: null,
   rows: [],
-  currentPage: 1
+  currentPage: 1,
+  chartData: [],
+  chartYears: [],
 }

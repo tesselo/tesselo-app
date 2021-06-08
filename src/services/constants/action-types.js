@@ -78,6 +78,7 @@ export const REPORT_SELECT_MULTIPLE_REGION = 'selectMultipleRegionReport'
  * Formula Report
  * ---------------------------------- */
 export const FORMULA_REPORT_GET = 'getFormulaReport'
+export const FORMULA_REPORT_CHART_GET = 'getFormulaReportChartData'
 export const FORMULA_REPORT_SELECT = 'selectFormulaReport'
 
 /* -------------------------------------
@@ -86,7 +87,6 @@ export const FORMULA_REPORT_SELECT = 'selectFormulaReport'
 export const PREDICTED_LAYER_GET = 'getPredictedLayers'
 export const PREDICTED_LAYER_GET_ID = 'getPredictedLayerID'
 export const PREDICTED_LAYER_SELECT = 'selectPredictedLayer'
-
 
 /* -------------------------------------
  * Bookmark Folder
