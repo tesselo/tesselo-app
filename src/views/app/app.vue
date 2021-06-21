@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <router-view/>
+    <router-view :key="$route.path"/>
     <user-sidebar
       @showModal="handleShowModal" />
     <bookmarks-modal
