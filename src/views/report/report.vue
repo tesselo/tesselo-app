@@ -59,6 +59,7 @@
           :xl="discrete ? 4 : 7">
           <el-radio-group
             v-model="currentSort"
+            :disabled="disableWhenHaveOnlyOneArea"
             size="mini">
             <el-tooltip
               v-for="item in sorts"
@@ -107,6 +108,7 @@
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
             :placeholder="pageData.placeHolders.sortByclass"
+            :disabled="disableWhenHaveOnlyOneArea"
             size="mini"
             clearable>
             <!-- The created class below is a hack due to global form css override from bookmarks in app.vue -->
@@ -136,6 +138,7 @@
               placement="bottom">
               <el-button
                 :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+                :disabled="disableWhenHaveOnlyOneArea"
                 type="default"
                 size="mini"
                 @click="ascDescToggle"/>
@@ -250,6 +253,7 @@
           :formula="selectedFormula"
           :trend="showTrend"
           :predicted-layer="selectedPredictedLayer"
+          :report="report"
           @printed="printCallback" />
       </el-row>
       <div
@@ -376,6 +380,7 @@ export default {
         defaultColor: 'red'
       },
       updateReportAreaChart: false,
+      disableWhenHaveOnlyOneArea: false,
     }
   },
   computed: {
@@ -530,7 +535,7 @@ export default {
     },
     // Function to get id formula selected to query
     selectedFormulaValue() {
-      return this.layerFilterValue ? {id: this.layerFilterValue} : (this.selectedFormula ? {id: this.selectedFormula.id} : '')
+      return this.layerFilterValue ? {id: this.layerFilterValue} : (this.selectedFormula ? {id: this.selectedFormula.id} : {id: ''})
     },
     pageSize(){
       return parseInt(this.radio)
@@ -540,6 +545,9 @@ export default {
     },
     discreteArea(){
       return this.$route.name == routeTypes.REPORT_PREDICTED_AREA
+    },
+    report(){
+      return this.$route.name == routeTypes.REPORT
     },
     reportArea(){
       return this.$route.name == routeTypes.REPORT_AREA
@@ -596,7 +604,7 @@ export default {
     if(this.discrete || this.discreteArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
     } else {
-      query.formula = {id: this.$route.params.formula}
+      query.formula = this.selectedFormula ? {id: this.selectedFormula.id} : {id: this.$route.params.formula}
     }
 
     // Initialize current sort radio group button
@@ -614,6 +622,7 @@ export default {
     // Get aggregation data.
     this.getFormulaReport(query)
     .then(() => {
+      this.defineSelectedFormula()
       this.loading = false
       this.isFirstCall = false
     })
@@ -715,9 +724,9 @@ export default {
     ),
     // This allows to decide which page we request in a wacth event change
     definePageForQuery(){
-      // This validates if the selected formula is the same as the new selected formula
+      // This validates if we're out from discrete and discrete area report and if the selected formula is the same as the new selected formula
       // If is a new one, we request from the first page, otherwise the next page selected
-      return this.currentPage = this.selectedFormula.id === this.selectedFormulaValue.id ? this.currentPage : 1
+      return this.currentPage = !this.discrete && !this.discreteArea && (this.selectedFormula.id === this.selectedFormulaValue.id) ? this.currentPage : 1
     },
     // Update selected formula (ex: NDVI, SLIM, etc) when changed in dropdown select. This allow map legend update in mini-maps
     defineSelectedFormula() {
@@ -753,7 +762,13 @@ export default {
     },
     // Define if is horizontal chart bar by class or by area
     setHorizontalBarByClass(size){
-      this.horizontalBarByclass = size === 1 ? true : false
+      if (size === 1) {
+        this.horizontalBarByclass = true
+        this.disableWhenHaveOnlyOneArea = true
+      } else {
+        this.horizontalBarByclass = false
+        this.disableWhenHaveOnlyOneArea = false
+      }
     },
     // Fill dropdown select with choosed formula in map
     fillSelect () {
