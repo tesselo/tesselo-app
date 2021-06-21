@@ -441,7 +441,7 @@ export default {
       let formula = null
       action=='default'
         ? (formula = this.formulaRows.rows[0])
-        : (formula = this.formulaRows.row)
+        : (formula = this.selectedFormula ? this.selectedFormula : this.formulaRows.row)
       if(formula){
         this.selectFormula(formula)
         this.layersTableSelect(formula)
