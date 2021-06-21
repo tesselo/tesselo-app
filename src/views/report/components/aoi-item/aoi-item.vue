@@ -30,6 +30,22 @@
         <h4>Data Range</h4>
         <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
       </div>
+      <div class="button-area">
+        <el-tooltip
+          :visible-arrow="true"
+          :open-delay="750"
+          content="Area Report"
+          effect="dark"
+          placement="bottom">
+          <el-button
+            v-if="report"
+            icon="el-icon-document"
+            size="mini"
+            @click="goToReportArea">
+            <span>{{ buttonName }}</span>
+          </el-button>
+        </el-tooltip>
+      </div>
     </el-col>
     <el-col
       :xs="24"
@@ -92,7 +108,7 @@ import { getColorsFromPallete } from '@/services/util'
 import StatisticsTable from './statistics-table'
 import AttributeTable from './attribute-table'
 
-const ACRES_TO_HA = 0.404686
+import { routeTypes } from '@/services/constants'
 
 export default {
   name: 'ReportAoiItem',
@@ -123,6 +139,11 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    report: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {
@@ -133,7 +154,8 @@ export default {
         preferCanvas: true,
       },
       tileLayerClass: L.authenticatedTileLayer,
-      canvasData: null
+      canvasData: null,
+      buttonName: 'Area Report',
     }
   },
   computed: {
@@ -173,7 +195,6 @@ export default {
       return Boolean(this.agg.predictedlayer)
     },
     statisticsTableData() {
-
       const tat = this
       return this.predictedLayer.legend.map((entry) => {
         // Get value for this legend entry.
@@ -202,7 +223,7 @@ export default {
       this.predictedLayer.legend.forEach(dat => {
         const candidate = {
           category: dat['name'],
-          area: dat['expression'] in tat.agg.value ? tat.agg.value[dat['expression']] * ACRES_TO_HA : 0,
+          area: dat['expression'] in tat.agg.value ? tat.agg.value[dat['expression']] : 0,
           percentage: dat['expression'] in tat.agg.value_percentage ? parseInt(parseFloat(tat.agg.value_percentage[dat['expression']]) * 100) : 0,
         }
         if (!result || candidate.area > result.area) {
@@ -244,6 +265,17 @@ export default {
           tat.$emit('printed')
         })
       })
+    },
+
+    goToReportArea() {
+      this.$router.push({
+          name: routeTypes.REPORT_AREA,
+          params: {
+            layer: this.agg.aggregationlayer,
+            formula: this.agg.formula,
+            area: this.agg.aggregationarea,
+          }
+        })
     }
   }
 }
@@ -288,5 +320,8 @@ h3 {
 }
 .el-collapse {
   margin-top: 10px;
+}
+.button-area {
+  margin-top: 25px;
 }
 </style>
