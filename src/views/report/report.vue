@@ -306,7 +306,7 @@ export default {
     HorizontalBarChart,
     LineChart,
     AoiItem,
-    Tooltip
+    Tooltip,
   },
   data () {
     return {
@@ -323,14 +323,14 @@ export default {
       isFirstCall: true,
       header: {
         name: '',
-        description: ''
+        description: '',
       },
       pageData: {
         placeHolders: {
           sortByclass: 'Sort by Class',
           startMonth: 'Start Month',
           endMonth: 'End Month',
-          search: 'Search'
+          search: 'Search',
         },
         hoverInfo: {
           sortAscending: 'Sort Ascending',
@@ -342,30 +342,30 @@ export default {
           itemsPerPage: 'Items per Page',
           sortByName: 'Sort by Name',
           sortByAverage: 'Sort by Average',
-          sortByDate: 'Sort by Date'
+          sortByDate: 'Sort by Date',
         },
-        openDelay: 750
+        openDelay: 750,
       },
       pickerOptions: {
         shortcuts: [{
           text: 'This month',
           onClick(picker) {
-            picker.$emit('pick', [new Date(), new Date()]);
+            picker.$emit('pick', [new Date(), new Date()])
           }
         }, {
           text: 'This year',
           onClick(picker) {
             const end = new Date();
-            const start = new Date(new Date().getFullYear(), 0);
-            picker.$emit('pick', [start, end]);
+            const start = new Date(new Date().getFullYear(), 0)
+            picker.$emit('pick', [start, end])
           }
         }, {
           text: 'Last 6 months',
           onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setMonth(start.getMonth() - 6);
-            picker.$emit('pick', [start, end]);
+            const end = new Date()
+            const start = new Date()
+            start.setMonth(start.getMonth() - 6)
+            picker.$emit('pick', [start, end])
           }
         }]
       },
