@@ -33,7 +33,7 @@
       <div class="button-area">
         <el-tooltip
           :visible-arrow="true"
-          :open-delay="750"
+          :open-delay="openDelay"
           content="Area Report"
           effect="dark"
           placement="bottom">
@@ -53,12 +53,22 @@
       class="aoi-item-map">
       <l-map
         ref="map"
+        :min-zoom="13"
+        :max-zoom="18"
         :options="mapOptions">
         <l-tile-layer
           url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
         <l-tile-layer
           :tile-layer-class="tileLayerClass"
-          :url="url" />
+          :z-index="layersZindex"
+          :url="url"
+          :opacity="lOpacity"
+          :visible="true"
+          @add="setOpacitySlider"/>
+        <l-tile-layer
+          :tile-layer-class="tileLayerClass"
+          :z-index="rgbLayerZindex"
+          :url="rgbLayerUrl" />
         <l-polygon
           :lat-lngs="latlngs"
           :fill="false" />
@@ -110,6 +120,10 @@ import AttributeTable from './attribute-table'
 
 import { routeTypes } from '@/services/constants'
 
+// Opacity slider.
+import 'leaflet-range'
+import 'leaflet-range/L.Control.Range.css'
+
 export default {
   name: 'ReportAoiItem',
   components: {
@@ -156,6 +170,11 @@ export default {
       tileLayerClass: L.authenticatedTileLayer,
       canvasData: null,
       buttonName: 'Area Report',
+      openDelay: 750,
+      lOpacity: 1,
+      opacitySlider: null,
+      layersZindex: 10,
+      rgbLayerZindex: 9,
     }
   },
   computed: {
@@ -171,6 +190,9 @@ export default {
       } else {
         return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
       }
+    },
+    rgbLayerUrl(){
+      return `${process.env.API_URL}formula/826/composite/${this.agg.composite}/{z}/{x}/{y}.png`
     },
     date(){
       const date = this.agg.min_date ? moment(this.agg.min_date).format('MMMM YYYY') : ''
@@ -266,7 +288,6 @@ export default {
         })
       })
     },
-
     goToReportArea() {
       this.$router.push({
           name: routeTypes.REPORT_AREA,
@@ -276,7 +297,30 @@ export default {
             area: this.agg.aggregationarea,
           }
         })
-    }
+    },
+    setOpacitySlider() {
+      if (this.opacitySlider !== null) {
+        this.$refs.map.mapObject.removeControl(this.opacitySlider)
+      }
+      // Instantiate opacity control.
+      this.opacitySlider = L.control.range({
+        position: 'topright',
+        min: 0,
+        max: 1,
+        value: this.lOpacity,
+        step: 0.1,
+        orient: 'vertical',
+        iconClass: 'leaflet-range-icon'
+      })
+      // Bind slider change route update function.
+      const tat = this
+      this.opacitySlider.on('input change', function(e) {
+        // Update actual opacity value
+        tat.lOpacity = parseFloat(e.value)
+      })
+
+      this.$refs.map.mapObject.addControl(this.opacitySlider)
+    },
   }
 }
 </script>
@@ -323,5 +367,24 @@ h3 {
 }
 .button-area {
   margin-top: 25px;
+}
+/deep/ .leaflet-range-control {
+  border: 2px solid rgba(0,0,0,0.2);
+  margin-right: 3px;
+  position: initial;
+
+  &.vertical{
+    width: 28px;
+    height: 139px;
+    padding-top: 3px;
+  }
+
+  input[type=range][orient=vertical] {
+    height: 99px;
+  }
+
+  .leaflet-range-icon {
+    background-position: 0px;
+  }
 }
 </style>
