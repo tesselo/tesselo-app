@@ -20,7 +20,7 @@
       :xs="24"
       :sm="6"
       class="average-table">
-      <div v-if="discrete">
+      <div v-if="predicted">
         <h4>Main class</h4>
         <h3>{{ mostCommonDiscrete.category }}</h3>
         <h4>{{ mostCommonDiscrete.percentage }}% | {{ mostCommonDiscrete.area.toFixed(2) }} ha</h4>
@@ -74,7 +74,7 @@
           :fill="false" />
       </l-map>
       <map-legend
-        v-if="!discrete"
+        v-if="!predicted"
         :data="selectedFormulaLegend"
         :min="formula.minVal"
         :max="formula.maxVal"
@@ -84,7 +84,7 @@
       :span="24">
       <el-collapse>
         <el-collapse-item
-          v-if="discrete"
+          v-if="predicted"
           title="Statistics">
           <statistics-table
             :data="statisticsTableData"
@@ -185,7 +185,7 @@ export default {
       return L.geoJson(this.agg.geom).getBounds()
     },
     url(){
-      if(this.discrete) {
+      if(this.predicted) {
         return `${process.env.API_URL}predictedlayer/${this.predictedLayer.id}/{z}/{x}/{y}.png`
       } else {
         return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
@@ -213,7 +213,7 @@ export default {
         return []
       }
     },
-    discrete() {
+    predicted() {
       return Boolean(this.agg.predictedlayer)
     },
     statisticsTableData() {
