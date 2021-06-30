@@ -11,12 +11,12 @@
           class="header-row">
           <h2>
             <span v-if="selectedLayer">{{ selectedLayer.name }}</span>
-            <span v-if="showTrend && rows && !discreteArea">| {{ trendAreaName }}</span>
-            <span v-if="selectedFormula && !discrete && !discreteArea">| {{ selectedFormula.acronym }}</span>
+            <span v-if="showTrend && rows && !predictedArea">| {{ trendAreaName }}</span>
+            <span v-if="selectedFormula && !predicted && !predictedArea">| {{ selectedFormula.acronym }}</span>
             <span v-if="selectedPredictedLayer">| {{ selectedPredictedLayer.nameToShow }}</span>
-            <span v-if="discreteArea">{{ defineDiscreteAreaName }}</span>
+            <span v-if="predictedArea">{{ definePredictedAreaName }}</span>
             <span
-              v-if="selectedFormula && !discrete && !discreteArea"
+              v-if="selectedFormula && !predicted && !predictedArea"
               class="formula-name-header">
               {{ selectedFormula.name }}
             </span>
@@ -24,7 +24,7 @@
         </el-col>
       </el-row>
       <el-row
-        v-if="!reportArea && !discreteArea"
+        v-if="!reportArea && !predictedArea"
         :gutter="10">
         <el-col
           :sm="13"
@@ -52,11 +52,11 @@
       <el-row v-else-if="reportArea">
         <el-divider />
       </el-row>
-      <el-row v-if="!discreteArea">
+      <el-row v-if="!predictedArea">
         <el-col
           :sm="8"
-          :lg="discrete ? 8 : 10"
-          :xl="discrete ? 4 : 7">
+          :lg="predicted ? 8 : 10"
+          :xl="predicted ? 4 : 7">
           <el-radio-group
             v-model="currentSort"
             :disabled="disableWhenHaveOnlyOneArea"
@@ -76,7 +76,7 @@
           </el-radio-group>
         </el-col>
         <el-col
-          v-if="!discrete && !discreteArea"
+          v-if="!predicted && !predictedArea"
           :sm="4"
           :lg="5"
           :xl="3">
@@ -100,7 +100,7 @@
           </el-select>
         </el-col>
         <el-col
-          v-if="discrete"
+          v-if="predicted"
           :sm="5"
           :lg="5"
           :xm="4">
@@ -126,9 +126,9 @@
           </el-select>
         </el-col>
         <el-col
-          :sm="discrete ? 7 : 4"
-          :lg="discrete ? 8 : 5"
-          :xl="discrete ? 5 : 4">
+          :sm="predicted ? 7 : 4"
+          :lg="predicted ? 8 : 5"
+          :xl="predicted ? 5 : 4">
           <el-button-group>
             <el-tooltip
               :content="ascDesc ? pageData.hoverInfo.sortAscending : pageData.hoverInfo.sortDescending"
@@ -150,7 +150,7 @@
               effect="dark"
               placement="bottom">
               <el-button
-                v-if="discrete"
+                v-if="predicted"
                 :disabled="classSortValue === ''"
                 :type="percentageSort ? 'primary' : 'default'"
                 size="mini"
@@ -164,7 +164,7 @@
               effect="dark"
               placement="bottom">
               <el-button
-                v-if="!discrete"
+                v-if="!predicted"
                 :loading="printing"
                 :disabled="printing || loading"
                 icon="el-icon-printer"
@@ -174,7 +174,7 @@
           </el-button-group>
         </el-col>
         <el-col
-          :sm="discrete ? 3 : 4"
+          :sm="predicted ? 3 : 4"
           :xl="4">
           <el-tooltip
             :content="pageData.hoverInfo.maxPercentageCloudCover"
@@ -193,7 +193,7 @@
         </el-col>
         <el-col
           :sm="6"
-          :xl="discrete ? 4 : 5">
+          :xl="predicted ? 4 : 5">
           <el-tooltip
             :content="pageData.hoverInfo.itemsPerPage"
             :visible-arrow="true"
@@ -238,7 +238,7 @@
           v-if="!showTrend && !loading"
           :labels="labels"
           :datasets="datasets"
-          :stacked="discrete || discreteArea"
+          :stacked="predicted || predictedArea"
           :by-class="horizontalBarByclass"/>
       </el-row>
       <el-row
@@ -407,7 +407,7 @@ export default {
     },
     has_data(){
       const report_items_loaded = Boolean(this.formulaReport.length)
-      if(this.discrete || this.discreteArea) {
+      if(this.predicted || this.predictedArea) {
         return report_items_loaded && Boolean(this.selectedPredictedLayer)
       } else {
         return report_items_loaded
@@ -418,7 +418,7 @@ export default {
       const avg = {name: 'Average', query: 'stats_avg', hoverContent: this.pageData.hoverInfo.sortByAverage}
       const date = {name: 'Date', query: 'min_date', hoverContent: this.pageData.hoverInfo.sortByDate}
 
-      if (this.discrete || this.discreteArea) {
+      if (this.predicted || this.predictedArea) {
         return [name, date]
       } else if (this.reportArea) {
         return [avg, date]
@@ -432,14 +432,14 @@ export default {
     labels() {
       // Generate labels for bar and line graph
       if (this.has_data) {
-        // When discrete (Predicted Report) and have more than 1 info block
-        if (this.discrete && this.rows.length > 1 ) {
+        // When predicted (Predicted Report) and have more than 1 info block
+        if (this.predicted && this.rows.length > 1 ) {
           return this.rows.map(reportItem => reportItem.name)
         // When have more than 1 info block and isn't report area
         } else if (this.showTrend && !this.reportArea){
           return this.rows.map(reportItem => `${moment(reportItem.min_date).format('YYYY-MM')}`)
-        // When is discrete area (Predicted Area Report) or just have 1 info block
-        } else if (this.discreteArea || this.rows.length === 1) {
+        // When is predicted area (Predicted Area Report) or just have 1 info block
+        } else if (this.predictedArea || this.rows.length === 1) {
           return this.selectedPredictedLayerRow.legend.map(entry => entry.name)
         } else {
           return this.rows.map(reportItem => `${reportItem.name} ${reportItem.min_date ? `| ${moment(reportItem.min_date).format('MMMM YYYY')}` : ''}`)
@@ -461,7 +461,7 @@ export default {
     datasets() {
       // Generate data for bar and line graph
       if (this.has_data) {
-        if (this.discrete && this.rows.length > 1 ) {
+        if (this.predicted && this.rows.length > 1 ) {
           this.setHorizontalBarByClass(this.rows.length)
           // Create data for horizontal chart bar by area
           return this.selectedPredictedLayerRow.legend.map((entry) => {
@@ -486,7 +486,7 @@ export default {
               spanGaps: true,
             }
           ]
-        } else if (this.discreteArea || this.rows.length === 1) {
+        } else if (this.predictedArea || this.rows.length === 1) {
           this.setHorizontalBarByClass(this.rows.length)
           // Create data for horizontal chart bar by class
           return this.selectedPredictedLayerRow.legend.map((entry, idx, arr) => {
@@ -540,10 +540,10 @@ export default {
     pageSize(){
       return parseInt(this.radio)
     },
-    discrete(){
+    predicted(){
       return this.$route.name == routeTypes.REPORT_PREDICTED
     },
-    discreteArea(){
+    predictedArea(){
       return this.$route.name == routeTypes.REPORT_PREDICTED_AREA
     },
     report(){
@@ -552,8 +552,8 @@ export default {
     reportArea(){
       return this.$route.name == routeTypes.REPORT_AREA
     },
-    // Define name in header when discrete (predicted) area
-    defineDiscreteAreaName(){
+    // Define name in header when predicted area
+    definePredictedAreaName(){
       return this.formulaReport.length > 0 ? `| ${this.formulaReport[0].name}` : '';
     },
   },
@@ -601,7 +601,7 @@ export default {
       aggregationArea: this.$route.params.area,
       minPercentageCovered: this.maxCloudCoverPercentage < 100 ? (100 - this.maxCloudCoverPercentage) / 100 : ''
     }
-    if(this.discrete || this.discreteArea) {
+    if(this.predicted || this.predictedArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
     } else {
       query.formula = this.selectedFormula ? {id: this.selectedFormula.id} : {id: this.$route.params.formula}
@@ -611,7 +611,7 @@ export default {
     this.currentSort = this.reportArea ? 'Date' : 'Name'
 
     // Get available formulas list to create dropdown to search by formula
-    if(!this.discrete && !this.discreteArea) {
+    if(!this.predicted && !this.predictedArea) {
       this.getFormulasAction({page: 1, layer:null})
       .then(() => {
         this.selectLoading = false
@@ -641,7 +641,7 @@ export default {
     }
 
     // Get the layer data.
-    if(this.discrete || this.discreteArea) {
+    if(this.predicted || this.predictedArea) {
       if (!this.selectedPredictedLayer){
         this.getPredictedLayersIDAction(this.$route.params.predictedLayer)
         .then(() => {
@@ -686,7 +686,7 @@ export default {
         const query = {
           layer: {id: this.selectedLayer.id},
           aggregationArea: this.$route.params.area,
-          formula: !this.discrete && !this.discreteArea ? this.selectedFormulaValue : '',
+          formula: !this.predicted && !this.predictedArea ? this.selectedFormulaValue : '',
           moment: '',
           predictedLayer: this.selectedPredictedLayer ? {id: this.selectedPredictedLayer.id} : '',
           ordering: this.sortBy,
@@ -724,9 +724,9 @@ export default {
     ),
     // This allows to decide which page we request in a wacth event change
     definePageForQuery(){
-      // This validates if we're out from discrete and discrete area report and if the selected formula is the same as the new selected formula
+      // This validates if we're out from predicted and predicted area report and if the selected formula is the same as the new selected formula
       // If is a new one, we request from the first page, otherwise the next page selected
-      return this.currentPage = !this.discrete && !this.discreteArea && (this.selectedFormula.id === this.selectedFormulaValue.id) ? this.currentPage : 1
+      return this.currentPage = !this.predicted && !this.predictedArea && (this.selectedFormula.id === this.selectedFormulaValue.id) ? this.currentPage : 1
     },
     // Update selected formula (ex: NDVI, SLIM, etc) when changed in dropdown select. This allow map legend update in mini-maps
     defineSelectedFormula() {
