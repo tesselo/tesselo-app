@@ -682,7 +682,7 @@ export default {
     query: _.debounce(
       function () {
         this.loading = true
-        const tat = this
+        const that = this
         const query = {
           layer: {id: this.selectedLayer.id},
           aggregationArea: this.$route.params.area,
@@ -700,11 +700,11 @@ export default {
         // Call to update report data
         this.getFormulaReport(query)
         .then(() => {
-          tat.defineSelectedFormula()
-          tat.loading = false
+          that.defineSelectedFormula()
+          that.loading = false
         })
         .catch(() => {
-          tat.loading = false
+          that.loading = false
         })
 
         // Call to update report area graph with time series by year of the area

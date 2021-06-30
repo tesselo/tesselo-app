@@ -209,17 +209,17 @@ export default {
         this.$refs.map.mapObject.fitBounds(L.geoJson(this.geojson).getBounds().pad(0.1))
       }
       // Hook map draw edit events into api.
-      const tat = this
+      const that = this
       this.$refs.map.mapObject.on(L.Draw.Event.EDITED, (e) => {
         e.layers.eachLayer(function (layer) {
-          tat.geomUpdate(layer._latlngs)
+          that.geomUpdate(layer._latlngs)
         })
       })
       this.$refs.map.mapObject.on(L.Draw.Event.CREATED, (e) => {
-        tat.geomUpdate(e.layer._latlngs)
+        that.geomUpdate(e.layer._latlngs)
       })
       this.$refs.map.mapObject.on(L.Draw.Event.DELETED, () => {
-        tat.form.geom = ''
+        that.form.geom = ''
       })
     },
     geomLayerReady(){

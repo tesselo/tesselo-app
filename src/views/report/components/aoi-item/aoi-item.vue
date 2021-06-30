@@ -217,11 +217,11 @@ export default {
       return Boolean(this.agg.predictedlayer)
     },
     statisticsTableData() {
-      const tat = this
+      const that = this
       return this.predictedLayer.legend.map((entry) => {
         // Get value for this legend entry.
-        const aggEntry = entry['expression'] in tat.agg.value ? tat.agg.value[entry['expression']] : 0
-        const aggEntryPercentage = entry['expression'] in tat.agg.value_percentage ? tat.agg.value_percentage[entry['expression']] : 0
+        const aggEntry = entry['expression'] in that.agg.value ? that.agg.value[entry['expression']] : 0
+        const aggEntryPercentage = entry['expression'] in that.agg.value_percentage ? that.agg.value_percentage[entry['expression']] : 0
         // Create row data.
         return {
           'color': entry['color'],
@@ -240,13 +240,13 @@ export default {
       });
     },
     mostCommonDiscrete(){
-      const tat = this
+      const that = this
       let result
       this.predictedLayer.legend.forEach(dat => {
         const candidate = {
           category: dat['name'],
-          area: dat['expression'] in tat.agg.value ? tat.agg.value[dat['expression']] : 0,
-          percentage: dat['expression'] in tat.agg.value_percentage ? parseInt(parseFloat(tat.agg.value_percentage[dat['expression']]) * 100) : 0,
+          area: dat['expression'] in that.agg.value ? that.agg.value[dat['expression']] : 0,
+          percentage: dat['expression'] in that.agg.value_percentage ? parseInt(parseFloat(that.agg.value_percentage[dat['expression']]) * 100) : 0,
         }
         if (!result || candidate.area > result.area) {
           result = candidate
@@ -271,20 +271,20 @@ export default {
   },
   methods: {
     getCanvas(){
-      const tat = this
+      const that = this
       html2canvas(document.querySelector('.aoi-item-legend')).then(legendCanvas => {
         leafletImage(this.$refs.map.mapObject, function(err, canvas) {
-          tat.canvasData = {
+          that.canvasData = {
             map: canvas,
             legend: legendCanvas,
-            name: tat.agg.name,
-            date: tat.date,
-            avg: tat.agg.avg.toFixed(2),
-            std: tat.agg.std.toFixed(2),
-            min: tat.agg.min.toFixed(2),
-            max: tat.agg.max.toFixed(2),
+            name: that.agg.name,
+            date: that.date,
+            avg: that.agg.avg.toFixed(2),
+            std: that.agg.std.toFixed(2),
+            min: that.agg.min.toFixed(2),
+            max: that.agg.max.toFixed(2),
           }
-          tat.$emit('printed')
+          that.$emit('printed')
         })
       })
     },
