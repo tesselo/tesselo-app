@@ -1,6 +1,6 @@
 <template>
-  <transition 
-    name="fade" 
+  <transition
+    name="fade"
     appear>
     <div class="map-export-wrapper">
       <template>
@@ -12,6 +12,8 @@
         </div>
         <el-table
           :data="data"
+          :show-header="data.length >= 1"
+          :empty-text="tableEmptyText"
           size="mini">
           <el-table-column
             prop="id"
@@ -25,24 +27,42 @@
             label="Time" />
         </el-table>
       </template>
-      <el-button
-        :disabled="processing"
-        icon="el-icon-delete"
-        title="Clear page list"
-        class="export-button"
-        @click="clear" />
-      <el-button
-        :loading="processing"
-        class="export-button export-print"
-        title="Add current view as Page"
-        icon="el-icon-plus"
-        @click="addPage" />
-      <el-button
-        :disabled="processing"
-        icon="el-icon-download"
-        class="export-button export-print"
-        title="Download PDF"
-        @click="print" />
+      <el-tooltip
+        :content="hoverInfo.deleteButton"
+        :visible-arrow="true"
+        :open-delay="openDelay"
+        effect="dark"
+        placement="bottom">
+        <el-button
+          :disabled="processing || data.length == 0"
+          icon="el-icon-delete"
+          class="export-button"
+          @click="clear" />
+      </el-tooltip>
+      <el-tooltip
+        :content="hoverInfo.plusButton"
+        :visible-arrow="true"
+        :open-delay="openDelay"
+        effect="dark"
+        placement="bottom">
+        <el-button
+          :loading="processing"
+          class="export-button export-print"
+          icon="el-icon-plus"
+          @click="addPage" />
+      </el-tooltip>
+      <el-tooltip
+        :content="hoverInfo.donwloadButton"
+        :visible-arrow="true"
+        :open-delay="openDelay"
+        effect="dark"
+        placement="bottom">
+        <el-button
+          :disabled="processing || data.length == 0"
+          icon="el-icon-download"
+          class="export-button export-print"
+          @click="print" />
+      </el-tooltip>
     </div>
   </transition>
 </template>
@@ -59,6 +79,17 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      hoverInfo: {
+        deleteButton: "Clear page list",
+        plusButton: "Add current view as Page",
+        donwloadButton: "Download PDF",
+      },
+      tableEmptyText: "Click on + button to add data!",
+      openDelay: 750,
+    }
+  },
   methods: {
     print(){
       if(!this.processing) this.$emit('print-pdf')
@@ -70,7 +101,7 @@ export default {
       if(!this.processing) this.$emit('add-page')
     },
     close(){
-      this.$emit('close') 
+      this.$emit('close')
     }
   }
 }
@@ -117,16 +148,15 @@ export default {
       }
       &.export-close {
         float: right;
-        margin-top: 0px; 
+        margin-top: 0px;
       }
-      &:hover{
-        background-color: #F1F1F1;
-        border-color: #F1F1F1;
-        color: #5683a2;
+      &[disabled] {
+        background-color: #F4F4F4;
+        opacity: 0.4;
       }
     }
   }
-  
+
   .fade-enter, .fade-leave-active {
     opacity: 0;
   }
