@@ -439,11 +439,11 @@ export default {
         iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
       // Bind slider change route update function.
-      const tat = this
+      const that = this
       const funk = this.mapSetLOpacity
       this.algebraSlider.on('input change', function(e) {
         funk(parseFloat(e.value))
-        tat.$router.replace({query: {...tat.$route.query, lOpacity: e.value}})
+        that.$router.replace({query: {...that.$route.query, lOpacity: e.value}})
       })
 
       this.$refs.map.mapObject.addControl(this.algebraSlider)
@@ -463,11 +463,11 @@ export default {
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-predicted'
       })
-      const tat = this
+      const that = this
       const funk = this.mapSetPOpacity
       this.predictedSlider.on('input change', function(e) {
         funk(parseFloat(e.value))
-        tat.$router.replace({query: {...tat.$route.query, pOpacity: e.value}})
+        that.$router.replace({query: {...that.$route.query, pOpacity: e.value}})
       });
 
       this.$refs.map.mapObject.addControl(this.predictedSlider)
@@ -719,44 +719,44 @@ export default {
       // Push another data container.
       this.exportData.push({})
 
-      var tat = this
+      var that = this
 
       // Fetch leaflet canvas.
       leafletImage(this.$refs.map.mapObject, function(err, canvas) {
         // Get image text and image data.
-        tat.exportData[id].map_canvas = canvas
-        tat.exportData[id].moment_name = tat.selectedMoment.name
+        that.exportData[id].map_canvas = canvas
+        that.exportData[id].moment_name = that.selectedMoment.name
 
         // Callback for export.
-        tat.dataCallback(id)
+        that.dataCallback(id)
       })
 
       // Capture formula legend, on touch the legends are not shown so skip this.
       if (this.selectedFormula && this.selectedFormula.formula != 'RGB' && !this.isTouch) {
         html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
-          tat.exportData[id].formula_legend = legend_canvas
-          tat.exportData[id].layer_name = this.selectedFormula.acronym
+          that.exportData[id].formula_legend = legend_canvas
+          that.exportData[id].layer_name = this.selectedFormula.acronym
           // Callback for export.
-          tat.dataCallback(id)
+          that.dataCallback(id)
         });
       } else {
         this.exportData[id].formula_legend = null
         // Callback for export.
-        tat.dataCallback(id)
+        that.dataCallback(id)
       }
 
       // Capture predicted layer legend, on touch the legends are not shown so skip this.
       if (this.selectedPredictedLayer && !this.isTouch) {
         html2canvas(document.querySelector(".predicted-legend")).then(legend_canvas => {
-          tat.exportData[id].predicted_legend = legend_canvas
-          tat.exportData[id].layer_name = this.selectedPredictedLayer.classifierName
+          that.exportData[id].predicted_legend = legend_canvas
+          that.exportData[id].layer_name = this.selectedPredictedLayer.classifierName
           // Callback for export.
-          tat.dataCallback(id)
+          that.dataCallback(id)
         });
       } else {
         this.exportData[id].predicted_legend = null
         // Callback for export.
-        tat.dataCallback(id)
+        that.dataCallback(id)
       }
     }
   }
