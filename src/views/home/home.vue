@@ -213,7 +213,6 @@ export default {
       aggregationLayer: state => state.aggregationLayer,
       formulaRows: state => state.formula,
       predictedLayer: state => state.predictedLayer,
-      predictedLayerRows: state => state.predictedLayer,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
