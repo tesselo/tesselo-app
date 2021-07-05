@@ -80,24 +80,31 @@
           :sm="4"
           :lg="5"
           :xl="3">
-          <el-select
-            v-model="layerFilterValue"
-            :loading="selectLoading"
-            size="mini">
-            <el-tooltip
-              v-for="item in selectformulaRows"
-              :key="item.id"
-              :visible-arrow="false"
-              :content="item.name"
-              :open-delay="pageData.openDelay"
-              effect="dark"
-              placement="right">
-              <el-option
-                :value="item.id"
-                :label="item.acronym"
-                class="created" />
-            </el-tooltip>
-          </el-select>
+          <el-tooltip
+            :content="pageData.hoverInfo.selectFormula"
+            :visible-arrow="true"
+            :open-delay="pageData.openDelay"
+            effect="dark"
+            placement="bottom">
+            <el-select
+              v-model="layerFilterValue"
+              :loading="selectLoading"
+              size="mini">
+              <el-tooltip
+                v-for="item in selectformulaRows"
+                :key="item.id"
+                :visible-arrow="false"
+                :content="item.name"
+                :open-delay="pageData.openDelay"
+                effect="dark"
+                placement="right">
+                <el-option
+                  :value="item.id"
+                  :label="item.acronym"
+                  class="created" />
+              </el-tooltip>
+            </el-select>
+          </el-tooltip>
         </el-col>
         <el-col
           v-if="predicted"
@@ -242,8 +249,7 @@
           :by-class="horizontalBarByclass"/>
       </el-row>
       <el-row
-        v-loading="loading"
-        v-if="has_data"
+        v-if="has_data && !loading"
         class="aoi-item-list">
         <aoi-item
           v-for="entry in rows"
@@ -354,6 +360,7 @@ export default {
           sortByAverage: 'Sort by Average',
           sortByDate: 'Sort by Date',
           closeReport: 'Close Report',
+          selectFormula: 'Select Formula',
         },
         openDelay: 750,
       },
