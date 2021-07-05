@@ -53,8 +53,8 @@
       class="aoi-item-map">
       <l-map
         ref="map"
-        :min-zoom="13"
-        :max-zoom="18"
+        :min-zoom="minZoomByTile"
+        :max-zoom="maxZoomByTile"
         :options="mapOptions">
         <l-tile-layer
           url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
@@ -175,6 +175,10 @@ export default {
       opacitySlider: null,
       layersZindex: 10,
       rgbLayerZindex: 9,
+      minZoomByTile: 10,
+      maxZoomByTile: 18,
+      extraZoomIn: 2,
+      extraZoomOut: 4,
     }
   },
   computed: {
@@ -267,6 +271,7 @@ export default {
     if(this.$refs.map){
       this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
       this.$refs.map.mapObject.setMaxBounds(this.bounds.pad(0.025))
+      this.defineZoomForMiniMaps()
     }
   },
   methods: {
@@ -321,6 +326,17 @@ export default {
 
       this.$refs.map.mapObject.addControl(this.opacitySlider)
     },
+    // Setting zoom in and zoom out from default zoom
+    defineZoomForMiniMaps() {
+      const areaZoom = this.$refs.map.mapObject.getZoom()
+
+      const minZoom = areaZoom - this.extraZoomOut
+      const maxZoom = areaZoom + this.extraZoomIn
+
+      // Validation of the maximum and minimum possible zoom values
+      this.minZoomByTile = minZoom <= 0 ? 0 : minZoom
+      this.maxZoomByTile = maxZoom >= 18 ? 18 : maxZoom
+    }
   }
 }
 </script>
