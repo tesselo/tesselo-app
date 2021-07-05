@@ -976,4 +976,25 @@ export default {
 .el-col.el-col-24 {
   padding-bottom: 10px;
 }
+.report-close {
+  font-size: 30px;
+  color: rgba(0,0,0,0.2);
+  float: right;
+  margin-top: -35px;
+  border: 0px solid;
+
+  &:hover{
+    background-color: #ffffff;
+    border-color: #ffffff;
+  }
+
+  &:focus{
+    background-color: #ffffff;
+    border-color: #ffffff;
+  }
+
+  .el-icon-close{
+    font-weight: 700;
+  }
+}
 </style>
