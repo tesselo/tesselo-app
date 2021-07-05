@@ -253,7 +253,6 @@
           :formula="selectedFormula"
           :trend="showTrend"
           :predicted-layer="selectedPredictedLayer"
-          :report="report"
           @printed="printCallback" />
       </el-row>
       <div

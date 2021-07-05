@@ -62,7 +62,7 @@
           :tile-layer-class="tileLayerClass"
           :z-index="layersZindex"
           :url="url"
-          :opacity="lOpacity"
+          :opacity="layerOpacity"
           :visible="true"
           @add="setOpacitySlider"/>
         <l-tile-layer
@@ -155,11 +155,6 @@ export default {
       required: false,
       default: null
     },
-    report: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
   },
   data() {
     return {
@@ -172,7 +167,7 @@ export default {
       canvasData: null,
       buttonName: 'Area Report',
       openDelay: 750,
-      lOpacity: 1,
+      layerOpacity: 1,
       opacitySlider: null,
       layersZindex: 10,
       rgbLayerZindex: 9,
@@ -183,6 +178,12 @@ export default {
     }
   },
   computed: {
+    report(){
+      return this.$route.name == routeTypes.REPORT
+    },
+    reportArea(){
+      return this.$route.name == routeTypes.REPORT_AREA
+    },
     latlngs() {
       return this.agg.geom.coordinates[0][0].map(coord => [coord[1], coord[0]])
     },
