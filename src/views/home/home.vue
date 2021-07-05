@@ -315,17 +315,6 @@ export default {
     if(to.query.predictedlayer && to.query.predictedlayer != from.query.predictedlayer && (!this.selectedPredictedLayer || this.selectedPredictedLayer.id != to.query.predictedlayer)){
       this.getPredictedLayers({page: null, layer: to.query.predictedlayer})
     }
-    if(!to.query.predictedlayer) {
-      // Deactivate predicted layer if necessary.
-      this.selectPredictedLayer(null)
-      this.mainMenu = this.mainMenu.map((item) => {
-        if(item.key == 'predicted') {
-          item.selected = false
-          item.title = 'Predicted'
-        }
-        return item
-      })
-    }
     // Selector Time dimension
     if(to.query.currentTimeType && to.query.currentTimeType != from.query.currentTimeType){
       this.setCurrentTimeType(to.query.currentTimeType)
@@ -494,6 +483,14 @@ export default {
       this.closeAllPanels()
       if (!keepPred) {
         this.resetPredictedLayer()
+
+        this.mainMenu = this.mainMenu.map((item) => {
+          if(item.key == 'predicted') {
+            item.selected = false
+            item.title = 'Predicted'
+          }
+          return item
+        })
       }
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'areas') {
