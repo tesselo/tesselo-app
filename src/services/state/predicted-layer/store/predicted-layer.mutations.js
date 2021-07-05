@@ -28,11 +28,12 @@ export default {
   [mutationTypes.PREDICTED_LAYER_SELECT_LAYER] (state, layer) {
     state.selectedLayer = layer
   },
-  [mutationTypes.PREDICTED_LAYER_RESET] (state) {
+  [mutationTypes.PREDICTED_LAYER_SET_RESET] (state) {
     state.total = 0
     state.previous = null
     state.next = null
     state.rows = []
+    state.row = null
     state.currentPage = 1
     state.selectedLayer = null
   }
