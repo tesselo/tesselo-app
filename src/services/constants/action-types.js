@@ -87,6 +87,7 @@ export const FORMULA_REPORT_SELECT = 'selectFormulaReport'
 export const PREDICTED_LAYER_GET = 'getPredictedLayers'
 export const PREDICTED_LAYER_GET_ID = 'getPredictedLayerID'
 export const PREDICTED_LAYER_SELECT = 'selectPredictedLayer'
+export const PREDICTED_LAYER_RESET = 'resetPredictedLayer'
 
 /* -------------------------------------
  * Bookmark Folder

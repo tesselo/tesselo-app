@@ -49,7 +49,7 @@ export default {
   [actionTypes.PREDICTED_LAYER_SELECT] (context, layer) {
     context.commit(mutationTypes.PREDICTED_LAYER_SELECT_LAYER, layer)
   },
-  [actionTypes.RESET] (context) {
-    context.commit(mutationTypes.PREDICTED_LAYER_RESET)
+  [actionTypes.PREDICTED_LAYER_RESET] (context) {
+    context.commit(mutationTypes.PREDICTED_LAYER_SET_RESET)
   }
 }

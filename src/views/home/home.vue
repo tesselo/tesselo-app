@@ -359,7 +359,7 @@ export default {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
       getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
       selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
-      resetPredictedLayer: actionTypes.RESET
+      resetPredictedLayer: actionTypes.PREDICTED_LAYER_RESET
     }),
     ...mapActions('report', {
       saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
@@ -520,6 +520,10 @@ export default {
     },
     predictedLayersTableSelect(layer) {
       this.closeAllPanels()
+
+      if (!layer) {
+        this.resetPredictedLayer()
+      }
 
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'predicted') {
