@@ -263,6 +263,17 @@
         <h2 v-else>No Data</h2>
       </div>
     </el-col>
+    <el-tooltip
+      :content="pageData.hoverInfo.closeReport"
+      :visible-arrow="true"
+      :open-delay="pageData.openDelay"
+      effect="dark"
+      placement="bottom">
+      <el-button
+        icon="el-icon-close"
+        class="report-close"
+        @click="closeReport"/>
+    </el-tooltip>
   </el-row>
 </template>
 
@@ -343,6 +354,7 @@ export default {
           sortByName: 'Sort by Name',
           sortByAverage: 'Sort by Average',
           sortByDate: 'Sort by Date',
+          closeReport: 'Close Report',
         },
         openDelay: 750,
       },
@@ -722,6 +734,11 @@ export default {
       },
       800
     ),
+    closeReport() {
+      this.$router.push({
+          name: routeTypes.HOME,
+        })
+    },
     // This allows to decide which page we request in a wacth event change
     definePageForQuery(){
       // This validates if we're out from predicted and predicted area report and if the selected formula is the same as the new selected formula
