@@ -751,7 +751,7 @@ export default {
         return item.id == this.layerFilterValue
       })[0]
 
-      this.selectFormula(formulaInfo)
+      this.selectFormula(formulaInfo || this.selectedFormula)
     },
     // Create time series data by year for chart when in report area
     createReportAreaReport() {
