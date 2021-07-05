@@ -66,6 +66,7 @@
           :visible="true"
           @add="setOpacitySlider"/>
         <l-tile-layer
+          v-if="report || reportArea"
           :tile-layer-class="tileLayerClass"
           :z-index="rgbLayerZindex"
           :url="rgbLayerUrl" />
@@ -304,27 +305,30 @@ export default {
         })
     },
     setOpacitySlider() {
-      if (this.opacitySlider !== null) {
-        this.$refs.map.mapObject.removeControl(this.opacitySlider)
-      }
-      // Instantiate opacity control.
-      this.opacitySlider = L.control.range({
-        position: 'topright',
-        min: 0,
-        max: 1,
-        value: this.lOpacity,
-        step: 0.1,
-        orient: 'vertical',
-        iconClass: 'leaflet-range-icon'
-      })
-      // Bind slider change route update function.
-      const tat = this
-      this.opacitySlider.on('input change', function(e) {
-        // Update actual opacity value
-        tat.lOpacity = parseFloat(e.value)
-      })
+      // Opacity will be defined only for report and report area mini-maps
+      if(this.report || this.reportArea) {
+        if (this.opacitySlider !== null) {
+          this.$refs.map.mapObject.removeControl(this.opacitySlider)
+        }
+        // Instantiate opacity control.
+        this.opacitySlider = L.control.range({
+          position: 'topright',
+          min: 0,
+          max: 1,
+          value: this.layerOpacity,
+          step: 0.1,
+          orient: 'vertical',
+          iconClass: 'leaflet-range-icon'
+        })
+        // Bind slider change route update function.
+        const that = this
+        this.opacitySlider.on('input change', function(e) {
+          // Update actual opacity value
+          that.layerOpacity = parseFloat(e.value)
+        })
 
-      this.$refs.map.mapObject.addControl(this.opacitySlider)
+        this.$refs.map.mapObject.addControl(this.opacitySlider)
+      }
     },
     // Setting zoom in and zoom out from default zoom
     defineZoomForMiniMaps() {
