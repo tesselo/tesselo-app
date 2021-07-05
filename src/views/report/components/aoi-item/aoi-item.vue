@@ -385,14 +385,13 @@ h3 {
   margin-top: 25px;
 }
 /deep/ .leaflet-range-control {
-  border: 2px solid rgba(0,0,0,0.2);
-  margin-right: 3px;
-  position: initial;
+  position: static;
 
   &.vertical{
     width: 28px;
     height: 139px;
     padding-top: 3px;
+    margin-right: 3px;
   }
 
   input[type=range][orient=vertical] {
