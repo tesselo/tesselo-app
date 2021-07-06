@@ -20,7 +20,7 @@
       :xs="24"
       :sm="6"
       class="average-table">
-      <div v-if="discrete">
+      <div v-if="predicted">
         <h4>Main class</h4>
         <h3>{{ mostCommonDiscrete.category }}</h3>
         <h4>{{ mostCommonDiscrete.percentage }}% | {{ mostCommonDiscrete.area.toFixed(2) }} ha</h4>
@@ -53,8 +53,8 @@
       class="aoi-item-map">
       <l-map
         ref="map"
-        :min-zoom="13"
-        :max-zoom="18"
+        :min-zoom="minZoomByTile"
+        :max-zoom="maxZoomByTile"
         :options="mapOptions">
         <l-tile-layer
           url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" />
@@ -62,10 +62,11 @@
           :tile-layer-class="tileLayerClass"
           :z-index="layersZindex"
           :url="url"
-          :opacity="lOpacity"
+          :opacity="layerOpacity"
           :visible="true"
           @add="setOpacitySlider"/>
         <l-tile-layer
+          v-if="report || reportArea"
           :tile-layer-class="tileLayerClass"
           :z-index="rgbLayerZindex"
           :url="rgbLayerUrl" />
@@ -74,7 +75,7 @@
           :fill="false" />
       </l-map>
       <map-legend
-        v-if="!discrete"
+        v-if="!predicted"
         :data="selectedFormulaLegend"
         :min="formula.minVal"
         :max="formula.maxVal"
@@ -84,7 +85,7 @@
       :span="24">
       <el-collapse>
         <el-collapse-item
-          v-if="discrete"
+          v-if="predicted"
           title="Statistics">
           <statistics-table
             :data="statisticsTableData"
@@ -154,11 +155,6 @@ export default {
       required: false,
       default: null
     },
-    report: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
   },
   data() {
     return {
@@ -171,13 +167,23 @@ export default {
       canvasData: null,
       buttonName: 'Area Report',
       openDelay: 750,
-      lOpacity: 1,
+      layerOpacity: 1,
       opacitySlider: null,
       layersZindex: 10,
       rgbLayerZindex: 9,
+      minZoomByTile: 10,
+      maxZoomByTile: 18,
+      extraZoomIn: 2,
+      extraZoomOut: 4,
     }
   },
   computed: {
+    report(){
+      return this.$route.name == routeTypes.REPORT
+    },
+    reportArea(){
+      return this.$route.name == routeTypes.REPORT_AREA
+    },
     latlngs() {
       return this.agg.geom.coordinates[0][0].map(coord => [coord[1], coord[0]])
     },
@@ -185,7 +191,7 @@ export default {
       return L.geoJson(this.agg.geom).getBounds()
     },
     url(){
-      if(this.discrete) {
+      if(this.predicted) {
         return `${process.env.API_URL}predictedlayer/${this.predictedLayer.id}/{z}/{x}/{y}.png`
       } else {
         return `${process.env.API_URL}formula/${this.agg.formula}/composite/${this.agg.composite}/{z}/{x}/{y}.png`
@@ -213,15 +219,15 @@ export default {
         return []
       }
     },
-    discrete() {
+    predicted() {
       return Boolean(this.agg.predictedlayer)
     },
     statisticsTableData() {
-      const tat = this
+      const that = this
       return this.predictedLayer.legend.map((entry) => {
         // Get value for this legend entry.
-        const aggEntry = entry['expression'] in tat.agg.value ? tat.agg.value[entry['expression']] : 0
-        const aggEntryPercentage = entry['expression'] in tat.agg.value_percentage ? tat.agg.value_percentage[entry['expression']] : 0
+        const aggEntry = entry['expression'] in that.agg.value ? that.agg.value[entry['expression']] : 0
+        const aggEntryPercentage = entry['expression'] in that.agg.value_percentage ? that.agg.value_percentage[entry['expression']] : 0
         // Create row data.
         return {
           'color': entry['color'],
@@ -240,13 +246,13 @@ export default {
       });
     },
     mostCommonDiscrete(){
-      const tat = this
+      const that = this
       let result
       this.predictedLayer.legend.forEach(dat => {
         const candidate = {
           category: dat['name'],
-          area: dat['expression'] in tat.agg.value ? tat.agg.value[dat['expression']] : 0,
-          percentage: dat['expression'] in tat.agg.value_percentage ? parseInt(parseFloat(tat.agg.value_percentage[dat['expression']]) * 100) : 0,
+          area: dat['expression'] in that.agg.value ? that.agg.value[dat['expression']] : 0,
+          percentage: dat['expression'] in that.agg.value_percentage ? parseInt(parseFloat(that.agg.value_percentage[dat['expression']]) * 100) : 0,
         }
         if (!result || candidate.area > result.area) {
           result = candidate
@@ -267,24 +273,25 @@ export default {
     if(this.$refs.map){
       this.$refs.map.mapObject.fitBounds(this.bounds.pad(0.025))
       this.$refs.map.mapObject.setMaxBounds(this.bounds.pad(0.025))
+      this.defineZoomForMiniMaps()
     }
   },
   methods: {
     getCanvas(){
-      const tat = this
+      const that = this
       html2canvas(document.querySelector('.aoi-item-legend')).then(legendCanvas => {
         leafletImage(this.$refs.map.mapObject, function(err, canvas) {
-          tat.canvasData = {
+          that.canvasData = {
             map: canvas,
             legend: legendCanvas,
-            name: tat.agg.name,
-            date: tat.date,
-            avg: tat.agg.avg.toFixed(2),
-            std: tat.agg.std.toFixed(2),
-            min: tat.agg.min.toFixed(2),
-            max: tat.agg.max.toFixed(2),
+            name: that.agg.name,
+            date: that.date,
+            avg: that.agg.avg.toFixed(2),
+            std: that.agg.std.toFixed(2),
+            min: that.agg.min.toFixed(2),
+            max: that.agg.max.toFixed(2),
           }
-          tat.$emit('printed')
+          that.$emit('printed')
         })
       })
     },
@@ -299,28 +306,42 @@ export default {
         })
     },
     setOpacitySlider() {
-      if (this.opacitySlider !== null) {
-        this.$refs.map.mapObject.removeControl(this.opacitySlider)
-      }
-      // Instantiate opacity control.
-      this.opacitySlider = L.control.range({
-        position: 'topright',
-        min: 0,
-        max: 1,
-        value: this.lOpacity,
-        step: 0.1,
-        orient: 'vertical',
-        iconClass: 'leaflet-range-icon'
-      })
-      // Bind slider change route update function.
-      const tat = this
-      this.opacitySlider.on('input change', function(e) {
-        // Update actual opacity value
-        tat.lOpacity = parseFloat(e.value)
-      })
+      // Opacity will be defined only for report and report area mini-maps
+      if(this.report || this.reportArea) {
+        if (this.opacitySlider !== null) {
+          this.$refs.map.mapObject.removeControl(this.opacitySlider)
+        }
+        // Instantiate opacity control.
+        this.opacitySlider = L.control.range({
+          position: 'topright',
+          min: 0,
+          max: 1,
+          value: this.layerOpacity,
+          step: 0.1,
+          orient: 'vertical',
+          iconClass: 'leaflet-range-icon'
+        })
+        // Bind slider change route update function.
+        const that = this
+        this.opacitySlider.on('input change', function(e) {
+          // Update actual opacity value
+          that.layerOpacity = parseFloat(e.value)
+        })
 
-      this.$refs.map.mapObject.addControl(this.opacitySlider)
+        this.$refs.map.mapObject.addControl(this.opacitySlider)
+      }
     },
+    // Setting zoom in and zoom out from default zoom
+    defineZoomForMiniMaps() {
+      const areaZoom = this.$refs.map.mapObject.getZoom()
+
+      const minZoom = areaZoom - this.extraZoomOut
+      const maxZoom = areaZoom + this.extraZoomIn
+
+      // Validation of the maximum and minimum possible zoom values
+      this.minZoomByTile = minZoom <= 0 ? 0 : minZoom
+      this.maxZoomByTile = maxZoom >= 18 ? 18 : maxZoom
+    }
   }
 }
 </script>
@@ -369,14 +390,13 @@ h3 {
   margin-top: 25px;
 }
 /deep/ .leaflet-range-control {
-  border: 2px solid rgba(0,0,0,0.2);
-  margin-right: 3px;
-  position: initial;
+  position: static;
 
   &.vertical{
     width: 28px;
     height: 139px;
     padding-top: 3px;
+    margin-right: 3px;
   }
 
   input[type=range][orient=vertical] {

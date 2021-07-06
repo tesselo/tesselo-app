@@ -41,7 +41,7 @@ export default {
         maintainAspectRatio: false,
         legend: false,
       }
-      // Remove tooltips and hover if discrete area.
+      // Remove tooltips and hover if predicted area.
       if (this.byClass) {
         opt.tooltips = {
           enabled: false,

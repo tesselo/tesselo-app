@@ -268,11 +268,11 @@ export default {
         })
       } else {
         // New aggregationlayer.
-        const tat = this
+        const that = this
         this.saveAggregationLayer({...this.form})
         .then(function(){
-          if (tat.selectedFile && tat.form.shapefile) {
-            tat.updateWithFile()
+          if (that.selectedFile && that.form.shapefile) {
+            that.updateWithFile()
           } else {
             // Reload layer list (to update geom count).
             this.getAggregationLayerAction({page: this.layerPage})
@@ -285,7 +285,7 @@ export default {
       }
     },
     updateWithFile(){
-      const tat = this
+      const that = this
       this.getUploadLink({
         pk: this.selectedLayer.id,
         filename: this.selectedFile.name,
@@ -306,11 +306,11 @@ export default {
           data: postData,
         }).then(function(){
           // Commit non-file fields.
-          tat.editAggregationLayer({...tat.form, id: tat.selectedLayer.id, shapefile: response.fields.key}).then(function(){
+          that.editAggregationLayer({...that.form, id: that.selectedLayer.id, shapefile: response.fields.key}).then(function(){
             // Update form data with full S3 key.
-            tat.form.shapefile = response.fields.key
+            that.form.shapefile = response.fields.key
             // Trigger parse task.
-            tat.parseAggregationLayer({pk: tat.selectedLayer.id})
+            that.parseAggregationLayer({pk: that.selectedLayer.id})
             .then(() => {
               this.loading = false
               // Reload layer list (to update geom count).
@@ -321,8 +321,8 @@ export default {
               this.formErrors = errors
             })
             // Go to detail page if this is a new layer.
-            if (tat.create){
-              tat.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: tat.selectedLayer.id}})
+            if (that.create){
+              that.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: that.selectedLayer.id}})
             }
           })
         })

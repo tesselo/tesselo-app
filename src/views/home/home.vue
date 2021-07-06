@@ -213,7 +213,6 @@ export default {
       aggregationLayer: state => state.aggregationLayer,
       formulaRows: state => state.formula,
       predictedLayer: state => state.predictedLayer,
-      predictedLayerRows: state => state.predictedLayer,
       selectedLayer: state => state.aggregationLayer.selectedLayer,
       selectedFormula: state => state.formula.selectedFormula,
       selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
@@ -316,17 +315,6 @@ export default {
     if(to.query.predictedlayer && to.query.predictedlayer != from.query.predictedlayer && (!this.selectedPredictedLayer || this.selectedPredictedLayer.id != to.query.predictedlayer)){
       this.getPredictedLayers({page: null, layer: to.query.predictedlayer})
     }
-    if(!to.query.predictedlayer) {
-      // Deactivate predicted layer if necessary.
-      this.selectPredictedLayer(null)
-      this.mainMenu = this.mainMenu.map((item) => {
-        if(item.key == 'predicted') {
-          item.selected = false
-          item.title = 'Predicted'
-        }
-        return item
-      })
-    }
     // Selector Time dimension
     if(to.query.currentTimeType && to.query.currentTimeType != from.query.currentTimeType){
       this.setCurrentTimeType(to.query.currentTimeType)
@@ -359,7 +347,7 @@ export default {
       getPredictedLayersAction: actionTypes.PREDICTED_LAYER_GET,
       getPredictedLayersIDAction: actionTypes.PREDICTED_LAYER_GET_ID,
       selectPredictedLayer: actionTypes.PREDICTED_LAYER_SELECT,
-      resetPredictedLayer: actionTypes.RESET
+      resetPredictedLayer: actionTypes.PREDICTED_LAYER_RESET
     }),
     ...mapActions('report', {
       saveReport: actionTypes.REPORT_SAVE_MULTIPLE_REGION
@@ -439,9 +427,11 @@ export default {
       */
     selectLayer(action) {
       let formula = null
-      action=='default'
-        ? (formula = this.formulaRows.rows[0])
-        : (formula = this.selectedFormula ? this.selectedFormula : this.formulaRows.row)
+      if (action=='default') {
+        formula = this.selectedFormula || this.formulaRows.rows[0]
+      } else {
+        formula = this.selectedFormula || this.formulaRows.row
+      }
       if(formula){
         this.selectFormula(formula)
         this.layersTableSelect(formula)
@@ -469,14 +459,11 @@ export default {
      */
      selectLayerPredicted(action) {
       let predictedLayer = null
-      if(action=='default') {
-        if(predictedLayer && this.selectedLayer && predictedLayer.id === this.selectedLayer.id) {
-          predictedLayer = this.predictedLayerRows.rows[0]
-        }
-      } else {
-        predictedLayer = this.predictedLayerRows.row
+      // Only in the case we don't have a selectedLayer (Area) we skip setting the predictedLayer
+      if (!(action=='default' && !this.selectedLayer)) {
+        predictedLayer = this.selectedPredictedLayer || this.predictedLayer.row
       }
-      if(predictedLayer) {
+      if (predictedLayer) {
           this.selectPredictedLayer(predictedLayer)
           this.predictedLayersTableSelect(predictedLayer)
       }
@@ -496,6 +483,14 @@ export default {
       this.closeAllPanels()
       if (!keepPred) {
         this.resetPredictedLayer()
+
+        this.mainMenu = this.mainMenu.map((item) => {
+          if(item.key == 'predicted') {
+            item.selected = false
+            item.title = 'Predicted'
+          }
+          return item
+        })
       }
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'areas') {
@@ -521,6 +516,10 @@ export default {
     },
     predictedLayersTableSelect(layer) {
       this.closeAllPanels()
+
+      if (!layer) {
+        this.resetPredictedLayer()
+      }
 
       this.mainMenu = this.mainMenu.map((item) => {
         if (item.key === 'predicted') {
