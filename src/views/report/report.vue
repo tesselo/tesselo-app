@@ -399,6 +399,8 @@ export default {
       },
       updateReportAreaChart: false,
       disableWhenHaveOnlyOneArea: false,
+      prevClassSortValue: '',
+      diferentClassSortValue: false,
     }
   },
   computed: {
@@ -747,9 +749,24 @@ export default {
     },
     // This allows to decide which page we request in a wacth event change
     definePageForQuery(){
-      // This validates if we're out from predicted and predicted area report and if the selected formula is the same as the new selected formula
-      // If is a new one, we request from the first page, otherwise the next page selected
-      return this.currentPage = !this.predicted && !this.predictedArea && (this.selectedFormula.id === this.selectedFormulaValue.id) ? this.currentPage : 1
+      if(this.report || this.reportArea) {
+        // Validates if the selected formula is the same as the new one
+        if (this.selectedFormula.id !== this.selectedFormulaValue.id) {
+          this.currentPage = 1
+        }
+      } else {
+        // In predicted report, validates if previous class is different than new one
+        // In predicted area report will be always first page
+        this.diferentClassSortValue = this.prevClassSortValue !== this.classSortValue
+        // Assigns new class value
+        this.prevClassSortValue = this.classSortValue
+
+        if (this.diferentClassSortValue) {
+          this.currentPage = 1
+        }
+      }
+
+      return this.currentPage
     },
     // Update selected formula (ex: NDVI, SLIM, etc) when changed in dropdown select. This allow map legend update in mini-maps
     defineSelectedFormula() {
