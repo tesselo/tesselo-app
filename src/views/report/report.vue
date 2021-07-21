@@ -632,7 +632,7 @@ export default {
 
     // Get available formulas list to create dropdown to search by formula
     if(!this.predicted && !this.predictedArea) {
-      this.getFormulasAction({page: 1, layer:null})
+      this.getFormulasAction({pageSize: 50})
       .then(() => {
         this.selectLoading = false
         this.fillSelect()
