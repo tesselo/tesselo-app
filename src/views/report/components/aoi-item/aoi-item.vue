@@ -120,6 +120,7 @@ import StatisticsTable from './statistics-table'
 import AttributeTable from './attribute-table'
 
 import { routeTypes } from '@/services/constants'
+import { mapState } from 'vuex'
 
 // Opacity slider.
 import 'leaflet-range'
@@ -178,6 +179,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      rgbMiniMap: state => state.formula.rgbMiniMap,
+      selectedMomentId: state => state.time.selectedMomentId,
+    }),
     report(){
       return this.$route.name == routeTypes.REPORT
     },
