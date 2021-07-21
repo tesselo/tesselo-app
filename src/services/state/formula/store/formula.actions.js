@@ -11,9 +11,13 @@ export default {
   [actionTypes.FORMULA_GET] (context, options) {
     return APIAdapter.services.formula.get(options)
       .then((response) => {
+        // Get the first RGB formula
+        const rgbMiniMap = response.results.find(val => val.acronym === "RGB")
+
         context.commit(mutationTypes.FORMULA_SET_FORMULAS, {
           ...response,
-          page: options.page
+          page: options.page,
+          rgbMiniMap: rgbMiniMap
         })
       })
   },
@@ -41,5 +45,5 @@ export default {
   },
   [actionTypes.RESET] (context) {
     context.commit(mutationTypes.FORMULA_RESET)
-  }
+  },
 }
