@@ -66,7 +66,7 @@
           :visible="true"
           @add="setOpacitySlider"/>
         <l-tile-layer
-          v-if="report || reportArea"
+          v-if="agg.composite || selectedMomentId"
           :tile-layer-class="tileLayerClass"
           :z-index="rgbLayerZindex"
           :url="rgbLayerUrl" />
@@ -203,7 +203,9 @@ export default {
       }
     },
     rgbLayerUrl(){
-      return `${process.env.API_URL}formula/826/composite/${this.agg.composite}/{z}/{x}/{y}.png`
+      const composite = this.predicted ? this.selectedMomentId : this.agg.composite
+
+      return `${process.env.API_URL}formula/${this.rgbMiniMap.id}/composite/${composite}/{z}/{x}/{y}.png`
     },
     date(){
       const date = this.agg.min_date ? moment(this.agg.min_date).format('MMMM YYYY') : ''
@@ -311,8 +313,8 @@ export default {
         })
     },
     setOpacitySlider() {
-      // Opacity will be defined only for report and report area mini-maps
-      if(this.report || this.reportArea) {
+      // Opacity will be defined only if there is RGB composite
+      if(this.agg.composite || this.selectedMomentId) {
         if (this.opacitySlider !== null) {
           this.$refs.map.mapObject.removeControl(this.opacitySlider)
         }
