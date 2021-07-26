@@ -7,7 +7,7 @@
     }]">
       <div class="navigator-wrapper">
         <a
-          v-if="selectedMoment"
+          v-if="showPreviousButton && !loading"
           href="javascript:void(0)"
           class="navigator d-flex flex-column justify-content-center align-items-center"
           @click="selectPreviousMoment"
@@ -50,7 +50,7 @@
       </div>
       <div class="navigator-wrapper">
         <a
-          v-if="showNextButton"
+          v-if="showNextButton && !loading"
           href="javascript:void(0)"
           class="navigator d-flex flex-column justify-content-center align-items-center"
           @click="selectNextMoment"
@@ -305,7 +305,7 @@ export default {
       }
 
       const isFirstItemInList = this.selectedMoment.index === 0
-      const isFirstYear = this.yearsListActiveIndex === 0
+      const isFirstYear = this.yearsActiveIndex === 0
       const isFirstItem = isFirstItemInList && isFirstYear
       return this.selectedMoment && !isFirstItem
     },
@@ -315,7 +315,7 @@ export default {
       }
 
       const isLastItemInList = this.selectedMoment.index === this.momentsList.length - 1
-      const isLastYear = this.yearsListActiveIndex === this.years.length - 1
+      const isLastYear = this.yearsActiveIndex === this.years.length - 1
       const isLastItem = isLastItemInList && isLastYear
       return this.selectedMoment && !isLastItem
     },
