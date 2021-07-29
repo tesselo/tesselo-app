@@ -356,7 +356,7 @@ export default {
         this.selectMomentIdAction(newVal.id)
         this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
         this.setActiveYear(parseInt(newVal.year))
-        if(this.currentTimeType == 'Monthly') {
+        if(this.currentTimeType != 'Scenes') {
           this.setActiveMonthByLabel({label: newVal.nameToShow})
         }
       }
@@ -403,7 +403,7 @@ export default {
 
   methods: {
     checkClosestMoment () {
-      if (!this.isMonthly) {
+      if (this.isScenes) {
         return
       }
 
@@ -497,7 +497,7 @@ export default {
           this.setYearsActiveIndex()
           this.setActiveMonth(0)
         } else {
-          this.activeMonth++ // Navigate for next month
+          this.setActiveMonth(this.activeMonth + 1) // Navigate for next month
         }
       }
     },
@@ -582,6 +582,7 @@ export default {
       }
       this.setActiveMonth(0)
       this.setCurrentTimeType(newType)
+      this.selectMomentAction(null)
       this.update('last')
     },
 
