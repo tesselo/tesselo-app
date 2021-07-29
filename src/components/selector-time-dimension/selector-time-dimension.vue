@@ -153,11 +153,18 @@
               :disabled="getScenesMGRS.length == 1"
               class="scene-details-location"
               placeholder="Select">
-              <el-option
-                v-for="(sceneMGRS, index) in getScenesMGRS"
-                :key="sceneMGRS"
-                :label="sceneMGRS"
-                :value="index"/>
+              <el-option-group
+                :label="sceneSelect.label">
+                <el-option
+                  v-for="(sceneMGRS, index) in getScenesMGRS"
+                  :key="sceneMGRS"
+                  :label="sceneMGRS"
+                  :value="index"
+                  class="created">
+                  <span class="scene-moments-select-left">{{ sceneSelect.location }}</span>
+                  <span class="scene-moments-select-right">{{ sceneMGRS }}</span>
+                </el-option>
+              </el-option-group>
             </el-select>
             <div class="scene-details-info">
               <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].cloudyPixelPercentage">
@@ -265,7 +272,11 @@ export default {
       detailedDaysOfMonth: [],
       detailedSceneActive: null,
       sceneMomentIndexSelected: 0,
-      loadLastMonthScene: false
+      loadLastMonthScene: false,
+      sceneSelect: {
+        label: 'Scene Moments:',
+        location: 'Location:'
+      },
     }
   },
   computed: {
@@ -1001,5 +1012,15 @@ export default {
         }
       }
     }
+  }
+
+  .scene-moments-select-left {
+    float: left
+  }
+
+  .scene-moments-select-right {
+    float: right;
+    color: #8492a6;
+    font-size: 14px;
   }
 </style>
