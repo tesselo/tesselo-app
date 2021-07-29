@@ -150,6 +150,7 @@
             </div>
             <el-select
               v-model="sceneMomentIndexSelected"
+              :disabled="getScenesMGRS.length == 1"
               class="scene-details-location"
               placeholder="Select">
               <el-option
