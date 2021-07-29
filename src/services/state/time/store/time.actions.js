@@ -13,6 +13,10 @@ export default {
 
     return apiCall(options.params)
       .then((response) => {
+        if (options.params.interval == 'Scenes') {
+          response.results = response.results.sort((a,b) => new Date(b.date) - new Date(a.date)).reverse().map((item, idx) => { item.index = idx; return item})
+        }
+
         context.commit(mutationTypes.TIME_SET_LIST, response.results)
       })
   },
