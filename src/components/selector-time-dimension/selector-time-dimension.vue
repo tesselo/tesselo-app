@@ -95,8 +95,6 @@
         </div>
       </div>
     </div>
-
-
     <div
       v-if="showPicker && isScenes"
       class="picker">
@@ -111,7 +109,6 @@
         </div>
       </div>
     </div>
-
     <div
       v-if="showPicker && !loading && isScenes && momentsList && momentsList.length"
       class="scenes-view">
@@ -161,9 +158,6 @@
                 :label="sceneMGRS"
                 :value="index"/>
             </el-select>
-            <div v-if="detailedSceneActive.moments.length > 1">
-              Dropdown
-            </div>
             <div class="scene-details-info">
               <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].cloudyPixelPercentage">
                 <b>Cloud coverage: </b>
