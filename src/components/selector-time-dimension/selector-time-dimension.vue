@@ -255,7 +255,6 @@ export default {
   },
   data() {
     return {
-      timeTypes: ['Monthly', 'Scenes', 'Custom'],
       currentItemIndex: 10,
       loading: false,
       yearsActiveIndex: 0,
@@ -276,7 +275,8 @@ export default {
       activeMonth: state => state.time.activeMonth,
       selectedMomentId: state => state.time.selectedMomentId,
       selectedMoment: state => state.time.selectedMoment,
-      currentTimeType: state => state.time.currentTimeType
+      currentTimeType: state => state.time.currentTimeType,
+      timeDimensionsTypes: state => state.auth.profile.timeDimensionsTypes,
     }),
     getSceneWeekDay () {
       if (!this.detailedSceneActive) return ''
@@ -338,6 +338,10 @@ export default {
         return `${this.detailedSceneActive.day} ${this.months[this.activeMonth].completed} ${this.activeYear}`;
       }
       return `${this.months[this.activeMonth].completed} ${this.activeYear}`;
+    },
+
+    timeTypes() {
+      return this.timeDimensionsTypes
     }
   },
   watch: {
@@ -382,7 +386,7 @@ export default {
   },
 
   mounted () {
-    let interval = this.$route.query.currentTimeType ? this.$route.query.currentTimeType : 'Monthly'
+    let interval = this.$route.query.currentTimeType || this.timeDimensionsTypes[0]
     this.setCurrentTimeType(interval)
     let toSelect = 'last'
 
