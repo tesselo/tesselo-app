@@ -1,5 +1,6 @@
 import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/services/api'
+import _ from 'lodash'
 
 export default {
   /**
@@ -13,6 +14,16 @@ export default {
   [actionTypes.AUTH_LOGIN] (context, user) {
     return APIAdapter.services.auth.login(user)
       .then((response) => {
+        let timeDimensionTypes = _.get(response.profile, 'timeDimensionsTypes', ["Monthly"])
+
+        if(timeDimensionTypes.length > 1) {
+          // Capital letter in every time dimension type
+          timeDimensionTypes = timeDimensionTypes.split(",").map(item => item.charAt(0).toUpperCase() + item.substr(1))
+        }
+
+        response.profile.timeDimensionsTypes = timeDimensionTypes
+        response.profile.showBookmarks = JSON.parse(_.get(response.profile, 'showBookmarks', false))
+
         context.commit(mutationTypes.AUTH_SET_AUTHENTICATION, {
           username: user.username,
           ...response
