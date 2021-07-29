@@ -277,6 +277,7 @@ export default {
         label: 'Scene Moments:',
         location: 'Location:'
       },
+      previousClick: false,
     }
   },
   computed: {
@@ -317,6 +318,10 @@ export default {
     },
     showNextButton() {
       if (!this.selectedMoment || !this.momentsList) {
+        return false
+      } else if ( this.isScenes &&
+                  this.selectedMoment.index === this.momentsList.length - this.detailedSceneActive.moments.length &&
+                  this.yearsActiveIndex === this.years.length - 1) {
         return false
       }
 
@@ -456,9 +461,23 @@ export default {
       if (!data) {
         let data
         if(this.selectedMomentId && this.$route.query.currentTimeType == 'Scenes' ){
-          const filteredData = cloneDeep(this.detailedDaysOfMonth)
-            .filter(data => data.moments && data.moments.length)
+          const filteredData = cloneDeep(this.detailedDaysOfMonth).filter(data => data.moments && data.moments.length)
           data = filteredData.find(data => (data.moments && data.moments[0].id == this.selectedMomentId))
+
+          if (!data) {
+            // when move on to another month, validade if select first or last day
+            if (this.previousClick || this.activeMonth === 11) {
+              // Select previous month last day
+              data = filteredData[filteredData.length - 1]
+            } else {
+              // Select next month first day
+              data = filteredData[0]
+            }
+          }
+        // Remove the selected moment when there is no selected day/information
+        if (!data) this.selectMomentAction(null)
+        this.previousClick = false
+
         } else if (!this.selectedMomentId && this.loadLastMonthScene) {
           this.loadLastMonthScene = false
           data = cloneDeep(this.detailedDaysOfMonth)
@@ -646,6 +665,7 @@ export default {
       if (!this.selectedMoment) return
 
       if (this.isScenes) {
+        this.previousClick = true
         this.selectPreviousScene()
         return
       }
