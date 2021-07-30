@@ -406,7 +406,7 @@ export default {
   },
 
   mounted () {
-    let interval = this.$route.query.currentTimeType || this.timeDimensionsTypes[0]
+    let interval = this.$route.query.currentTimeType || this.currentTimeType || this.timeDimensionsTypes[0]
     this.setCurrentTimeType(interval)
     let toSelect = 'last'
 
