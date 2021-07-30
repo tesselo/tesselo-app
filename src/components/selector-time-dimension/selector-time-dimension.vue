@@ -399,6 +399,9 @@ export default {
     },
     sceneMomentIndexSelected () {
       this.selectMomentAction(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+    },
+    selectedLayer() {
+      if (this.isScenes) this.getList()
     }
   },
 
