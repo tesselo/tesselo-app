@@ -51,7 +51,7 @@
       class="panels-wrapper">
       <panel
         v-if="activePanel === 'areas'"
-        title="Areas"
+        :title="menuLabel.area"
         @close="closeAllPanels()">
         <areas-table
           slot="content"
@@ -59,8 +59,8 @@
         />
       </panel>
       <panel
-        v-if="activePanel === 'layers'"
-        title="Layers"
+        v-if="activePanel === 'indexes'"
+        :title="menuLabel.index"
         @close="closeAllPanels()">
         <layers-table
           slot="content"
@@ -156,9 +156,9 @@ export default {
           key: 'areas',
           selected: false
         }, {
-          title: 'Layers',
+          title: 'Indexes',
           icon: 'layers',
-          key: 'layers',
+          key: 'indexes',
           selected: false
         },
         {
@@ -200,7 +200,12 @@ export default {
       isNewReport: false,
       logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/T1_logo.png',
       combinedShapeOn: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-on.svg',
-      combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg'
+      combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg',
+      menuLabel: {
+        area: 'Areas',
+        index: 'Indexes',
+        predicted: 'Predicted Layers',
+      }
     }
   },
   head: {
@@ -505,7 +510,7 @@ export default {
       this.closeAllPanels()
 
       this.mainMenu = this.mainMenu.map((item) => {
-        if (item.key === 'layers') {
+        if (item.key === 'indexes') {
           item.selected = true
           item.title = layer.acronym
         }
@@ -615,7 +620,7 @@ export default {
         if (item.key === 'areas') {
           item.title = report.layer.name
         }
-        if (item.key === 'layers') {
+        if (item.key === 'indexes') {
           item.title = report.formula.name
         }
 
