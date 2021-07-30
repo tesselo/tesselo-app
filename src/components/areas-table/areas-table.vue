@@ -101,7 +101,7 @@ export default {
       this.selectAggregationLayer(area)
       this.setMapHomeBounds(area.bounds)
       if (this.setRouterQueryParameters){
-        this.$router.replace({query: {...this.$route.query, area: area.id, zoom: undefined, centerLat: undefined, centerLng: undefined}})        
+        this.$router.replace({query: {...this.$route.query, area: area.id, zoom: undefined, centerLat: undefined, centerLng: undefined}})
       }
       this.$emit('select', area)
     },
