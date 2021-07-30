@@ -725,11 +725,11 @@ export default {
 
   .panels-wrapper {
     position: absolute;
-    overflow-y: scroll;
     z-index: z('panels');
     width: 100%;
     height: 100%;
     top: 0;
+    border: 1px solid rgba(0,0,0,0.2);
 
     @media (min-width: 768px) {
       top: 54px;
