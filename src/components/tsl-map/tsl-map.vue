@@ -892,4 +892,27 @@ export default {
   .el-message-box__title {
     font-size: 20px;
   }
+
+  .leaflet-right {
+    .leaflet-control-geosearch {
+      form {
+        right: 35px;
+        left: initial;
+        border-radius: 4px;
+        border-left: inherit;
+        border-right: inherit;
+
+        input {
+          margin-left: -8px;
+          margin-right: -8px;
+        }
+      }
+
+      a.reset {
+        &:hover {
+          border-bottom: none;
+        }
+      }
+    }
+  }
 </style>
