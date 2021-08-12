@@ -979,7 +979,7 @@ export default {
     margin-top: -35px;
     border: 0px solid;
     padding: 0px;
-    margin: 0px -25px 19px 0px;
+    margin: -22px 20px 0px 0;
 
     &:hover{
       background-color: #ffffff;
