@@ -971,6 +971,30 @@ export default {
 .report-container {
   padding-top: 30px;
   height: inherit;
+
+  .report-close {
+    font-size: 33px;
+    color: rgba(0,0,0,0.2);
+    float: right;
+    margin-top: -35px;
+    border: 0px solid;
+    padding: 0px;
+    margin: 0px -25px 19px 0px;
+
+    &:hover{
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    &:focus{
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .el-icon-close{
+      font-weight: 700;
+    }
+  }
 }
 .header-row{
   overflow-wrap: break-word;
@@ -998,26 +1022,5 @@ export default {
 }
 .el-col.el-col-24 {
   padding-bottom: 10px;
-}
-.report-close {
-  font-size: 30px;
-  color: rgba(0,0,0,0.2);
-  float: right;
-  margin-top: -35px;
-  border: 0px solid;
-
-  &:hover{
-    background-color: #ffffff;
-    border-color: #ffffff;
-  }
-
-  &:focus{
-    background-color: #ffffff;
-    border-color: #ffffff;
-  }
-
-  .el-icon-close{
-    font-weight: 700;
-  }
 }
 </style>
