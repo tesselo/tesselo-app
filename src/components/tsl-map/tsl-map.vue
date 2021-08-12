@@ -893,13 +893,11 @@ export default {
     font-size: 20px;
   }
 
-  .leaflet-right {
+  .leaflet-control-container .leaflet-right {
     .leaflet-control-geosearch {
       form {
         right: 35px;
-        left: initial;
         border-radius: 4px;
-        border-left: inherit;
         border-right: inherit;
 
         input {
