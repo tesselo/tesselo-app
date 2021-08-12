@@ -91,11 +91,11 @@ export default {
 }
 </script>
 <style lang="scss" >
- .main-container {
-   height: 100%;
-   width: 100%;
-   overflow-y: scroll;
- }
+  .main-container {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+  }
 
   .el-select-dropdown__item {
     &.selected {
