@@ -56,9 +56,9 @@
       </el-row>
       <el-row v-if="!predictedArea">
         <el-col
-          :sm="8"
-          :lg="predicted ? 8 : 10"
-          :xl="predicted ? 4 : 7">
+          :sm="predicted ? 6 : 8"
+          :lg="predicted ? 6 : 10"
+          :xl="predicted ? 6 : 7">
           <el-radio-group
             v-model="currentSort"
             :disabled="disableWhenHaveOnlyOneArea || classSortValue !== '' || !has_data || loading"
@@ -111,9 +111,9 @@
         </el-col>
         <el-col
           v-if="predicted"
-          :sm="5"
+          :sm="predicted ? 6 : 5"
           :lg="5"
-          :xm="4">
+          :xl="predicted? 5 : 4">
           <el-select
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
@@ -136,9 +136,9 @@
           </el-select>
         </el-col>
         <el-col
-          :sm="predicted ? 7 : 4"
-          :lg="predicted ? 8 : 5"
-          :xl="predicted ? 5 : 4">
+          :sm="predicted ? 6 : 4"
+          :lg="predicted ? 7 : 5"
+          :xl="predicted ? 7 : 4">
           <el-button-group>
             <el-tooltip
               :content="ascDesc ? pageData.hoverInfo.sortAscending : pageData.hoverInfo.sortDescending"
@@ -184,8 +184,8 @@
           </el-button-group>
         </el-col>
         <el-col
-          :sm="predicted ? 3 : 4"
           v-if="report || reportArea"
+          :sm="4"
           :xl="4">
           <el-tooltip
             :content="pageData.hoverInfo.maxPercentageCloudCover"
