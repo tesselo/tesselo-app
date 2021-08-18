@@ -424,6 +424,8 @@ export default {
       formulaRows: state => state.formula.rows,
       reportChartData: state => state.formulaReport.chartData,
       reportChartYears: state => state.formulaReport.chartYears,
+      selectedMomentId: state => state.time.selectedMomentId,
+      rgbMiniMap: state => state.formula.rgbMiniMap,
     }),
     chartMonths() {
       return this.months.map(item => item.completed)
@@ -629,6 +631,11 @@ export default {
     }
     if(this.predicted || this.predictedArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
+      this.$router.replace({
+        query: {
+          selectedMomentId: this.selectedMomentId || this.$route.query.selectedMomentId,
+          rgbMiniMapId: this.rgbMiniMap.id || this.$route.query.rgbMiniMapId,
+      }})
     } else {
       query.formula = this.selectedFormula ? {id: this.selectedFormula.id} : {id: this.$route.params.formula}
     }
