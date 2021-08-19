@@ -28,7 +28,7 @@
 </template>
 
 <script type="text/javascript">
-import { deviceType } from 'detect-it'
+import detectIt from 'detect-it'
 
 export default {
   name: 'TslButton',
@@ -69,7 +69,7 @@ export default {
     }
   },
   computed: {
-    isTouch: () => deviceType.hasTouch
+    isTouch: () => detectIt.hasTouch
   },
   methods: {
     click: function(event) {

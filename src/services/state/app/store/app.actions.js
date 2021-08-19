@@ -1,7 +1,8 @@
 // import action and mutation types from file
 // - https://vuex.vuejs.org/en/mutations.html#using-constants-for-mutation-types
 import { actionTypes, mutationTypes } from '@/services/constants'
-import { deviceType } from 'detect-it'
+import detectIt from 'detect-it'
+
 
 export default {
   /**
@@ -10,7 +11,7 @@ export default {
    * @param {any} context
    */
   [actionTypes.DETECT_DEVICE_TOUCH] (context) {
-    context.commit(mutationTypes.SET_DEVICE_TOUCH, deviceType.hasTouch)
+    context.commit(mutationTypes.SET_DEVICE_TOUCH, detectIt.hasTouch)
   },
 
   /**
