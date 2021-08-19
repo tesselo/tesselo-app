@@ -409,7 +409,8 @@ export default {
       mapSetBounds: actionTypes.MAP_SET_BOUNDS,
       mapSetBaselayer: actionTypes.MAP_SET_BASELAYER,
       mapSetLOpacity: actionTypes.MAP_SET_L_OPACITY,
-      mapSetPOpacity: actionTypes.MAP_SET_P_OPACITY
+      mapSetPOpacity: actionTypes.MAP_SET_P_OPACITY,
+      setZoom: actionTypes.MAP_SET_ZOOM,
     }),
     /**
      * Set selected option on URL based on index
@@ -421,6 +422,7 @@ export default {
     updateBounds(){
       const center = this.$refs.map.mapObject.getCenter()
       this.$router.replace({query: {...this.$route.query, zoom: this.$refs.map.mapObject.getZoom()}});
+      this.setZoom(this.$refs.map.mapObject.getZoom())
       this.$router.replace({query: {...this.$route.query, centerLat: center.lat }});
       this.$router.replace({query: {...this.$route.query, centerLng: center.lng }});
     },
