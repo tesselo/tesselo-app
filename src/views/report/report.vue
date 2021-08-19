@@ -32,6 +32,7 @@
           <el-input
             v-model="search"
             :placeholder="pageData.placeHolders.search"
+            :disabled="!has_data || loading"
             clearable>
             <el-button
               slot="append"
@@ -46,6 +47,7 @@
             v-model="monthrange"
             :start-placeholder="pageData.placeHolders.startMonth"
             :end-placeholder="pageData.placeHolders.endMonth"
+            :disabled="!has_data || loading"
             type="monthrange"/>
         </el-col>
       </el-row>
@@ -54,12 +56,12 @@
       </el-row>
       <el-row v-if="!predictedArea">
         <el-col
-          :sm="8"
-          :lg="predicted ? 8 : 10"
-          :xl="predicted ? 4 : 7">
+          :sm="predicted ? 6 : 8"
+          :lg="predicted ? 6 : 10"
+          :xl="predicted ? 6 : 7">
           <el-radio-group
             v-model="currentSort"
-            :disabled="disableWhenHaveOnlyOneArea"
+            :disabled="disableWhenHaveOnlyOneArea || classSortValue !== '' || !has_data || loading"
             size="mini">
             <el-tooltip
               v-for="item in sorts"
@@ -89,6 +91,7 @@
             <el-select
               v-model="layerFilterValue"
               :loading="selectLoading"
+              :disabled="!has_data || loading"
               size="mini">
               <el-tooltip
                 v-for="item in selectformulaRows"
@@ -108,14 +111,14 @@
         </el-col>
         <el-col
           v-if="predicted"
-          :sm="5"
+          :sm="predicted ? 6 : 5"
           :lg="5"
-          :xm="4">
+          :xl="predicted? 5 : 4">
           <el-select
             v-if="selectedPredictedLayer"
             v-model="classSortValue"
             :placeholder="pageData.placeHolders.sortByclass"
-            :disabled="disableWhenHaveOnlyOneArea"
+            :disabled="disableWhenHaveOnlyOneArea || !has_data || loading"
             size="mini"
             clearable>
             <!-- The created class below is a hack due to global form css override from bookmarks in app.vue -->
@@ -133,9 +136,9 @@
           </el-select>
         </el-col>
         <el-col
-          :sm="predicted ? 7 : 4"
-          :lg="predicted ? 8 : 5"
-          :xl="predicted ? 5 : 4">
+          :sm="predicted ? 6 : 4"
+          :lg="predicted ? 7 : 5"
+          :xl="predicted ? 7 : 4">
           <el-button-group>
             <el-tooltip
               :content="ascDesc ? pageData.hoverInfo.sortAscending : pageData.hoverInfo.sortDescending"
@@ -145,7 +148,7 @@
               placement="bottom">
               <el-button
                 :icon="ascDesc ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
-                :disabled="disableWhenHaveOnlyOneArea"
+                :disabled="disableWhenHaveOnlyOneArea || !has_data || loading"
                 type="default"
                 size="mini"
                 @click="ascDescToggle"/>
@@ -158,7 +161,7 @@
               placement="bottom">
               <el-button
                 v-if="predicted"
-                :disabled="classSortValue === ''"
+                :disabled="disableWhenHaveOnlyOneArea || classSortValue === '' || !has_data || loading"
                 :type="percentageSort ? 'primary' : 'default'"
                 size="mini"
                 icon="el-icon-pie-chart"
@@ -173,7 +176,7 @@
               <el-button
                 v-if="!predicted"
                 :loading="printing"
-                :disabled="printing || loading"
+                :disabled="printing || loading || !has_data || loading"
                 icon="el-icon-printer"
                 size="mini"
                 @click="print" />
@@ -181,7 +184,8 @@
           </el-button-group>
         </el-col>
         <el-col
-          :sm="predicted ? 3 : 4"
+          v-if="report || reportArea"
+          :sm="4"
           :xl="4">
           <el-tooltip
             :content="pageData.hoverInfo.maxPercentageCloudCover"
@@ -194,6 +198,7 @@
               :step="10"
               :min="0"
               :max="100"
+              :disabled="!has_data || loading"
               size="mini"
               placeholder="%"/>
           </el-tooltip>
@@ -209,6 +214,7 @@
             placement="bottom">
             <el-radio-group
               v-model="radio"
+              :disabled="disableWhenHaveOnlyOneArea || !has_data || total <= radio || loading"
               size="mini">
               <el-radio-button label="12" />
               <el-radio-button label="24" />
@@ -418,6 +424,8 @@ export default {
       formulaRows: state => state.formula.rows,
       reportChartData: state => state.formulaReport.chartData,
       reportChartYears: state => state.formulaReport.chartYears,
+      selectedMomentId: state => state.time.selectedMomentId,
+      rgbMiniMap: state => state.formula.rgbMiniMap,
     }),
     chartMonths() {
       return this.months.map(item => item.completed)
@@ -439,7 +447,7 @@ export default {
       const date = {name: 'Date', query: 'min_date', hoverContent: this.pageData.hoverInfo.sortByDate}
 
       if (this.predicted || this.predictedArea) {
-        return [name, date]
+        return [name]
       } else if (this.reportArea) {
         return [avg, date]
       } else {
@@ -623,6 +631,11 @@ export default {
     }
     if(this.predicted || this.predictedArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
+      this.$router.replace({
+        query: {
+          selectedMomentId: this.selectedMomentId || this.$route.query.selectedMomentId,
+          rgbMiniMapId: this.rgbMiniMap.id || this.$route.query.rgbMiniMapId,
+      }})
     } else {
       query.formula = this.selectedFormula ? {id: this.selectedFormula.id} : {id: this.$route.params.formula}
     }

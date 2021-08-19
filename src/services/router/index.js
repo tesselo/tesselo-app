@@ -43,8 +43,17 @@ const router = new Router({
       }
     },
     {
-      path: '/report/:layer/:formula',
-      name: routeTypes.REPORT,
+      path: '/report/predicted/:layer/:predictedLayer/:area',
+      name: routeTypes.REPORT_PREDICTED_AREA,
+      component: Report,
+      meta: {
+        requiresAuthentication: true,
+        requiresStaff: false
+      },
+    },
+    {
+      path: '/report/predicted/:layer/:predictedLayer',
+      name: routeTypes.REPORT_PREDICTED,
       component: Report,
       meta: {
         requiresAuthentication: true,
@@ -61,21 +70,12 @@ const router = new Router({
       }
     },
     {
-      path: '/report/predicted/:layer/:predictedLayer',
-      name: routeTypes.REPORT_PREDICTED,
+      path: '/report/:layer/:formula',
+      name: routeTypes.REPORT,
       component: Report,
       meta: {
         requiresAuthentication: true,
         requiresStaff: false
-      }
-    },
-    {
-      path: '/report/predicted/:layer/:predictedLayer/:area',
-      name: routeTypes.REPORT_PREDICTED_AREA,
-      component: Report,
-      meta: {
-        requiresAuthentication: true,
-        requiresStaff: false,
       },
     },
     {
