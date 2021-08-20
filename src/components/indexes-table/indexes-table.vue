@@ -1,14 +1,14 @@
 <template>
-  <div class="layers-panel d-flex flex-column align-items-center justify-content-end">
+  <div class="indexes-panel d-flex flex-column align-items-center justify-content-end">
     <el-table
       v-if="!loading"
       :data="rows"
       :row-class-name="tableRowClassName"
-      class="layers-table"
+      class="indexes-table"
       max-height="500"
       size="small"
       style="width: 100%"
-      @current-change="selectLayer">
+      @current-change="selectIndex">
       <el-table-column
         prop="acronym"
         width="120"
@@ -49,7 +49,7 @@ import {
 } from 'element-ui'
 
 export default {
-  name: 'LayersTable',
+  name: 'IndexesTable',
   components: {
     ElTable,
     ElTableColumn,
@@ -88,9 +88,9 @@ export default {
           this.loading = false
         })
     },
-    selectLayer(area) {
+    selectIndex(area) {
       this.selectFormula(area)
-      this.$router.replace({query: {...this.$route.query,layer: area.id}})
+      this.$router.replace({query: {...this.$route.query, layer: area.id}})
       this.$emit('select', area)
     },
     selectPage(page) {
@@ -106,14 +106,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .layers-panel {
+  .indexes-panel {
     position: relative;
     min-height: 400px;
     max-height: 100%;
     max-width: 100%;
   }
 
-  .layers-table {
+  .indexes-table {
     margin: 20px 0 20px;
     overflow: auto;
   }

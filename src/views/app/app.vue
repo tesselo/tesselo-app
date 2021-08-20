@@ -91,30 +91,29 @@ export default {
 }
 </script>
 <style lang="scss" >
- .main-container {
-   height: 100%;
-   width: 100%;
-   overflow-y: scroll;
- }
+  .main-container {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+  }
 
- .el-select-dropdown__item {
-   &.selected {
-     color: #606266 !important;
-   }
+  .el-select-dropdown__item {
+    &.selected {
+      color: #606266 !important;
+    }
 
-   &:not(.created) {
-     ::after {
-       float: right;
-       display: flex;
-       align-items: center;
-       color: $twilight-blue;
-       content: (url("/static/icons/icon-new-blue.svg") "\a0New Folder ");
-     }
+    &:not(.created) {
+      ::after {
+        float: right;
+        display: flex;
+        align-items: center;
+        color: $twilight-blue;
+        content: (url("/static/icons/icon-new-blue.svg") "\a0New Folder ");
+      }
 
-     &.selected {
-       color: #606266 !important;
-     }
-   }
+      &.selected {
+        color: #606266 !important;
+      }
+    }
 }
-
 </style>

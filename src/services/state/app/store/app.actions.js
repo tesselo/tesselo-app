@@ -3,6 +3,7 @@
 import { actionTypes, mutationTypes } from '@/services/constants'
 import detectIt from 'detect-it'
 
+
 export default {
   /**
    * Detect if device is touch

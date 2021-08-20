@@ -6,5 +6,6 @@ export default {
   rows: [],
   row: null,
   selectedFormula: null,
-  currentPage: 1
+  currentPage: 1,
+  rgbMiniMap: {},
 }

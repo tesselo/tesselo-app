@@ -19,15 +19,18 @@
     <el-col
       :xs="24"
       :sm="6"
-      class="average-table">
+      :class="['average-table', extraClassForMiniMap]">
       <div v-if="predicted">
-        <h4>Main class</h4>
+        <h4><b>{{ infoBlockData.mainClass }}</b></h4>
         <h3>{{ mostCommonDiscrete.category }}</h3>
-        <h4>{{ mostCommonDiscrete.percentage }}% | {{ mostCommonDiscrete.area.toFixed(2) }} ha</h4>
+        <h4><b-2>{{ mostCommonDiscrete.area.toFixed(2) }} ha | {{ mostCommonDiscrete.percentage }}%</b-2></h4>
+        <br>
+        <h4><b>{{ infoBlockData.totalArea }}</b></h4>
+        <h3>{{ mostCommonDiscrete.totalArea }} ha</h3>
       </div>
       <div v-else>
         <h2>{{ agg.avg.toFixed(2) }}<span class="plusmn-std"> &plusmn; {{ agg.std.toFixed(2) }}</span></h2>
-        <h4>Data Range</h4>
+        <h4>{{ infoBlockData.dataRange }}</h4>
         <h4>{{ agg.min.toFixed(2) }} to {{ agg.max.toFixed(2) }}</h4>
       </div>
       <div class="button-area">
@@ -38,7 +41,7 @@
           effect="dark"
           placement="bottom">
           <el-button
-            v-if="report"
+            v-if="report || predictedReport"
             icon="el-icon-document"
             size="mini"
             @click="goToReportArea">
@@ -50,7 +53,7 @@
     <el-col
       :xs="24"
       :sm="18"
-      class="aoi-item-map">
+      :class="['aoi-item-map', extraClassForMiniMap]">
       <l-map
         ref="map"
         :min-zoom="minZoomByTile"
@@ -66,7 +69,7 @@
           :visible="true"
           @add="setOpacitySlider"/>
         <l-tile-layer
-          v-if="report || reportArea"
+          v-if="agg.composite || $route.query.selectedMomentId"
           :tile-layer-class="tileLayerClass"
           :z-index="rgbLayerZindex"
           :url="rgbLayerUrl" />
@@ -120,6 +123,7 @@ import StatisticsTable from './statistics-table'
 import AttributeTable from './attribute-table'
 
 import { routeTypes } from '@/services/constants'
+import { mapState } from 'vuex'
 
 // Opacity slider.
 import 'leaflet-range'
@@ -175,14 +179,26 @@ export default {
       maxZoomByTile: 18,
       extraZoomIn: 2,
       extraZoomOut: 4,
+      infoBlockData: {
+        mainClass: 'Main Class',
+        totalArea: 'Total Area',
+        dataRange: 'Data Range',
+      }
     }
   },
   computed: {
+    ...mapState({
+      rgbMiniMap: state => state.formula.rgbMiniMap,
+      selectedMomentId: state => state.time.selectedMomentId,
+    }),
     report(){
       return this.$route.name == routeTypes.REPORT
     },
-    reportArea(){
-      return this.$route.name == routeTypes.REPORT_AREA
+    predictedReport(){
+      return this.$route.name == routeTypes.REPORT_PREDICTED
+    },
+    predictedArea(){
+      return this.$route.name == routeTypes.REPORT_PREDICTED_AREA
     },
     latlngs() {
       return this.agg.geom.coordinates[0][0].map(coord => [coord[1], coord[0]])
@@ -198,7 +214,9 @@ export default {
       }
     },
     rgbLayerUrl(){
-      return `${process.env.API_URL}formula/826/composite/${this.agg.composite}/{z}/{x}/{y}.png`
+      const composite = this.predicted ? (this.selectedMomentId || this.$route.query.selectedMomentId) : this.agg.composite
+
+      return `${process.env.API_URL}formula/${this.rgbMiniMap.id || this.$route.query.rgbMiniMapId}/composite/${composite}/{z}/{x}/{y}.png`
     },
     date(){
       const date = this.agg.min_date ? moment(this.agg.min_date).format('MMMM YYYY') : ''
@@ -253,12 +271,16 @@ export default {
           category: dat['name'],
           area: dat['expression'] in that.agg.value ? that.agg.value[dat['expression']] : 0,
           percentage: dat['expression'] in that.agg.value_percentage ? parseInt(parseFloat(that.agg.value_percentage[dat['expression']]) * 100) : 0,
+          totalArea: Object.values(that.agg.value).reduce((acc, cur) => acc + cur, 0).toFixed(2)
         }
         if (!result || candidate.area > result.area) {
           result = candidate
         }
       })
       return result
+    },
+    extraClassForMiniMap() {
+      return this.report || this.predictedArea ? 'report-or-area' : 'predicted-report'
     }
   },
   watch: {
@@ -296,7 +318,17 @@ export default {
       })
     },
     goToReportArea() {
-      this.$router.push({
+      if(this.predictedReport) {
+        this.$router.push({
+            name: routeTypes.REPORT_PREDICTED_AREA,
+            params: {
+              layer: this.agg.aggregationlayer,
+              predictedLayer: this.predictedLayer.id,
+              area: this.agg.aggregationarea
+            }
+          })
+      } else {
+        this.$router.push({
           name: routeTypes.REPORT_AREA,
           params: {
             layer: this.agg.aggregationlayer,
@@ -304,10 +336,13 @@ export default {
             area: this.agg.aggregationarea,
           }
         })
+      }
     },
     setOpacitySlider() {
-      // Opacity will be defined only for report and report area mini-maps
-      if(this.report || this.reportArea) {
+      const setOpacity = this.agg.composite || this.selectedMomentId || this.$route.query.selectedMomentId
+
+      // Opacity will be defined only if there is RGB composite
+      if(setOpacity) {
         if (this.opacitySlider !== null) {
           this.$refs.map.mapObject.removeControl(this.opacitySlider)
         }
@@ -348,7 +383,13 @@ export default {
 
 <style lang="scss" scoped>
 .aoi-item-map {
-  height: 200px;
+  &.report-or-area {
+    height: 200px;
+  }
+
+  &.predicted-report {
+    height: 220px;
+  }
 }
 .aoi-item-date {
   float: right;
@@ -357,13 +398,26 @@ export default {
   width: 100%;
 }
 .average-table {
-  margin-top: 30px;
+  &.report-or-area {
+    margin-top: 30px;
+  }
+
+  &.predicted-report {
+    margin-top: 10px;
+  }
 }
 .plusmn-std {
   font-size: 14px;
 }
 h3 {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+}
+h4 {
+  font-size: 17px;
+
+  b {
+    font-weight: 500;
+  }
 }
 .map-legend-wrapper {
   position: relative;
@@ -388,6 +442,7 @@ h3 {
 }
 .button-area {
   margin-top: 25px;
+  margin-bottom: 10px;
 }
 /deep/ .leaflet-range-control {
   position: static;

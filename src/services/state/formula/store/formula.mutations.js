@@ -8,12 +8,13 @@ export default {
    * @param {any} state
    * @param {any} { count, next, previous, results}
    */
-  [mutationTypes.FORMULA_SET_FORMULAS] (state, { count, next, previous, results, page }) {
+  [mutationTypes.FORMULA_SET_FORMULAS] (state, { count, next, previous, results, page, rgbMiniMap }) {
     state.total = count
     state.previous = previous
     state.next = next
     state.rows = results
     state.currentPage = page
+    state.rgbMiniMap = rgbMiniMap
   },
 
   /**
@@ -37,6 +38,5 @@ export default {
   },
   [mutationTypes.FORMULA_RESET] (state) {  // eslint-disable-line
     state = { ...defaultState }
-  }
+  },
 }
-

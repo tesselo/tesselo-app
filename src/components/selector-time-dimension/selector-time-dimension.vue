@@ -7,7 +7,7 @@
     }]">
       <div class="navigator-wrapper">
         <a
-          v-if="selectedMoment"
+          v-if="showPreviousButton && !loading"
           href="javascript:void(0)"
           class="navigator d-flex flex-column justify-content-center align-items-center"
           @click="selectPreviousMoment"
@@ -50,7 +50,7 @@
       </div>
       <div class="navigator-wrapper">
         <a
-          v-if="showNextButton"
+          v-if="showNextButton && !loading"
           href="javascript:void(0)"
           class="navigator d-flex flex-column justify-content-center align-items-center"
           @click="selectNextMoment"
@@ -95,8 +95,6 @@
         </div>
       </div>
     </div>
-
-
     <div
       v-if="showPicker && isScenes"
       class="picker">
@@ -111,7 +109,6 @@
         </div>
       </div>
     </div>
-
     <div
       v-if="showPicker && !loading && isScenes && momentsList && momentsList.length"
       class="scenes-view">
@@ -153,17 +150,22 @@
             </div>
             <el-select
               v-model="sceneMomentIndexSelected"
+              :disabled="getScenesMGRS.length == 1"
               class="scene-details-location"
               placeholder="Select">
-              <el-option
-                v-for="(sceneMGRS, index) in getScenesMGRS"
-                :key="sceneMGRS"
-                :label="sceneMGRS"
-                :value="index"/>
+              <el-option-group
+                :label="sceneSelect.label">
+                <el-option
+                  v-for="(sceneMGRS, index) in getScenesMGRS"
+                  :key="sceneMGRS"
+                  :label="sceneMGRS"
+                  :value="index"
+                  class="created">
+                  <span class="scene-moments-select-left">{{ sceneSelect.location }}</span>
+                  <span class="scene-moments-select-right">{{ sceneMGRS }}</span>
+                </el-option>
+              </el-option-group>
             </el-select>
-            <div v-if="detailedSceneActive.moments.length > 1">
-              Dropdown
-            </div>
             <div class="scene-details-info">
               <div v-if="detailedSceneActive.moments[sceneMomentIndexSelected].cloudyPixelPercentage">
                 <b>Cloud coverage: </b>
@@ -261,7 +263,6 @@ export default {
   },
   data() {
     return {
-      timeTypes: ['Monthly', 'Scenes', 'Custom'],
       currentItemIndex: 10,
       loading: false,
       yearsActiveIndex: 0,
@@ -271,7 +272,12 @@ export default {
       detailedDaysOfMonth: [],
       detailedSceneActive: null,
       sceneMomentIndexSelected: 0,
-      loadLastMonthScene: false
+      loadLastMonthScene: false,
+      sceneSelect: {
+        label: 'Scene Moments:',
+        location: 'Location:'
+      },
+      previousClick: false,
     }
   },
   computed: {
@@ -282,7 +288,8 @@ export default {
       activeMonth: state => state.time.activeMonth,
       selectedMomentId: state => state.time.selectedMomentId,
       selectedMoment: state => state.time.selectedMoment,
-      currentTimeType: state => state.time.currentTimeType
+      currentTimeType: state => state.time.currentTimeType,
+      timeDimensionsTypes: state => state.auth.profile.timeDimensionsTypes,
     }),
     getSceneWeekDay () {
       if (!this.detailedSceneActive) return ''
@@ -305,17 +312,21 @@ export default {
       }
 
       const isFirstItemInList = this.selectedMoment.index === 0
-      const isFirstYear = this.yearsListActiveIndex === 0
+      const isFirstYear = this.yearsActiveIndex === 0
       const isFirstItem = isFirstItemInList && isFirstYear
       return this.selectedMoment && !isFirstItem
     },
     showNextButton() {
       if (!this.selectedMoment || !this.momentsList) {
         return false
+      } else if ( this.isScenes &&
+                  this.selectedMoment.index === this.momentsList.length - this.detailedSceneActive.moments.length &&
+                  this.yearsActiveIndex === this.years.length - 1) {
+        return false
       }
 
       const isLastItemInList = this.selectedMoment.index === this.momentsList.length - 1
-      const isLastYear = this.yearsListActiveIndex === this.years.length - 1
+      const isLastYear = this.yearsActiveIndex === this.years.length - 1
       const isLastItem = isLastItemInList && isLastYear
       return this.selectedMoment && !isLastItem
     },
@@ -344,6 +355,10 @@ export default {
         return `${this.detailedSceneActive.day} ${this.months[this.activeMonth].completed} ${this.activeYear}`;
       }
       return `${this.months[this.activeMonth].completed} ${this.activeYear}`;
+    },
+
+    timeTypes() {
+      return this.timeDimensionsTypes
     }
   },
   watch: {
@@ -362,7 +377,7 @@ export default {
         this.selectMomentIdAction(newVal.id)
         this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
         this.setActiveYear(parseInt(newVal.year))
-        if(this.currentTimeType == 'Monthly') {
+        if(this.currentTimeType != 'Scenes') {
           this.setActiveMonthByLabel({label: newVal.nameToShow})
         }
       }
@@ -384,11 +399,14 @@ export default {
     },
     sceneMomentIndexSelected () {
       this.selectMomentAction(this.detailedSceneActive.moments[this.sceneMomentIndexSelected])
+    },
+    selectedLayer() {
+      if (this.isScenes) this.getList()
     }
   },
 
   mounted () {
-    let interval = this.$route.query.currentTimeType ? this.$route.query.currentTimeType : 'Monthly'
+    let interval = this.$route.query.currentTimeType || this.currentTimeType || this.timeDimensionsTypes[0]
     this.setCurrentTimeType(interval)
     let toSelect = 'last'
 
@@ -409,7 +427,7 @@ export default {
 
   methods: {
     checkClosestMoment () {
-      if (!this.isMonthly) {
+      if (this.isScenes) {
         return
       }
 
@@ -446,9 +464,23 @@ export default {
       if (!data) {
         let data
         if(this.selectedMomentId && this.$route.query.currentTimeType == 'Scenes' ){
-          const filteredData = cloneDeep(this.detailedDaysOfMonth)
-            .filter(data => data.moments && data.moments.length)
+          const filteredData = cloneDeep(this.detailedDaysOfMonth).filter(data => data.moments && data.moments.length)
           data = filteredData.find(data => (data.moments && data.moments[0].id == this.selectedMomentId))
+
+          if (!data) {
+            // when move on to another month, validade if select first or last day
+            if (this.previousClick || this.activeMonth === 11) {
+              // Select previous month last day
+              data = filteredData[filteredData.length - 1]
+            } else {
+              // Select next month first day
+              data = filteredData[0]
+            }
+          }
+        // Remove the selected moment when there is no selected day/information
+        if (!data) this.selectMomentAction(null)
+        this.previousClick = false
+
         } else if (!this.selectedMomentId && this.loadLastMonthScene) {
           this.loadLastMonthScene = false
           data = cloneDeep(this.detailedDaysOfMonth)
@@ -503,7 +535,7 @@ export default {
           this.setYearsActiveIndex()
           this.setActiveMonth(0)
         } else {
-          this.activeMonth++ // Navigate for next month
+          this.setActiveMonth(this.activeMonth + 1) // Navigate for next month
         }
       }
     },
@@ -588,6 +620,7 @@ export default {
       }
       this.setActiveMonth(0)
       this.setCurrentTimeType(newType)
+      this.selectMomentAction(null)
       this.update('last')
     },
 
@@ -635,6 +668,7 @@ export default {
       if (!this.selectedMoment) return
 
       if (this.isScenes) {
+        this.previousClick = true
         this.selectPreviousScene()
         return
       }
@@ -1001,5 +1035,15 @@ export default {
         }
       }
     }
+  }
+
+  .scene-moments-select-left {
+    float: left
+  }
+
+  .scene-moments-select-right {
+    float: right;
+    color: #8492a6;
+    font-size: 14px;
   }
 </style>

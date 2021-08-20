@@ -51,7 +51,7 @@
       class="panels-wrapper">
       <panel
         v-if="activePanel === 'areas'"
-        title="Areas"
+        :title="menuLabel.area"
         @close="closeAllPanels()">
         <areas-table
           slot="content"
@@ -59,12 +59,12 @@
         />
       </panel>
       <panel
-        v-if="activePanel === 'layers'"
-        title="Layers"
+        v-if="activePanel === 'indexes'"
+        :title="menuLabel.index"
         @close="closeAllPanels()">
-        <layers-table
+        <indexes-table
           slot="content"
-          @select="layersTableSelect"
+          @select="indexesTableSelect"
         />
       </panel>
       <panel
@@ -120,7 +120,7 @@ import TslButton from '@/components/tsl-button/tsl-button'
 import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
 import Panel from '@/components/panel/panel'
 import AreasTable from '@/components/areas-table/areas-table'
-import LayersTable from '@/components/layers-table/layers-table'
+import IndexesTable from '@/components/indexes-table/indexes-table'
 import CollapsiblePanel from '@/components/collapsible-panel/collapsible-panel'
 import SelectorTimeDimension from '@/components/selector-time-dimension/selector-time-dimension'
 import MONTHS from '@/assets/utils/months'
@@ -137,7 +137,7 @@ export default {
     MultiOptionToggle,
     Panel,
     AreasTable,
-    LayersTable,
+    IndexesTable,
     CollapsiblePanel,
     SelectorTimeDimension,
     MultipleReport,
@@ -156,9 +156,9 @@ export default {
           key: 'areas',
           selected: false
         }, {
-          title: 'Layers',
+          title: 'Indexes',
           icon: 'layers',
-          key: 'layers',
+          key: 'indexes',
           selected: false
         },
         {
@@ -200,7 +200,12 @@ export default {
       isNewReport: false,
       logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/T1_logo.png',
       combinedShapeOn: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-on.svg',
-      combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg'
+      combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg',
+      menuLabel: {
+        area: 'Areas',
+        index: 'Indexes',
+        predicted: 'Predicted Layers',
+      }
     }
   },
   head: {
@@ -434,7 +439,7 @@ export default {
       }
       if(formula){
         this.selectFormula(formula)
-        this.layersTableSelect(formula)
+        this.indexesTableSelect(formula)
       }
     },
     /**
@@ -501,11 +506,11 @@ export default {
         return item
       })
     },
-    layersTableSelect(layer) {
+    indexesTableSelect(layer) {
       this.closeAllPanels()
 
       this.mainMenu = this.mainMenu.map((item) => {
-        if (item.key === 'layers') {
+        if (item.key === 'indexes') {
           item.selected = true
           item.title = layer.acronym
         }
@@ -615,7 +620,7 @@ export default {
         if (item.key === 'areas') {
           item.title = report.layer.name
         }
-        if (item.key === 'layers') {
+        if (item.key === 'indexes') {
           item.title = report.formula.name
         }
 
@@ -720,11 +725,11 @@ export default {
 
   .panels-wrapper {
     position: absolute;
-    overflow-y: scroll;
     z-index: z('panels');
     width: 100%;
     height: 100%;
     top: 0;
+    border: 1px solid rgba(0,0,0,0.2);
 
     @media (min-width: 768px) {
       top: 54px;

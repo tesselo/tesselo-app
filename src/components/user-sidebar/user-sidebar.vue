@@ -35,6 +35,7 @@
         </div>
         <div class="separator"/>
         <el-tree
+          v-if="showBookmarks || isStaff"
           :data="bookmarkFolder"
           :props="defaultProps"
           node-key="id"
@@ -89,7 +90,9 @@
             </span>
           </span>
         </el-tree>
-        <div class="new-bookmark">
+        <div
+          v-if="showBookmarks || isStaff"
+          class="new-bookmark">
           <div class="separator separator__green"/>
           <div
             class="new-bookmark-button"
@@ -157,7 +160,9 @@ export default {
     ...mapState({
       authenticated: state => state.auth.authenticated,
       username: state => state.auth.username,
-      bookmarkFolder: state => state.bookmarkFolder.bookmarkFolder
+      bookmarkFolder: state => state.bookmarkFolder.bookmarkFolder,
+      showBookmarks: state => state.auth.profile.showBookmarks,
+      isStaff: state => state.auth.is_staff,
     })
   },
 
