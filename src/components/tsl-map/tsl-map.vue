@@ -418,6 +418,7 @@ export default {
     setMapOption(event){
       const selected = this.basemapProviders.find(item => item.name === event.name);
       this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
+      this.mapSetBaselayer(selected.slug)
     },
     updateBounds(){
       const center = this.$refs.map.mapObject.getCenter()
