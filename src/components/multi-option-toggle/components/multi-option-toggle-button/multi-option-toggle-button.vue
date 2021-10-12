@@ -70,7 +70,7 @@ export default {
   },
   data: function() {
     return {
-      iconUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/' + this.icon + '.svg'
+      iconUrl: require(`@/assets/images/icons/${this.icon}.svg`),
     }
   }
 }

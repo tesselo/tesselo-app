@@ -48,9 +48,9 @@ export default {
   },
   data: function() {
     return {
-      iconUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/report.svg',
-      triagleDownUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/triangle-down.svg',
-      triagleUpUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/triangle-up.svg',
+      iconUrl: require('@/assets/images/icons/report.svg'),
+      triagleDownUrl: require('@/assets/images/icons/triangle-down.svg'),
+      triagleUpUrl: require('@/assets/images/icons/triangle-up.svg'),
       active: false
     }
   },

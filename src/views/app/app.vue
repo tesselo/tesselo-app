@@ -16,7 +16,7 @@
 import { mapState, mapActions } from 'vuex'
 import { actionTypes } from '@/services/constants'
 import UserSidebar from '@/components/user-sidebar/user-sidebar'
-import BookmarksModal from "@/components/bookmarks-modal/bookmarks-modal.vue";
+import BookmarksModal from '@/components/bookmarks-modal/bookmarks-modal.vue'
 
 export default {
   name: 'App',
@@ -28,7 +28,6 @@ export default {
   data() {
     return {
       showModal: false,
-      newIcon: process.env.ASSETS_PUBLIC_PATH + "static/icons/icon-new-blue.svg",
       bookmark: [{
         name: 'Bookmarks',
         isFolder: false,
@@ -108,7 +107,7 @@ export default {
         display: flex;
         align-items: center;
         color: $twilight-blue;
-        content: (url("/static/icons/icon-new-blue.svg") "\a0New Folder ");
+        content: (url("/src/assets/images/icons/icon-new-blue.svg") "\a0New Folder ");
       }
 
       &.selected {

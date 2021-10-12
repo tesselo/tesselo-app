@@ -140,15 +140,11 @@ export default {
   data() {
     return {
       open: false,
-      iconHamburgerUrl:
-        process.env.ASSETS_PUBLIC_PATH + "static/icons/hamburger.svg",
-      folderIcon:
-        process.env.ASSETS_PUBLIC_PATH + "static/icons/folder-white.svg",
-      triangleOpenIcon:
-        process.env.ASSETS_PUBLIC_PATH + "static/icons/triangle-open.svg",
-      triangleClosedIcon:
-        process.env.ASSETS_PUBLIC_PATH + "static/icons/triangle-closed.svg",
-      newIcon: process.env.ASSETS_PUBLIC_PATH + "static/icons/icon-new.svg",
+      iconHamburgerUrl: require('@/assets/images/icons/hamburger.svg'),
+      folderIcon: require('@/assets/images/icons/folder-white.svg'),
+      triangleOpenIcon: require('@/assets/images/icons/triangle-open.svg'),
+      triangleClosedIcon: require('@/assets/images/icons/triangle-closed.svg'),
+      newIcon: require('@/assets/images/icons/icon-new.svg'),
       defaultProps: [{
         children: "children",
         label: "name"

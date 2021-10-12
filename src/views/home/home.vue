@@ -34,18 +34,6 @@
         :items="mainMenu"
         @change="changeVisiblePanel" />
     </div>
-    <!-- <div
-      v-if="showControls"
-      class="report-menu">
-      <report-menu
-        v-if="isTouch"
-        :items="reportMenu"
-        @change="reportMenuClick" />
-      <multi-option-toggle
-        v-if="!isTouch"
-        :items="reportMenu"
-        @change="reportMenuClick" />
-    </div> -->
     <div
       v-if="activePanel"
       class="panels-wrapper">
@@ -116,7 +104,6 @@ import { actionTypes } from '@/services/constants'
 import L from 'leaflet'
 
 import TslMap from '@/components/tsl-map/tsl-map'
-import TslButton from '@/components/tsl-button/tsl-button'
 import MultiOptionToggle from '@/components/multi-option-toggle/multi-option-toggle'
 import Panel from '@/components/panel/panel'
 import AreasTable from '@/components/areas-table/areas-table'
@@ -127,13 +114,11 @@ import MONTHS from '@/assets/utils/months'
 import MultipleReport from '@/components/multiple-report/multiple-report'
 import ReportHistory from '@/components/report-history/report-history'
 import PredictedLayersTable from '@/components/predicted-layers-table/predicted-layers-table'
-import ReportMenu from '@/components/report-menu/report-menu'
 
 export default {
   name: 'Home',
   components: {
     TslMap,
-    TslButton,
     MultiOptionToggle,
     Panel,
     AreasTable,
@@ -143,97 +128,7 @@ export default {
     MultipleReport,
     ReportHistory,
     PredictedLayersTable,
-    ReportMenu
   },
-  data() {
-    return {
-      loggingOut: false,
-      showControls: true,
-      mainMenu: [
-        {
-          title: 'Areas',
-          icon: 'crosshair',
-          key: 'areas',
-          selected: false
-        }, {
-          title: 'Indexes',
-          icon: 'layers',
-          key: 'indexes',
-          selected: false
-        },
-        {
-          title: 'Predicted',
-          icon: 'net',
-          key: 'predicted',
-          selected: false
-        }
-      ],
-      reportMenu: [
-        {
-        //   title: 'Export to PDF',
-        //   icon: 'pdf',
-        //   key: 'export-pdf',
-        //   selected: false,
-        //   hide: true
-        // }, {
-        //   title: 'Save Report',
-        //   icon: 'save',
-        //   key: 'save-report',
-        //   selected: false,
-        //   hide: true
-        // }, {
-        //   title: 'Report History',
-        //   icon: 'report',
-        //   key: 'report-history',
-        //   selected: false,
-        //   hide: false
-        // }, {
-          title: 'Create Report',
-          icon: 'report',
-          key: 'create-report',
-          selected: false,
-          hide: true
-        }
-      ],
-      activePanel: '',
-      stdPanelVisible: false,
-      isNewReport: false,
-      logoSimpleUrl: process.env.ASSETS_PUBLIC_PATH + 'static/logo/T1_logo.png',
-      combinedShapeOn: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-on.svg',
-      combinedShapeOff: process.env.ASSETS_PUBLIC_PATH + 'static/icons/combined-shape-off.svg',
-      menuLabel: {
-        area: 'Areas',
-        index: 'Indexes',
-        predicted: 'Predicted Layers',
-      }
-    }
-  },
-  head: {
-    title: {
-      inner: 'Homepage'
-    }
-  },
-  computed: {
-    ...mapState({
-      aggregationLayer: state => state.aggregationLayer,
-      formulaRows: state => state.formula,
-      predictedLayer: state => state.predictedLayer,
-      selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedFormula: state => state.formula.selectedFormula,
-      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
-      baselayer: state => state.map.baselayer,
-      lOpacity: state => state.map.lOpacity,
-      pOpacity: state => state.map.pOpacity,
-      selectedMoment: state => state.time.selectedMoment
-    }),
-    isPhone() {
-      return this.$deviceInfo.isPhone;
-    },
-    isTouch() {
-      return this.$deviceInfo.isTouch;
-    },
-  },
-
   beforeRouteEnter (to, from, next) {
     next(vm => {
       // Baselayer.
@@ -335,6 +230,76 @@ export default {
     }
 
     next()
+  },
+  data() {
+    return {
+      loggingOut: false,
+      showControls: true,
+      mainMenu: [
+        {
+          title: 'Areas',
+          icon: 'crosshair',
+          key: 'areas',
+          selected: false
+        }, {
+          title: 'Indexes',
+          icon: 'layers',
+          key: 'indexes',
+          selected: false
+        },
+        {
+          title: 'Predicted',
+          icon: 'net',
+          key: 'predicted',
+          selected: false
+        }
+      ],
+      reportMenu: [
+        {
+          title: 'Create Report',
+          icon: 'report',
+          key: 'create-report',
+          selected: false,
+          hide: true
+        }
+      ],
+      activePanel: '',
+      stdPanelVisible: false,
+      isNewReport: false,
+      logoSimpleUrl: require('@/assets/images/logo/T1_logo.png'),
+      combinedShapeOn: require('@/assets/images/icons/combined-shape-on.svg'),
+      combinedShapeOff: require('@/assets/images/icons/combined-shape-off.svg'),
+      menuLabel: {
+        area: 'Areas',
+        index: 'Indexes',
+        predicted: 'Predicted Layers',
+      }
+    }
+  },
+  head: {
+    title: {
+      inner: 'Homepage'
+    }
+  },
+  computed: {
+    ...mapState({
+      aggregationLayer: state => state.aggregationLayer,
+      formulaRows: state => state.formula,
+      predictedLayer: state => state.predictedLayer,
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      selectedFormula: state => state.formula.selectedFormula,
+      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
+      baselayer: state => state.map.baselayer,
+      lOpacity: state => state.map.lOpacity,
+      pOpacity: state => state.map.pOpacity,
+      selectedMoment: state => state.time.selectedMoment
+    }),
+    isPhone() {
+      return this.$deviceInfo.isPhone;
+    },
+    isTouch() {
+      return this.$deviceInfo.isTouch;
+    },
   },
 
   methods: {
@@ -462,7 +427,7 @@ export default {
     /**
      * Select predicted layer
      */
-     selectLayerPredicted(action) {
+    selectLayerPredicted(action) {
       let predictedLayer = null
       // Only in the case we don't have a selectedLayer (Area) we skip setting the predictedLayer
       if (!(action=='default' && !this.selectedLayer)) {
