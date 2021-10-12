@@ -1,27 +1,17 @@
 {
   "name": "tesselo-vue",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Tesselo App",
-  "author": "Daniel Wiesmann <daniel@tesselo.com>",
+  "author": "Daniel Wiesmann <daniel@tesselo.com> | Vitor Paixão <vitor@tesselo.com> | Daniel Moreno <daniel.moreno@tesselo.com>",
   "private": true,
   "scripts": {
-    "build": "node build/build.js",
-    "build:dev": "NODE_ENV=devstage node build/build.js",
-    "build:staging": "NODE_ENV=staging node build/build.js",
-    "build:production": "NODE_ENV=production node build/build.js",
-    "build:localhost": "NODE_ENV=dev:localhost node build/build.js",
-    "start": "npm run dev",
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "dev:localhost": "NODE_ENV=localhost webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "dev:staging": "API_ENV=staging NODE_ENV=localhost webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "dev:production": "API_ENV=production NODE_ENV=localhost webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "dev:mock": "NODE_ENV=mock webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "build:dev": "API_ENV=production NODE_ENV=development webpack serve --config build/webpack.dev.js --open",
+    "build:production": "NODE_ENV=production webpack --config build/webpack.prod.js",
     "test": "npm run unit && npm run e2e",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "jest",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "lint:css": "stylelint 'src/**/*.vue' 'src/**/*.scss'",
-    "server:mock": "json-server --watch mock/db.json"
+    "lint:css": "stylelint 'src/**/*.vue' 'src/**/*.scss'"
   },
   "dependencies": {
     "@sentry/tracing": "^6.3.6",
