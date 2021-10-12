@@ -406,7 +406,6 @@ export default {
   },
   methods:  {
     ...mapActions('map', {
-      mapSetBounds: actionTypes.MAP_SET_BOUNDS,
       mapSetBaselayer: actionTypes.MAP_SET_BASELAYER,
       mapSetLOpacity: actionTypes.MAP_SET_L_OPACITY,
       mapSetPOpacity: actionTypes.MAP_SET_P_OPACITY,

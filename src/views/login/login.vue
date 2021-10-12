@@ -1,7 +1,5 @@
 <template>
-  <div
-    :style="{backgroundImage: backgroundImage}"
-    class="login"
+  <div class="login"
   >
     <div class="content">
       <login-header v-if="showHeader"/>
@@ -29,7 +27,6 @@ export default {
   data: function() {
     return {
       showHeader: false,
-      backgroundImage: "url(" + process.env.ASSETS_PUBLIC_PATH + "static/background/map.jpg)"
     }
   }
 }
@@ -42,6 +39,7 @@ export default {
     min-height: 100%;
     background-size: cover;
     background-repeat: no-repeat;
+    background-image: url("/src/assets/images/background/map.jpg");
 
     &::after {
       @include pseudoElementSetup;
