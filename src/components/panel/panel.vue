@@ -35,7 +35,7 @@ export default {
   },
   data: function() {
     return {
-      iconCloseUrl: process.env.ASSETS_PUBLIC_PATH + 'static/icons/close.svg'
+      iconCloseUrl: require('@/assets/images/icons/close.svg')
     }
   }
 }
