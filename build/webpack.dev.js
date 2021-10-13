@@ -8,7 +8,7 @@ const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
 module.exports = merge(common, {
-    mode: 'none',
+    mode: 'development',
     output: {
         filename: 'main.bundle.js',
         path: path.resolve(__dirname, '../dist'),
