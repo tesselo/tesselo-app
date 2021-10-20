@@ -90,7 +90,9 @@ export default {
     },
     selectIndex(area) {
       this.selectFormula(area)
-      this.$router.replace({query: {...this.$route.query, layer: area.id}})
+      if (this.$route.query.layer != area.id) {
+        this.$router.replace({query: {...this.$route.query, layer: area.id}})
+      }
       this.$emit('select', area)
     },
     selectPage(page) {
