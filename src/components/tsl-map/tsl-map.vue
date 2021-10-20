@@ -407,8 +407,8 @@ export default {
   methods:  {
     ...mapActions('map', {
       mapSetBaselayer: actionTypes.MAP_SET_BASELAYER,
-      mapSetLOpacity: actionTypes.MAP_SET_L_OPACITY,
-      mapSetPOpacity: actionTypes.MAP_SET_P_OPACITY,
+      mapSetIndexOpacity: actionTypes.MAP_SET_L_OPACITY,
+      mapSetPredictedOpacity: actionTypes.MAP_SET_P_OPACITY,
       setZoom: actionTypes.MAP_SET_ZOOM,
     }),
     /**
@@ -440,12 +440,11 @@ export default {
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-layer'
       })
-      // Bind slider change route update function.
-      const that = this
-      const funk = this.mapSetLOpacity
-      this.algebraSlider.on('input change', function(e) {
-        funk(parseFloat(e.value))
-        that.$router.replace({query: {...that.$route.query, lOpacity: e.value}})
+
+      const setIndexOpacity = this.mapSetIndexOpacity
+      this.algebraSlider.on('input', function(e) {
+        // Save in state index opacity value
+        setIndexOpacity(parseFloat(e.value))
       })
 
       this.$refs.map.mapObject.addControl(this.algebraSlider)
@@ -465,11 +464,11 @@ export default {
         orient: 'vertical',
         iconClass: 'leaflet-range-icon leaflet-range-predicted'
       })
-      const that = this
-      const funk = this.mapSetPOpacity
-      this.predictedSlider.on('input change', function(e) {
-        funk(parseFloat(e.value))
-        that.$router.replace({query: {...that.$route.query, pOpacity: e.value}})
+
+      const setPredictedOpacity = this.mapSetPredictedOpacity
+      this.predictedSlider.on('input', function(e) {
+        // Save in state predicted opacity value
+        setPredictedOpacity(parseFloat(e.value))
       });
 
       this.$refs.map.mapObject.addControl(this.predictedSlider)
