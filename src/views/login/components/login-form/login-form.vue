@@ -44,7 +44,7 @@
         <p
           v-for="error in formErrors.nonFieldErrors"
           :key="error"
-          class="tsl-form__control-error text-right">
+          class="tsl-form__control-error text-end">
           {{ error }}
         </p>
       </div>
