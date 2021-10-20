@@ -365,7 +365,6 @@ export default {
     activeYear (newVal) {
       this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
       this.setYearsActiveIndex()
-      // this.handleScenesData()
       this.getList()
     },
     activeMonth (newVal) {
@@ -394,7 +393,6 @@ export default {
       this.checkClosestMoment()
     },
     currentTimeType () {
-      // this.handleScenesData()
       this.getList()
     },
     sceneMomentIndexSelected () {
