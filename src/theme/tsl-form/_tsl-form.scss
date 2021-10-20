@@ -31,6 +31,10 @@
     font-size: 14px;
     color: $slate-grey;
   }
+
+  &:focus{
+    background-color: white;
+  }
 }
 
 .tsl-form__control-error {
