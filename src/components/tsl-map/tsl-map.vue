@@ -415,19 +415,30 @@ export default {
      * Set selected option on URL based on index
      */
     setMapOption(event){
-      const selected = this.basemapProviders.find(item => item.name === event.name);
-      this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}});
+      const selected = this.basemapProviders.find(item => item.name === event.name)
+
       this.mapSetBaselayer(selected.slug)
+      if(this.$route.query.mapOption != selected.slug) {
+        this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}})
+      }
     },
     updateBounds(){
       const center = this.$refs.map.mapObject.getCenter()
-      this.$router.replace({query: {...this.$route.query, zoom: this.$refs.map.mapObject.getZoom()}});
-      this.setZoom(this.$refs.map.mapObject.getZoom())
-      this.$router.replace({query: {...this.$route.query, centerLat: center.lat }});
-      this.$router.replace({query: {...this.$route.query, centerLng: center.lng }});
+      const zoom = this.$refs.map.mapObject.getZoom()
+
+      this.setZoom(zoom)
+      if(this.$route.query.zoom != zoom) {
+        this.$router.replace({query: {...this.$route.query, zoom: zoom}})
+      }
+      if(this.$route.query.centerLat != center.lat) {
+        this.$router.replace({query: {...this.$route.query, centerLat: center.lat }})
+      }
+      if(this.$route.query.centerLng != center.lng) {
+        this.$router.replace({query: {...this.$route.query, centerLng: center.lng }})
+      }
     },
     setOpacitySlider() {
-       if (this.algebraSlider !== null) {
+      if (this.algebraSlider !== null) {
         this.$refs.map.mapObject.removeControl(this.algebraSlider)
       }
       // Instantiate opacity control.
