@@ -32,7 +32,7 @@
           <el-input
             v-model="search"
             :placeholder="pageData.placeHolders.search"
-            :disabled="!has_data || loading"
+            :disabled="loading"
             clearable>
             <el-button
               slot="append"
@@ -47,7 +47,7 @@
             v-model="monthrange"
             :start-placeholder="pageData.placeHolders.startMonth"
             :end-placeholder="pageData.placeHolders.endMonth"
-            :disabled="!has_data || loading"
+            :disabled="loading"
             type="monthrange"/>
         </el-col>
       </el-row>
