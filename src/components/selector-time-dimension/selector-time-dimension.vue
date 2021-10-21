@@ -373,7 +373,7 @@ export default {
       const selectedMonth = this.months[newVal].label
 
       this.handleScenesData()
-      if (this.$route.query.selectedMonth != newVal) {
+      if (this.$route.query.selectedMonth != selectedMonth) {
         this.$router.replace({query: {...this.$route.query, selectedMonth: selectedMonth}})
       }
     },
