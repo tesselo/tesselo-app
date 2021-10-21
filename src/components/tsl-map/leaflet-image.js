@@ -184,6 +184,8 @@ export default function leafletImage(map, callback) {
               responseType: 'blob'
             }).then((response) => {
               tile.src = URL.createObjectURL(response.data)
+            }).catch(error => {
+              console.log(error)
             })
           } else {
             tile.src = url

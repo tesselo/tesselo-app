@@ -28,6 +28,8 @@ L.AuthenticatedTileLayer = L.TileLayer.extend({
     }).then((response) => {
       tile.src = URL.createObjectURL(response.data)
       done(null, tile)
+    }).catch(error => {
+      console.log(error)
     })
     // Return image dom element.
     return tile
