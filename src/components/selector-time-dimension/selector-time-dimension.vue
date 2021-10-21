@@ -363,19 +363,26 @@ export default {
   },
   watch: {
     activeYear (newVal) {
-      this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
+      if (this.$route.query.selectedYear != newVal) {
+        this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
+      }
       this.setYearsActiveIndex()
-      // this.handleScenesData()
       this.getList()
     },
     activeMonth (newVal) {
+      const selectedMonth = this.months[newVal].label
+
       this.handleScenesData()
-      this.$router.replace({query: {...this.$route.query, selectedMonth: this.months[newVal].label}})
+      if (this.$route.query.selectedMonth != newVal) {
+        this.$router.replace({query: {...this.$route.query, selectedMonth: selectedMonth}})
+      }
     },
     selectedMoment(newVal){
       if(newVal){
+        if(this.$route.query.selectedMomentId != newVal.id) {
+          this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
+        }
         this.selectMomentIdAction(newVal.id)
-        this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
         this.setActiveYear(parseInt(newVal.year))
         if(this.currentTimeType != 'Scenes') {
           this.setActiveMonthByLabel({label: newVal.nameToShow})
@@ -394,7 +401,6 @@ export default {
       this.checkClosestMoment()
     },
     currentTimeType () {
-      // this.handleScenesData()
       this.getList()
     },
     sceneMomentIndexSelected () {
@@ -658,7 +664,9 @@ export default {
     },
 
     update(autoSelect) {
-      this.$router.replace({query: {...this.$route.query, currentTimeType: this.currentTimeType}})
+      if(this.$route.query.currentTimeType != this.currentTimeType) {
+        this.$router.replace({query: {...this.$route.query, currentTimeType: this.currentTimeType}})
+      }
       if(this.currentTimeType !== 'Scenes' && this.$route.query.selectedDate) {
         this.$router.replace({query: {...this.$route.query, selectedDate: null }})
       }
