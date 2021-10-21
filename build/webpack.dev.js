@@ -10,8 +10,9 @@ const PORT = process.env.PORT && Number(process.env.PORT)
 module.exports = merge(common, {
     mode: 'development',
     output: {
-        filename: 'main.bundle.js',
         path: path.resolve(__dirname, '../dist'),
+        filename: 'main.bundle.js',
+        publicPath: '/',
     },
     plugins: [
         new HtmlWebpackPlugin({
