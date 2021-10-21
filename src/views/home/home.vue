@@ -129,6 +129,76 @@ export default {
     ReportHistory,
     PredictedLayersTable,
   },
+  data() {
+    return {
+      loggingOut: false,
+      showControls: true,
+      mainMenu: [
+        {
+          title: 'Areas',
+          icon: 'crosshair',
+          key: 'areas',
+          selected: false
+        }, {
+          title: 'Indexes',
+          icon: 'layers',
+          key: 'indexes',
+          selected: false
+        },
+        {
+          title: 'Predicted',
+          icon: 'net',
+          key: 'predicted',
+          selected: false
+        }
+      ],
+      reportMenu: [
+        {
+          title: 'Create Report',
+          icon: 'report',
+          key: 'create-report',
+          selected: false,
+          hide: true
+        }
+      ],
+      activePanel: '',
+      stdPanelVisible: false,
+      isNewReport: false,
+      logoSimpleUrl: require('@/assets/images/logo/T1_logo.png'),
+      combinedShapeOn: require('@/assets/images/icons/combined-shape-on.svg'),
+      combinedShapeOff: require('@/assets/images/icons/combined-shape-off.svg'),
+      menuLabel: {
+        area: 'Areas',
+        index: 'Indexes',
+        predicted: 'Predicted Layers',
+      }
+    }
+  },
+  head: {
+    title: {
+      inner: 'Homepage'
+    }
+  },
+  computed: {
+    ...mapState({
+      aggregationLayer: state => state.aggregationLayer,
+      formulaRows: state => state.formula,
+      predictedLayer: state => state.predictedLayer,
+      selectedLayer: state => state.aggregationLayer.selectedLayer,
+      selectedFormula: state => state.formula.selectedFormula,
+      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
+      baselayer: state => state.map.baselayer,
+      lOpacity: state => state.map.lOpacity,
+      pOpacity: state => state.map.pOpacity,
+      selectedMoment: state => state.time.selectedMoment
+    }),
+    isPhone() {
+      return this.$deviceInfo.isPhone;
+    },
+    isTouch() {
+      return this.$deviceInfo.isTouch;
+    },
+  },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       // Baselayer.
@@ -230,76 +300,6 @@ export default {
     }
 
     next()
-  },
-  data() {
-    return {
-      loggingOut: false,
-      showControls: true,
-      mainMenu: [
-        {
-          title: 'Areas',
-          icon: 'crosshair',
-          key: 'areas',
-          selected: false
-        }, {
-          title: 'Indexes',
-          icon: 'layers',
-          key: 'indexes',
-          selected: false
-        },
-        {
-          title: 'Predicted',
-          icon: 'net',
-          key: 'predicted',
-          selected: false
-        }
-      ],
-      reportMenu: [
-        {
-          title: 'Create Report',
-          icon: 'report',
-          key: 'create-report',
-          selected: false,
-          hide: true
-        }
-      ],
-      activePanel: '',
-      stdPanelVisible: false,
-      isNewReport: false,
-      logoSimpleUrl: require('@/assets/images/logo/T1_logo.png'),
-      combinedShapeOn: require('@/assets/images/icons/combined-shape-on.svg'),
-      combinedShapeOff: require('@/assets/images/icons/combined-shape-off.svg'),
-      menuLabel: {
-        area: 'Areas',
-        index: 'Indexes',
-        predicted: 'Predicted Layers',
-      }
-    }
-  },
-  head: {
-    title: {
-      inner: 'Homepage'
-    }
-  },
-  computed: {
-    ...mapState({
-      aggregationLayer: state => state.aggregationLayer,
-      formulaRows: state => state.formula,
-      predictedLayer: state => state.predictedLayer,
-      selectedLayer: state => state.aggregationLayer.selectedLayer,
-      selectedFormula: state => state.formula.selectedFormula,
-      selectedPredictedLayer: state => state.predictedLayer.selectedLayer,
-      baselayer: state => state.map.baselayer,
-      lOpacity: state => state.map.lOpacity,
-      pOpacity: state => state.map.pOpacity,
-      selectedMoment: state => state.time.selectedMoment
-    }),
-    isPhone() {
-      return this.$deviceInfo.isPhone;
-    },
-    isTouch() {
-      return this.$deviceInfo.isTouch;
-    },
   },
 
   methods: {
