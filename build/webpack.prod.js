@@ -11,8 +11,9 @@ module.exports = merge(common, {
     mode: 'production',
     target: 'browserslist',
     output: {
-        filename: 'static/js/[name].[contenthash].js',
         path: path.resolve(__dirname, '../dist'),
+        filename: 'static/js/[name].[contenthash].js',
+        publicPath: '/',
     },
     optimization: {
         runtimeChunk: {
