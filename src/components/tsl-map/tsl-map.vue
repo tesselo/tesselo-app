@@ -11,6 +11,7 @@
         :show="showControls"
         :position="zoomPosition" />
       <v-geosearch
+        v-if="!isTouch"
         :options="geosearchOptions" />
       <l-control-attribution
         :position="attributionPosition"
