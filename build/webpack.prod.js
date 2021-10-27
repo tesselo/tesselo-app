@@ -9,7 +9,6 @@ const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 
 module.exports = merge(common, {
     mode: 'production',
-    target: 'browserslist',
     output: {
         path: path.resolve(__dirname, '../dist'),
         filename: 'static/js/[name].[contenthash].js',
