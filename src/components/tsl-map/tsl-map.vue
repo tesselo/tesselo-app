@@ -924,6 +924,22 @@ export default {
           border-bottom: none;
         }
       }
+
+
+    .leaflet-control-zoom {
+      .leaflet-control-zoom-in {
+        color: #606266;
+        font-size: 22px;
+        font-weight: 400;
+        height: 31px;
+      }
+
+      .leaflet-control-zoom-out {
+        color: #606266;
+        font-size: 22px;
+        font-weight: 400;
+        height: 31px;
+      }
     }
   }
 </style>
