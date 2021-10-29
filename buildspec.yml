@@ -13,3 +13,4 @@ phases:
       - npm run build:production
       - echo "Pushing new build to s3://$BUCKET"
       - aws s3 sync --exclude *.js.map --acl public-read dist/ s3://$BUCKET
+      - npm run e2e test/pupeteer/login.test.js
