@@ -23,7 +23,7 @@
       <div v-if="predicted">
         <h4><b>{{ infoBlockData.mainClass }}</b></h4>
         <h3>{{ mostCommonDiscrete.category }}</h3>
-        <h4><b-2>{{ mostCommonDiscrete.area.toFixed(2) }} ha | {{ mostCommonDiscrete.percentage }}%</b-2></h4>
+        <h4>{{ mostCommonDiscrete.area.toFixed(2) }} ha | {{ mostCommonDiscrete.percentage }}%</h4>
         <br>
         <h4><b>{{ infoBlockData.totalArea }}</b></h4>
         <h3>{{ mostCommonDiscrete.totalArea }} ha</h3>
