@@ -62,6 +62,16 @@ extend('min', {
 Vue.component('ValidationProvider', ValidationProvider)
 Vue.component('ValidationObserver', ValidationObserver)
 
+Vue.config.errorHandler = function (err, vm, info) {
+  console.log('Vue error handler: ', err, vm, info);
+};
+Vue.config.warnHandler = function (err, vm, info) {
+  console.log('Vue warn handler: ', err, vm, info);
+};
+
+// Prevent vue spamming in console with "helpful" tips
+Vue.config.productionTip = process.env.NODE_ENV == 'production' ? false : true;
+
 Sentry.init({
   Vue,
   dsn: process.env.SENTRY_DSN,
