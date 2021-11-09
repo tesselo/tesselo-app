@@ -47,6 +47,8 @@ import {
   Pagination as ElPagination
 } from 'element-ui'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'AreasTable',
   components: {
@@ -102,6 +104,7 @@ export default {
       this.setMapHomeBounds(area.bounds)
       if (this.setRouterQueryParameters){
         this.$router.replace({query: {...this.$route.query, area: area.id, zoom: undefined, centerLat: undefined, centerLng: undefined}})
+        .catch(errorHandler.routerError)
       }
       this.$emit('select', area)
     },

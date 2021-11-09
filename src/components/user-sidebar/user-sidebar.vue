@@ -135,6 +135,8 @@
 <script>
 import { mapState } from "vuex";
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: "UserSidebar",
   data() {
@@ -173,7 +175,7 @@ export default {
 
     logout() {
       this.open = false;
-      this.$router.push({ name: "Logout" });
+      this.$router.push({ name: "Logout" }).catch(errorHandler.routerError)
     },
 
     /**
@@ -202,7 +204,7 @@ export default {
     handleGoToClick(data){
       if (data.url === undefined) return
       const params = this._getUrlParams(data.url)
-      this.$router.push({query: params})
+      this.$router.push({query: params}).catch(errorHandler.routerError)
     }
   }
 };

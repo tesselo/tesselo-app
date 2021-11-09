@@ -320,6 +320,7 @@ import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
 import { Tooltip } from 'element-ui'
 import months from '@/utils/months'
 import chartColors from '@/utils/chart-colors'
+import errorHandler from '@/utils/errorHandler'
 import * as Sentry from "@sentry/vue"
 
 export default {
@@ -631,11 +632,14 @@ export default {
     }
     if(this.predicted || this.predictedArea) {
       query.predictedLayer = {id: this.$route.params.predictedLayer}
-      this.$router.replace({
-        query: {
-          selectedMomentId: this.selectedMomentId || this.$route.query.selectedMomentId,
-          rgbMiniMapId: this.rgbMiniMap.id || this.$route.query.rgbMiniMapId,
-      }})
+      if ((this.$route.query.selectedMomentId != this.selectedMomentId && _.isUndefined(this.$route.query.selectedMomentId)) || 
+         (this.$route.query.rgbMiniMapId != this.rgbMiniMap.id && _.isUndefined(this.$route.query.rgbMiniMapId))) {
+        this.$router.replace({
+          query: {
+            selectedMomentId: this.selectedMomentId || this.$route.query.selectedMomentId,
+            rgbMiniMapId: this.rgbMiniMap.id || this.$route.query.rgbMiniMapId,
+        }}).catch(errorHandler.routerError)
+      }
     } else {
       query.formula = this.selectedFormula ? {id: this.selectedFormula.id} : {id: this.$route.params.formula}
     }
@@ -758,7 +762,7 @@ export default {
     closeReport() {
       this.$router.push({
           name: routeTypes.HOME,
-        })
+        }).catch(errorHandler.routerError)
     },
     // This allows to decide which page we request in a wacth event change
     definePageForQuery(){

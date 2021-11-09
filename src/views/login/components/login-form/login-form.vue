@@ -60,6 +60,8 @@ import { actionTypes } from '@/services/constants'
 import TslInput from '@/components/tsl-input/tsl-input'
 import TslButton from '@/components/tsl-button/tsl-button'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'LoginForm',
   components: {
@@ -94,7 +96,7 @@ export default {
       })
       .then(() => {
         this.loading = false
-        this.$router.push({ name: 'Home' })
+        this.$router.push({ name: 'Home' }).catch(errorHandler.routerError)
       })
       .catch(errors => {
         this.loading = false

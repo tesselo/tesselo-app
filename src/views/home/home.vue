@@ -115,6 +115,8 @@ import MultipleReport from '@/components/multiple-report/multiple-report'
 import ReportHistory from '@/components/report-history/report-history'
 import PredictedLayersTable from '@/components/predicted-layers-table/predicted-layers-table'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'Home',
   components: {
@@ -246,7 +248,7 @@ export default {
         vm.setActiveYear(parseInt(to.query.selectedYear))
       }
       if (to.query.selectedMonth) {
-        vm.setActiveMonth(MONTHS.findIndex(item => item.label == to.query.selectedMonth))
+        vm.setActiveMonth(months.findIndex(item => item.label == to.query.selectedMonth))
       }
       if(to.query.selectedMomentId){
         vm.setActiveMomentId(parseInt(to.query.selectedMomentId))
@@ -293,7 +295,7 @@ export default {
       this.setActiveYear(parseInt(to.query.selectedYear))
     }
     if(to.query.selectedMonth && to.query.selectedMonth != from.query.selectedMonth) {
-      this.setActiveMonth(MONTHS.findIndex(item => item.label == to.query.selectedMonth))
+      this.setActiveMonth(months.findIndex(item => item.label == to.query.selectedMonth))
     }
     if(to.query.selectedMomentId && to.query.selectedMomentId != from.query.selectedMomentId){
       this.setActiveMomentId(parseInt(to.query.selectedMomentId))
@@ -517,7 +519,7 @@ export default {
             formula: this.selectedFormula.id,
             composite: this.selectedMoment.id,
             layer: this.selectedLayer.id
-          }})
+          }}).catch(errorHandler.routerError)
 
           // this.isNewReport = true
           // this.activePanel = 'multiple-report'

@@ -129,6 +129,8 @@ import { mapState } from 'vuex'
 import 'leaflet-range'
 import 'leaflet-range/L.Control.Range.css'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'ReportAoiItem',
   components: {
@@ -326,7 +328,7 @@ export default {
               predictedLayer: this.predictedLayer.id,
               area: this.agg.aggregationarea
             }
-          })
+          }).catch(errorHandler.routerError)
       } else {
         this.$router.push({
           name: routeTypes.REPORT_AREA,
@@ -335,7 +337,7 @@ export default {
             formula: this.agg.formula,
             area: this.agg.aggregationarea,
           }
-        })
+        }).catch(errorHandler.routerError)
       }
     },
     setOpacitySlider() {
