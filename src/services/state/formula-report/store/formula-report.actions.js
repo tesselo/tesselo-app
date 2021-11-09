@@ -1,6 +1,6 @@
 import { actionTypes, mutationTypes } from '@/services/constants'
 import APIAdapter from '@/services/api'
-import months from '@/assets/utils/months'
+import months from '@/utils/months'
 
 export default {
   /**
