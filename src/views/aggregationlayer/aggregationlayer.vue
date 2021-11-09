@@ -144,6 +144,7 @@ import { actionTypes, routeTypes } from '@/services/constants'
 import axios from 'axios'
 import AreasTable from '@/components/areas-table/areas-table'
 
+import errorHandler from '@/utils/errorHandler'
 
 export default {
   name: 'AggregationLayer',
@@ -215,18 +216,18 @@ export default {
       parseAggregationLayer: actionTypes.AGGREGATION_LAYER_PARSE_LAYER
     }),
     goBack(){
-      this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST})
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST}).catch(errorHandler.routerError)
     },
     goAreaList(){
-      this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, prams: {layer: this.selectedLayer.id}})
+      this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, prams: {layer: this.selectedLayer.id}}).catch(errorHandler.routerError)
     },
     areasTableSelect(layer) {
-      this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: layer.id}})
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: layer.id}}).catch(errorHandler.routerError)
     },
     createNew(){
       this.resetAggregationLayer()
       this.clearForm()
-      this.$router.push({name: routeTypes.AGGREGATION_LAYER_CREATE})
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_CREATE}).catch(errorHandler.routerError)
     },
     handleFileChange(file){
       this.selectedFile = file
@@ -322,7 +323,7 @@ export default {
             })
             // Go to detail page if this is a new layer.
             if (that.create){
-              that.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: that.selectedLayer.id}})
+              that.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: that.selectedLayer.id}}).catch(errorHandler.routerError)
             }
           })
         })
@@ -346,7 +347,7 @@ export default {
         this.$refs.listTable.getAggregationLayers({page: 1})
       })
       // Go back to list page.
-      this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST})
+      this.$router.push({name: routeTypes.AGGREGATION_LAYER_LIST}).catch(errorHandler.routerError)
     }
   }
 }
