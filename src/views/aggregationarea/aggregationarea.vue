@@ -128,6 +128,7 @@ import 'element-ui/lib/theme-chalk/dialog.css'
 import AggregationAreasTable from '@/components/aggregation-areas-table/aggregation-areas-table'
 import { actionTypes, routeTypes } from '@/services/constants'
 
+import errorHandler from '@/utils/errorHandler'
 
 export default {
   components: {
@@ -241,9 +242,9 @@ export default {
     },
     goBack(){
       if(this.list) {
-        this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: this.selectedLayer.id}})
+        this.$router.push({name: routeTypes.AGGREGATION_LAYER_EDIT, params: {layer: this.selectedLayer.id}}).catch(errorHandler.routerError)
       } else {
-        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.selectedLayer.id}})
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.selectedLayer.id}}).catch(errorHandler.routerError)
       }
       // Clear messages.
       this.msgs = []
@@ -257,7 +258,7 @@ export default {
       }
       this.geojson = null
       this.resetAggregationAreaAction()
-      this.$router.push({name: routeTypes.AGGREGATION_AREA_CREATE})
+      this.$router.push({name: routeTypes.AGGREGATION_AREA_CREATE}).catch(errorHandler.routerError)
       // Clear messages.
       this.msgs = []
     },
@@ -314,7 +315,7 @@ export default {
 
       // Push route if necessary.
       if (this.$route.name != routeTypes.AGGREGATION_AREA_EDIT) {
-        this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: this.selectedLayer.id, area: this.selectedArea.id}})
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_EDIT, params: {layer: this.selectedLayer.id, area: this.selectedArea.id}}).catch(errorHandler.routerError)
       }
     },
     onSubmit(){
@@ -369,7 +370,7 @@ export default {
         // Reload layer list (to update geom count).
         this.getAggregationLayerAction({page: this.layerPage})
         // Go back to aggregation area list.
-        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.selectedLayer.id}})
+        this.$router.push({name: routeTypes.AGGREGATION_AREA_LIST, params: {layer: this.selectedLayer.id}}).catch(errorHandler.routerError)
       })
     }
   }

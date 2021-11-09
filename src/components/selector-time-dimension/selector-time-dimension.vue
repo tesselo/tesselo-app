@@ -248,6 +248,8 @@ import months from '@/utils/months'
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
 import SimpleToggle from '@/components/simple-toggle/simple-toggle'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'SelectorTimeDimension',
   components: {
@@ -267,7 +269,7 @@ export default {
       loading: false,
       yearsActiveIndex: 0,
       sceneSelectedValue: new Date(),
-      months: MONTHS,
+      months: months,
       daysOfWeek: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
       detailedDaysOfMonth: [],
       detailedSceneActive: null,
@@ -365,6 +367,7 @@ export default {
     activeYear (newVal) {
       if (this.$route.query.selectedYear != newVal) {
         this.$router.replace({query: {...this.$route.query, selectedYear: newVal}})
+        .catch(errorHandler.routerError)
       }
       this.setYearsActiveIndex()
       this.getList()
@@ -375,12 +378,14 @@ export default {
       this.handleScenesData()
       if (this.$route.query.selectedMonth != selectedMonth) {
         this.$router.replace({query: {...this.$route.query, selectedMonth: selectedMonth}})
+        .catch(errorHandler.routerError)
       }
     },
     selectedMoment(newVal){
       if(newVal){
         if(this.$route.query.selectedMomentId != newVal.id) {
           this.$router.replace({query: {...this.$route.query, selectedMomentId: newVal.id}})
+          .catch(errorHandler.routerError)
         }
         this.selectMomentIdAction(newVal.id)
         this.setActiveYear(parseInt(newVal.year))
@@ -617,6 +622,7 @@ export default {
       this.debouncedGetList(autoSelect)
       if(this.activeYear && this.$route.query.selectedYear != this.activeYear){
         this.$router.replace({query: {...this.$route.query, selectedYear: this.activeYear}})
+        .catch(errorHandler.routerError)
       }
     },
 
@@ -660,15 +666,17 @@ export default {
     },
 
     setActiveMonthByLabel (data) {
-      this.setActiveMonth(MONTHS.findIndex(month => month.label == data.label))
+      this.setActiveMonth(months.findIndex(month => month.label == data.label))
     },
 
     update(autoSelect) {
       if(this.$route.query.currentTimeType != this.currentTimeType) {
         this.$router.replace({query: {...this.$route.query, currentTimeType: this.currentTimeType}})
+        .catch(errorHandler.routerError)
       }
       if(this.currentTimeType !== 'Scenes' && this.$route.query.selectedDate) {
         this.$router.replace({query: {...this.$route.query, selectedDate: null }})
+        .catch(errorHandler.routerError)
       }
       this.getList(autoSelect)
     },

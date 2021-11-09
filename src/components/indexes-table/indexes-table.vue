@@ -48,6 +48,8 @@ import {
   Pagination as ElPagination
 } from 'element-ui'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'IndexesTable',
   components: {
@@ -92,6 +94,7 @@ export default {
       this.selectFormula(area)
       if (this.$route.query.layer != area.id) {
         this.$router.replace({query: {...this.$route.query, layer: area.id}})
+        .catch(errorHandler.routerError)
       }
       this.$emit('select', area)
     },
