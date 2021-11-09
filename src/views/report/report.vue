@@ -318,8 +318,8 @@ import AoiItem from './components/aoi-item/aoi-item'
 import _ from 'lodash'
 import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
 import { Tooltip } from 'element-ui'
-import months from '@/assets/utils/months'
-import chartColors from '@/assets/utils/chart-colors'
+import months from '@/utils/months'
+import chartColors from '@/utils/chart-colors'
 import * as Sentry from "@sentry/vue"
 
 export default {
