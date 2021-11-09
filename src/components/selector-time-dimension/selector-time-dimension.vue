@@ -244,7 +244,7 @@ import { actionTypes } from '@/services/constants'
 import { Popover as ElPopover } from 'element-ui'
 import 'element-ui/lib/theme-chalk/popover.css'
 
-import MONTHS from '@/assets/utils/months'
+import months from '@/utils/months'
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
 import SimpleToggle from '@/components/simple-toggle/simple-toggle'
 
