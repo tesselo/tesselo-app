@@ -45,6 +45,8 @@ import {
   Pagination as ElPagination
 } from 'element-ui'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'PredictedLayerTable',
   components: {
@@ -118,12 +120,14 @@ export default {
       if(this.selectedLayer && layer.id === this.selectedLayer.id) {
         if (this.$route.query.predictedlayer != layer.id) {
           this.$router.replace({query: {...this.$route.query, predictedlayer: layer.id}})
+          .catch(errorHandler.routerError)
         }
         this.selectPredictedLayer()
         this.$emit('select')
       } else {
         if (this.$route.query.predictedlayer != layer.id) {
           this.$router.replace({query: {...this.$route.query, predictedlayer: layer.id}})
+          .catch(errorHandler.routerError)
         }
         this.selectPredictedLayer(layer)
         this.$emit('select', layer)

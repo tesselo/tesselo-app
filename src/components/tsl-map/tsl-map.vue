@@ -170,6 +170,8 @@ import { routeTypes } from '@/services/constants'
 
 import notifications from '../notification'
 
+import errorHandler from '@/utils/errorHandler'
+
 export default {
   name: 'TslMap',
   components: {
@@ -361,6 +363,7 @@ export default {
         this.predictedSlider = null
         // Remove predicted layer from url.
         this.$router.replace({query: {...this.$route.query, predictedlayer: undefined }})
+        .catch(errorHandler.routerError)
       }
     },
     showControls(newValue){
@@ -421,6 +424,7 @@ export default {
       this.mapSetBaselayer(selected.slug)
       if(this.$route.query.mapOption != selected.slug) {
         this.$router.replace({query: {...this.$route.query, mapOption: selected.slug}})
+        .catch(errorHandler.routerError)
       }
     },
     updateBounds(){
@@ -430,12 +434,15 @@ export default {
       this.setZoom(zoom)
       if(this.$route.query.zoom != zoom) {
         this.$router.replace({query: {...this.$route.query, zoom: zoom}})
+        .catch(errorHandler.routerError)
       }
       if(this.$route.query.centerLat != center.lat) {
         this.$router.replace({query: {...this.$route.query, centerLat: center.lat }})
+        .catch(errorHandler.routerError)
       }
       if(this.$route.query.centerLng != center.lng) {
         this.$router.replace({query: {...this.$route.query, centerLng: center.lng }})
+        .catch(errorHandler.routerError)
       }
     },
     setOpacitySlider() {
@@ -520,7 +527,7 @@ export default {
             predictedLayer: this.selectedPredictedLayer.id,
             area: e.layer.properties.id
           }
-        })
+        }).catch(errorHandler.routerError)
       } else {
         this.$router.push({
           name: routeTypes.REPORT_AREA,
@@ -529,7 +536,7 @@ export default {
             formula: this.selectedFormula.id,
             area: e.layer.properties.id
           }
-        })
+        }).catch(errorHandler.routerError)
       }
       notifications.closeAll()
     },
@@ -698,7 +705,7 @@ export default {
             layer: this.selectedLayer.id,
             predictedLayer: this.selectedPredictedLayer.id
           }
-        })
+        }).catch(errorHandler.routerError)
       } else {
         if (this.selectedFormula && this.selectedFormula.acronym == 'RGB') {
           this.$alert('Reports are not available for RGB layer. Please select a different layer.', 'Report Information:', {
@@ -714,7 +721,7 @@ export default {
             layer: this.selectedLayer.id,
             formula: this.selectedFormula.id
           }
-        })
+        }).catch(errorHandler.routerError)
       }
     },
 
