@@ -62,7 +62,7 @@ jobs:
           key: ${{ runner.os }}-npm-${{ github.sha }}
 
       - name: Build App
-        run: npm run build:staging
+        run: npm run build:production
 
 
   tests_execution:
