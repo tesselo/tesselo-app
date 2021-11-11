@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout tesselo-app
+      - name: Checkout tesselo-appo
         uses: actions/checkout@v2
 
       - name: Setup node.js environment
@@ -127,4 +127,4 @@ jobs:
         uses: chetan/invalidate-cloud-front-action@v1.3
         env: 
           DISTRIBUTION: E1X9H8PC4Q5SNJ
-          PATHS: '/*'
+          PATHS: '/*' 
