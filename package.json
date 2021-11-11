@@ -9,6 +9,7 @@
     "build:dev": "API_ENV=production NODE_ENV=development webpack serve --config build/webpack.dev.js --open",
     "build:production": "NODE_ENV=production webpack --config build/webpack.prod.js",
     "test": "npm run unit && npm run e2e",
+    "tests": "npm run e2e test/pupeteer/login.test.js",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "jest",
     "lint": "eslint --ext .js,.vue src test",
@@ -120,7 +121,7 @@
     "webpack-merge": "^5.8.0"
   },
   "engines": {
-    "node": ">= 12.0.0",
+    "node": ">= 14.0.0",
     "npm": ">= 3.0.0"
   },
   "browserslist": [
