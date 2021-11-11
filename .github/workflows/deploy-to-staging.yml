@@ -99,7 +99,7 @@ jobs:
           BUCKET: staggingapp.tesselo.com
 
       - name: Invalidate CloudFront
-        uses: chetan/invalidate-cloud-front-action@v1.3
+        uses: chetan/invalidate-cloudfront-action@v2
         env: 
           DISTRIBUTION: E1X9H8PC4Q5SNJ
           PATHS: '/*' 
