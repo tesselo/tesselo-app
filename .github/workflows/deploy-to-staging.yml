@@ -12,6 +12,7 @@ jobs:
   js_dependencies:
     name: Javascript dependencies
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout tesselo-app
         uses: actions/checkout@v2
@@ -67,6 +68,9 @@ jobs:
   tests_execution:
       name: App tests
       needs: [js_dependencies, build]
+      runs-on: ubuntu-latest
+      
+      steps:
       - name: Checkout tesselo-app
         uses: actions/checkout@v2
 
@@ -95,6 +99,9 @@ jobs:
   deploy_to_staging:
       name: Deploy to staging
       needs: [js_dependencies, build, tests_execution]
+      runs-on: ubuntu-latest
+      
+      steps:
       - name: Checkout tesselo-app
         uses: actions/checkout@v2
 
