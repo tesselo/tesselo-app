@@ -103,7 +103,7 @@ jobs:
         run:
           aws s3 sync --exclude *.js.map --acl public-read dist/ s3://${{ env.BUCKET }}
         env:
-          BUCKET: staggingapp.tesselo.com
+          BUCKET: stagingapp.tesselo.com
 
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
