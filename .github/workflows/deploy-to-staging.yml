@@ -97,6 +97,7 @@ jobs:
           aws s3 sync --exclude *.js.map --acl public-read dist/ s3://${{ env.BUCKET }}
         env:
           BUCKET: staggingapp.tesselo.com
+          AWS_DEFAULT_REGION: 'eu-central-1'
 
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
