@@ -126,7 +126,7 @@ jobs:
 
       - name: Push new build to S3
         run:
-          aws s3 sync --exclude *.js.map --acl public-read dist/ s3://${{ BUCKET }}
+          aws s3 sync --exclude *.js.map --acl public-read dist/ s3://${{ env.BUCKET }}
         env:
           BUCKET: staggingapp.tesselo.com
 
