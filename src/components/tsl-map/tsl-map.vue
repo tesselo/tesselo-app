@@ -612,8 +612,7 @@ export default {
       this.doc.addImage(data.map_canvas.toDataURL(), format, 0, 0, data.map_canvas.width, data.map_canvas.height)
 
       // Font settings.
-      this.doc.setFont('helvetica')
-      this.doc.setFontType('bold')
+      this.doc.setFont('helvetica', 'bold')
       const font_size = this.doc.internal.pageSize.width > 768 ? 25 : 15
       this.doc.setFontSize(font_size)
       // this.doc.setTextColor('#2F2D7E')
