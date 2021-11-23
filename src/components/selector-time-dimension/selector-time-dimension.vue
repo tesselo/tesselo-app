@@ -241,8 +241,8 @@ import { debounce, cloneDeep } from 'lodash'
 
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
-import { Popover as ElPopover } from 'element-ui'
-import 'element-ui/lib/theme-chalk/popover.css'
+import { ElSelect} from 'element-plus'
+import 'element-plus/theme-chalk/el-popover.css'
 
 import months from '@/utils/months'
 import ScrollableTabMenu from '@/components/scrollable-tab-menu/scrollable-tab-menu'
@@ -255,7 +255,7 @@ export default {
   components: {
     ScrollableTabMenu,
     SimpleToggle,
-    ElPopover
+    ElSelect
   },
   props: {
     showPicker: {
@@ -432,7 +432,7 @@ export default {
     document.body.addEventListener('keydown', this.handleKeyboardNavigation)
   },
 
-  beforeDestroy () {
+  beforeUnmount () {
     document.body.removeEventListener('keydown', this.handleKeyboardNavigation)
   },
 
@@ -1028,11 +1028,11 @@ export default {
           color: $navy;
         }
 
-        /deep/ .el-input {
+        :deep(.el-input) {
           max-width: 180px;
         }
 
-        /deep/ input {
+        :deep(input) {
           padding-left: 90px;
         }
       }

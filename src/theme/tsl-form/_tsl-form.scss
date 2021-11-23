@@ -4,7 +4,8 @@
 
 .tsl-form__control {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .tsl-form__label {
@@ -40,9 +41,9 @@
 .tsl-form__control-error {
   width: 100%;
   font-size: 12px;
-  margin-top: 10px;
+  margin-top: 0px;
   padding: 0 6px;
-
+  position: fixed;
   color: red;
 }
 

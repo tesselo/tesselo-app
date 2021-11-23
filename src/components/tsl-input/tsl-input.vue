@@ -1,11 +1,12 @@
 <template>
-  <div class="tsl-form__control">
+  <!-- <div class="tsl-form__control">
     <label
       :for="name"
       class="tsl-form__label">
       {{ label }}
     </label>
     <input
+      :v-bind="vbind"
       :name="name"
       :type="type"
       :value="value"
@@ -17,7 +18,29 @@
     <div class="tsl-form__control-error">
       <slot name="error"/>
     </div>
+  </div> -->
+
+
+  <div class="tsl-form__control"> 
+    <label
+      :for="name"
+      class="tsl-form__label">
+      {{ label }}
+    </label>
+    <Field 
+      :v-model="vmodel" 
+      :name="name" 
+      :v-slot="{ fieldName }" 
+      :rules="isRequired" >
+        <input 
+          :v-bind="fieldName" 
+          :type="typeName" 
+          :placeholder="placeholder" 
+          class="tsl-form__input">
+    </Field>
   </div>
+  <ErrorMessage as="div" :name="name" class="tsl-form__control-error"/>
+
 </template>
 <script>
 export default {
@@ -47,6 +70,7 @@ export default {
       type: Boolean,
       default: false
     },
+    vbind: String
   }
 }
 </script>

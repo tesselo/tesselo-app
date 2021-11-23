@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue, { createApp } from 'vue'
+import Vuex, { createStore } from 'vuex'
 
 import app from '@/services/state/app/store'
 import auth from '@/services/state/auth/store'
@@ -31,7 +31,15 @@ import bookmarkState from './state/bookmark/store/bookmark.state';
 
 const debug = process.env.NODE_ENV === 'development'
 
-Vue.use(Vuex)
+// const app1 = createApp({
+//   render: h => h(App)
+// })
+
+// //console.log(app, + ' ' + appState)
+
+// //app1.use(Vuex)
+
+
 
 const initialState = {
   app: cloneDeep(appState),
@@ -48,7 +56,69 @@ const initialState = {
   bookmark: cloneDeep(bookmarkState),
 }
 
-export const storeOptions = {
+// const store = createStore({
+//   state: {
+//     app: cloneDeep(appState),
+//     auth: cloneDeep(authState),
+//     aggregationLayer: cloneDeep(aggregationLayerState),
+//     aggregationArea: cloneDeep(aggregationAreaState),
+//     map: cloneDeep(mapState),
+//     predictedLayer: cloneDeep(predictedLayerState),
+//     formula: cloneDeep(formulaState),
+//     formulaReport: cloneDeep(formulaReportState),
+//     report: cloneDeep(reportState),
+//     time: cloneDeep(timeState),
+//     bookmarkFolder: cloneDeep(bookmarkFolderState),
+//     bookmark: cloneDeep(bookmarkState),
+//   },
+//  mutations: {
+//     ...app.mutations,
+//     ...auth.mutations,
+//     ... aggregationLayer.mutations,
+//     ...aggregationArea.mutations,
+//     ...map.mutations,
+//     ... predictedLayer.mutations,
+//     ... formula.mutations,
+//     ...formulaReport.mutations,
+//     ...report.mutations,
+//     ...time.mutations,
+//     ... bookmarkFolder.mutations,
+//     ...bookmark.mutations,
+//  }
+  
+  
+// })
+
+// const a = {
+//   mutations: {
+//     ...app.mutations,
+//     ...auth.mutations
+// }
+//   //a.mutations.push(app.mutations)
+//     // [app.mutations,
+//     // auth.mutations]
+//     // initialState.aggregationLayer.mutations +
+//     // initialState.aggregationArea.mutations +
+//     // initialState.map.mutations +
+//     // initialState.predictedLayer.mutations +
+//     // initialState.formula.mutations +
+//     // initialState.formulaReport.mutations +
+//     // initialState.report.mutations +
+//     // initialState.time.mutations,
+//     //bookmarkFolder: initialState.bookmarkFolder.mutations,
+//     //bookmark: initialState.bookmark.mutations,
+  
+// }
+
+// //console.log(app)
+
+// console.log(a )
+
+// //console.log(initialState)
+
+// //console.log(app.mutations)
+
+const storeOptions = {
   modules: {
     app,
     auth,
@@ -75,4 +145,4 @@ export const storeOptions = {
   strict: debug
 }
 
-export default new Vuex.Store(storeOptions)
+export default createStore(storeOptions)

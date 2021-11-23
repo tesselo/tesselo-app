@@ -102,7 +102,7 @@
           <div
             v-if="confirmDelete==true"
             class="confirm-delete-text"
-            v-html="getDeleteMessage()"> {{ getDeleteMessage() }}</div>
+            v-html="getDeleteMessage()"></div>
         </div>
 
         <div
@@ -155,6 +155,7 @@
 <script>
 import { mapActions } from "vuex";
 import { actionTypes } from "@/services/constants";
+import { ElInput, ElSelect } from 'element-plus'
 
 export default {
   name: "BookmarkModal",
@@ -175,6 +176,10 @@ export default {
       type: Array,
       default: null
     }
+  },
+  components: {
+    ElInput,
+    ElSelect
   },
   data() {
     return {
@@ -592,7 +597,7 @@ export default {
   transform: scale(1.1);
 }
 
-/deep/ .el-form-item {
+:deep(.el-form-item) {
   &__error {
     position: absolute;
     padding-top: 2px;

@@ -86,6 +86,12 @@ export default {
        this.bookmark = data
       }
     }
+  },
+  beforeUnmount() {
+    console.log('beforeUnmount has been called')
+  },
+  unmounted() {
+    console.log('unmounted has been called')
   }
 }
 </script>

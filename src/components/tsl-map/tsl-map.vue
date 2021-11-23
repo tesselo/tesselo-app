@@ -23,7 +23,7 @@
           :title="hoverInfo.printReport"
           type="text"
           class="export-button"
-          icon="el-icon-printer"
+          icon="icon-printer"
           @click="toggleExport" />
       </l-control>
       <l-control
@@ -105,15 +105,17 @@
       format="list"
       class="predicted-legend"
       tip="Hover colors to see details."/>
-
-    <map-export
-      v-if="showExportPanel"
-      :data="exportTable"
-      :processing="exportProcessing"
-      @print-pdf="printPdf"
-      @clear-exports="clearExports"
-      @add-page="addImage"
-      @close="toggleExport"/>
+    <transition
+      name="fade">
+        <map-export
+          v-if="showExportPanel"
+          :data="exportTable"
+          :processing="exportProcessing"
+          @print-pdf="printPdf"
+          @clear-exports="clearExports"
+          @add-page="addImage"
+          @close="toggleExport"/>
+    </transition>
 
     <h1> {{ selectedFormulaLegend }} </h1>
   </div>
@@ -154,8 +156,8 @@ import 'leaflet.defaultextent/dist/leaflet.defaultextent.css'
 import 'leaflet-range'
 import 'leaflet-range/L.Control.Range.css'
 
-// Element-ui styles.
-import 'element-ui/lib/theme-chalk/index.css';
+// element-plus styles.
+import 'element-plus/theme-chalk/index.css';
 
 // Vector grids for vue.
 import Vue2LeafletVectorGridProtobuf from 'vue2-leaflet-vectorgrid'
@@ -227,7 +229,7 @@ export default {
         report: 'Report',
         defaultZoom: 'Default Zoom',
         printReport: 'Print Report',
-      },
+      }
     }
   },
   computed: {
@@ -355,6 +357,11 @@ export default {
         this.defaultExtent.setCenter(bounds.getCenter())
         this.defaultExtent.setZoom(this.$refs.map.mapObject.getBoundsZoom(bounds))
       }
+
+    // Test $refs for tile providers and wms providers
+    console.log('refs: tileProviders -> ' + this.$refs.tileProviders)
+    console.log('refs: map -> ' + this.$refs.map)
+    console.log('refs: wmsProviders -> ' + this.$refs.wmsProviders)
     },
     selectedPredictedLayer (newValue) {
       if (!newValue && this.predictedSlider !== null) {
@@ -415,6 +422,22 @@ export default {
       mapSetPredictedOpacity: actionTypes.MAP_SET_P_OPACITY,
       setZoom: actionTypes.MAP_SET_ZOOM,
     }),
+    // setTileProviders(el){
+    //   if (el) {
+    //     this.$refs.tileProviders.push(el)
+    //   }
+    // },
+    // setMap(el){
+    //   if (el) {
+    //     this.$map.push(el)
+    //   }
+    // },
+    // setWmsProviders(el){
+    //   if (el) {
+    //     this.$refs.wmsProviders.push(el)
+    //   }
+    //   //console.log(this.$refs.wmsProviders)
+    // },
     /**
      * Set selected option on URL based on index
      */
@@ -779,6 +802,13 @@ export default {
         that.dataCallback(id)
       }
     }
+  },
+  beforeUpdate() {
+    //this.$refs.tileProviders = []
+   //this.$map = []
+    //this.$refs.wmsProviders = []
+  },
+  updated() {
   }
 }
 </script>
@@ -979,5 +1009,15 @@ export default {
         height: 31px;
       }
     }
+  }
+
+  .fade-enter-active, 
+  .fade-leave-active {
+    transition: opacity .4s ease-in-out;
+  }
+
+  .fade-enter-from, 
+  .fade-leave-to {
+    opacity: 0;
   }
 </style>

@@ -1,17 +1,17 @@
-import Vue from 'vue';
+import Vue, { isVNode } from 'vue';
 import Main from './main.vue';
-import merge from 'element-ui/src/utils/merge';
-import { PopupManager } from 'element-ui/src/utils/popup';
-import { isVNode } from 'element-ui/src/utils/vdom';
+//import merge from 'lodash';
+import PopupManager from 'element-plus/lib/utils/popup-manager';
+//import { isVNode } from 'element-plus/src/utils/vdom';
 import _ from 'lodash';
-const NotificationConstructor = Vue.extend(Main);
+const NotificationConstructor = Main;
 
 let instance;
 let instances = [];
 
 const Notification = function(options) {
   if (Vue.prototype.$isServer) return;
-  options = merge({}, options);
+  options = _.merge({}, options);
 
   options.onClose = function() {
     Notification.close();

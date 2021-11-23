@@ -259,7 +259,7 @@
         class="aoi-item-list">
         <aoi-item
           v-for="entry in rows"
-          ref="aois"
+          :ref="setAois"
           :key="entry.key"
           :agg="entry"
           :formula="selectedFormula"
@@ -289,21 +289,21 @@
 </template>
 
 <script>
-import 'element-ui/lib/theme-chalk/table.css'
-import 'element-ui/lib/theme-chalk/form.css'
-import 'element-ui/lib/theme-chalk/button.css'
-import 'element-ui/lib/theme-chalk/col.css'
-import 'element-ui/lib/theme-chalk/row.css'
-import 'element-ui/lib/theme-chalk/date-picker.css'
-import 'element-ui/lib/theme-chalk/time-picker.css'
-import 'element-ui/lib/theme-chalk/pagination.css'
-import 'element-ui/lib/theme-chalk/divider.css'
-import 'element-ui/lib/theme-chalk/radio.css'
-import 'element-ui/lib/theme-chalk/radio-button.css'
-import 'element-ui/lib/theme-chalk/radio-group.css'
-import 'element-ui/lib/theme-chalk/loading.css'
-import 'element-ui/lib/theme-chalk/input-number.css'
-import 'element-ui/lib/theme-chalk/switch.css'
+import 'element-plus/theme-chalk/el-table.css'
+import 'element-plus/theme-chalk/el-form.css'
+import 'element-plus/theme-chalk/el-button.css'
+import 'element-plus/theme-chalk/el-col.css'
+import 'element-plus/theme-chalk/el-row.css'
+import 'element-plus/theme-chalk/el-date-picker.css'
+import 'element-plus/theme-chalk/el-time-picker.css'
+import 'element-plus/theme-chalk/el-pagination.css'
+import 'element-plus/theme-chalk/el-divider.css'
+import 'element-plus/theme-chalk/el-radio.css'
+import 'element-plus/theme-chalk/el-radio-button.css'
+import 'element-plus/theme-chalk/el-radio-group.css'
+import 'element-plus/theme-chalk/el-loading.css'
+import 'element-plus/theme-chalk/el-input-number.css'
+import 'element-plus/theme-chalk/el-switch.css'
 
 import moment from 'moment'
 import html2canvas from 'html2canvas'
@@ -317,7 +317,7 @@ import LineChart from '@/components/charts/line-chart/line-chart'
 import AoiItem from './components/aoi-item/aoi-item'
 import _ from 'lodash'
 import { OpenSans } from '@/assets/fonts/OpenSans-Light-normal.js'
-import { Tooltip } from 'element-ui'
+import { ElTooltip } from 'element-plus'
 import months from '@/utils/months'
 import chartColors from '@/utils/chart-colors'
 import errorHandler from '@/utils/errorHandler'
@@ -329,7 +329,7 @@ export default {
     HorizontalBarChart,
     LineChart,
     AoiItem,
-    Tooltip,
+    ElTooltip,
   },
   data () {
     return {
@@ -759,6 +759,11 @@ export default {
       },
       800
     ),
+    setAois(el){
+      if (el) {
+        this.aois.push(el)
+      }
+    },
     closeReport() {
       this.$router.push({
           name: routeTypes.HOME,

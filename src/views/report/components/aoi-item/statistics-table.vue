@@ -4,7 +4,7 @@
     <el-table-column
       label=""
       width="50">
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <el-button
           :style="{backgroundColor: scope.row.color, borderColor: scope.row.color}"
           size="small"/>
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import 'element-plus/theme-chalk/el-table-column.css'
+
 export default {
   name: 'StatisticsTable',
   props: {
@@ -35,7 +37,7 @@ export default {
 </script>
 
 <style scoped>
-  .el-table >>> .cell{
+  .el-table :deep(.cell) {
     text-overflow: initial;
   }
 </style>

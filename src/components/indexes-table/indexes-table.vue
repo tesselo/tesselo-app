@@ -37,26 +37,26 @@
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
 
-import 'element-ui/lib/theme-chalk/table.css'
-import 'element-ui/lib/theme-chalk/table-column.css'
-import 'element-ui/lib/theme-chalk/pagination.css'
-import 'element-ui/lib/theme-chalk/icon.css'
+import 'element-plus/theme-chalk/el-table.css'
+import 'element-plus/theme-chalk/el-table-column.css'
+import 'element-plus/theme-chalk/el-pagination.css'
+import 'element-plus/theme-chalk/el-icon.css'
 
-import {
-  Table as ElTable,
-  TableColumn as ElTableColumn,
-  Pagination as ElPagination
-} from 'element-ui'
+// import {
+//   Table as ElTable,
+//   TableColumn as ElTableColumn,
+//   Pagination as ElPagination
+// } from 'element-plus'
 
 import errorHandler from '@/utils/errorHandler'
 
 export default {
   name: 'IndexesTable',
-  components: {
-    ElTable,
-    ElTableColumn,
-    ElPagination
-  },
+  // components: {
+  //   ElTable,
+  //   ElTableColumn,
+  //   ElPagination
+  // },
   data() {
     return {
       loading: false

@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue, { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '@/views/home/home'
 import Login from '@/views/login/login'
@@ -10,11 +10,14 @@ import AggArea from '@/views/aggregationarea/aggregationarea'
 
 import { routeTypes } from "@/services/constants"
 
-Vue.use(Router)
+const app1 = createApp({
+})
 
-const router = new Router({
+app1.use(router)
+
+const router = new createRouter({
   base: process.env.ROUTER_BASE,
-  mode: 'history',
+  history: createWebHistory(process.env.ROUTER_BASE),
   routes: [
     {
       path: '/login',

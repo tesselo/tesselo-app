@@ -4,15 +4,15 @@ require('@/services/modernizr')
 
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
+import Vue, { createApp, h, configureCompat } from 'vue'
 import Vuex from 'vuex'
-import Router from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
 import vMediaQuery from 'v-media-query'
 import { sync } from 'vuex-router-sync'
 import VueHead from 'vue-head'
 import DeviceInfo from '@/plugins/device-info'
-import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
-import { required, min } from 'vee-validate/dist/rules'
+import { Field, Form, extend } from 'vee-validate'
+//import { required, min } from '@vee-validate/dist/rules'
 import * as Sentry from '@sentry/vue'
 import { Integrations } from '@sentry/tracing'
 
@@ -21,19 +21,56 @@ import App from '@/views/app/app'
 import router from '@/services/router'
 import store from '@/services/store'
 
-import ElementUI from 'element-ui'
-import locale from 'element-ui/lib/locale/lang/en'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import locale from 'element-plus/lib/locale/lang/en'
+import './validators'
+//import { createRouter, createWebHistory } from 'vue-router'
 
-Vue.use(ElementUI, { locale })
+// var router = createRouter({
+//   history: createWebHistory(),
+//   routes: routes
+// })
+configureCompat({ WATCH_ARRAY: false, RENDER_FUNCTION: false })
 
-Vue.use(Router)
-Vue.router = router
+const app = createApp({
+  //component: {App},
+  //template: '<App/>',
+  // head: {
+  //     title: {
+  //       inner: 'Tesselo'
+  //     }
+  //   },
+  render: () => h(App)
+})
 
-Vue.use(Vuex)
-Vue.use(DeviceInfo)
-sync(store, router)
+// el: '#app',
+// router,
+// store,
+// components: { App },
+// template: '<App/>',
+// head: {
+//   title: {
+//     inner: 'Tesselo'
+//   }
+// }
+// })
 
-Vue.use(vMediaQuery, {
+//const app = createApp(App)
+
+
+
+app.use(router)
+app.use(store)
+
+//Vue.router = router
+
+app.use(ElementPlus)
+//app.use(Vuex)
+app.use(DeviceInfo)
+//sync(store, router)
+
+app.use(vMediaQuery, {
   variables: {
     xs: '480px',
     sm: '576px',
@@ -47,25 +84,30 @@ Vue.use(vMediaQuery, {
   }
 })
 
-Vue.use(VueHead)
+//app.use(VueHead)
 
 // Validation config.
-extend('required', {
-  ...required,
-  message: 'The {_field_} field is required.'
-})
-extend('min', {
-  ...min,
-  message: 'The input must be at least {length} characters long.'
-})
+// extend('required', {
+//   ...required,
+//   message: 'The {_field_} field is required.'
+// })
+// extend('min', {
+//   ...min,
+//   message: 'The input must be at least {length} characters long.'
+// })
 
-Vue.component('ValidationProvider', ValidationProvider)
-Vue.component('ValidationObserver', ValidationObserver)
+// isRequired (value) {
+//   console.log(value)
+//   //return value ? true : `The ${value} field is required`;
+// },
 
-Vue.config.errorHandler = function (err, vm, info) {
+app.component('Field', Field)
+app.component('Form', Form)
+
+app.config.errorHandler = function (err, vm, info) {
   console.log('Vue error handler: ', err, vm, info);
 };
-Vue.config.warnHandler = function (err, vm, info) {
+app.config.warnHandler = function (err, vm, info) {
   console.log('Vue warn handler: ', err, vm, info);
 };
 
@@ -81,15 +123,4 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 
-new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>',
-  head: {
-    title: {
-      inner: 'Tesselo'
-    }
-  }
-})
+app.mount("#app")

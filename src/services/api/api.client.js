@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
-    if (error.response.status === 401 && router.currentRoute.name != routeTypes.LOGIN) {
+    if (error.response.status === 401 /*&& router.currentRoute.name != routeTypes.LOGIN*/) {
       router.push({ name: "Logout" })
     }
     return Promise.reject(error.response)

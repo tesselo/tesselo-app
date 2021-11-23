@@ -28,17 +28,17 @@
 import { mapActions, mapState } from 'vuex'
 import { actionTypes } from '@/services/constants'
 
-import {
-  Table as ElTable,
-  TableColumn as ElTableColumn
-} from 'element-ui'
+// import {
+//   Table as ElTable,
+//   TableColumn as ElTableColumn
+// } from 'element-plus'
 
 export default {
   name: 'ReportHistory',
-  components: {
-    ElTable,
-    ElTableColumn
-  },
+  // components: {
+  //   ElTable,
+  //   ElTableColumn
+  // },
   computed: {
     ...mapState({
       rows: state => {

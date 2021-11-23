@@ -2,6 +2,8 @@ const { VueLoaderPlugin } = require('vue-loader')
 const path = require('path-browserify')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const webpack = require('webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 const mode = process.env.NODE_ENV
 let env
@@ -13,6 +15,9 @@ switch (mode) {
     case 'development':
         env = require('../config/dev.localhost.env');
         break;
+    case 'staging':
+        env = require('../config/staging.env');
+        break;
     default:
         env = require('../config/dev.env');
 }
@@ -22,6 +27,7 @@ module.exports = {
     // Control how source maps are generated
     devtool: (mode === 'development') ? 'inline-source-map' : false,
     plugins: [
+        Components(),
         // Define environmental variables
         new webpack.EnvironmentPlugin({
             NODE_ENV: env.NODE_ENV,
@@ -38,6 +44,10 @@ module.exports = {
                 path: path.resolve(__dirname, '../dist/**/*'),
             }
         ),
+        new webpack.DefinePlugin({
+            __VUE_OPTIONS_API__: true, // (enable/disable Options API support, default: true)
+            __VUE_PROD_DEVTOOLS__: false, // (enable/disable devtools support in production, default: false)
+        }),
     ],
     performance: {
         hints: process.env.NODE_ENV === 'production' ? "warning" : false,
@@ -45,6 +55,7 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.vue', '.json'],
         alias: {
+            vue: '@vue/compat',
             'vue$': 'vue/dist/vue.esm.js',
             '@': path.resolve('src'),
         },
@@ -52,8 +63,25 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.mjs$/,
+                resolve: {
+                    fullySpecified: false
+                },
+                include: /node_modules/,
+                type: "javascript/auto"
+            },
+            {
                 test: /\.vue$/,
-                use: ["vue-loader"]
+                use: { 
+                    loader: 'vue-loader',
+                    options: {
+                        compilerOptions: {
+                            compatConfig: {
+                                MODE: 2
+                            }
+                        }
+                    }
+                }
             },
             {
                 test: /\.js$/,

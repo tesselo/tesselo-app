@@ -106,7 +106,7 @@
       document.addEventListener('keydown', this.keydownEscToClose);
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
       document.removeEventListener('keydown', this.keydownEscToClose);
     },
 
@@ -195,12 +195,12 @@
       height: 100% !important;
     }
 
-    .el-collapse-item.is-active >>> .el-collapse-item__wrap {
+    .el-collapse-item.is-active :deep(.el-collapse-item__wrap) {
       height: 90% !important;
       border-bottom: none;
     }
     
-    .el-collapse-item.is-active >>> .el-collapse-item__content {
+    .el-collapse-item.is-active :deep(.el-collapse-item__content) {
       height: 100% !important;
       padding-bottom: 0px !important;
     }

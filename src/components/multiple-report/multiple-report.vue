@@ -143,7 +143,7 @@ export default {
       }
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     clearInterval(this.countdown)
   },
   methods: {

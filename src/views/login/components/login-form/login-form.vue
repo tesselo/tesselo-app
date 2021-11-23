@@ -1,10 +1,6 @@
 <template>
   <form class="tsl-form">
-    <ValidationObserver v-slot="{ valid }">
-      <ValidationProvider
-        v-slot="{ errors }"
-        name="username"
-        rules="required">
+    <Form >
         <tsl-input
           v-model="username"
           name="username"
@@ -12,9 +8,7 @@
           value="'username'"
           label="Username"
           placeholder="Your username"/>
-        <span class="tsl-form__control-error">{{ errors[0] }}</span>
-      </ValidationProvider>
-      <ValidationProvider
+      <Field
         v-slot="{ errors }"
         name="password"
         rules="required|min:6">
@@ -26,11 +20,10 @@
           label="Password"
           placeholder="Enter your password"/>
         <span class="tsl-form__control-error">{{ errors[0] }}</span>
-      </ValidationProvider>
+      </Field>
       <div class="row">
         <div class="col-12 d-flex flex-row justify-content-end">
           <tsl-button
-            :disabled="!valid"
             :loading="loading"
             type="button"
             title="Login"
@@ -38,7 +31,7 @@
             @click="submitForm"/>
         </div>
       </div>
-    </ValidationObserver>
+    </Form>
     <div class="row">
       <div class="col-12 d-flex flex-row justify-content-end">
         <p
@@ -62,11 +55,15 @@ import TslButton from '@/components/tsl-button/tsl-button'
 
 import errorHandler from '@/utils/errorHandler'
 
+import { Form, Field} from 'vee-validate'
+
 export default {
   name: 'LoginForm',
   components: {
     TslInput,
-    TslButton
+    TslButton,
+    Form,
+    Field
   },
   data: function() {
     return {
@@ -89,6 +86,7 @@ export default {
       this.formErrors = {
         nonFieldErrors: null
       }
+      
 
       this.login({
         username: this.username,

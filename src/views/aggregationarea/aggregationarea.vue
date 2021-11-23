@@ -41,15 +41,15 @@
       <el-row v-if="!list">
         <el-form
           :model="form">
-          <ValidationObserver v-slot="{ valid }">
+          <Form v-slot="{ valid }">
             <el-form-item label="Name">
-              <ValidationProvider
+              <Field
                 v-slot="{ errors }"
                 name="name"
                 rules="required">
                 <el-input v-model="form.name" />
                 <span>{{ errors[0] }}</span>
-              </ValidationProvider>
+              </Field>
             </el-form-item>
             <el-form-item label="Geometry">
               <l-map
@@ -62,13 +62,13 @@
                   :geojson="geojson"
                   @ready="geomLayerReady"/>
               </l-map>
-              <ValidationProvider
+              <Field
                 v-slot="{ errors }"
                 name="name"
                 rules="required">
                 <el-input v-model="form.geom" />
                 <span>{{ errors[0] }}</span>
-              </ValidationProvider>
+              </Field>
             </el-form-item>
             <el-form-item label="Attributes">
               <el-input v-model="form.attributes" />
@@ -104,7 +104,7 @@
                 </span>
               </el-dialog>
             </el-form-item>
-          </ValidationObserver>
+          </Form>
         </el-form>
       </el-row>
     </el-col>
@@ -115,14 +115,15 @@ import L from 'leaflet'
 import { mapActions, mapState } from 'vuex'
 import { LMap, LTileLayer, LGeoJson, LFeatureGroup } from 'vue2-leaflet'
 import { parse, stringify } from 'wellknown'
+import { ElInput } from 'element-plus'
 
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 
-import 'element-ui/lib/theme-chalk/form.css'
-import 'element-ui/lib/theme-chalk/button.css'
-import 'element-ui/lib/theme-chalk/alert.css'
-import 'element-ui/lib/theme-chalk/dialog.css'
+import 'element-plus/theme-chalk/el-form.css'
+import 'element-plus/theme-chalk/el-button.css'
+import 'element-plus/theme-chalk/el-alert.css'
+import 'element-plus/theme-chalk/el-dialog.css'
 
 
 import AggregationAreasTable from '@/components/aggregation-areas-table/aggregation-areas-table'
@@ -136,7 +137,8 @@ export default {
     LTileLayer,
     LGeoJson,
     LFeatureGroup,
-    AggregationAreasTable
+    AggregationAreasTable,
+    ElInput
   },
   data(){
     return {

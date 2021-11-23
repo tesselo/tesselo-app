@@ -1,14 +1,14 @@
 <template>
-  <transition
-    name="fade"
-    appear>
     <div class="map-export-wrapper">
-      <template>
+      <div>
         <div class="title">PDF Export
           <el-button
-            icon="el-icon-close"
             class="export-button export-close"
-            @click="close" />
+            @click="close" >
+            <el-icon :size="20 ">
+              <closeIcon />
+            </el-icon>
+          </el-button>
         </div>
         <el-table
           :data="data"
@@ -26,31 +26,25 @@
             prop="moment"
             label="Time" />
         </el-table>
-      </template>
-      <el-tooltip
-        :content="hoverInfo.deleteButton"
-        :visible-arrow="true"
-        :open-delay="openDelay"
-        effect="dark"
-        placement="bottom">
+      </div>
         <el-button
           :disabled="processing || data.length == 0"
-          icon="el-icon-delete"
+          :title="hoverInfo.deleteButton"
           class="export-button"
-          @click="clear" />
-      </el-tooltip>
-      <el-tooltip
-        :content="hoverInfo.plusButton"
-        :visible-arrow="true"
-        :open-delay="openDelay"
-        effect="dark"
-        placement="bottom">
+          @click="clear" >
+            <el-icon :size="20">
+              <deleteIcon />
+            </el-icon>
+        </el-button>
         <el-button
           :loading="processing"
+          :title="hoverInfo.plusButton"
           class="export-button export-print"
-          icon="el-icon-plus"
-          @click="addPage" />
-      </el-tooltip>
+          @click="addPage" >
+            <el-icon :size="20">
+              <plusIcon />
+            </el-icon>
+        </el-button>
       <el-tooltip
         :content="hoverInfo.donwloadButton"
         :visible-arrow="true"
@@ -59,15 +53,23 @@
         placement="bottom">
         <el-button
           :disabled="processing || data.length == 0"
-          icon="el-icon-download"
           class="export-button export-print"
-          @click="print" />
+          @click="print" >
+          <el-icon :size="20">
+              <donwloadIcon />
+          </el-icon>
+        </el-button>
       </el-tooltip>
     </div>
-  </transition>
 </template>
 
 <script>
+import { Close as closeIcon, 
+         Delete as deleteIcon, 
+         Plus as plusIcon,
+         Download as donwloadIcon } from '@element-plus/icons'
+import { ElButton, ElTooltip } from 'element-plus'
+
 export default {
   props: {
     data: {
@@ -78,6 +80,14 @@ export default {
       type: Boolean,
       required: true
     }
+  },
+  components: {
+    ElButton,
+    ElTooltip,
+    closeIcon,
+    deleteIcon,
+    plusIcon,
+    donwloadIcon
   },
   data() {
     return {
@@ -133,6 +143,7 @@ export default {
       margin-bottom: 15px;
     }
     .export-button {
+      min-height: 30px;
       margin-top: 15px;
       font-size: 20px;
       color: #5683a2;
@@ -157,12 +168,5 @@ export default {
     }
   }
 
-  .fade-enter, .fade-leave-active {
-    opacity: 0;
-  }
-
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .4s ease-in-out;
-  }
 
 </style>

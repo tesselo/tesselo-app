@@ -134,22 +134,24 @@
 </template>
 
 <script>
-import 'element-ui/lib/theme-chalk/form.css'
-import 'element-ui/lib/theme-chalk/button.css'
-import 'element-ui/lib/theme-chalk/upload.css'
-import 'element-ui/lib/theme-chalk/dialog.css'
+import 'element-plus/theme-chalk/el-form.css'
+import 'element-plus/theme-chalk/el-button.css'
+import 'element-plus/theme-chalk/el-upload.css'
+import 'element-plus/theme-chalk/el-dialog.css'
 
 import { mapState, mapActions } from 'vuex'
 import { actionTypes, routeTypes } from '@/services/constants'
 import axios from 'axios'
 import AreasTable from '@/components/areas-table/areas-table'
+import { ElInput } from 'element-plus'
 
 import errorHandler from '@/utils/errorHandler'
 
 export default {
   name: 'AggregationLayer',
   components: {
-    AreasTable
+    AreasTable,
+    ElInput
   },
   data() {
     return {

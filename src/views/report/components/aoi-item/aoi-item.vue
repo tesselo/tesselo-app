@@ -55,7 +55,7 @@
       :sm="18"
       :class="['aoi-item-map', extraClassForMiniMap]">
       <l-map
-        ref="map"
+        :ref="setMap"
         :min-zoom="minZoomByTile"
         :max-zoom="maxZoomByTile"
         :options="mapOptions">
@@ -110,8 +110,8 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { LMap, LTileLayer, LPolygon } from 'vue2-leaflet'
 import leafletImage from '@/components/tsl-map/leaflet-image'
-import 'element-ui/lib/theme-chalk/divider.css'
-import 'element-ui/lib/theme-chalk/collapse.css'
+import 'element-plus/theme-chalk/el-divider.css'
+import 'element-plus/theme-chalk/el-collapse.css'
 import moment from 'moment'
 import html2canvas from 'html2canvas'
 
@@ -301,6 +301,11 @@ export default {
     }
   },
   methods: {
+    setMap(el){
+      if (el) {
+        this.map.push(el)
+      }
+    },
     getCanvas(){
       const that = this
       html2canvas(document.querySelector('.aoi-item-legend')).then(legendCanvas => {
@@ -446,7 +451,7 @@ h4 {
   margin-top: 25px;
   margin-bottom: 10px;
 }
-/deep/ .leaflet-range-control {
+:deep(.leaflet-range-control) {
   position: static;
 
   &.vertical{
