@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="tsl-form__control">
+  <div class="tsl-form__control">
     <label
       :for="name"
       class="tsl-form__label">
@@ -18,10 +18,10 @@
     <div class="tsl-form__control-error">
       <slot name="error"/>
     </div>
-  </div> -->
+  </div>
 
 
-  <div class="tsl-form__control"> 
+  <!-- <div class="tsl-form__control"> 
     <label
       :for="name"
       class="tsl-form__label">
@@ -39,7 +39,7 @@
           class="tsl-form__input">
     </Field>
   </div>
-  <ErrorMessage as="div" :name="name" class="tsl-form__control-error"/>
+  <ErrorMessage as="div" :name="name" class="tsl-form__control-error"/> -->
 
 </template>
 <script>

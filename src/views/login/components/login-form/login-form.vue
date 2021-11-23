@@ -1,6 +1,10 @@
 <template>
   <form class="tsl-form">
-    <Form >
+    <Form>
+      <Field
+        v-slot="{ errors }"
+        name="username"
+        >
         <tsl-input
           v-model="username"
           name="username"
@@ -8,10 +12,12 @@
           value="'username'"
           label="Username"
           placeholder="Your username"/>
+        <span class="tsl-form__control-error">{{ errors[0] }}</span>
+      </Field>
       <Field
         v-slot="{ errors }"
         name="password"
-        rules="required|min:6">
+        >
         <tsl-input
           v-model="password"
           name="password"
@@ -53,17 +59,17 @@ import { actionTypes } from '@/services/constants'
 import TslInput from '@/components/tsl-input/tsl-input'
 import TslButton from '@/components/tsl-button/tsl-button'
 
-import errorHandler from '@/utils/errorHandler'
+import { Form, Field } from 'vee-validate'
 
-import { Form, Field} from 'vee-validate'
+import errorHandler from '@/utils/errorHandler'
 
 export default {
   name: 'LoginForm',
   components: {
     TslInput,
     TslButton,
-    Form,
-    Field
+    Field,
+    Form
   },
   data: function() {
     return {
@@ -86,7 +92,6 @@ export default {
       this.formErrors = {
         nonFieldErrors: null
       }
-      
 
       this.login({
         username: this.username,
