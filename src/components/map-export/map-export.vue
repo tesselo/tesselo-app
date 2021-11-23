@@ -41,25 +41,21 @@
           :title="hoverInfo.plusButton"
           class="export-button export-print"
           @click="addPage" >
-            <el-icon :size="20">
+            <el-icon v-if="!processing" :size="20">
               <plusIcon />
             </el-icon>
         </el-button>
-      <el-tooltip
-        :content="hoverInfo.donwloadButton"
-        :visible-arrow="true"
-        :open-delay="openDelay"
-        effect="dark"
-        placement="bottom">
+      
         <el-button
           :disabled="processing || data.length == 0"
+          :title="hoverInfo.donwloadButton"
           class="export-button export-print"
           @click="print" >
           <el-icon :size="20">
               <donwloadIcon />
           </el-icon>
         </el-button>
-      </el-tooltip>
+      
     </div>
 </template>
 
@@ -100,6 +96,7 @@ export default {
       openDelay: 750,
     }
   },
+  emits: ['print-pdf','clear-exports', 'add-page'],
   methods: {
     print(){
       if(!this.processing) this.$emit('print-pdf')
@@ -142,31 +139,50 @@ export default {
       text-transform: uppercase;
       margin-bottom: 15px;
     }
-    .export-button {
-      min-height: 30px;
-      margin-top: 15px;
-      font-size: 20px;
-      color: #5683a2;
-      padding: 0px !important;
-      border: 0px;
-      &.export-print {
-        margin-left: 15px;
-        float: right;
-      }
-      &.export-clear {
-        margin-left: 10px;
-        float: left;
-      }
-      &.export-close {
-        float: right;
-        margin-top: 0px;
-      }
-      &[disabled] {
-        background-color: #F4F4F4;
-        opacity: 0.4;
-      }
-    }
   }
 
+  .tsl-map .map-export-wrapper .export-button {
+    min-height: 30px;
+    margin-top: 15px;
+    padding: 0px;
+    border: 0px;
+    width: 30px;
+    height: 30px;
+    color: #606266;
+    outline: none;
+    
+    &:hover {
+      background-color: #f4f4f4;
+      border-color: #f4f4f4;
+      color: #606266;
+    }
 
+    &:focus {
+      background-color: #f4f4f4;
+    }
+    
+    &.export-print {
+      margin-left: 15px;
+      float: right;
+    }
+   
+   &.export-clear {
+      margin-left: 10px;
+      float: left;
+    }
+    
+    &.export-close {
+      float: right;
+      margin-top: 0px;
+    }
+    
+    &[disabled] {
+      background-color: #F4F4F4;
+      opacity: 0.4;
+    }
+
+    .el-icon.is-loading {
+      font-size: 20px;
+    }
+  }
 </style>
