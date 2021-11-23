@@ -22,9 +22,12 @@
         <el-button
           :title="hoverInfo.printReport"
           type="text"
-          class="export-button"
-          icon="icon-printer"
-          @click="toggleExport" />
+          class="menu-buttons"
+          @click="toggleExport" >
+            <el-icon>
+              <printerIcon />
+            </el-icon>
+        </el-button>
       </l-control>
       <l-control
         class="print-image-control leaflet-bar leaflet-control"
@@ -32,9 +35,12 @@
         <el-button
           :title="hoverInfo.report"
           type="text"
-          class="export-button"
-          icon="el-icon-document"
-          @click="showReport" />
+          class="menu-buttons"
+          @click="showReport" >
+            <el-icon>
+              <documentIcon />
+            </el-icon>
+        </el-button>
       </l-control>
       <l-control-layers
         :position="layersPosition"
@@ -174,6 +180,9 @@ import notifications from '../notification'
 
 import errorHandler from '@/utils/errorHandler'
 
+import { Printer as printerIcon, 
+         Document as documentIcon } from '@element-plus/icons'
+
 export default {
   name: 'TslMap',
   components: {
@@ -187,7 +196,9 @@ export default {
     'v-protobuf': Vue2LeafletVectorGridProtobuf,
     MapLegend,
     MapExport,
-    'l-wms-tile-layer': LWMSTileLayer
+    'l-wms-tile-layer': LWMSTileLayer,
+    printerIcon,
+    documentIcon,
   },
   props: {
     showControls:{
@@ -926,15 +937,17 @@ export default {
   .print-image-control {
     background-color: white
   }
-  .export-button {
-    padding: 0px !important;
+
+  .tsl-map .leaflet-top.leaflet-right .menu-buttons {
+    min-height: 30px;
+    padding: 0px;
     width: 30px;
     height: 30px;
-    color: #606266 !important;
+    color: #606266;
     &:hover{
-      background-color: #f4f4f4 !important;
-      border-color: #f4f4f4 !important;
-      color: #606266 !important;
+      background-color: #f4f4f4;
+      border-color: #f4f4f4;
+      color: #606266;
     }
   }
 
