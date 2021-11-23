@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "prepare": "npx husky install",
-    "build:dev": "API_ENV=production NODE_ENV=development webpack serve --config build/webpack.dev.js --open",
+    "build:dev": "API_ENV=staging NODE_ENV=development webpack serve --config build/webpack.dev.js --open",
     "build:production": "NODE_ENV=production webpack --config build/webpack.prod.js",
     "unit": "jest --config tests/unit/jest.conf.js --passWithNoTests ",
     "lint": "eslint --ext .js,.vue src tests",
