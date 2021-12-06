@@ -170,9 +170,9 @@
         new this.TWEEN.Tween({ offsetLeftValue: oldValue })
           .easing(this.TWEEN.Easing.Quadratic.Out)
           .to({ offsetLeftValue: newValue }, this.scrollTime)
-          .onUpdate(function () {
+          .onUpdate(function (that) {
             /* istanbul ignore next */
-            list.scrollLeft = this.offsetLeftValue.toFixed(0)
+            list.scrollLeft = that.offsetLeftValue.toFixed(0)
           })
           .start()
       },
