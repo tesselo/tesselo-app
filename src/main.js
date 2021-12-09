@@ -79,6 +79,10 @@ Sentry.init({
 
   // Capture 100% of transactions for performance monitoring.
   tracesSampleRate: 1.0,
+  ignoreErrors: [
+    'ResizeObserver loop limit exceeded', //Chrome
+    'ResizeObserver loop completed with undelivered notifications.', // Firefox
+  ],
 })
 
 new Vue({
