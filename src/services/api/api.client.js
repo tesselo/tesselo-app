@@ -4,7 +4,6 @@ import { routeTypes } from "@/services/constants"
 import { baseUrl } from '@/services/util'
 import router from '@/services/router'
 
-
 const axiosInstance = axios.create({
   baseURL: baseUrl(),
   withCredentials: true,
@@ -15,11 +14,15 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
+  if (!error.response && error.isAxiosError) {
+    return Promise.reject(error.message)
+  } else {
     if (error.response.status === 401 && router.currentRoute.name != routeTypes.LOGIN) {
       router.push({ name: "Logout" })
     }
+    
     return Promise.reject(error.response)
   }
-)
+})
 
 export default axiosInstance
