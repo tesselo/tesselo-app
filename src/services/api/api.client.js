@@ -21,7 +21,7 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
       router.push({ name: "Logout" })
     }
     
-    return Promise.reject(error.response)
+    return Promise.reject(error)
   }
 })
 
