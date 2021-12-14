@@ -280,6 +280,7 @@ export default {
         location: 'Location:'
       },
       previousClick: false,
+      timeDimensionDefaultValue: 'Monthly'
     }
   },
   computed: {
@@ -360,7 +361,7 @@ export default {
     },
 
     timeTypes() {
-      return this.timeDimensionsTypes
+      return this.timeDimensionsTypes || this.timeDimensionDefaultValue
     }
   },
   watch: {
