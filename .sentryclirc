@@ -1,0 +1,7 @@
+[defaults]
+url=https://sentry.io/
+org=tesselo
+project=tesselo-app
+
+[auth]
+token=3a221adcee0c42c1b9e1d478a8609c23d8aa0305466e41cd90202e44bdda9a42
