@@ -6,6 +6,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
+const SentryPlugin = require("@sentry/webpack-plugin") 
 
 module.exports = merge(common, {
     mode: 'production',
@@ -70,6 +71,11 @@ module.exports = merge(common, {
                 },
             }
         ),
+        new SentryPlugin({
+            release: '1.0.0',
+            include: './dist',
+            ignore: ['node_modules', 'build'],
+          }),
     ],
     module: {
         rules: [

@@ -20,7 +20,7 @@ switch (mode) {
 module.exports = {
     entry: './src/main.js',
     // Control how source maps are generated
-    devtool: (mode === 'development') ? 'inline-source-map' : false,
+    devtool: (mode === 'development') ? 'inline-source-map' : 'hidden-source-map',
     plugins: [
         // Define environmental variables
         new webpack.EnvironmentPlugin({
