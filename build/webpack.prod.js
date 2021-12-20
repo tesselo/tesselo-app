@@ -72,7 +72,7 @@ module.exports = merge(common, {
             }
         ),
         new SentryPlugin({
-            release: '1.0.0',
+            release: process.env.GIT_SHA,
             include: './dist',
             ignore: ['node_modules', 'build'],
           }),
