@@ -611,6 +611,41 @@ export default {
       // Add captured map image.
       this.doc.addImage(data.map_canvas.toDataURL(), format, 0, 0, data.map_canvas.width, data.map_canvas.height)
 
+      // Convert translate3d style into obj with x, y and z positions
+      const translate3dToObj = value => {
+        if (typeof value !== 'string') value = value.toString()
+        const pattern = /([0-9-]+)+(?![3d]\()/gi
+        const positionMatched = value.match( pattern )
+        
+        return { 
+          x: parseFloat(positionMatched[0]),
+          y: parseFloat(positionMatched[1]),
+          z: parseFloat(positionMatched[2]),
+        }
+      }
+
+      const svgTiles = document.querySelectorAll('.leaflet-tile-container > svg')
+      const tileSize = 256
+      const mapPosTranslate3dAttributes = svgTiles[0].parentElement.parentElement.parentElement.parentElement.attributes.style.value
+      const zoomTranslate3dAttributes = svgTiles[0].parentElement.attributes.style.value
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext('2d')
+      const zoomTranslate3dPositions = translate3dToObj(mapPosTranslate3dAttributes)
+      const mapTranslate3dPositions = translate3dToObj(zoomTranslate3dAttributes)
+
+      // Add svgs to pdf
+      svgTiles.forEach((svg) => { 
+        const svgPositions = svg._leaflet_pos
+        const posX = svgPositions.x + zoomTranslate3dPositions.x + mapTranslate3dPositions.x
+        const posY = svgPositions.y + zoomTranslate3dPositions.y + mapTranslate3dPositions.y
+        const xmlSvg = new XMLSerializer().serializeToString(svg)
+        const svgToPng = canvg.Canvg.fromString(ctx, xmlSvg)
+        
+        svgToPng.start()
+
+        this.doc.addImage(canvas.toDataURL("image/png"), 'PNG', posX, posY, tileSize, tileSize)
+      })
+
       // Font settings.
       this.doc.setFont('helvetica', 'bold')
       const font_size = this.doc.internal.pageSize.width > 768 ? 25 : 15
