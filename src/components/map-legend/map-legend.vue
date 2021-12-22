@@ -122,13 +122,13 @@ export default {
     }
 
     label {
-      padding-bottom: 2px;
       display: block;
       font-size: 12px;
       margin-bottom: 8px;
-      white-space: nowrap;
+      white-space: normal;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: 1.2em;
     }
 
     .map-legend {
