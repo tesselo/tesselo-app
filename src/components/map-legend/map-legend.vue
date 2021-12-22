@@ -171,7 +171,7 @@ export default {
     }
 
     .map-list {
-      max-height: 260px;
+      max-height: 45vh;
       overflow: auto;
 
       &__entry {
