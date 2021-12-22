@@ -751,7 +751,7 @@ export default {
       })
 
       // Capture formula legend, on touch the legends are not shown so skip this.
-      if (this.selectedFormula && this.selectedFormula.formula != 'RGB' && !this.isTouch) {
+      if (this.selectedFormula && this.selectedFormula.formula != 'RGB' && !this.isTouch && !this.selectedPredictedLayer) {
         html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
           that.exportData[id].formula_legend = legend_canvas
           that.exportData[id].layer_name = this.selectedFormula.acronym
