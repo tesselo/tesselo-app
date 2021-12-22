@@ -38,6 +38,11 @@ module.exports = {
                 path: path.resolve(__dirname, '../dist/**/*'),
             }
         ),
+        new webpack.ProvidePlugin(
+            {
+                canvg: 'canvg',
+            }
+        ),
     ],
     performance: {
         hints: process.env.NODE_ENV === 'production' ? "warning" : false,
