@@ -144,7 +144,7 @@ import './authenticated-tile-layer'
 // Geosearch plugin.
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import 'leaflet-geosearch/assets/css/leaflet.css'
-import VGeosearch from 'vue2-leaflet-geosearch'
+import VGeosearch from '@/components/leaflet-geosearch/vue2-leaflet-geosearch'
 
 // Home button plugin.
 import 'leaflet.defaultextent'
@@ -168,7 +168,7 @@ import MapExport from '@/components/map-export/map-export.vue'
 
 import { routeTypes } from '@/services/constants'
 
-import notifications from '../notification'
+import notifications from '@/components/notification'
 
 import errorHandler from '@/utils/errorHandler'
 
@@ -217,7 +217,7 @@ export default {
         position: 'topright',
         showMarker: false,
         autoClose: true,
-        searchLabel: 'Search by Address'
+        searchLabel: 'Search by Address',
       },
       tileLayerClass: L.authenticatedTileLayer,
       exportData: [],
