@@ -948,56 +948,6 @@ export default {
   }
 
   .leaflet-control-container .leaflet-right {
-    .leaflet-control-geosearch {
-      form {
-        right: 35px;
-        border-radius: 4px 4px 4px 4px;
-        border: 2px solid rgba(0, 0, 0, 0.2);
-        top: -2px;
-        box-shadow: none;
-
-        input {
-          padding-right: 30px;
-          text-indent: 8px;
-          height: 30px;
-          width: 100%;
-          height: 30px;
-        }
-      }
-
-      a.reset {
-        line-height: 30px;
-        height: 30px;
-        border-radius: 0px 4px 4px 0px;
-        &:hover {
-          border-bottom: none;
-        }
-      }
-
-      a.leaflet-bar-part {
-        &::before {
-          top: 20px;
-          left: 17px;
-          width: 7px;
-          border-top: 1px solid #606266;
-        }
-
-        &::after {
-          top: 7px;
-          left: 7px;
-          height: 13px;
-          width: 13px;
-          border: 1px solid #606266;
-        }
-      }
-
-      .results.active {
-        &::after {
-          border-left: none;
-        }
-      }
-    }
-
     .leaflet-control-zoom {
       .leaflet-control-zoom-in {
         color: #606266;
