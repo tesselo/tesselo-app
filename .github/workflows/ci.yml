@@ -129,7 +129,7 @@ jobs:
         with:
           path: ./dist
           key: ${{ runner.os }}-npm-${{ github.sha }}
-
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -177,6 +177,17 @@ jobs:
         with:
           path: ./dist
           key: ${{ runner.os }}-npm-${{ github.sha }}
+      
+      - name: Sentry Release - App
+        uses: getsentry/action-release@v1.0.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production
+          sourcemaps: ./dist
+          version: ${{ github.sha }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
