@@ -75,6 +75,7 @@ Vue.config.productionTip = process.env.NODE_ENV == 'production' ? false : true;
 Sentry.init({
   Vue,
   dsn: process.env.SENTRY_DSN,
+  release: process.env.GIT_SHA,
   integrations: [new Integrations.BrowserTracing()],
 
   // Capture 100% of transactions for performance monitoring.
