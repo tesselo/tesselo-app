@@ -105,7 +105,7 @@ jobs:
       name: Deploy to staging
       needs: [js_dependencies, build, test]
       runs-on: ubuntu-latest
-      if: contains('refs/heads/master', github.ref)
+      if: contains('refs/heads/master', github.ref) && !contains('workflow_dispatch', github.event_name)
 
       steps:
       - name: Checkout tesselo-app
