@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout tesselo-appo
+      - name: Checkout tesselo-app
         uses: actions/checkout@v2
 
       - name: Setup node.js environment
