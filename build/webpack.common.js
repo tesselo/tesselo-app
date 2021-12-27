@@ -28,7 +28,8 @@ module.exports = {
             API_URL: env.API_URL,
             ROUTER_BASE: env.ROUTER_BASE,
             ASSETS_PUBLIC_PATH: env.ASSETS_PUBLIC_PATH,
-            SENTRY_DSN: env.SENTRY_DSN
+            SENTRY_DSN: env.SENTRY_DSN,
+            GIT_SHA: env.GIT_SHA,
         }),
         new VueLoaderPlugin(),
         new webpack.ProgressPlugin(),
