@@ -179,15 +179,16 @@ jobs:
           key: ${{ runner.os }}-npm-${{ github.sha }}
       
       - name: Sentry Release - App
-        uses: getsentry/action-release@v1.0.0
+        uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
-          environment: production
-          sourcemaps: ./dist
+          environment: 'production'
+          sourcemaps: './dist/static/js'
           version: ${{ github.sha }}
+          url_prefix: '~/static/js'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
