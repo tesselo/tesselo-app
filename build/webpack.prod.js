@@ -77,7 +77,12 @@ module.exports = merge(common, {
                 test: /\.s?[ac]ss$/,
                 use: [
                     MiniCssExtractPlugin.loader , // 3. Extract css into files
-                    'css-loader',       // 2. Turns css into commonjs
+                    { 
+                        loader: 'css-loader', // 2. Turns css into commonjs
+                        options: {
+                            sourceMap: false
+                        }
+                    },
                     {
                         loader: "postcss-loader",
                         options: {
