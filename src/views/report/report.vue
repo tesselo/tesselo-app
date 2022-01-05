@@ -876,8 +876,7 @@ export default {
         // Font settings.
         doc.addFileToVFS('Open-Sans.ttf', OpenSans)
         doc.addFont('Open-Sans.ttf', 'OpenSans', 'normal')
-        doc.setFont('OpenSans')
-        doc.setFontType('normal')
+        doc.setFont('OpenSans', 'normal')
         doc.setTextColor('#001A31')  // Navy
 
         // Add title.
