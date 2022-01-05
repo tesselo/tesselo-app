@@ -853,7 +853,7 @@ export default {
     },
     printCallback(){
       const done = this.$refs.aois.filter(aoi => Boolean(aoi.canvasData))
-      if (done.length == this.$refs.aois.length) {
+      if (done.length == this.$refs.aois.length && this.printing) {
         // Config variables.
         const format = 'PNG'
         const pdf_margin = 10
