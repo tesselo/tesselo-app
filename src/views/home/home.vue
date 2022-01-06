@@ -443,7 +443,7 @@ export default {
 
     closeAllPanels() {
       this.activePanel = ''
-      this.$refs.panelSelector.unsetActive()
+      if (this.$refs.panelSelector) this.$refs.panelSelector.unsetActive()
       this.hideReportButtons()
     },
     changeVisiblePanel(activePanel) {
