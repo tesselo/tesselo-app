@@ -280,7 +280,8 @@ export default {
         location: 'Location:'
       },
       previousClick: false,
-      timeDimensionDefaultValue: 'Monthly'
+      timeDimensionDefaultValue: 'Monthly',
+      stdFirstCall: true,
     }
   },
   computed: {
@@ -614,6 +615,11 @@ export default {
         autoSelect
       })
       .then(() => {
+        // moments list is the results from composite API. 
+        if (!this.momentsList.length && this.stdFirstCall) {
+          this.setActiveYear(this.activeYear - 1)
+        } 
+        this.stdFirstCall = false
         this.loading = false
       })
     }, 1000),
