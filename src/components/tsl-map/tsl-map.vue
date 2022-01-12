@@ -964,4 +964,7 @@ export default {
       }
     }
   }
+  .el-message-box__wrapper .el-message-box .el-message-box__content .el-message-box__container .el-message-box__message{
+    white-space: pre-line;
+  }
 </style>
