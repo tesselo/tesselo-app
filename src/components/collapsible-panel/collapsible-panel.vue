@@ -2,6 +2,7 @@
   <div class="collapsible-panel">
     <a
       :class="['close d-flex flex-row justify-content-center align-items-center', { 'close--rotate': open }]"
+      id="stdButton"
       href="javascript:void(0)"
       @click="$emit('toggle')"
     >
