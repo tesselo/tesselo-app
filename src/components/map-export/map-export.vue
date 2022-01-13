@@ -120,10 +120,11 @@ export default {
     width: 360px;
     max-width: 100%;
     @media (min-width: 768px) {
-      top: 54px;
+      top: 75px;
     }
     @media (max-width: 767px) {
-      bottom: 90px;
+      bottom: 40%;
+      left: 45%;
     }
     .title {
       font-size: 28px;
