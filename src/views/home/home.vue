@@ -93,7 +93,8 @@
     </div>
     <tsl-map
       ref="tslMap"
-      :show-controls="showControls"/>
+      :show-controls="showControls"
+      @openStd="toggleSTDPanel"/>
   </div>
 </template>
 
