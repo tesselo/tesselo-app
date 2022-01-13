@@ -773,44 +773,61 @@ export default {
       // Push another data container.
       this.exportData.push({})
 
-      var that = this
+      const that = this
+      const stdButtonClassList = document.getElementById('stdButton').classList
+      const stdOpened = Object.values(stdButtonClassList).some(e => e =='close--rotate')
+      
+      if (!this.selectedMoment) {
+        this.$alert('Please select a valid composite in order to create a report. \n\nYou can do it by using the Time Selector that is located at the center bottom of the window.',
+          'PDF Export Warning:', 
+          {
+            confirmButtonText: !stdOpened ? 'Open time selector' : 'Ok',
+            showClose: false,
+          }
+        ).then(() => {
+          if(!stdOpened) this.$emit('openStd')
 
-      // Fetch leaflet canvas.
-      leafletImage(this.$refs.map.mapObject, function(err, canvas) {
-        // Get image text and image data.
-        that.exportData[id].map_canvas = canvas
-        that.exportData[id].moment_name = that.selectedMoment.name
+          this.exportProcessing = false
+          return
+        })
+      } else {
+        // Fetch leaflet canvas.
+        leafletImage(this.$refs.map.mapObject, function(err, canvas) {
+          // Get image text and image data.
+          that.exportData[id].map_canvas = canvas
+          that.exportData[id].moment_name = that.selectedMoment.name
 
-        // Callback for export.
-        that.dataCallback(id)
-      })
-
-      // Capture formula legend, on touch the legends are not shown so skip this.
-      if (this.selectedFormula && this.selectedFormula.formula != 'RGB' && !this.isTouch && !this.selectedPredictedLayer) {
-        html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
-          that.exportData[id].formula_legend = legend_canvas
-          that.exportData[id].layer_name = this.selectedFormula.acronym
           // Callback for export.
           that.dataCallback(id)
-        });
-      } else {
-        this.exportData[id].formula_legend = null
-        // Callback for export.
-        that.dataCallback(id)
-      }
-
-      // Capture predicted layer legend, on touch the legends are not shown so skip this.
-      if (this.selectedPredictedLayer && !this.isTouch) {
-        html2canvas(document.querySelector(".predicted-legend")).then(legend_canvas => {
-          that.exportData[id].predicted_legend = legend_canvas
-          that.exportData[id].layer_name = this.selectedPredictedLayer.classifierName
+        })
+      
+        // Capture formula legend, on touch the legends are not shown so skip this.
+        if (this.selectedFormula && this.selectedFormula.formula != 'RGB' && !this.isTouch && !this.selectedPredictedLayer) {
+          html2canvas(document.querySelector(".layer-legend")).then(legend_canvas => {
+            that.exportData[id].formula_legend = legend_canvas
+            that.exportData[id].layer_name = this.selectedFormula.acronym
+            // Callback for export.
+            that.dataCallback(id)
+          })
+        } else {
+          this.exportData[id].formula_legend = null
           // Callback for export.
           that.dataCallback(id)
-        });
-      } else {
-        this.exportData[id].predicted_legend = null
-        // Callback for export.
-        that.dataCallback(id)
+        }
+
+        // Capture predicted layer legend, on touch the legends are not shown so skip this.
+        if (this.selectedPredictedLayer && !this.isTouch) {
+          html2canvas(document.querySelector(".predicted-legend")).then(legend_canvas => {
+            that.exportData[id].predicted_legend = legend_canvas
+            that.exportData[id].layer_name = this.selectedPredictedLayer.classifierName
+            // Callback for export.
+            that.dataCallback(id)
+          })
+        } else {
+          this.exportData[id].predicted_legend = null
+          // Callback for export.
+          that.dataCallback(id)
+        }
       }
     }
   }
